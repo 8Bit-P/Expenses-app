@@ -4,23 +4,23 @@ A modern, high-performance financial management dashboard built with **React**, 
 
 ## 🚀 Key Features
 
-* **Financial Dashboard:** High-level overview of spending habits using interactive charts. [cite: 17, 18, 22, 39]
-* **Expense Management:** Full CRUD (Create, Read, Update, Delete) functionality for financial records. [cite: 111, 120]
+* **Financial Dashboard:** High-level overview of spending habits using interactive charts.
+* **Expense Management:** Full CRUD (Create, Read, Update, Delete) functionality for financial records. 
 * **Interactive Visualizations:**
-    * Donut charts for category-wise distribution. [cite: 39]
-    * Interactive area and bar charts for trend analysis. [cite: 17, 18, 22]
-* **Advanced Data Tables:** Filterable and sortable transaction logs with detailed viewing capabilities. [cite: 24, 26, 31, 101]
-* **Authentication:** Secure user login and session management via Supabase Auth. [cite: 46, 112]
-* **Responsive Design:** Fully optimized for mobile, tablet, and desktop viewing using a modern sidebar navigation system. [cite: 16, 91, 113]
+    * Donut charts for category-wise distribution. 
+    * Interactive area and bar charts for trend analysis. 
+* **Advanced Data Tables:** Filterable and sortable transaction logs with detailed viewing capabilities.
+* **Authentication:** Secure user login and session management via Supabase Auth.
+* **Responsive Design:** Fully optimized for mobile, tablet, and desktop viewing using a modern sidebar navigation system. 
 
 ## 🛠 Tech Stack
 
-* **Core:** React 18, TypeScript [cite: 11, 126]
-* **Build Tool:** Vite [cite: 122, 127]
+* **Core:** React 18, TypeScript 
+* **Build Tool:** Vite 
 * **Backend-as-a-Service:** Supabase (Database & Auth) 
-* **Styling:** Tailwind CSS (via shadcn/ui components) [cite: 61, 62, 65]
-* **Charts:** Recharts / Radix-based visualization components [cite: 17, 18, 71]
-* **Icons:** Lucide React [cite: 126]
+* **Styling:** Tailwind CSS (via shadcn/ui components) 
+* **Charts:** Recharts / Radix-based visualization components 
+* **Icons:** Lucide React
 
 ## 📂 Project Structure
 
