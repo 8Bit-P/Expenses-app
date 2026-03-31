@@ -1,0 +1,21 @@
+services:
+  expense-dashboard:
+    build:
+      context: ./WebApp
+      dockerfile: Dockerfile
+      # Pass the environment variables to the build stage
+      args:
+        - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
+        - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
+    ports:
+      - "8080:80"
+    restart: always
+    environment:
+      - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
+      - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
+    networks:
+      - proxy-nw
+
+networks:
+  proxy-nw:
+    external: true
