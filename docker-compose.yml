@@ -1,5 +1,7 @@
 services:
   expense-dashboard:
+    image: registry.pablo-home.casa/expense-dashboard:${APP_VERSION:-latest}
+
     build:
       context: ./WebApp
       dockerfile: Dockerfile
