@@ -1,41 +1,46 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import { useState } from 'react';
-import { Sidebar } from './components/Sidebar';
-import { TopBar } from './components/TopBar';
-import { Dashboard } from './components/Dashboard';
-import { Investments } from './components/Investments';
-import { Expenses } from './components/Expenses';
-import { Subscriptions } from './components/Subscriptions';
-import { Settings } from './components/Settings';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import AppLayout from "./components/layout/AppLayout";
+import Dashboard from "./pages/Dashboard";
 
 export default function App() {
-  const [currentTab, setCurrentTab] = useState('dashboard');
-
-  const renderContent = () => {
-    switch (currentTab) {
-      case 'dashboard': return <Dashboard />;
-      case 'investments': return <Investments />;
-      case 'expenses': return <Expenses />;
-      case 'subscriptions': return <Subscriptions />;
-      case 'settings': return <Settings />;
-      default: return <Dashboard />;
-    }
-  };
-
   return (
-    <div className="flex bg-background min-h-screen font-body text-on-surface antialiased overflow-x-hidden">
-      <Sidebar currentTab={currentTab} setCurrentTab={setCurrentTab} />
-      <div className="ml-64 flex-1 flex flex-col min-h-screen">
-        <TopBar />
-        <main className="flex-1">
-          {renderContent()}
-        </main>
-      </div>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        {/* The AppLayout acts as the shell (Sidebar, Topbar, etc.) */}
+        <Route element={<AppLayout />}>
+          
+          {/* Main Dashboard Route */}
+          <Route path="/" element={<Dashboard />} />
+          
+          {/* Placeholder Routes for your other sections */}
+          <Route path="/investments" element={
+            <div className="flex items-center justify-center h-64 text-on-surface-variant font-headline font-bold">
+              Investments Page Coming Soon
+            </div>
+          } />
+          
+          <Route path="/expenses" element={
+            <div className="flex items-center justify-center h-64 text-on-surface-variant font-headline font-bold">
+              Expenses Page Coming Soon
+            </div>
+          } />
+          
+          <Route path="/subscriptions" element={
+            <div className="flex items-center justify-center h-64 text-on-surface-variant font-headline font-bold">
+              Subscriptions Page Coming Soon
+            </div>
+          } />
+          
+          <Route path="/settings" element={
+            <div className="flex items-center justify-center h-64 text-on-surface-variant font-headline font-bold">
+              Settings Page Coming Soon
+            </div>
+          } />
+
+          {/* Catch-all: If a user types a wrong URL, redirect them home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
-
