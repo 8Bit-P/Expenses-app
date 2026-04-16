@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AppLayout from "./components/layout/AppLayout";
+import Expenses from "./pages/Expenses";
 import Dashboard from "./pages/Dashboard";
 
 export default function App() {
@@ -19,11 +20,7 @@ export default function App() {
             </div>
           } />
           
-          <Route path="/expenses" element={
-            <div className="flex items-center justify-center h-64 text-on-surface-variant font-headline font-bold">
-              Expenses Page Coming Soon
-            </div>
-          } />
+          <Route path="/expenses" element={<Expenses/> } />
           
           <Route path="/subscriptions" element={
             <div className="flex items-center justify-center h-64 text-on-surface-variant font-headline font-bold">
