@@ -13,7 +13,7 @@ export default function SpendingTrendChart() {
   ];
 
   return (
-    <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 h-full flex flex-col">
+    <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 flex flex-col">
       
       {/* Header section */}
       <div className="flex items-center justify-between mb-6">
@@ -36,8 +36,8 @@ export default function SpendingTrendChart() {
       </div>
 
       {/* Chart Area */}
-      <div className="flex-1 w-full h-62.5">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="w-full">
+        <ResponsiveContainer width="100%" height={300} minWidth={1} minHeight={1} debounce={50}>
           <AreaChart data={data} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
             <defs>
               {/* Gradient for Current Month */}

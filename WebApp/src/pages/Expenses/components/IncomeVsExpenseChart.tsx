@@ -35,8 +35,8 @@ export default function IncomeVsExpenseChart() {
       </div>
 
       {/* Chart Area - Hardcoded height forces Recharts to render properly */}
-      <div className="w-full h-75">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="w-full">
+        <ResponsiveContainer width="100%" height={300} minWidth={1} minHeight={1} debounce={50}>
           <BarChart data={data} margin={{ top: 10, right: 0, left: -20, bottom: 0 }} barGap={6}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-outline-variant/20" />
             

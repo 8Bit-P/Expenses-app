@@ -11,7 +11,7 @@ export default function CategoryDonut() {
   const total = data.reduce((sum, item) => sum + item.value, 0);
 
   return (
-    <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 h-full flex flex-col">
+    <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 flex flex-col">
       
       {/* Header */}
       <div className="flex justify-between items-center mb-2">
@@ -22,8 +22,8 @@ export default function CategoryDonut() {
       </div>
 
       {/* Chart Area (Top) */}
-      <div className="relative w-full h-50 shrink-0 min-w-0">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="relative w-full shrink-0 min-w-0">
+        <ResponsiveContainer width="100%" height={200} minWidth={1} minHeight={1} debounce={50}>
           <PieChart>
             <Pie
               data={data}
@@ -38,7 +38,7 @@ export default function CategoryDonut() {
               ))}
             </Pie>
             <Tooltip 
-              formatter={(value: number) => `$${value.toFixed(2)}`}
+              formatter={(value: any) => `$${value.toFixed(2)}`}
               contentStyle={{ 
                 backgroundColor: 'var(--surface-container-lowest)', 
                 borderColor: 'var(--outline-variant)',

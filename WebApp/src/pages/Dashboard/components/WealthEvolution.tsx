@@ -29,8 +29,8 @@ export default function WealthEvolution() {
         </div>
       </div>
       
-      <div className="h-64 w-full text-[10px] font-bold uppercase tracking-widest text-slate-400">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="w-full text-[10px] font-bold uppercase tracking-widest text-slate-400">
+        <ResponsiveContainer width="100%" height={300} minWidth={1} minHeight={1} debounce={50}>
           <AreaChart data={data} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="colorInv" x1="0" y1="0" x2="0" y2="1">

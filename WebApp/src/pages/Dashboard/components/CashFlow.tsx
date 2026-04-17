@@ -12,8 +12,8 @@ export default function CashFlow() {
       <h2 className="text-xl font-bold font-headline mb-1">Monthly Cash Flow</h2>
       <p className="text-on-surface-variant text-sm mb-8">Income vs Expenses</p>
       
-      <div className="flex-1 w-full h-48 text-[10px] font-bold text-slate-400">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="w-full text-[10px] font-bold text-slate-400">
+        <ResponsiveContainer width="100%" height={250} minWidth={1} minHeight={1} debounce={50}>
           <BarChart data={data} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
             <XAxis dataKey="name" axisLine={false} tickLine={false} dy={10} />
             <Tooltip cursor={{fill: 'transparent'}} contentStyle={{ borderRadius: '1rem', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />

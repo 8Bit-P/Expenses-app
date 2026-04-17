@@ -16,15 +16,15 @@ export default function Expenses() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* Top Row: Trend (8) + Donut (4) */}
-        <div className="lg:col-span-8 h-full">
+        <div className="lg:col-span-8">
           <SpendingTrendChart /> 
         </div>
-        <div className="lg:col-span-4 h-full">
+        <div className="lg:col-span-4">
           <CategoryDonut />
         </div>
 
         {/* Middle Row: Bar Chart (8) + Filter Panel (4) */}
-        <div className="lg:col-span-8 h-full">
+        <div className="lg:col-span-8">
           <IncomeVsExpenseChart />
         </div>
         <div className="lg:col-span-4 h-full">
