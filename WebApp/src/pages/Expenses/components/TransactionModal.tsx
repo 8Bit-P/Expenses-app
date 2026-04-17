@@ -25,7 +25,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
 
   return (
     // Overlay
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm animate-in fade-in duration-200">
       
       {/* Modal Window */}
       <div className="bg-surface-container-lowest/90 backdrop-blur-xl w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden border border-outline-variant/20 ring-1 ring-black/5 animate-in zoom-in-95 duration-200">
@@ -128,7 +128,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
             >
               Cancel
             </button>
-            <button className="flex-[2] py-3 px-4 rounded-xl font-bold text-sm text-on-primary bg-primary hover:opacity-90 active:scale-[0.98] transition-all shadow-sm">
+            <button className="flex-2 py-3 px-4 rounded-xl font-bold text-sm text-on-primary bg-primary hover:opacity-90 active:scale-[0.98] transition-all shadow-sm">
               {isEditing ? 'Save Changes' : 'Confirm Entry'}
             </button>
           </div>

@@ -2,9 +2,6 @@ export default function ExpensesHeader() {
   return (
     <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
       <div>
-        <span className="text-sm font-label text-on-surface-variant tracking-wider uppercase">
-          Overview
-        </span>
         <h1 className="text-4xl font-extrabold font-headline tracking-tight text-on-surface mt-1">
           Expense Narrative
         </h1>

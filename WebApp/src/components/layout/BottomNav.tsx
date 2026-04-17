@@ -11,7 +11,7 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-3 pb-8 bg-white/80 backdrop-blur-2xl shadow-[0_-8px_30px_rgb(0,0,0,0.04)] rounded-t-[32px] md:hidden">
+    <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-3 pb-8 bg-background/80 backdrop-blur-2xl border-t border-outline-variant/10 shadow-[0_-8px_30px_rgb(0,0,0,0.04)] rounded-t-[32px] md:hidden transition-colors duration-300">
       {navItems.map((item) => {
         const isActive = location.pathname === item.path;
         return (
@@ -19,11 +19,13 @@ export default function BottomNav() {
             key={item.path}
             to={item.path}
             className={`flex flex-col items-center justify-center p-2 transition-all duration-300 ${
-              isActive ? "bg-primary/10 text-primary rounded-2xl px-4 scale-105" : "text-slate-400 hover:text-primary"
+              isActive 
+                ? "bg-primary-container/30 text-primary rounded-2xl px-4 scale-105" 
+                : "text-on-surface-variant/80 hover:text-on-surface"
             }`}
           >
             <span 
-              className="material-symbols-outlined" 
+              className="material-symbols-outlined transition-transform duration-300" 
               style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
             >
               {item.icon}
