@@ -1,51 +1,36 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import ProtectedRoute from "./components/layout/ProtectedRoute";
-import AppLayout from "./components/layout/AppLayout";
-import Expenses from "./pages/Expenses";
-import Dashboard from "./pages/Dashboard";
-import Auth from "./pages/Auth"; // Your new auth screen
+import { BrowserRouter } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AuthProvider } from "./context/AuthContext";
-import Settings from "./pages/Settings";
+import AppRouter from "./routes/AppRouter";
+
+// Configure TanStack Query for a production environment
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // Data stays fresh for 5 minutes
+      retry: 1, // Only retry failed requests once to avoid spamming Supabase
+      refetchOnWindowFocus: false, // Stop refetching every time the user switches browser tabs
+    },
+  },
+});
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          
-          {/* 1. Public Route (No Layout, No Auth Required) */}
-          <Route path="/auth" element={<Auth />} />
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <BrowserRouter>
+          {/* All routing logic is securely isolated here */}
+          <AppRouter />
+        </BrowserRouter>
+      </AuthProvider>
 
-          {/* 2. Protected Routes (Wrapped in ProtectedRoute and AppLayout) */}
-          <Route element={<ProtectedRoute />}>
-            <Route element={<AppLayout />}>
-              
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/expenses" element={<Expenses />} />
-              
-              {/* Placeholder Routes */}
-              <Route path="/investments" element={
-                <div className="flex items-center justify-center h-64 text-on-surface-variant font-headline font-bold">
-                  Investments Page Coming Soon
-                </div>
-              } />
-              
-              <Route path="/subscriptions" element={
-                <div className="flex items-center justify-center h-64 text-on-surface-variant font-headline font-bold">
-                  Subscriptions Page Coming Soon
-                </div>
-              } />
-              
-              <Route path="/settings" element={<Settings/>} />
-
-            </Route>
-          </Route>
-
-          {/* 3. Catch-all: If a user types a wrong URL, redirect them home */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-          
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+      {/* Devtools: These automatically hide in production builds, so it's safe to leave this line! */}
+      <ReactQueryDevtools
+        initialIsOpen={false}
+        buttonPosition="bottom-right" 
+        position="bottom" 
+      />
+    </QueryClientProvider>
   );
 }

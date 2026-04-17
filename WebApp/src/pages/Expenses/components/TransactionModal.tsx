@@ -1,4 +1,7 @@
 import { useState, useEffect } from 'react';
+import { useCategories } from '../../../hooks/useCategories';
+import { useExpenses } from '../../../context/ExpensesContext';
+import type { Category, TransactionType } from '../../../types/expenses';
 
 interface TransactionModalProps {
   isOpen: boolean;
@@ -7,21 +10,67 @@ interface TransactionModalProps {
 }
 
 export default function TransactionModal({ isOpen, onClose, transaction }: TransactionModalProps) {
-  // Local state to handle form switching
-  const [type, setType] = useState<'expense' | 'income'>('expense');
+  const { categories } = useCategories();
+  const { addTransaction, updateTransaction } = useExpenses();
+// ... rest of the component ...
+
+  // Local state for form fields
+  const [type, setType] = useState<TransactionType>('expense');
+  const [amount, setAmount] = useState('');
+  const [description, setDescription] = useState('');
+  const [categoryId, setCategoryId] = useState('');
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // When modal opens, populate it if we are editing
   useEffect(() => {
-    if (transaction) {
-      setType(transaction.type);
-    } else {
-      setType('expense'); // Default for new
+    if (isOpen) {
+      if (transaction) {
+        setType(transaction.type);
+        setAmount(transaction.amount.toString());
+        setDescription(transaction.description || transaction.name || '');
+        setCategoryId(transaction.category_id || (transaction.category?.id) || '');
+        setDate(transaction.date || new Date().toISOString().split('T')[0]);
+      } else {
+        setType('expense');
+        setAmount('');
+        setDescription('');
+        setCategoryId(categories[0]?.id || '');
+        setDate(new Date().toISOString().split('T')[0]);
+      }
     }
-  }, [transaction, isOpen]);
+  }, [transaction, isOpen, categories]);
 
   if (!isOpen) return null;
 
   const isEditing = !!transaction;
+
+  const handleSave = async () => {
+    if (!amount || !categoryId) return;
+    
+    setIsSubmitting(true);
+    const data = {
+      type,
+      amount: parseFloat(amount),
+      description,
+      category_id: categoryId,
+      date,
+    };
+
+    let res;
+    if (isEditing) {
+      res = await updateTransaction(transaction.id, data);
+    } else {
+      res = await addTransaction(data);
+    }
+
+    setIsSubmitting(false);
+    if (!res.error) {
+      onClose();
+    } else {
+      alert(res.error);
+    }
+  };
 
   return (
     // Overlay
@@ -84,11 +133,24 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
               <span className="absolute left-6 text-2xl font-bold text-on-surface-variant">$</span>
               <input 
                 className="w-full bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-5 pl-12 pr-6 text-3xl font-black text-on-surface transition-all placeholder:text-on-surface-variant/30 outline-none" 
-                type="text" 
+                type="number" 
+                step="0.01"
                 placeholder="0.00"
-                defaultValue={transaction?.amount || ""}
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
               />
             </div>
+          </div>
+
+          {/* Date Picker */}
+          <div className="space-y-2">
+            <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Date</label>
+            <input 
+              type="date"
+              className="w-full bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-3 px-4 text-sm font-semibold text-on-surface outline-none"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
           </div>
 
           {/* Description & Category Row */}
@@ -99,7 +161,8 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
                 className="w-full bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-3 px-4 text-sm font-semibold text-on-surface placeholder:text-on-surface-variant/50 outline-none" 
                 placeholder="e.g. Grocery Run" 
                 type="text"
-                defaultValue={transaction?.name || ""}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -107,13 +170,15 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
               <div className="relative">
                 <select 
                   className="w-full appearance-none bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-3 px-4 text-sm font-semibold text-on-surface outline-none cursor-pointer"
-                  defaultValue={transaction?.category || "Dining"}
+                  value={categoryId}
+                  onChange={(e) => setCategoryId(e.target.value)}
                 >
-                  <option>Housing</option>
-                  <option>Dining</option>
-                  <option>Clothing</option>
-                  <option>Utilities</option>
-                  <option>Salary</option>
+                  <option value="" disabled>Select Category</option>
+                  {categories.map((cat: Category) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.emoji} {cat.name}
+                    </option>
+                  ))}
                 </select>
                 <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant text-[18px]">expand_more</span>
               </div>
@@ -125,11 +190,16 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
             <button 
               onClick={onClose}
               className="flex-1 py-3 px-4 rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container transition-all"
+              disabled={isSubmitting}
             >
               Cancel
             </button>
-            <button className="flex-2 py-3 px-4 rounded-xl font-bold text-sm text-on-primary bg-primary hover:opacity-90 active:scale-[0.98] transition-all shadow-sm">
-              {isEditing ? 'Save Changes' : 'Confirm Entry'}
+            <button 
+              onClick={handleSave}
+              disabled={isSubmitting || !amount || !categoryId}
+              className="flex-2 py-3 px-4 rounded-xl font-bold text-sm text-on-primary bg-primary hover:opacity-90 active:scale-[0.98] transition-all shadow-sm disabled:opacity-50"
+            >
+              {isSubmitting ? 'Saving...' : (isEditing ? 'Save Changes' : 'Confirm Entry')}
             </button>
           </div>
 
