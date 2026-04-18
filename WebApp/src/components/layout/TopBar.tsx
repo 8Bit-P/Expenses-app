@@ -1,27 +1,8 @@
-import { useState, useEffect } from "react";
+import { useUserPreferences } from "../../context/UserPreferencesContext";
 
 export default function TopBar() {
-  // Initialize state from localStorage or system preference
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    // Check if we already saved a preference
-    const saved = localStorage.getItem("theme");
-    if (saved) return saved === "dark";
-
-    // Fallback to system preference
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
-  });
-
-  // Synchronize the HTML class and localStorage whenever isDark changes
-  useEffect(() => {
-    const root = window.document.documentElement;
-    if (isDark) {
-      root.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      root.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [isDark]);
+  const { resolvedTheme, setTheme } = useUserPreferences();
+  const isDark = resolvedTheme === "dark";
 
   return (
     <header className="flex justify-between items-center w-full px-8 py-4 font-headline bg-background/80 backdrop-blur-md sticky top-0 z-40 border-b border-surface-container-low/50">
@@ -44,7 +25,7 @@ export default function TopBar() {
       <div className="flex items-center gap-3">
         {/* Seamless Sun/Moon Theme Toggle */}
         <button
-          onClick={() => setIsDark(!isDark)}
+          onClick={() => setTheme(isDark ? "light" : "dark")}
           className="relative w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-high transition-colors overflow-hidden text-on-surface-variant hover:text-on-surface cursor-pointer"
           aria-label="Toggle Dark Mode"
         >

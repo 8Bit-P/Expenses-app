@@ -1,4 +1,5 @@
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
+import { NumberStepper } from "../../../components/ui/NumberStepper";
 
 interface ToggleProps {
   checked: boolean;
@@ -76,17 +77,17 @@ export default function NotificationsSection() {
             checked={notifications.budgetThresholdAlerts}
             onToggle={() => setNotifications({ budgetThresholdAlerts: !notifications.budgetThresholdAlerts })}
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 mt-1">
               <span className="text-xs text-on-surface-variant font-medium">Warn at</span>
-              <input
-                type="number"
-                min="1"
-                max="100"
+              <NumberStepper
                 value={notifications.budgetThresholdPct}
-                onChange={(e) => setNotifications({ budgetThresholdPct: parseInt(e.target.value) || 80 })}
-                className="w-16 bg-surface-container rounded-lg px-2 py-1 text-xs font-bold text-on-surface outline-none focus:ring-2 focus:ring-primary/40 text-center"
+                onChange={(v) => setNotifications({ budgetThresholdPct: v })}
+                min={10}
+                max={100}
+                step={5}
+                suffix="%"
               />
-              <span className="text-xs text-on-surface-variant font-medium">% of budget</span>
+              <span className="text-xs text-on-surface-variant font-medium">of budget</span>
             </div>
           </NotifRow>
         </div>
@@ -100,20 +101,15 @@ export default function NotificationsSection() {
             checked={notifications.largeTransactionRadar}
             onToggle={() => setNotifications({ largeTransactionRadar: !notifications.largeTransactionRadar })}
           >
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-on-surface-variant font-medium">Alert for amounts over</span>
-              <div className="relative">
-                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-bold text-on-surface-variant">
-                  {currency.symbol}
-                </span>
-                <input
-                  type="number"
-                  min="1"
-                  value={notifications.largeTransactionAmount}
-                  onChange={(e) => setNotifications({ largeTransactionAmount: parseInt(e.target.value) || 200 })}
-                  className="w-24 bg-surface-container rounded-lg pl-5 pr-2 py-1 text-xs font-bold text-on-surface outline-none focus:ring-2 focus:ring-primary/40"
-                />
-              </div>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="text-xs text-on-surface-variant font-medium">Alert above</span>
+              <NumberStepper
+                value={notifications.largeTransactionAmount}
+                onChange={(v) => setNotifications({ largeTransactionAmount: v })}
+                min={10}
+                step={10}
+                prefix={currency.symbol}
+              />
             </div>
           </NotifRow>
         </div>

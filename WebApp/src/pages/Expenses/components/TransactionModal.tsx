@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useCategories } from "../../../hooks/useCategories";
 import { useExpenses } from "../../../context/ExpensesContext";
+import { useUserPreferences } from "../../../context/UserPreferencesContext";
+import { CustomSelect } from "../../../components/ui/CustomSelect";
 import type { Category, TransactionType } from "../../../types/expenses";
 
 interface TransactionModalProps {
@@ -12,6 +14,7 @@ interface TransactionModalProps {
 export default function TransactionModal({ isOpen, onClose, transaction }: TransactionModalProps) {
   const { categories } = useCategories();
   const { addTransaction, updateTransaction } = useExpenses();
+  const { currency } = useUserPreferences();
 
   // Local state for form fields
   const [type, setType] = useState<TransactionType>("expense");
@@ -92,7 +95,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
     // Overlay
     <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm animate-in fade-in duration-200">
       {/* Modal Window */}
-      <div className="bg-surface-container-lowest/90 backdrop-blur-xl w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden border border-outline-variant/20 ring-1 ring-black/5 animate-in zoom-in-95 duration-200">
+      <div className="bg-surface-container-lowest/90 backdrop-blur-xl w-full max-w-xl rounded-2xl shadow-2xl border border-outline-variant/20 ring-1 ring-black/5 animate-in zoom-in-95 duration-200">
         {/* Header */}
         <div className="px-8 pt-8 pb-6">
           <div className="flex justify-between items-center mb-2">
@@ -145,7 +148,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
               Amount
             </label>
             <div className="relative flex items-center">
-              <span className="absolute left-6 text-2xl font-bold text-on-surface-variant">$</span>
+              <span className="absolute left-6 text-2xl font-bold text-on-surface-variant">{currency.symbol}</span>
               <input
                 className="w-full bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-5 pl-12 pr-6 text-3xl font-black text-on-surface transition-all placeholder:text-on-surface-variant/30 outline-none"
                 type="number"
@@ -188,25 +191,15 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
               <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
                 Category
               </label>
-              <div className="relative">
-                <select
-                  className="w-full appearance-none bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-3 px-4 text-sm font-semibold text-on-surface outline-none cursor-pointer"
-                  value={categoryId}
-                  onChange={(e) => setCategoryId(e.target.value)}
-                >
-                  <option value="" disabled>
-                    Select Category
-                  </option>
-                  {categories.map((cat: Category) => (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.emoji} {cat.name}
-                    </option>
-                  ))}
-                </select>
-                <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant text-[18px]">
-                  expand_more
-                </span>
-              </div>
+              <CustomSelect
+                value={categoryId}
+                options={[
+                  ...(categoryId === "" ? [{ value: "", label: "Select Category" }] : []),
+                  ...categories.map((cat: Category) => ({ value: cat.id, label: `${cat.emoji ?? ""} ${cat.name}` })),
+                ]}
+                onChange={setCategoryId}
+                className="w-full"
+              />
             </div>
           </div>
 

@@ -6,6 +6,7 @@ import {
   type Currency,
   type DateFormat,
 } from "../../../context/UserPreferencesContext";
+import { CustomSelect } from "../../../components/ui/CustomSelect";
 
 const DATE_FORMATS: { value: DateFormat; label: string }[] = [
   { value: "MM/DD/YYYY", label: "MM/DD/YYYY (US)" },
@@ -13,17 +14,25 @@ const DATE_FORMATS: { value: DateFormat; label: string }[] = [
   { value: "YYYY-MM-DD", label: "YYYY-MM-DD (ISO)" },
 ];
 
-function ThemeButton({ value, current, label, icon, onClick }: {
-  value: Theme; current: Theme; label: string; icon: string; onClick: () => void;
+function ThemeButton({
+  value,
+  current,
+  label,
+  icon,
+  onClick,
+}: {
+  value: Theme;
+  current: Theme;
+  label: string;
+  icon: string;
+  onClick: () => void;
 }) {
   const active = value === current;
   return (
     <button
       onClick={onClick}
       className={`flex-1 flex flex-col items-center gap-1 py-2 px-2 rounded-lg text-xs font-bold transition-all ${
-        active
-          ? "bg-surface-container-lowest text-primary shadow-sm"
-          : "text-on-surface-variant hover:text-on-surface"
+        active ? "bg-surface-container-lowest text-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface"
       }`}
     >
       <span className="material-symbols-outlined text-[18px]">{icon}</span>
@@ -34,10 +43,14 @@ function ThemeButton({ value, current, label, icon, onClick }: {
 
 export default function PreferencesSection() {
   const {
-    theme, setTheme,
-    currency, setCurrency,
-    dateFormat, setDateFormat,
-    monthlyBudget, setMonthlyBudget,
+    theme,
+    setTheme,
+    currency,
+    setCurrency,
+    dateFormat,
+    setDateFormat,
+    monthlyBudget,
+    setMonthlyBudget,
     budgetLoading,
   } = useUserPreferences();
 
@@ -66,10 +79,22 @@ export default function PreferencesSection() {
         {/* Visual Theme */}
         <div className="p-4 bg-surface-container-lowest rounded-xl shadow-sm space-y-3">
           <span className="font-semibold text-on-surface text-sm">Visual Theme</span>
-          <div className="flex bg-surface-container rounded-lg p-1 gap-1">
-            <ThemeButton value="light" current={theme} label="Light" icon="light_mode" onClick={() => setTheme("light")} />
+          <div className="flex bg-surface-container rounded-lg mt-2 p-1 gap-1">
+            <ThemeButton
+              value="light"
+              current={theme}
+              label="Light"
+              icon="light_mode"
+              onClick={() => setTheme("light")}
+            />
             <ThemeButton value="dark" current={theme} label="Dark" icon="dark_mode" onClick={() => setTheme("dark")} />
-            <ThemeButton value="system" current={theme} label="System" icon="contrast" onClick={() => setTheme("system")} />
+            <ThemeButton
+              value="system"
+              current={theme}
+              label="System"
+              icon="contrast"
+              onClick={() => setTheme("system")}
+            />
           </div>
         </div>
 
@@ -79,15 +104,11 @@ export default function PreferencesSection() {
             <span className="font-semibold text-on-surface text-sm">Currency</span>
             <p className="text-xs text-on-surface-variant mt-0.5">Used across all amounts</p>
           </div>
-          <select
-            className="bg-transparent border-none text-primary font-bold focus:ring-0 cursor-pointer outline-none text-sm text-right"
+          <CustomSelect
             value={currency.code}
-            onChange={(e) => setCurrency(e.target.value as Currency)}
-          >
-            {CURRENCIES.map((c) => (
-              <option key={c.code} value={c.code}>{c.label}</option>
-            ))}
-          </select>
+            options={CURRENCIES.map((c) => ({ value: c.code, label: c.label }))}
+            onChange={(code) => setCurrency(code as Currency)}
+          />
         </div>
 
         {/* Date Format */}
@@ -96,15 +117,11 @@ export default function PreferencesSection() {
             <span className="font-semibold text-on-surface text-sm">Date Format</span>
             <p className="text-xs text-on-surface-variant mt-0.5">How dates are displayed</p>
           </div>
-          <select
-            className="bg-transparent border-none text-primary font-bold focus:ring-0 cursor-pointer outline-none text-sm text-right"
+          <CustomSelect
             value={dateFormat}
-            onChange={(e) => setDateFormat(e.target.value as DateFormat)}
-          >
-            {DATE_FORMATS.map((f) => (
-              <option key={f.value} value={f.value}>{f.label}</option>
-            ))}
-          </select>
+            options={DATE_FORMATS.map((f) => ({ value: f.value, label: f.label }))}
+            onChange={(f) => setDateFormat(f as DateFormat)}
+          />
         </div>
 
         {/* Monthly Budget */}
@@ -114,9 +131,7 @@ export default function PreferencesSection() {
               <span className="font-semibold text-on-surface text-sm">Monthly Budget</span>
               <p className="text-xs text-on-surface-variant mt-0.5">Global spend limit for the month</p>
             </div>
-            {budgetLoading && (
-              <span className="text-xs text-on-surface-variant/50 font-medium">Loading…</span>
-            )}
+            {budgetLoading && <span className="text-xs text-on-surface-variant/50 font-medium">Loading…</span>}
           </div>
           <div className="flex items-center gap-2">
             <div className="relative flex-1">
@@ -137,9 +152,7 @@ export default function PreferencesSection() {
               onClick={handleBudgetSave}
               disabled={budgetSaving}
               className={`px-4 py-2.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${
-                budgetSaved
-                  ? "bg-secondary/20 text-secondary"
-                  : "bg-primary/10 hover:bg-primary/20 text-primary"
+                budgetSaved ? "bg-secondary/20 text-secondary" : "bg-primary/10 hover:bg-primary/20 text-primary"
               } disabled:opacity-50`}
             >
               {budgetSaving ? "Saving…" : budgetSaved ? "✓ Saved" : "Save"}
@@ -147,7 +160,8 @@ export default function PreferencesSection() {
           </div>
           {monthlyBudget > 0 && (
             <p className="text-xs text-on-surface-variant/60 font-medium">
-              Current: {currency.symbol}{monthlyBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}/month
+              Current: {currency.symbol}
+              {monthlyBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}/month
             </p>
           )}
         </div>

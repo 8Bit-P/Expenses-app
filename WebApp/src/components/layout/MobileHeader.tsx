@@ -1,23 +1,8 @@
-import { useState, useEffect } from "react";
+import { useUserPreferences } from "../../context/UserPreferencesContext";
 
 export default function MobileHeader() {
-  // Re-using the theme logic so mobile users can toggle it too!
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    const saved = localStorage.getItem("theme");
-    if (saved) return saved === "dark";
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
-  });
-
-  useEffect(() => {
-    const root = window.document.documentElement;
-    if (isDark) {
-      root.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      root.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [isDark]);
+  const { resolvedTheme, setTheme } = useUserPreferences();
+  const isDark = resolvedTheme === "dark";
 
   return (
     <header className="fixed top-0 w-full z-40 bg-background/80 backdrop-blur-xl border-b border-outline-variant/10 flex justify-between items-center px-4 py-3 md:hidden transition-colors duration-300">
@@ -37,7 +22,7 @@ export default function MobileHeader() {
       <div className="flex items-center gap-1">
         {/* Seamless Sun/Moon Theme Toggle */}
         <button
-          onClick={() => setIsDark(!isDark)}
+          onClick={() => setTheme(isDark ? "light" : "dark")}
           className="relative w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-high transition-colors overflow-hidden text-on-surface-variant hover:text-on-surface active:scale-95 focus:outline-none"
           aria-label="Toggle Dark Mode"
         >

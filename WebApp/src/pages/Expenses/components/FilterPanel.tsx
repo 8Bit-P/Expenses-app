@@ -3,6 +3,7 @@ import { useCategories } from "../../../hooks/useCategories";
 import type { TransactionType } from "../../../types/expenses";
 import { DEFAULT_FILTERS } from "../constants";
 import { PRESETS, buildPreset, type PresetKey } from "../utils/filterPresets";
+import { CustomSelect } from "../../../components/ui/CustomSelect";
 
 export default function FilterPanel() {
   const { filters, setFilters } = useExpenses();
@@ -80,23 +81,15 @@ export default function FilterPanel() {
             <label className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant block">
               Category
             </label>
-            <div className="relative">
-              <select
-                value={filters.categoryId || "all"}
-                onChange={(e) => handleCategoryChange(e.target.value)}
-                className={`${inputCls} appearance-none py-3 pl-4 pr-10 cursor-pointer`}
-              >
-                <option value="all">All Categories</option>
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.emoji} {cat.name}
-                  </option>
-                ))}
-              </select>
-              <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant text-[20px]">
-                expand_more
-              </span>
-            </div>
+            <CustomSelect
+              value={filters.categoryId || "all"}
+              options={[
+                { value: "all", label: "All Categories" },
+                ...categories.map((cat) => ({ value: cat.id, label: `${cat.emoji ?? ""} ${cat.name}` })),
+              ]}
+              onChange={(v) => handleCategoryChange(v)}
+              className="w-full"
+            />
           </div>
 
           {/* Date Range */}
