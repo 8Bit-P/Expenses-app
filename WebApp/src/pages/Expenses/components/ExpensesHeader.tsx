@@ -1,23 +1,68 @@
+import { useExpenses } from "../../../context/ExpensesContext";
+import { format } from "date-fns";
+
+function formatDateLabel(start?: string, end?: string): string {
+  if (!start && !end) return "All Time";
+
+  const fmt = (d: string) => {
+    const [y, m, day] = d.split("-").map(Number);
+    return format(new Date(y, m - 1, day), "MMM d, yyyy");
+  };
+
+  if (start && end) {
+    // Check if it's a full calendar month
+    const [sy, sm] = start.split("-").map(Number);
+    const [ey, em, ed] = end.split("-").map(Number);
+    const lastDay = new Date(ey, em, 0).getDate(); // last day of that month
+    if (sy === ey && sm === em && parseInt(start.split("-")[2]) === 1 && ed === lastDay) {
+      return format(new Date(sy, sm - 1, 1), "MMMM yyyy");
+    }
+    // Same year, different months
+    if (sy === ey) return `${format(new Date(sy, sm - 1), "MMM")} – ${fmt(end)}`;
+    return `${fmt(start)} – ${fmt(end)}`;
+  }
+  if (start) return `From ${fmt(start)}`;
+  return `Until ${fmt(end!)}`;
+}
+
 export default function ExpensesHeader() {
+  const { filters } = useExpenses();
+
+  const dateLabel = formatDateLabel(filters.startDate, filters.endDate);
+
+  const hasTypeFilter = !!filters.type;
+  const hasCategoryFilter = !!filters.categoryId;
+  const hasSearchFilter = !!filters.search;
+  const activeFilterCount = [hasTypeFilter, hasCategoryFilter, hasSearchFilter].filter(Boolean).length;
+
   return (
     <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
       <div>
-        <h1 className="text-4xl font-extrabold font-headline tracking-tight text-on-surface mt-1">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-on-surface-variant/60 mb-1">
           Expense Narrative
+        </p>
+        <h1 className="text-4xl font-extrabold font-headline tracking-tight text-on-surface">
+          {dateLabel}
         </h1>
-        <p className="text-on-surface-variant mt-2 font-medium">
-          See where your money goes.
+        <p className="text-on-surface-variant mt-1.5 font-medium text-sm">
+          {activeFilterCount > 0
+            ? `${activeFilterCount} active filter${activeFilterCount > 1 ? "s" : ""} applied`
+            : "See where your money goes."}
         </p>
       </div>
 
-      {/* Global Time Filter + Calendar Badge combined */}
-      <div className="flex flex-col sm:flex-row gap-4 items-end">
-        <div className="px-4 py-2 bg-surface-container-lowest rounded-xl shadow-sm flex items-center gap-2 shrink-0">
-          <span className="material-symbols-outlined text-primary text-sm">
-            calendar_today
-          </span>
-          <span className="text-sm font-semibold">Oct 2023 - Nov 2023</span>
+      {/* Date badge */}
+      <div className="flex items-center gap-2 shrink-0">
+        <div className="px-4 py-2.5 bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/10 flex items-center gap-2">
+          <span className="material-symbols-outlined text-primary text-[18px]">calendar_today</span>
+          <span className="text-sm font-bold text-on-surface">{dateLabel}</span>
         </div>
+        {activeFilterCount > 0 && (
+          <div className="px-3 py-2.5 bg-primary/10 rounded-xl flex items-center gap-1.5">
+            <span className="material-symbols-outlined text-primary text-[16px]">filter_alt</span>
+            <span className="text-xs font-black text-primary">{activeFilterCount}</span>
+          </div>
+        )}
       </div>
     </div>
   );

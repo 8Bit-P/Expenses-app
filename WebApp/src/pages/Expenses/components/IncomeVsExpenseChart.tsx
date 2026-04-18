@@ -44,7 +44,7 @@ export default function IncomeVsExpenseChart() {
 
   if (loading) {
     return (
-      <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 h-[400px] flex items-center justify-center animate-pulse">
+      <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 h-100 flex items-center justify-center animate-pulse">
         <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/40">Analyzing History...</span>
       </div>
     );
@@ -115,4 +115,4 @@ export default function IncomeVsExpenseChart() {
       </div>
     </div>
   );
-}
+}

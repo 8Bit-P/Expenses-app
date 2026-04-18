@@ -1,8 +1,18 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
 import type { TransactionFilters } from '../types/expenses';
 import { useTransactions as useTransactionsHook } from '../hooks/useTransactions';
+import { format, startOfMonth, endOfMonth } from 'date-fns';
 
 const PAGE_SIZE = 10;
+
+// Default to the current calendar month
+const now = new Date();
+const DEFAULT_START = format(startOfMonth(now), 'yyyy-MM-dd');
+const DEFAULT_END = format(endOfMonth(now), 'yyyy-MM-dd');
+const DEFAULT_FILTERS: TransactionFilters = {
+  startDate: DEFAULT_START,
+  endDate: DEFAULT_END,
+};
 
 interface ExpensesContextType {
   filters: TransactionFilters;
@@ -24,7 +34,7 @@ interface ExpensesContextType {
 const ExpensesContext = createContext<ExpensesContextType | undefined>(undefined);
 
 export function ExpensesProvider({ children }: { children: ReactNode }) {
-  const [filters, setFiltersState] = useState<TransactionFilters>({});
+  const [filters, setFiltersState] = useState<TransactionFilters>(DEFAULT_FILTERS);
   const [page, setPageState] = useState(1);
 
   // Build the full filter object passed to the hook (includes pagination)

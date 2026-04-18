@@ -16,7 +16,7 @@ export default function CategoryDonut() {
 
   if (loading) {
     return (
-      <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 h-[420px] flex items-center justify-center animate-pulse">
+      <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 h-105 flex items-center justify-center animate-pulse">
         <div className="w-40 h-40 rounded-full border-8 border-surface-container"></div>
       </div>
     );
@@ -66,7 +66,7 @@ export default function CategoryDonut() {
       </div>
 
       {data.length === 0 ? (
-        <div className="flex-1 flex flex-col items-center justify-center text-on-surface-variant/40 gap-3 min-h-[300px]">
+        <div className="flex-1 flex flex-col items-center justify-center text-on-surface-variant/40 gap-3 min-h-75">
           <span className="material-symbols-outlined text-4xl">pie_chart_outline</span>
           <span className="text-xs font-bold uppercase tracking-widest">No data to display</span>
         </div>
@@ -119,7 +119,7 @@ export default function CategoryDonut() {
             .category-legend::-webkit-scrollbar-thumb:hover { background: var(--on-surface-variant); }
           `}</style>
 
-          <div className="mt-4 category-legend overflow-y-auto max-h-[180px] pr-2 space-y-1.5">
+          <div className="mt-4 category-legend overflow-y-auto max-h-45 pr-2 space-y-1.5">
             {data.map((item, index) => {
               const pct = total > 0 ? ((item.value / total) * 100).toFixed(0) : '0';
               return (

@@ -1,6 +1,6 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useTransactions } from '../../../hooks/useTransactions';
-import { startOfMonth, endOfMonth, eachDayOfInterval, format, isWithinInterval, subMonths } from 'date-fns';
+import { startOfMonth, endOfMonth, eachDayOfInterval, format, subMonths } from 'date-fns';
 import { useMemo } from 'react';
 
 export default function SpendingTrendChart() {
@@ -61,7 +61,7 @@ export default function SpendingTrendChart() {
 
   if (loading) {
     return (
-      <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 h-[400px] flex items-center justify-center animate-pulse">
+      <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 h-100 flex items-center justify-center animate-pulse">
         <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/40">Calculating Trends...</span>
       </div>
     );
@@ -158,4 +158,4 @@ export default function SpendingTrendChart() {
 
     </div>
   );
-}
+}
