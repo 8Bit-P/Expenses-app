@@ -108,7 +108,7 @@ export default function SpendingTrendChart() {
   const safeColor = "var(--primary)";
 
   return (
-    <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 flex flex-col">
+    <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 flex flex-col h-full">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -144,8 +144,8 @@ export default function SpendingTrendChart() {
       </div>
 
       {/* Chart */}
-      <div className="w-full">
-        <ResponsiveContainer width="100%" height={300} minWidth={1} minHeight={1} debounce={50}>
+      <div className="w-full flex-1">
+        <ResponsiveContainer width="100%" height={380} minWidth={1} minHeight={1} debounce={50}>
           <AreaChart data={chartData} margin={{ top: 10, right: 60, left: -20, bottom: 0 }}>
             <defs>
               {/* Fill gradient — red above budget threshold, primary below */}

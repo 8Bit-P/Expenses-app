@@ -4,6 +4,7 @@ import { useTransactions } from "../../../hooks/useTransactions";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { CustomSelect } from "../../../components/ui/CustomSelect";
 import type { Category, TransactionType } from "../../../types/expenses";
+import EmojiPicker, { EmojiStyle } from "emoji-picker-react";
 
 interface TransactionModalProps {
   isOpen: boolean;
@@ -12,7 +13,7 @@ interface TransactionModalProps {
 }
 
 export default function TransactionModal({ isOpen, onClose, transaction }: TransactionModalProps) {
-  const { categories } = useCategories();
+  const { categories, addCategory } = useCategories();
   const { addTransaction, updateTransaction } = useTransactions();
   const { currency } = useUserPreferences();
 
@@ -23,6 +24,12 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
   const [categoryId, setCategoryId] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [isCreatingCategory, setIsCreatingCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [newCategoryEmoji, setNewCategoryEmoji] = useState("📦");
+  const [categoryError, setCategoryError] = useState<string | null>(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   // When modal opens, populate it if we are editing
   useEffect(() => {
@@ -40,6 +47,11 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
         setCategoryId(categories[0]?.id || "");
         setDate(new Date().toISOString().split("T")[0]);
       }
+      setIsCreatingCategory(false);
+      setNewCategoryName("");
+      setNewCategoryEmoji("📦");
+      setCategoryError(null);
+      setShowEmojiPicker(false);
     }
   }, [transaction, isOpen, categories]);
 
@@ -191,15 +203,101 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
               <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
                 Category
               </label>
-              <CustomSelect
-                value={categoryId}
-                options={[
-                  ...(categoryId === "" ? [{ value: "", label: "Select Category" }] : []),
-                  ...categories.map((cat: Category) => ({ value: cat.id, label: `${cat.emoji ?? ""} ${cat.name}` })),
-                ]}
-                onChange={setCategoryId}
-                className="w-full"
-              />
+              {isCreatingCategory ? (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 flex items-center w-full bg-surface-container border border-outline-variant/30 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/30 rounded-xl px-1 transition-all">
+                      <div className="relative flex items-center">
+                        <button
+                          type="button"
+                          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                          className="w-12 text-center bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-xl py-2 hover:bg-surface-container-high rounded-lg transition-colors select-none"
+                        >
+                          {newCategoryEmoji}
+                        </button>
+                        
+                        {showEmojiPicker && (
+                          <div className="absolute top-[110%] left-0 z-50 shadow-2xl rounded-xl animate-in fade-in zoom-in-95">
+                            <EmojiPicker
+                              emojiStyle={EmojiStyle.NATIVE}
+                              onEmojiClick={(e) => {
+                                setNewCategoryEmoji(e.emoji);
+                                setShowEmojiPicker(false);
+                              }}
+                              skinTonesDisabled
+                              theme={"dark" as any}
+                              width={300}
+                              height={350}
+                            />
+                          </div>
+                        )}
+                      </div>
+                      <div className="w-px h-6 bg-outline-variant/30 mx-1" />
+                      <input
+                        type="text"
+                        className="flex-1 bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-sm font-semibold text-on-surface placeholder:text-on-surface-variant/40 py-3 px-2"
+                        value={newCategoryName}
+                        onChange={(e) => setNewCategoryName(e.target.value)}
+                        placeholder="Category Name"
+                        autoFocus
+                      />
+                    </div>
+                    <button 
+                      onClick={async () => {
+                        if (!newCategoryName) {
+                          setCategoryError("Please enter a category name");
+                          return;
+                        }
+                        setIsSubmitting(true);
+                        setCategoryError(null);
+                        try {
+                          const newCat = await addCategory({ name: newCategoryName, emoji: newCategoryEmoji });
+                          setCategoryId(newCat.id);
+                          setIsCreatingCategory(false);
+                          setNewCategoryName("");
+                          setNewCategoryEmoji("📦");
+                        } catch (e: any) {
+                          setCategoryError(e.message || "Error creating category");
+                        } finally {
+                          setIsSubmitting(false);
+                        }
+                      }}
+                      className="w-11 h-11 shrink-0 rounded-xl bg-primary text-on-primary flex items-center justify-center hover:opacity-90 active:scale-95 transition-all outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                      disabled={isSubmitting}
+                    >
+                      <span className="material-symbols-outlined text-[18px]">check</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                          setIsCreatingCategory(false);
+                          setNewCategoryName("");
+                          setCategoryError(null);
+                      }}
+                      className="w-11 h-11 shrink-0 rounded-xl bg-surface-container border border-outline-variant/30 text-on-surface-variant flex items-center justify-center hover:bg-surface-container-high transition-colors outline-none focus:ring-2 focus:ring-offset-2 focus:ring-outline-variant"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">close</span>
+                    </button>
+                  </div>
+                  {categoryError && (
+                    <p className="text-xs font-semibold text-error px-1 flex items-center gap-1 animate-in fade-in slide-in-from-top-1">
+                      <span className="material-symbols-outlined text-[14px]">error</span>
+                      {categoryError}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <CustomSelect
+                  value={categoryId}
+                  options={[
+                    ...(categoryId === "" ? [{ value: "", label: "Select Category" }] : []),
+                    ...categories.map((cat: Category) => ({ value: cat.id, label: `${cat.emoji ?? ""} ${cat.name}` })),
+                  ]}
+                  onChange={setCategoryId}
+                  className="w-full"
+                  onAddAction={() => setIsCreatingCategory(true)}
+                  addActionLabel="Create new category"
+                />
+              )}
             </div>
           </div>
 

@@ -10,6 +10,8 @@ interface CustomSelectProps<T extends string = string> {
   options: SelectOption<T>[];
   onChange: (value: T) => void;
   className?: string;
+  onAddAction?: () => void;
+  addActionLabel?: string;
 }
 
 export function CustomSelect<T extends string = string>({
@@ -17,6 +19,8 @@ export function CustomSelect<T extends string = string>({
   options,
   onChange,
   className = "",
+  onAddAction,
+  addActionLabel,
 }: CustomSelectProps<T>) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -68,30 +72,50 @@ export function CustomSelect<T extends string = string>({
           className={`
             absolute left-0 right-0 mt-2 z-[60]
             bg-surface-container-lowest border border-outline-variant/20
-            rounded-xl shadow-2xl overflow-y-auto max-h-64
+            rounded-xl shadow-2xl overflow-hidden
             animate-in fade-in zoom-in-95 duration-150
           `}
         >
-          {options.map((opt) => {
-            const isSelected = opt.value === value;
-            return (
-              <button
-                key={opt.value}
-                onClick={() => {
-                  onChange(opt.value);
-                  setOpen(false);
-                }}
-                className={`w-full flex items-center justify-between gap-3 px-4 py-3 text-sm font-semibold text-left transition-colors ${
-                  isSelected ? "bg-primary/10 text-primary" : "text-on-surface hover:bg-surface-container-low"
-                }`}
-              >
-                <span>{opt.label}</span>
-                {isSelected && (
-                  <span className="material-symbols-outlined text-[16px] text-primary shrink-0">check</span>
-                )}
-              </button>
-            );
-          })}
+          <div className="overflow-y-auto max-h-64">
+            {options.map((opt) => {
+              const isSelected = opt.value === value;
+              return (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => {
+                    onChange(opt.value);
+                    setOpen(false);
+                  }}
+                  className={`w-full flex items-center justify-between gap-3 px-4 py-3 text-sm font-semibold text-left transition-colors ${
+                    isSelected ? "bg-primary/10 text-primary" : "text-on-surface hover:bg-surface-container-low"
+                  }`}
+                >
+                  <span>{opt.label}</span>
+                  {isSelected && (
+                    <span className="material-symbols-outlined text-[16px] text-primary shrink-0">check</span>
+                  )}
+                </button>
+              );
+            })}
+            
+            {onAddAction && (
+              <>
+                <div className="h-px bg-outline-variant/10 my-0.5 mx-2" />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                    onAddAction();
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-primary hover:bg-surface-container transition-colors"
+                >
+                  <span className="material-symbols-outlined text-[18px]">add</span>
+                  <span>{addActionLabel || "Add Item"}</span>
+                </button>
+              </>
+            )}
+          </div>
         </div>
       )}
     </div>
