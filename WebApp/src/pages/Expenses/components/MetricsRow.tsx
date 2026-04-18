@@ -4,14 +4,12 @@ import { useTransactions } from "../../../hooks/useTransactions";
 export default function MetricsRow() {
   const { filters } = useExpenses();
 
-  // Fetch ALL matching transactions (unpaginated) for accurate metric calculations
+  // Only filter by date range — type/category/search filters affect the list
+  // but shouldn't skew the headline metrics.
   const { transactions, loading } = useTransactions({
     startDate: filters.startDate,
-    endDate: filters.endDate,
-    categoryId: filters.categoryId,
-    type: filters.type,
-    search: filters.search,
-    pageSize: 1000,
+    endDate:   filters.endDate,
+    pageSize:  1000,
   });
 
   if (loading) {
