@@ -1,18 +1,7 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
 import type { TransactionFilters } from '../types/expenses';
 import { useTransactions as useTransactionsHook } from '../hooks/useTransactions';
-import { format, startOfMonth, endOfMonth } from 'date-fns';
-
-const PAGE_SIZE = 10;
-
-// Default to the current calendar month
-const now = new Date();
-const DEFAULT_START = format(startOfMonth(now), 'yyyy-MM-dd');
-const DEFAULT_END = format(endOfMonth(now), 'yyyy-MM-dd');
-const DEFAULT_FILTERS: TransactionFilters = {
-  startDate: DEFAULT_START,
-  endDate: DEFAULT_END,
-};
+import { PAGE_SIZE, DEFAULT_FILTERS } from '../pages/Expenses/constants';
 
 interface ExpensesContextType {
   filters: TransactionFilters;
@@ -37,7 +26,6 @@ export function ExpensesProvider({ children }: { children: ReactNode }) {
   const [filters, setFiltersState] = useState<TransactionFilters>(DEFAULT_FILTERS);
   const [page, setPageState] = useState(1);
 
-  // Build the full filter object passed to the hook (includes pagination)
   const activeFilters: TransactionFilters = { ...filters, page, pageSize: PAGE_SIZE };
 
   const {
@@ -52,7 +40,6 @@ export function ExpensesProvider({ children }: { children: ReactNode }) {
     deleteTransaction,
   } = useTransactionsHook(activeFilters);
 
-  // When filters change, reset to page 1
   const setFilters = (newFilters: TransactionFilters) => {
     setFiltersState(newFilters);
     setPageState(1);
