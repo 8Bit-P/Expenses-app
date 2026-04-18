@@ -41,3 +41,16 @@ export function formatDateLabel(start?: string, end?: string): string {
   if (start) return `From ${fmt(start)}`;
   return `Until ${fmt(end!)}`;
 }
+
+/**
+ * Formats a "yyyy-MM-dd" transaction date into a short label like "Apr 18".
+ * Parse is done locally (no UTC shift).
+ */
+export function formatTransactionDate(dateString: string): string {
+  try {
+    const [y, m, d] = dateString.split("-").map(Number);
+    return format(new Date(y, m - 1, d), "MMM d");
+  } catch {
+    return dateString;
+  }
+}

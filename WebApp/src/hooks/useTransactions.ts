@@ -58,7 +58,7 @@ export function useTransactions(filters?: TransactionFilters) {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      return queryClient.invalidateQueries({ queryKey: ["transactions"] });
     },
   });
 
@@ -75,7 +75,7 @@ export function useTransactions(filters?: TransactionFilters) {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      return queryClient.invalidateQueries({ queryKey: ["transactions"] });
     },
   });
 
@@ -87,7 +87,7 @@ export function useTransactions(filters?: TransactionFilters) {
       return true;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      return queryClient.invalidateQueries({ queryKey: ["transactions"] });
     },
   });
 

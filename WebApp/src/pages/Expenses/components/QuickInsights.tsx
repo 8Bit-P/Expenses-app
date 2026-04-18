@@ -1,6 +1,7 @@
 import { useExpenses } from "../../../context/ExpensesContext";
 import { usePeriodMetrics } from "../hooks/usePeriodMetrics";
 import { formatDateLabel } from "../utils/dateFormatters";
+import { useUserPreferences } from "../../../context/UserPreferencesContext";
 
 interface InsightItem {
   icon: string;
@@ -14,6 +15,7 @@ interface InsightItem {
 export default function QuickInsights() {
   const { filters } = useExpenses();
   const m = usePeriodMetrics(filters.startDate, filters.endDate);
+  const { monthlyBudget, currency } = useUserPreferences();
 
   if (m.loading) {
     return (
@@ -31,7 +33,7 @@ export default function QuickInsights() {
     );
   }
 
-  const fmt = (n: number) => (n >= 1000 ? `$${(n / 1000).toFixed(1)}k` : `$${n.toFixed(2)}`);
+  const fmt = (n: number) => (n >= 1000 ? `${currency.symbol}${(n / 1000).toFixed(1)}k` : `${currency.symbol}${n.toFixed(2)}`);
 
   // Compute biggest category mover (vs previous period)
   const biggestMover = (() => {
@@ -93,22 +95,39 @@ export default function QuickInsights() {
           highlight: "neutral" as const,
         },
     // 4. Income runway OR transaction count
-    burnDays !== null
-      ? {
-          icon: "calendar_month",
-          iconColor: "text-primary bg-primary/10",
-          label: "Income Covers",
-          value: `${burnDays} days`,
-          sub: `at current ${fmt(m.dailyAverage)}/day burn rate`,
-          highlight: "neutral" as const,
-        }
-      : {
-          icon: "receipt_long",
-          iconColor: "text-primary bg-primary/10",
-          label: "Transactions",
-          value: `${m.categoryBreakdown.reduce((s, c) => s, 0)} movements`,
-          highlight: "neutral" as const,
-        },
+    // 4. Budget status (if set) or income runway
+    ...(monthlyBudget > 0
+      ? [(() => {
+          const budgetPct = Math.min(100, (m.currentSpend / monthlyBudget) * 100);
+          const remaining = monthlyBudget - m.currentSpend;
+          const over = m.currentSpend > monthlyBudget;
+          return {
+            icon: over ? "warning" : "account_balance",
+            iconColor: over ? "text-red-400 bg-red-400/10" : budgetPct >= 80 ? "text-amber-400 bg-amber-400/10" : "text-primary bg-primary/10",
+            label: "Budget Status",
+            value: over ? `Over by ${fmt(Math.abs(remaining))}` : `${fmt(remaining)} left`,
+            sub: `${budgetPct.toFixed(0)}% of ${fmt(monthlyBudget)} budget used`,
+            highlight: (over ? "negative" : budgetPct >= 80 ? "negative" : "positive") as "positive" | "negative" | "neutral",
+          };
+        })()
+      ]
+      : [burnDays !== null
+          ? {
+              icon: "calendar_month",
+              iconColor: "text-primary bg-primary/10",
+              label: "Income Covers",
+              value: `${burnDays} days`,
+              sub: `at current ${fmt(m.dailyAverage)}/day burn rate`,
+              highlight: "neutral" as const,
+            }
+          : {
+              icon: "receipt_long",
+              iconColor: "text-primary bg-primary/10",
+              label: "Transactions",
+              value: `${m.categoryBreakdown.reduce((s, c) => s, 0)} movements`,
+              highlight: "neutral" as const,
+            },
+      ]),
   ];
 
   return (

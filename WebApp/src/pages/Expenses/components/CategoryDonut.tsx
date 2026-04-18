@@ -70,9 +70,6 @@ export default function CategoryDonut() {
             </p>
           )}
         </div>
-        <button className="text-on-surface-variant hover:text-on-surface transition-colors">
-          <span className="material-symbols-outlined text-[20px]">more_horiz</span>
-        </button>
       </div>
 
       {data.length === 0 ? (

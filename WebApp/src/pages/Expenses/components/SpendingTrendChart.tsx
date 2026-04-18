@@ -61,7 +61,7 @@ export default function SpendingTrendChart() {
 
   if (loading) {
     return (
-      <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 h-[380px] flex items-center justify-center animate-pulse">
+      <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 h-95 flex items-center justify-center animate-pulse">
         <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/40">
           Calculating Trends…
         </span>

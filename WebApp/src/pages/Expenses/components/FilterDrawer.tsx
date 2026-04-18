@@ -7,18 +7,22 @@ export default function FilterDrawer() {
   const activeCount = [filters.type, filters.categoryId, filters.search].filter(Boolean).length;
 
   return (
-    <>
-      {/* Backdrop */}
-      {isFilterOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity"
-          onClick={() => setIsFilterOpen(false)}
-        />
-      )}
+    /**
+     * Outer container: fixed inset-0 overflow-hidden
+     * This clips the sliding panel so it NEVER causes horizontal page scroll,
+     * even when partially off-screen (translate-x-full).
+     * pointer-events-none when closed so the invisible area doesn't block clicks.
+     */
+    <div className={`fixed inset-0 z-40 overflow-hidden ${isFilterOpen ? "pointer-events-auto" : "pointer-events-none"}`}>
+      {/* Backdrop — only rendered when open */}
+      <div
+        className={`absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${isFilterOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        onClick={() => setIsFilterOpen(false)}
+      />
 
       {/* Slide-over panel */}
       <div
-        className={`fixed top-0 right-0 h-full w-full max-w-sm z-50 bg-surface-container-low shadow-2xl flex flex-col transition-transform duration-300 ease-in-out ${
+        className={`absolute top-0 right-0 h-full w-full max-w-sm bg-surface-container-low shadow-2xl flex flex-col transition-transform duration-300 ease-in-out ${
           isFilterOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -56,6 +60,6 @@ export default function FilterDrawer() {
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }

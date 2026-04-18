@@ -40,6 +40,22 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
     }
   }, [transaction, isOpen, categories]);
 
+  // Close modal on Escape key press
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const isEditing = !!transaction;
@@ -101,7 +117,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
           <div className="flex bg-surface-container-low p-1 rounded-xl gap-1">
             <button
               onClick={() => setType("expense")}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-bold text-sm transition-all duration-300 ${
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 cursor-pointer rounded-lg font-bold text-sm transition-all duration-300 ${
                 type === "expense"
                   ? "bg-error-container text-error shadow-sm"
                   : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
@@ -112,7 +128,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
             </button>
             <button
               onClick={() => setType("income")}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-bold text-sm transition-all duration-300 ${
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 cursor-pointer rounded-lg font-bold text-sm transition-all duration-300 ${
                 type === "income"
                   ? "bg-secondary-container text-secondary shadow-sm"
                   : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
