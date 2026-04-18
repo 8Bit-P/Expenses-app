@@ -48,12 +48,13 @@ export function CustomSelect<T extends string = string>({
     <div ref={containerRef} className={`relative ${className}`}>
       {/* Trigger */}
       <button
+        type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors text-sm font-bold text-primary group"
+        className="w-full flex items-center justify-between gap-2 py-2.5 px-4 rounded-xl border border-outline-variant/30 bg-surface-container hover:bg-surface-container-high transition-colors text-sm font-semibold text-on-surface group focus:outline-none focus:ring-2 focus:ring-primary/30"
       >
-        <span>{selected.label}</span>
+        <span className="truncate">{selected.label}</span>
         <span
-          className={`material-symbols-outlined text-[16px] text-on-surface-variant transition-transform duration-200 ${
+          className={`material-symbols-outlined text-[18px] text-on-surface-variant transition-transform duration-200 ${
             open ? "rotate-180" : "rotate-0"
           }`}
         >
@@ -65,9 +66,9 @@ export function CustomSelect<T extends string = string>({
       {open && (
         <div
           className={`
-            absolute right-0 mt-2 z-50 min-w-40
+            absolute left-0 right-0 mt-2 z-[60]
             bg-surface-container-lowest border border-outline-variant/20
-            rounded-lg shadow-2xl overflow-y-auto max-h-64
+            rounded-xl shadow-2xl overflow-y-auto max-h-64
             animate-in fade-in zoom-in-95 duration-150
           `}
         >
@@ -80,7 +81,7 @@ export function CustomSelect<T extends string = string>({
                   onChange(opt.value);
                   setOpen(false);
                 }}
-                className={`w-full flex items-center justify-between gap-4 px-4 py-2.5 text-sm font-semibold text-left transition-colors ${
+                className={`w-full flex items-center justify-between gap-3 px-4 py-3 text-sm font-semibold text-left transition-colors ${
                   isSelected ? "bg-primary/10 text-primary" : "text-on-surface hover:bg-surface-container-low"
                 }`}
               >

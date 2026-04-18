@@ -1,6 +1,7 @@
 import { useExpenses } from "../../../context/ExpensesContext";
 import { usePeriodMetrics } from "../hooks/usePeriodMetrics";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
+import { startOfMonth, endOfMonth, format } from "date-fns";
 
 
 function DeltaBadge({ pct }: { pct: number | null }) {
@@ -47,8 +48,15 @@ export default function MetricsRow() {
   const actualVsProjected = m.projectedSpend > 0 ? (m.currentSpend / m.projectedSpend) * 100 : 0;
   const spendRatio = m.totalPeriodDays > 0 ? ((m.currentSpend / (m.projectedSpend || 1)) * 100).toFixed(0) : "—";
 
+  const now = new Date();
+  const thisMonthStart = format(startOfMonth(now), "yyyy-MM-dd");
+  const thisMonthEnd = format(endOfMonth(now), "yyyy-MM-dd");
+  const isThisMonth =
+    (filters.startDate ?? thisMonthStart) === thisMonthStart &&
+    (filters.endDate ?? thisMonthEnd) === thisMonthEnd;
+
   return (
-    <div className={`grid grid-cols-1 gap-6 ${monthlyBudget > 0 ? "sm:grid-cols-4" : "sm:grid-cols-3"}`}>
+    <div className={`grid grid-cols-1 gap-6 ${isThisMonth && monthlyBudget > 0 ? "sm:grid-cols-4" : "sm:grid-cols-3"}`}>
       {/* ── Card 1: Total Spend + MoM delta ── */}
       <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 flex flex-col justify-between">
         <div className="flex items-center gap-3 mb-3">
@@ -137,7 +145,7 @@ export default function MetricsRow() {
         )}
       </div>
       {/* ── Card 4: Monthly Budget (only when set) ── */}
-      {monthlyBudget > 0 && (() => {
+      {isThisMonth && monthlyBudget > 0 && (() => {
         const budgetPct = Math.min(100, (m.currentSpend / monthlyBudget) * 100);
         const over = m.currentSpend > monthlyBudget;
         const remaining = monthlyBudget - m.currentSpend;

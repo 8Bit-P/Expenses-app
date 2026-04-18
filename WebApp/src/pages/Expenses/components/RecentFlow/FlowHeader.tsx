@@ -16,12 +16,17 @@ export default function FlowHeader({ totalCount, loading, onAddNew }: FlowHeader
         )}
       </div>
 
+      {/* Add entry — subtle inline action */}
       <button
         onClick={onAddNew}
-        className="flex items-center gap-2 bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all active:scale-95"
+        className="group flex items-center gap-2 pl-3 pr-4 py-2 rounded-xl border border-outline-variant/20 hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
       >
-        <span className="material-symbols-outlined text-[16px]">add</span>
-        <span className="hidden xs:inline">New</span>
+        <span className="w-5 h-5 rounded-md bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
+          <span className="material-symbols-outlined text-primary text-[14px]">add</span>
+        </span>
+        <span className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant group-hover:text-primary transition-colors">
+          Entry
+        </span>
       </button>
     </div>
   );

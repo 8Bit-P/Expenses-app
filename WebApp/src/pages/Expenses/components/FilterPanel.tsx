@@ -19,7 +19,6 @@ export default function FilterPanel() {
   const isDirty =
     filters.type ||
     filters.categoryId ||
-    filters.search ||
     filters.startDate !== DEFAULT_FILTERS.startDate ||
     filters.endDate !== DEFAULT_FILTERS.endDate;
 
@@ -34,9 +33,9 @@ export default function FilterPanel() {
         }
       `}</style>
 
-      <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/20 overflow-hidden">
+      <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/20 overflow-visible relative">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/10 bg-surface-container-low/40">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/10 bg-surface-container-low/40 rounded-t-2xl">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-primary text-[18px]">tune</span>
             <h4 className="text-sm font-black uppercase tracking-[0.15em] text-on-surface">Filter Narrative</h4>
@@ -137,33 +136,6 @@ export default function FilterPanel() {
             </div>
           </div>
 
-          {/* Keyword */}
-          <div className="space-y-2.5">
-            <label className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant block">
-              Keyword
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search description…"
-                value={filters.search || ""}
-                onChange={(e) => setFilters({ ...filters, search: e.target.value || undefined })}
-                className={`${inputCls} py-3 pl-4 pr-10`}
-              />
-              {filters.search ? (
-                <button
-                  onClick={() => setFilters({ ...filters, search: undefined })}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors"
-                >
-                  <span className="material-symbols-outlined text-[18px]">close</span>
-                </button>
-              ) : (
-                <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant/50 text-[18px]">
-                  search
-                </span>
-              )}
-            </div>
-          </div>
         </div>
       </div>
     </>

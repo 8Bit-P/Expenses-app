@@ -1,6 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
 
-export default function Sidebar() {
+interface SidebarProps {
+  onNewTransaction: () => void;
+}
+
+export default function Sidebar({ onNewTransaction }: SidebarProps) {
   const location = useLocation();
 
   const navItems = [
@@ -54,7 +58,10 @@ export default function Sidebar() {
 
       {/* Sleek, Premium Action Button */}
       <div className="mt-auto">
-        <button className="w-full py-3.5 px-4 bg-surface-container-lowest hover:bg-surface-container-low text-on-surface rounded-xl flex items-center justify-center gap-2 font-bold transition-all border border-outline-variant/50 active:scale-95 group shadow-sm">
+        <button
+          onClick={onNewTransaction}
+          className="w-full py-3.5 px-4 bg-surface-container-lowest hover:bg-surface-container-low text-on-surface rounded-xl flex items-center justify-center gap-2 font-bold transition-all border border-outline-variant/50 active:scale-95 group shadow-sm"
+        >
           <span className="material-symbols-outlined text-primary group-hover:rotate-90 transition-transform">add</span>
           New Transaction
         </button>

@@ -1,15 +1,19 @@
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import MobileHeader from "./MobileHeader";
 import BottomNav from "./BottomNav";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
+import NewTransactionSheet from "../ui/NewTransactionSheet";
 
 export default function AppLayout() {
+  const [isNewTxOpen, setIsNewTxOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-background text-on-surface flex">
       {/* Desktop Sidebar (Hidden on mobile/tablet) */}
       <div className="hidden desk:block">
-        <Sidebar />
+        <Sidebar onNewTransaction={() => setIsNewTxOpen(true)} />
       </div>
 
       <div className="flex-1 flex flex-col desk:ml-64 pb-24 desk:pb-0">
@@ -30,12 +34,18 @@ export default function AppLayout() {
       <BottomNav />
 
       <div className="fixed bottom-24 right-6 z-40 desk:hidden">
-        <button className="w-14 h-14 bg-linear-to-br from-primary to-primary-container text-on-primary rounded-2xl shadow-lg flex items-center justify-center active:scale-90 transition-transform">
+        <button
+          onClick={() => setIsNewTxOpen(true)}
+          className="w-14 h-14 bg-linear-to-br from-primary to-primary-container text-on-primary rounded-2xl shadow-lg flex items-center justify-center active:scale-90 transition-transform"
+        >
           <span className="material-symbols-outlined" style={{ fontSize: "32px" }}>
             add
           </span>
         </button>
       </div>
+
+      {/* Global New Transaction Sheet */}
+      <NewTransactionSheet isOpen={isNewTxOpen} onClose={() => setIsNewTxOpen(false)} />
     </div>
   );
 }

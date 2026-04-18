@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useCategories } from "../../../hooks/useCategories";
-import { useExpenses } from "../../../context/ExpensesContext";
+import { useTransactions } from "../../../hooks/useTransactions";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { CustomSelect } from "../../../components/ui/CustomSelect";
 import type { Category, TransactionType } from "../../../types/expenses";
@@ -13,7 +13,7 @@ interface TransactionModalProps {
 
 export default function TransactionModal({ isOpen, onClose, transaction }: TransactionModalProps) {
   const { categories } = useCategories();
-  const { addTransaction, updateTransaction } = useExpenses();
+  const { addTransaction, updateTransaction } = useTransactions();
   const { currency } = useUserPreferences();
 
   // Local state for form fields
@@ -173,8 +173,8 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
             />
           </div>
 
-          {/* Description & Category Row */}
-          <div className="grid grid-cols-2 gap-4">
+          {/* Description & Category */}
+          <div className="space-y-4">
             <div className="space-y-2">
               <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
                 Description

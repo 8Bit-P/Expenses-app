@@ -4,7 +4,7 @@ import { useExpenses } from "../../../context/ExpensesContext";
 export default function FilterDrawer() {
   const { isFilterOpen, setIsFilterOpen, filters } = useExpenses();
 
-  const activeCount = [filters.type, filters.categoryId, filters.search].filter(Boolean).length;
+  const activeCount = [filters.type, filters.categoryId].filter(Boolean).length;
 
   return (
     /**
