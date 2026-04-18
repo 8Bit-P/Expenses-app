@@ -18,6 +18,7 @@ export default function SpendingTrendChart() {
   const { transactions, loading } = useTransactions({
     startDate: format(lastStart, 'yyyy-MM-dd'),
     endDate: format(currentEnd, 'yyyy-MM-dd'),
+    pageSize: 1000,
   });
 
   const chartData = useMemo(() => {

@@ -1,23 +1,24 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 export default function ProtectedRoute() {
   const { session, loading } = useAuth();
+  const location = useLocation();
 
-  // Show a blank screen or a subtle loading spinner while Supabase checks the token
+  // This prevents the "Navigate" below from firing too early.
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
       </div>
     );
   }
 
-  // If there is no active session, redirect to the Auth page
+  // 2. Only redirect if we ARE NOT loading AND there is no session.
+  // We save the 'location' so we can potentially send them back after they log in.
   if (!session) {
-    return <Navigate to="/auth" replace />;
+    return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 
-  // If they are logged in, render the child routes (which will be your AppLayout)
   return <Outlet />;
 }

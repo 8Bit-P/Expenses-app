@@ -4,152 +4,270 @@ import { useExpenses } from "../../../context/ExpensesContext";
 import { format } from "date-fns";
 
 export default function CompactRecentFlow() {
-  const { transactions, loading } = useExpenses();
-  
-  // 1. State for managing the modal
+  const {
+    transactions,
+    loading,
+    page,
+    setPage,
+    totalPages,
+    totalCount,
+    deleteTransaction,
+  } = useExpenses();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTx, setSelectedTx] = useState<any>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
-  // Handler to open modal in "Edit" mode
-  const handleEditClick = (tx: any, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent the row click if you have one
+  const handleEdit = (tx: any) => {
     setSelectedTx(tx);
     setIsModalOpen(true);
   };
 
+  const handleDeleteClick = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setConfirmDeleteId(id);
+  };
+
+  const handleDeleteConfirm = async (id: string) => {
+    setDeletingId(id);
+    setConfirmDeleteId(null);
+    try {
+      await deleteTransaction(id);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   const formatDate = (dateString: string) => {
     try {
-      return format(new Date(dateString), "MMM do");
+      const [y, m, d] = dateString.split("-").map(Number);
+      return format(new Date(y, m - 1, d), "MMM d");
     } catch {
       return dateString;
     }
   };
 
+  const pages = buildPageRange(page, totalPages);
+
   return (
     <>
-      <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm space-y-2">
+      <div className="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h4 className="text-lg font-bold font-headline text-on-surface">
-            Recent Flow
-          </h4>
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => setIsModalOpen(true)}
-              className="text-[10px] font-black text-primary hover:text-primary-container transition-colors flex items-center gap-1 uppercase tracking-widest group"
-            >
-              Add New
-              <span className="material-symbols-outlined scale-[0.7]">add</span>
-            </button>
-            <button className="text-[10px] font-black text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1 uppercase tracking-widest group">
-              View Statement
-              <span className="material-symbols-outlined transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 scale-[0.7] origin-center">
-                call_made
-              </span>
-            </button>
+        <div className="flex items-center justify-between px-6 py-5 border-b border-outline-variant/10">
+          <div>
+            <h4 className="text-lg font-bold font-headline text-on-surface">Recent Flow</h4>
+            {!loading && totalCount > 0 && (
+              <p className="text-xs font-medium text-on-surface-variant mt-0.5">
+                {totalCount.toLocaleString()} movement{totalCount !== 1 ? "s" : ""}
+              </p>
+            )}
           </div>
+
+          <button
+            onClick={() => { setSelectedTx(null); setIsModalOpen(true); }}
+            className="flex items-center gap-2 bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all active:scale-95"
+          >
+            <span className="material-symbols-outlined text-[16px]">add</span>
+            <span className="hidden xs:inline">New</span>
+          </button>
         </div>
 
-        {/* List Container */}
-        <div className="flex flex-col -mx-2 px-2">
+        {/* Table header — desktop only */}
+        <div className="hidden md:grid grid-cols-[1fr_2fr_1fr_1fr_80px] gap-4 px-6 py-2.5 border-b border-outline-variant/10">
+          {["Date", "Description", "Category", "Amount", ""].map((h) => (
+            <span key={h} className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/50">{h}</span>
+          ))}
+        </div>
+
+        {/* List */}
+        <div>
           {loading ? (
-            <div className="py-12 flex flex-col items-center justify-center text-on-surface-variant/40 gap-3">
-              <span className="material-symbols-outlined animate-spin text-4xl">sync</span>
-              <span className="text-xs font-bold uppercase tracking-widest">Synchronizing Ledger...</span>
+            // Skeleton rows
+            <div>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-4 px-6 py-4 border-b border-outline-variant/5 last:border-0 animate-pulse">
+                  <div className="w-12 h-4 bg-surface-container rounded-lg hidden md:block shrink-0" />
+                  <div className="w-10 h-10 bg-surface-container rounded-xl shrink-0" />
+                  <div className="flex-1 space-y-2 min-w-0">
+                    <div className="h-4 bg-surface-container rounded-lg w-3/5" />
+                    <div className="h-3 bg-surface-container rounded-lg w-2/5" />
+                  </div>
+                  <div className="w-16 h-4 bg-surface-container rounded-lg shrink-0" />
+                </div>
+              ))}
             </div>
           ) : transactions.length === 0 ? (
-            <div className="py-12 flex flex-col items-center justify-center text-on-surface-variant/40 gap-3">
-              <span className="material-symbols-outlined text-4xl">history_toggle_off</span>
+            <div className="py-20 flex flex-col items-center justify-center text-on-surface-variant/30 gap-3">
+              <span className="material-symbols-outlined text-5xl">history_toggle_off</span>
               <span className="text-xs font-bold uppercase tracking-widest">No movements found</span>
             </div>
           ) : (
-            transactions.map((tx) => (
-              <div
-                key={tx.id}
-                onClick={(e) => handleEditClick(tx, e)}
-                className="grid grid-cols-[auto_1fr_auto] sm:grid-cols-[100px_1fr_120px_100px_40px] gap-3 sm:gap-4 items-center py-4 sm:py-3.5 group hover:bg-surface-container-low/60 transition-all rounded-2xl cursor-pointer relative border-b border-outline-variant/10 last:border-0"
-              >
-                {/* Date - Hidden on mobile, shown on SM+ */}
-                <span className="hidden sm:block text-[11px] text-on-surface-variant font-bold uppercase tracking-wider">
-                  {formatDate(tx.date)}
-                </span>
+            transactions.map((tx) => {
+              const isDeleting = deletingId === tx.id;
+              const isConfirming = confirmDeleteId === tx.id;
 
-                {/* Transaction Main Info */}
-                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-surface-container flex items-center justify-center text-xl shadow-sm group-hover:scale-110 transition-transform duration-300">
-                    {tx.category?.emoji || "💰"}
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="font-bold text-sm sm:text-base text-on-surface tracking-tight truncate leading-tight">
-                      {tx.description || tx.category?.name || "Untitled"}
-                    </span>
-                    {/* Category & Date - Mobile Only variant */}
-                    <div className="flex items-center gap-2 sm:hidden mt-0.5">
-                      <span className="text-[10px] font-bold text-primary px-1.5 py-0.5 bg-primary/5 rounded">
-                        {tx.category?.name}
-                      </span>
-                      <span className="text-[10px] font-medium text-on-surface-variant/60">
-                        • {formatDate(tx.date)}
-                      </span>
+              return (
+                <div
+                  key={tx.id}
+                  onClick={() => !isConfirming && handleEdit(tx)}
+                  className={`group grid grid-cols-[1fr_auto] md:grid-cols-[1fr_2fr_1fr_1fr_80px] gap-4 items-center px-6 py-4 border-b border-outline-variant/5 last:border-0 cursor-pointer transition-colors ${
+                    isDeleting ? "opacity-40 pointer-events-none" : "hover:bg-surface-container-low/50"
+                  } ${isConfirming ? "bg-error/5" : ""}`}
+                >
+                  {/* Date — desktop */}
+                  <span className="hidden md:block text-[11px] text-on-surface-variant font-bold uppercase tracking-wider shrink-0">
+                    {formatDate(tx.date)}
+                  </span>
+
+                  {/* Main info */}
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-lg shrink-0 group-hover:scale-110 transition-transform duration-200">
+                      {tx.category?.emoji || "💰"}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-bold text-sm text-on-surface truncate leading-snug">
+                        {tx.description || tx.category?.name || "Untitled"}
+                      </p>
+                      {/* Mobile: date + category below name */}
+                      <p className="md:hidden text-[11px] text-on-surface-variant/60 font-medium mt-0.5 flex items-center gap-1.5 flex-wrap">
+                        <span>{formatDate(tx.date)}</span>
+                        {tx.category?.name && (
+                          <>
+                            <span className="opacity-40">·</span>
+                            <span className="font-semibold">{tx.category.emoji} {tx.category.name}</span>
+                          </>
+                        )}
+                      </p>
                     </div>
                   </div>
-                </div>
 
-                {/* Category - Desktop Only */}
-                <div className="hidden sm:flex items-center justify-end">
-                  <span className="text-[11px] font-bold text-on-surface-variant/40 px-2 py-1 bg-surface-container-low rounded-md truncate uppercase tracking-tighter">
-                    {tx.category?.name}
-                  </span>
-                </div>
+                  {/* Category pill — desktop */}
+                  <div className="hidden md:flex items-center">
+                    <span className="text-[10px] font-bold text-on-surface-variant/50 px-2 py-1 bg-surface-container rounded-lg uppercase tracking-tighter truncate max-w-full">
+                      {tx.category?.emoji} {tx.category?.name || "—"}
+                    </span>
+                  </div>
 
-                {/* Amount */}
-                <div className="flex flex-col items-end">
+                  {/* Amount */}
                   <span
-                    className={`font-black text-sm sm:text-base tabular-nums tracking-tight ${
-                      tx.type === "income" ? "text-secondary" : "text-on-surface"
+                    className={`font-black text-base tabular-nums tracking-tight ${
+                      tx.type === "income" ? "text-green-500" : "text-on-surface"
                     }`}
                   >
-                    {tx.type === "income" ? `+$${tx.amount.toFixed(2)}` : `$${tx.amount.toFixed(2)}`}
+                    {tx.type === "income" ? "+" : ""}${tx.amount.toFixed(2)}
                   </span>
-                </div>
 
-                {/* Actions Menu (3 dots) - Hidden on smallest mobile if space is tight, but we'll keep it for editing */}
-                <div className="flex justify-end pr-1">
-                  <button
-                    onClick={(e) => handleEditClick(tx, e)}
-                    className="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant/40 hover:text-on-surface hover:bg-surface-container sm:opacity-0 group-hover:opacity-100 transition-all active:scale-95"
-                  >
-                    <span className="material-symbols-outlined text-[20px]">
-                      more_vert
-                    </span>
-                  </button>
+                  {/* Actions */}
+                  <div className="flex items-center justify-end gap-1" onClick={(e) => e.stopPropagation()}>
+                    {isConfirming ? (
+                      // Confirm delete inline
+                      <>
+                        <button
+                          onClick={() => setConfirmDeleteId(null)}
+                          className="text-[10px] font-black text-on-surface-variant hover:text-on-surface uppercase tracking-wider px-2 py-1 rounded-lg transition-colors"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={() => handleDeleteConfirm(tx.id)}
+                          className="text-[10px] font-black text-error hover:bg-error/10 uppercase tracking-wider px-2 py-1 rounded-lg transition-colors"
+                        >
+                          Delete
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleEdit(tx); }}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface-variant/30 hover:text-on-surface hover:bg-surface-container opacity-0 group-hover:opacity-100 transition-all"
+                          title="Edit"
+                        >
+                          <span className="material-symbols-outlined text-[17px]">edit</span>
+                        </button>
+                        <button
+                          onClick={(e) => handleDeleteClick(tx.id, e)}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface-variant/30 hover:text-error hover:bg-error/10 opacity-0 group-hover:opacity-100 transition-all"
+                          title="Delete"
+                        >
+                          <span className="material-symbols-outlined text-[17px]">delete</span>
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 
-        {/* Pagination / Load More */}
-        {transactions.length > 0 && !loading && (
-          <div className="pt-4 mt-2 border-t border-outline-variant/10 flex justify-center">
-            <button className="text-[11px] font-bold text-on-surface-variant hover:text-on-surface transition-colors uppercase tracking-widest px-4 py-2 rounded-lg hover:bg-surface-container-low">
-              Load More Movements
+        {/* Pagination */}
+        {!loading && totalPages > 1 && (
+          <div className="flex items-center justify-between gap-4 px-6 py-4 border-t border-outline-variant/10">
+            <button
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+              className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-on-surface-variant hover:text-on-surface disabled:opacity-25 disabled:cursor-not-allowed transition-all group"
+            >
+              <span className="material-symbols-outlined text-[15px] group-hover:-translate-x-0.5 transition-transform">
+                arrow_back
+              </span>
+              Prev
+            </button>
+
+            <div className="flex items-center gap-1">
+              {pages.map((p, i) =>
+                p === "..." ? (
+                  <span key={`el-${i}`} className="w-8 text-center text-[11px] text-on-surface-variant/30 select-none">
+                    ···
+                  </span>
+                ) : (
+                  <button
+                    key={p}
+                    onClick={() => setPage(p as number)}
+                    className={`w-8 h-8 rounded-lg text-[11px] font-black transition-all ${
+                      p === page
+                        ? "bg-primary text-white shadow-sm shadow-primary/20"
+                        : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low"
+                    }`}
+                  >
+                    {p}
+                  </button>
+                )
+              )}
+            </div>
+
+            <button
+              onClick={() => setPage(page + 1)}
+              disabled={page === totalPages}
+              className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-on-surface-variant hover:text-on-surface disabled:opacity-25 disabled:cursor-not-allowed transition-all group"
+            >
+              Next
+              <span className="material-symbols-outlined text-[15px] group-hover:translate-x-0.5 transition-transform">
+                arrow_forward
+              </span>
             </button>
           </div>
         )}
       </div>
 
-      {/* The Modal Component */}
       <TransactionModal
         isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setSelectedTx(null);
-        }}
+        onClose={() => { setIsModalOpen(false); setSelectedTx(null); }}
         transaction={selectedTx}
       />
     </>
   );
 }
 
-
+function buildPageRange(current: number, total: number): (number | "...")[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  const pages: (number | "...")[] = [];
+  const add = (p: number) => { if (!pages.includes(p)) pages.push(p); };
+  add(1);
+  if (current > 3) pages.push("...");
+  for (let p = Math.max(2, current - 1); p <= Math.min(total - 1, current + 1); p++) add(p);
+  if (current < total - 2) pages.push("...");
+  add(total);
+  return pages;
+}

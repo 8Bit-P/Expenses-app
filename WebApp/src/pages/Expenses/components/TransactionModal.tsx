@@ -12,7 +12,6 @@ interface TransactionModalProps {
 export default function TransactionModal({ isOpen, onClose, transaction }: TransactionModalProps) {
   const { categories } = useCategories();
   const { addTransaction, updateTransaction } = useExpenses();
-// ... rest of the component ...
 
   // Local state for form fields
   const [type, setType] = useState<TransactionType>('expense');
@@ -57,18 +56,19 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
       date,
     };
 
-    let res;
-    if (isEditing) {
-      res = await updateTransaction(transaction.id, data);
-    } else {
-      res = await addTransaction(data);
-    }
-
-    setIsSubmitting(false);
-    if (!res.error) {
+    try {
+      if (isEditing) {
+        await updateTransaction({ id: transaction.id, updates: data });
+      } else {
+        await addTransaction(data);
+      }
+      
       onClose();
-    } else {
-      alert(res.error);
+    } catch (err: any) {
+      // TanStack Query throws the error, so we catch it here
+      alert(err.message || "Something went wrong while saving.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 

@@ -1,46 +1,76 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
-import type { Transaction, TransactionFilters } from '../types/expenses';
+import type { TransactionFilters } from '../types/expenses';
 import { useTransactions as useTransactionsHook } from '../hooks/useTransactions';
+
+const PAGE_SIZE = 10;
 
 interface ExpensesContextType {
   filters: TransactionFilters;
   setFilters: (filters: TransactionFilters) => void;
-  transactions: Transaction[];
+  page: number;
+  setPage: (page: number) => void;
+  pageSize: number;
+  totalPages: number;
+  totalCount: number;
+  transactions: ReturnType<typeof useTransactionsHook>['transactions'];
   loading: boolean;
   error: string | null;
-  refresh: () => void;
-  addTransaction: (tx: any) => Promise<any>;
-  updateTransaction: (id: string, updates: any) => Promise<any>;
-  deleteTransaction: (id: string) => Promise<any>;
+  refetch: () => void;
+  addTransaction: ReturnType<typeof useTransactionsHook>['addTransaction'];
+  updateTransaction: ReturnType<typeof useTransactionsHook>['updateTransaction'];
+  deleteTransaction: ReturnType<typeof useTransactionsHook>['deleteTransaction'];
 }
 
 const ExpensesContext = createContext<ExpensesContextType | undefined>(undefined);
 
 export function ExpensesProvider({ children }: { children: ReactNode }) {
-  const [filters, setFilters] = useState<TransactionFilters>({});
-  
-  const { 
-    transactions, 
-    loading, 
-    error, 
-    refetch, 
-    addTransaction, 
-    updateTransaction, 
-    deleteTransaction 
-  } = useTransactionsHook(filters);
+  const [filters, setFiltersState] = useState<TransactionFilters>({});
+  const [page, setPageState] = useState(1);
+
+  // Build the full filter object passed to the hook (includes pagination)
+  const activeFilters: TransactionFilters = { ...filters, page, pageSize: PAGE_SIZE };
+
+  const {
+    transactions,
+    totalCount,
+    totalPages,
+    loading,
+    error,
+    refetch,
+    addTransaction,
+    updateTransaction,
+    deleteTransaction,
+  } = useTransactionsHook(activeFilters);
+
+  // When filters change, reset to page 1
+  const setFilters = (newFilters: TransactionFilters) => {
+    setFiltersState(newFilters);
+    setPageState(1);
+  };
+
+  const setPage = (newPage: number) => {
+    setPageState(Math.max(1, Math.min(newPage, totalPages)));
+  };
 
   return (
-    <ExpensesContext.Provider value={{ 
-      filters, 
-      setFilters, 
-      transactions, 
-      loading, 
-      error, 
-      refresh: refetch,
-      addTransaction,
-      updateTransaction,
-      deleteTransaction
-    }}>
+    <ExpensesContext.Provider
+      value={{
+        filters,
+        setFilters,
+        page,
+        setPage,
+        pageSize: PAGE_SIZE,
+        totalPages,
+        totalCount,
+        transactions,
+        loading,
+        error,
+        refetch,
+        addTransaction,
+        updateTransaction,
+        deleteTransaction,
+      }}
+    >
       {children}
     </ExpensesContext.Provider>
   );

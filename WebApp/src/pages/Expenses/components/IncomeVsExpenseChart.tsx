@@ -10,6 +10,7 @@ export default function IncomeVsExpenseChart() {
   const { transactions, loading } = useTransactions({
     startDate: format(startDate, 'yyyy-MM-dd'),
     endDate: format(now, 'yyyy-MM-dd'),
+    pageSize: 1000,
   });
 
   const chartData = useMemo(() => {

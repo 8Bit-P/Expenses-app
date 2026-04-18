@@ -28,4 +28,6 @@ export interface TransactionFilters {
   categoryId?: string;
   type?: TransactionType;
   search?: string;
+  page?: number;
+  pageSize?: number;
 }
