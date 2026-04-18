@@ -2,7 +2,7 @@ import { useExpenses } from "../../../context/ExpensesContext";
 import { useCategories } from "../../../hooks/useCategories";
 import type { TransactionType } from "../../../types/expenses";
 import { DEFAULT_FILTERS } from "../constants";
-import { PRESETS, buildPreset, type PresetKey } from "../utils/filterPresets";
+import { PRESETS, buildPreset, type PresetKey } from "../../../utils/filterPresets";
 import { CustomSelect } from "../../../components/ui/CustomSelect";
 
 export default function FilterPanel() {

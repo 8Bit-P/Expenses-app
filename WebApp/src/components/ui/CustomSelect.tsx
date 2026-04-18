@@ -65,7 +65,7 @@ export function CustomSelect<T extends string = string>({
       {open && (
         <div
           className={`
-            absolute right-0 mt-2 z-50 min-w-[10rem]
+            absolute right-0 mt-2 z-50 min-w-40
             bg-surface-container-lowest border border-outline-variant/20
             rounded-lg shadow-2xl overflow-y-auto max-h-64
             animate-in fade-in zoom-in-95 duration-150
@@ -81,16 +81,12 @@ export function CustomSelect<T extends string = string>({
                   setOpen(false);
                 }}
                 className={`w-full flex items-center justify-between gap-4 px-4 py-2.5 text-sm font-semibold text-left transition-colors ${
-                  isSelected
-                    ? "bg-primary/10 text-primary"
-                    : "text-on-surface hover:bg-surface-container-low"
+                  isSelected ? "bg-primary/10 text-primary" : "text-on-surface hover:bg-surface-container-low"
                 }`}
               >
                 <span>{opt.label}</span>
                 {isSelected && (
-                  <span className="material-symbols-outlined text-[16px] text-primary shrink-0">
-                    check
-                  </span>
+                  <span className="material-symbols-outlined text-[16px] text-primary shrink-0">check</span>
                 )}
               </button>
             );

@@ -7,6 +7,9 @@ export default {
   darkMode: "class",
   theme: {
     extend: {
+      screens: {
+        desk: "1150px", // Custom breakpoint for layout transition
+      },
       colors: {
         "primary": "var(--primary)",
         "on-primary": "var(--on-primary)",

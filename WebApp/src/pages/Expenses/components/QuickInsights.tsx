@@ -1,6 +1,6 @@
 import { useExpenses } from "../../../context/ExpensesContext";
 import { usePeriodMetrics } from "../hooks/usePeriodMetrics";
-import { formatDateLabel } from "../utils/dateFormatters";
+import { formatDateLabel } from "../../../utils/dateFormatters";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 
 interface InsightItem {

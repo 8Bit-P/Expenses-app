@@ -1,18 +1,9 @@
 import { useState } from "react";
-import {
-  useUserPreferences,
-  CURRENCIES,
-  type Theme,
-  type Currency,
-  type DateFormat,
-} from "../../../context/UserPreferencesContext";
+import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { CustomSelect } from "../../../components/ui/CustomSelect";
+import { CURRENCIES, DATE_FORMATS } from "../../../constants/preferences";
+import type { Theme, Currency, DateFormat } from "../../../types/preferences";
 
-const DATE_FORMATS: { value: DateFormat; label: string }[] = [
-  { value: "MM/DD/YYYY", label: "MM/DD/YYYY (US)" },
-  { value: "DD/MM/YYYY", label: "DD/MM/YYYY (EU)" },
-  { value: "YYYY-MM-DD", label: "YYYY-MM-DD (ISO)" },
-];
 
 function ThemeButton({
   value,

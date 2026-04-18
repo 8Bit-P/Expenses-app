@@ -1,6 +1,6 @@
 import { useExpenses } from "../../../context/ExpensesContext";
-import { formatDateLabel } from "../utils/dateFormatters";
-import { PRESETS, buildPreset } from "../utils/filterPresets";
+import { formatDateLabel } from "../../../utils/dateFormatters";
+import { PRESETS, buildPreset } from "../../../utils/filterPresets";
 
 export default function ExpensesHeader() {
   const { filters, setFilters, setIsFilterOpen } = useExpenses();

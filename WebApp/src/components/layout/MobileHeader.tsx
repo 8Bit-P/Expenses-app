@@ -5,7 +5,7 @@ export default function MobileHeader() {
   const isDark = resolvedTheme === "dark";
 
   return (
-    <header className="fixed top-0 w-full z-40 bg-background/80 backdrop-blur-xl border-b border-outline-variant/10 flex justify-between items-center px-4 py-3 md:hidden transition-colors duration-300">
+    <header className="fixed top-0 w-full z-40 bg-background/80 backdrop-blur-xl border-b border-outline-variant/10 flex justify-between items-center px-4 py-3 desk:hidden transition-colors duration-300">
       {/* User Profile & Branding */}
       <div className="flex items-center gap-3">
         <button className="w-9 h-9 rounded-xl overflow-hidden bg-surface-container-highest border border-outline-variant/20 shadow-sm cursor-pointer active:scale-95 transition-all">

@@ -46,14 +46,10 @@ export function NumberStepper({
       </button>
 
       {/* Value display */}
-      <div className="flex items-center gap-0.5 px-2 min-w-[3rem] justify-center">
-        {prefix && (
-          <span className="text-xs font-bold text-on-surface-variant">{prefix}</span>
-        )}
+      <div className="flex items-center gap-0.5 px-2 min-w-12 justify-center">
+        {prefix && <span className="text-xs font-bold text-on-surface-variant">{prefix}</span>}
         <span className="text-sm font-black text-on-surface tabular-nums">{value}</span>
-        {suffix && (
-          <span className="text-xs font-bold text-on-surface-variant">{suffix}</span>
-        )}
+        {suffix && <span className="text-xs font-bold text-on-surface-variant">{suffix}</span>}
       </div>
 
       {/* Increment */}

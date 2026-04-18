@@ -1,4 +1,4 @@
-import { formatTransactionDate } from "../../utils/dateFormatters";
+import { formatTransactionDate } from "../../../../utils/dateFormatters";
 
 export interface Transaction {
   id: string;

@@ -3,7 +3,7 @@ import { startOfMonth, endOfMonth, eachDayOfInterval, format, subDays, differenc
 import { useMemo } from "react";
 import { useExpenses } from "../../../context/ExpensesContext";
 import { useTransactions } from "../../../hooks/useTransactions";
-import { formatDateLabel } from "../utils/dateFormatters";
+import { formatDateLabel } from "../../../utils/dateFormatters";
 
 export default function SpendingTrendChart() {
   const { filters } = useExpenses();
