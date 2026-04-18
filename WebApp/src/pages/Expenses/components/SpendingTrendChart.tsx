@@ -74,31 +74,37 @@ export default function SpendingTrendChart() {
     );
   }
 
-  const maxCurrent = Math.max(0, ...chartData.map((d) => d.current || 0));
+  const validCurrents = chartData.map(d => d.current).filter(v => v !== null) as number[];
+  const maxCurrent = validCurrents.length > 0 ? Math.max(...validCurrents) : 0;
+  const minCurrent = validCurrents.length > 0 ? Math.min(...validCurrents) : 0;
+  
   const maxPrevious = Math.max(0, ...chartData.map((d) => d.previous || 0));
   const maxAmount = Math.max(maxCurrent, maxPrevious);
 
   // Ensure the budget line is always visible inside the chart — pad domain above it
   const chartMaxNum = showBudget
-    ? Math.max(maxAmount, monthlyBudget) * 1.12
-    : maxAmount > 0 ? maxAmount * 1.08 : 100;
+    ? Math.max(maxAmount, monthlyBudget) * 1.05
+    : maxAmount > 0 ? maxAmount * 1.05 : 100;
   const chartMax = chartMaxNum;
 
   /**
-   * Y-axis gradient math:
-   * SVG y=0 is the TOP, y=1 is the BOTTOM of the linearGradient.
-   * A data value V sits at vertical offset: (1 - V / chartMax) from the top.
-   * So the budget threshold lives at offset = (1 - budget / chartMax) * 100 %.
-   * Above that offset (smaller %) → over budget → red.
-   * Below that offset (larger %) → under budget → primary.
+   * Y-axis gradient math in Recharts (objectBoundingBox):
+   * 0% is the highest Y point of the drawn path, 100% is the lowest.
+   * - the Fill Area connects to y=0 at the bottom, so its lowest point is 0.
+   * - the Stroke Line just connects the data points, so its lowest point is minCurrent.
    */
-  const budgetThresholdPct = showBudget
-    ? Math.max(0, Math.min(99, (1 - monthlyBudget / chartMax) * 100))
+  const fillThresholdPct = showBudget && maxCurrent > 0
+    ? Math.max(0, Math.min(100, ((maxCurrent - monthlyBudget) / maxCurrent) * 100))
     : 0;
+    
+  const strokeThresholdPct = showBudget && maxCurrent > minCurrent
+    ? Math.max(0, Math.min(100, ((maxCurrent - monthlyBudget) / (maxCurrent - minCurrent)) * 100))
+    : 0;
+
   const hasOverrun = showBudget && maxCurrent > monthlyBudget;
 
   // Colors
-  const overColor = "#f87171";   // red-400 — visible on both light/dark
+  const overColor = "var(--error)";   
   const safeColor = "var(--primary)";
 
   return (
@@ -146,11 +152,12 @@ export default function SpendingTrendChart() {
               <linearGradient id="fillCurrent" x1="0" y1="0" x2="0" y2="1">
                 {hasOverrun ? (
                   <>
-                    <stop offset={`${budgetThresholdPct}%`} stopColor={overColor} stopOpacity={0.25} />
-                    <stop offset={`${budgetThresholdPct}%`} stopColor={safeColor} stopOpacity={0.28} />
+                    <stop offset="0%" stopColor={overColor} stopOpacity={0.35} />
+                    <stop offset={`${fillThresholdPct}%`} stopColor={overColor} stopOpacity={0.15} />
+                    <stop offset={`${fillThresholdPct}%`} stopColor={safeColor} stopOpacity={0.35} />
                   </>
                 ) : (
-                  <stop offset="0%" stopColor={safeColor} stopOpacity={0.28} />
+                  <stop offset="0%" stopColor={safeColor} stopOpacity={0.35} />
                 )}
                 <stop offset="95%" stopColor={safeColor} stopOpacity={0.03} />
               </linearGradient>
@@ -159,8 +166,9 @@ export default function SpendingTrendChart() {
               <linearGradient id="strokeCurrent" x1="0" y1="0" x2="0" y2="1">
                 {hasOverrun ? (
                   <>
-                    <stop offset={`${budgetThresholdPct}%`} stopColor={overColor} stopOpacity={1} />
-                    <stop offset={`${budgetThresholdPct}%`} stopColor={safeColor} stopOpacity={1} />
+                    <stop offset="0%" stopColor={overColor} stopOpacity={1} />
+                    <stop offset={`${strokeThresholdPct}%`} stopColor={overColor} stopOpacity={1} />
+                    <stop offset={`${strokeThresholdPct}%`} stopColor={safeColor} stopOpacity={1} />
                   </>
                 ) : (
                   <stop offset="0%" stopColor={safeColor} stopOpacity={1} />
@@ -216,16 +224,8 @@ export default function SpendingTrendChart() {
                 y={monthlyBudget}
                 stroke={overColor}
                 strokeWidth={1.5}
-                strokeDasharray="5 4"
+                strokeDasharray="4 4"
                 strokeOpacity={0.8}
-                label={{
-                  value: `$${monthlyBudget.toLocaleString()}`,
-                  position: "right",
-                  fontSize: 10,
-                  fontWeight: 700,
-                  fill: overColor,
-                  opacity: 0.9,
-                }}
               />
             )}
 
