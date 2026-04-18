@@ -13,7 +13,6 @@ export default function Sidebar() {
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 p-6 bg-background/80 backdrop-blur-xl border-r border-outline-variant/20 font-headline tracking-tight z-50 flex flex-col transition-colors duration-300">
-      
       {/* Friendly Logo & Title Section */}
       <div className="mb-10 flex items-center gap-3 cursor-pointer group">
         <div className="w-10 h-10 rounded-xl bg-primary-container/30 text-primary flex items-center justify-center border border-primary/20 shadow-sm group-hover:scale-105 transition-transform">
@@ -36,12 +35,12 @@ export default function Sidebar() {
               key={item.path}
               to={item.path}
               className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-300 ease-in-out group ${
-                isActive 
-                  ? "text-primary font-bold bg-primary-container/20 shadow-sm" 
+                isActive
+                  ? "text-primary font-bold bg-primary-container/20 shadow-sm"
                   : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low"
               }`}
             >
-              <span 
+              <span
                 className="material-symbols-outlined group-hover:scale-110 transition-transform"
                 style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
               >
@@ -56,13 +55,10 @@ export default function Sidebar() {
       {/* Sleek, Premium Action Button */}
       <div className="mt-auto">
         <button className="w-full py-3.5 px-4 bg-surface-container-lowest hover:bg-surface-container-low text-on-surface rounded-xl flex items-center justify-center gap-2 font-bold transition-all border border-outline-variant/50 active:scale-95 group shadow-sm">
-          <span className="material-symbols-outlined text-primary group-hover:rotate-90 transition-transform">
-            add
-          </span>
+          <span className="material-symbols-outlined text-primary group-hover:rotate-90 transition-transform">add</span>
           New Transaction
         </button>
       </div>
-      
     </aside>
   );
 }

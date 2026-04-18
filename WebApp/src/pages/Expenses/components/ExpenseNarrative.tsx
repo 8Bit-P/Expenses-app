@@ -3,7 +3,6 @@ export default function ExpenseNarrative() {
     <section className="space-y-4">
       <h2 className="text-xl font-headline font-bold text-on-surface">Expense Narrative</h2>
       <div className="flex overflow-x-auto pb-4 gap-4 no-scrollbar">
-        
         <div className="min-w-[280px] bg-surface-container-lowest p-6 rounded-lg shadow-sm border-l-4 border-primary">
           <div className="flex justify-between items-start mb-4">
             <div className="p-2 bg-primary/10 rounded-xl text-primary flex items-center justify-center">
@@ -29,7 +28,6 @@ export default function ExpenseNarrative() {
             Your grocery shopping reduced dining costs by <span className="text-secondary font-semibold">15%</span>.
           </p>
         </div>
-
       </div>
     </section>
   );

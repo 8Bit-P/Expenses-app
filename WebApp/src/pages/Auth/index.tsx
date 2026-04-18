@@ -26,17 +26,12 @@ export default function Auth() {
       <div className="w-full max-w-85 flex flex-col items-center">
         {/* Logo */}
         <div className="w-12 h-12 bg-on-surface text-surface rounded-xl flex items-center justify-center mb-6 shadow-md">
-          <span
-            className="material-symbols-outlined text-[28px]"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
+          <span className="material-symbols-outlined text-[28px]" style={{ fontVariationSettings: "'FILL' 1" }}>
             account_balance
           </span>
         </div>
 
-        <h1 className="text-2xl font-headline font-semibold text-on-surface mb-8 tracking-tight">
-          Personal Vault
-        </h1>
+        <h1 className="text-2xl font-headline font-semibold text-on-surface mb-8 tracking-tight">Personal Vault</h1>
 
         {/* Modular Components */}
         <AuthTabs isSignUp={isSignUp} setIsSignUp={setIsSignUp} />
@@ -46,9 +41,7 @@ export default function Auth() {
         {/* Divider */}
         <div className="w-full flex items-center gap-3 my-6">
           <div className="flex-1 h-px bg-outline-variant/30"></div>
-          <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
-            Or
-          </span>
+          <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Or</span>
           <div className="flex-1 h-px bg-outline-variant/30"></div>
         </div>
 

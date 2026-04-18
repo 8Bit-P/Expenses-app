@@ -1,7 +1,7 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
-import type { TransactionFilters } from '../types/expenses';
-import { useTransactions as useTransactionsHook } from '../hooks/useTransactions';
-import { PAGE_SIZE, DEFAULT_FILTERS } from '../pages/Expenses/constants';
+import { createContext, useContext, useState, type ReactNode } from "react";
+import type { TransactionFilters } from "../types/expenses";
+import { useTransactions as useTransactionsHook } from "../hooks/useTransactions";
+import { PAGE_SIZE, DEFAULT_FILTERS } from "../pages/Expenses/constants";
 
 interface ExpensesContextType {
   filters: TransactionFilters;
@@ -11,13 +11,16 @@ interface ExpensesContextType {
   pageSize: number;
   totalPages: number;
   totalCount: number;
-  transactions: ReturnType<typeof useTransactionsHook>['transactions'];
+  transactions: ReturnType<typeof useTransactionsHook>["transactions"];
   loading: boolean;
   error: string | null;
   refetch: () => void;
-  addTransaction: ReturnType<typeof useTransactionsHook>['addTransaction'];
-  updateTransaction: ReturnType<typeof useTransactionsHook>['updateTransaction'];
-  deleteTransaction: ReturnType<typeof useTransactionsHook>['deleteTransaction'];
+  addTransaction: ReturnType<typeof useTransactionsHook>["addTransaction"];
+  updateTransaction: ReturnType<typeof useTransactionsHook>["updateTransaction"];
+  deleteTransaction: ReturnType<typeof useTransactionsHook>["deleteTransaction"];
+  // Filter drawer
+  isFilterOpen: boolean;
+  setIsFilterOpen: (open: boolean) => void;
 }
 
 const ExpensesContext = createContext<ExpensesContextType | undefined>(undefined);
@@ -25,6 +28,7 @@ const ExpensesContext = createContext<ExpensesContextType | undefined>(undefined
 export function ExpensesProvider({ children }: { children: ReactNode }) {
   const [filters, setFiltersState] = useState<TransactionFilters>(DEFAULT_FILTERS);
   const [page, setPageState] = useState(1);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const activeFilters: TransactionFilters = { ...filters, page, pageSize: PAGE_SIZE };
 
@@ -66,6 +70,8 @@ export function ExpensesProvider({ children }: { children: ReactNode }) {
         addTransaction,
         updateTransaction,
         deleteTransaction,
+        isFilterOpen,
+        setIsFilterOpen,
       }}
     >
       {children}
@@ -76,7 +82,7 @@ export function ExpensesProvider({ children }: { children: ReactNode }) {
 export function useExpenses() {
   const context = useContext(ExpensesContext);
   if (context === undefined) {
-    throw new Error('useExpenses must be used within an ExpensesProvider');
+    throw new Error("useExpenses must be used within an ExpensesProvider");
   }
   return context;
 }

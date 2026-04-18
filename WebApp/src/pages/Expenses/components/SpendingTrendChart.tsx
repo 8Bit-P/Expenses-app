@@ -1,39 +1,29 @@
-import {
-  AreaChart, Area, XAxis, YAxis,
-  CartesianGrid, Tooltip, ResponsiveContainer,
-} from 'recharts';
-import {
-  startOfMonth, endOfMonth, eachDayOfInterval,
-  format, subDays, differenceInDays, parseISO,
-} from 'date-fns';
-import { useMemo } from 'react';
-import { useExpenses } from '../../../context/ExpensesContext';
-import { useTransactions } from '../../../hooks/useTransactions';
-import { formatDateLabel } from '../utils/dateFormatters';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { startOfMonth, endOfMonth, eachDayOfInterval, format, subDays, differenceInDays, parseISO } from "date-fns";
+import { useMemo } from "react";
+import { useExpenses } from "../../../context/ExpensesContext";
+import { useTransactions } from "../../../hooks/useTransactions";
+import { formatDateLabel } from "../utils/dateFormatters";
 
 export default function SpendingTrendChart() {
   const { filters } = useExpenses();
   const now = new Date();
 
   // Resolve the "current" period from context filters, falling back to this month
-  const currentStart = filters.startDate
-    ? parseISO(filters.startDate)
-    : startOfMonth(now);
-  const currentEnd = filters.endDate
-    ? parseISO(filters.endDate)
-    : endOfMonth(now);
+  const currentStart = filters.startDate ? parseISO(filters.startDate) : startOfMonth(now);
+  const currentEnd = filters.endDate ? parseISO(filters.endDate) : endOfMonth(now);
 
   // Compute the "previous" period as the same duration immediately before
   const periodDays = differenceInDays(currentEnd, currentStart); // inclusive handled in range
-  const prevEnd    = subDays(currentStart, 1);
-  const prevStart  = subDays(prevEnd, periodDays);
+  const prevEnd = subDays(currentStart, 1);
+  const prevStart = subDays(prevEnd, periodDays);
 
   const { transactions, loading } = useTransactions({
-    startDate:  format(prevStart, 'yyyy-MM-dd'),
-    endDate:    format(currentEnd, 'yyyy-MM-dd'),
+    startDate: format(prevStart, "yyyy-MM-dd"),
+    endDate: format(currentEnd, "yyyy-MM-dd"),
     categoryId: filters.categoryId,
     // Always show expense trend (the chart is "Spending Trend")
-    type: 'expense',
+    type: "expense",
     pageSize: 1000,
   });
 
@@ -41,43 +31,33 @@ export default function SpendingTrendChart() {
     if (loading) return [];
 
     const days = eachDayOfInterval({ start: currentStart, end: currentEnd });
-    let cumulativeCurrent  = 0;
+    let cumulativeCurrent = 0;
     let cumulativePrevious = 0;
 
     return days.map((day, idx) => {
-      const fmtDay = format(day, 'yyyy-MM-dd');
+      const fmtDay = format(day, "yyyy-MM-dd");
 
       // Same index day in the previous period
-      const prevDay   = format(subDays(currentStart, periodDays - idx), 'yyyy-MM-dd');
+      const prevDay = format(subDays(currentStart, periodDays - idx), "yyyy-MM-dd");
 
-      cumulativeCurrent += transactions
-        .filter(t => t.date === fmtDay)
-        .reduce((s, t) => s + t.amount, 0);
+      cumulativeCurrent += transactions.filter((t) => t.date === fmtDay).reduce((s, t) => s + t.amount, 0);
 
       // Only accumulate previous if the prevDay is within its period
       if (new Date(prevDay) >= prevStart) {
-        cumulativePrevious += transactions
-          .filter(t => t.date === prevDay)
-          .reduce((s, t) => s + t.amount, 0);
+        cumulativePrevious += transactions.filter((t) => t.date === prevDay).reduce((s, t) => s + t.amount, 0);
       }
 
       return {
-        label:    format(day, 'd MMM'),
-        current:  day <= now ? cumulativeCurrent : null,
+        label: format(day, "d MMM"),
+        current: day <= now ? cumulativeCurrent : null,
         previous: cumulativePrevious,
       };
     });
   }, [transactions, loading, currentStart, currentEnd, periodDays, prevStart, now]);
 
   // Build dynamic legend labels
-  const currentLabel  = formatDateLabel(
-    format(currentStart, 'yyyy-MM-dd'),
-    format(currentEnd,   'yyyy-MM-dd'),
-  );
-  const previousLabel = formatDateLabel(
-    format(prevStart, 'yyyy-MM-dd'),
-    format(prevEnd,   'yyyy-MM-dd'),
-  );
+  const currentLabel = formatDateLabel(format(currentStart, "yyyy-MM-dd"), format(currentEnd, "yyyy-MM-dd"));
+  const previousLabel = formatDateLabel(format(prevStart, "yyyy-MM-dd"), format(prevEnd, "yyyy-MM-dd"));
 
   if (loading) {
     return (
@@ -91,7 +71,6 @@ export default function SpendingTrendChart() {
 
   return (
     <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 flex flex-col">
-
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -120,8 +99,8 @@ export default function SpendingTrendChart() {
           <AreaChart data={chartData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="colorCurrent" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%"  stopColor="#3525cd" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#3525cd" stopOpacity={0}   />
+                <stop offset="5%" stopColor="#3525cd" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#3525cd" stopOpacity={0} />
               </linearGradient>
             </defs>
 
@@ -136,7 +115,7 @@ export default function SpendingTrendChart() {
               dataKey="label"
               axisLine={false}
               tickLine={false}
-              tick={{ fontSize: 9, fill: 'currentColor' }}
+              tick={{ fontSize: 9, fill: "currentColor" }}
               className="text-on-surface-variant/60 font-semibold"
               dy={10}
               interval={Math.max(0, Math.floor(chartData.length / 6) - 1)}
@@ -144,36 +123,29 @@ export default function SpendingTrendChart() {
             <YAxis
               axisLine={false}
               tickLine={false}
-              tick={{ fontSize: 11, fill: 'currentColor' }}
+              tick={{ fontSize: 11, fill: "currentColor" }}
               className="text-on-surface-variant/60 font-semibold"
               tickFormatter={(v) => `$${v}`}
             />
 
             <Tooltip
               contentStyle={{
-                backgroundColor: 'var(--surface-container-lowest)',
-                borderColor:     'var(--outline-variant)',
-                borderRadius:    '12px',
-                boxShadow:       '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                color:           'var(--on-surface)',
-                fontWeight:      'bold',
-                fontSize:        '12px',
+                backgroundColor: "var(--surface-container-lowest)",
+                borderColor: "var(--outline-variant)",
+                borderRadius: "12px",
+                boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                color: "var(--on-surface)",
+                fontWeight: "bold",
+                fontSize: "12px",
               }}
-              itemStyle={{ color: 'var(--on-surface)' }}
+              itemStyle={{ color: "var(--on-surface)" }}
               formatter={(value: any, name: string) => [
-                value != null ? `$${(value as number).toFixed(2)}` : '—',
-                name === 'current' ? currentLabel : previousLabel,
+                value != null ? `$${(value as number).toFixed(2)}` : "—",
+                name === "current" ? currentLabel : previousLabel,
               ]}
             />
 
-            <Area
-              type="monotone"
-              dataKey="previous"
-              stroke="#c7c4d8"
-              strokeWidth={2}
-              fill="none"
-              connectNulls
-            />
+            <Area type="monotone" dataKey="previous" stroke="#c7c4d8" strokeWidth={2} fill="none" connectNulls />
             <Area
               type="monotone"
               dataKey="current"
@@ -186,7 +158,6 @@ export default function SpendingTrendChart() {
           </AreaChart>
         </ResponsiveContainer>
       </div>
-
     </div>
   );
 }

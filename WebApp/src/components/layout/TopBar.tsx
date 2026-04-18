@@ -6,7 +6,7 @@ export default function TopBar() {
     // Check if we already saved a preference
     const saved = localStorage.getItem("theme");
     if (saved) return saved === "dark";
-    
+
     // Fallback to system preference
     return window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
@@ -25,42 +25,41 @@ export default function TopBar() {
 
   return (
     <header className="flex justify-between items-center w-full px-8 py-4 font-headline bg-background/80 backdrop-blur-md sticky top-0 z-40 border-b border-surface-container-low/50">
-      
       {/* Search Input (Corners slightly sharpened to xl) */}
       <div className="flex items-center gap-4 bg-surface-container-low px-4 py-2 rounded-xl w-96 transition-focus-within focus-within:ring-2 focus-within:ring-primary/20">
         <span className="material-symbols-outlined text-outline">search</span>
-        <input 
-          className="bg-transparent border-none focus:ring-0 text-sm w-full placeholder-outline-variant outline-none" 
-          placeholder="Search entries, goals, or assets..." 
+        <input
+          className="bg-transparent border-none focus:ring-0 text-sm w-full placeholder-outline-variant outline-none"
+          placeholder="Search entries, goals, or assets..."
           type="text"
         />
         {/* Quick shortcut hint for power users */}
         <div className="hidden lg:flex items-center gap-1 text-[10px] font-bold text-outline-variant bg-surface-container px-1.5 py-0.5 rounded-md border border-outline-variant/20">
-          <span>⌘</span><span>K</span>
+          <span>⌘</span>
+          <span>K</span>
         </div>
       </div>
-      
+
       {/* Global Actions Context */}
       <div className="flex items-center gap-3">
-        
         {/* Seamless Sun/Moon Theme Toggle */}
-        <button 
+        <button
           onClick={() => setIsDark(!isDark)}
           className="relative w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-high transition-colors overflow-hidden text-on-surface-variant hover:text-on-surface cursor-pointer"
           aria-label="Toggle Dark Mode"
         >
           {/* Sun Icon */}
-          <span 
+          <span
             className={`material-symbols-outlined absolute transition-all duration-500 ease-in-out ${
-              isDark ? '-rotate-90 opacity-0 scale-50' : 'rotate-0 opacity-100 scale-100'
+              isDark ? "-rotate-90 opacity-0 scale-50" : "rotate-0 opacity-100 scale-100"
             }`}
           >
             light_mode
           </span>
           {/* Moon Icon */}
-          <span 
+          <span
             className={`material-symbols-outlined absolute transition-all duration-500 ease-in-out ${
-              isDark ? 'rotate-0 opacity-100 scale-100' : 'rotate-90 opacity-0 scale-50'
+              isDark ? "rotate-0 opacity-100 scale-100" : "rotate-90 opacity-0 scale-50"
             }`}
           >
             dark_mode
@@ -80,15 +79,13 @@ export default function TopBar() {
 
         {/* User Profile (Corners sharpened to match the new aesthetic) */}
         <button className="w-9 h-9 rounded-xl overflow-hidden bg-surface-container-highest border border-surface-container-highest shadow-sm cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all">
-          <img 
-            alt="User Profile" 
-            src="https://api.dicebear.com/7.x/avataaars/svg?seed=PersonalVault" 
+          <img
+            alt="User Profile"
+            src="https://api.dicebear.com/7.x/avataaars/svg?seed=PersonalVault"
             className="w-full h-full object-cover"
           />
         </button>
-        
       </div>
-      
     </header>
   );
 }

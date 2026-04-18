@@ -5,15 +5,7 @@ import { format } from "date-fns";
 import { buildPageRange } from "../utils/pagination";
 
 export default function CompactRecentFlow() {
-  const {
-    transactions,
-    loading,
-    page,
-    setPage,
-    totalPages,
-    totalCount,
-    deleteTransaction,
-  } = useExpenses();
+  const { transactions, loading, page, setPage, totalPages, totalCount, deleteTransaction } = useExpenses();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTx, setSelectedTx] = useState<any>(null);
@@ -66,7 +58,10 @@ export default function CompactRecentFlow() {
           </div>
 
           <button
-            onClick={() => { setSelectedTx(null); setIsModalOpen(true); }}
+            onClick={() => {
+              setSelectedTx(null);
+              setIsModalOpen(true);
+            }}
             className="flex items-center gap-2 bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all active:scale-95"
           >
             <span className="material-symbols-outlined text-[16px]">add</span>
@@ -77,7 +72,9 @@ export default function CompactRecentFlow() {
         {/* Table header — desktop only */}
         <div className="hidden md:grid grid-cols-[1fr_2fr_1fr_1fr_80px] gap-4 px-6 py-2.5 border-b border-outline-variant/10">
           {["Date", "Description", "Category", "Amount", ""].map((h) => (
-            <span key={h} className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/50">{h}</span>
+            <span key={h} className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/50">
+              {h}
+            </span>
           ))}
         </div>
 
@@ -87,7 +84,10 @@ export default function CompactRecentFlow() {
             // Skeleton rows
             <div>
               {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="flex items-center gap-4 px-6 py-4 border-b border-outline-variant/5 last:border-0 animate-pulse">
+                <div
+                  key={i}
+                  className="flex items-center gap-4 px-6 py-4 border-b border-outline-variant/5 last:border-0 animate-pulse"
+                >
                   <div className="w-12 h-4 bg-surface-container rounded-lg hidden md:block shrink-0" />
                   <div className="w-10 h-10 bg-surface-container rounded-xl shrink-0" />
                   <div className="flex-1 space-y-2 min-w-0">
@@ -136,7 +136,9 @@ export default function CompactRecentFlow() {
                         {tx.category?.name && (
                           <>
                             <span className="opacity-40">·</span>
-                            <span className="font-semibold">{tx.category.emoji} {tx.category.name}</span>
+                            <span className="font-semibold">
+                              {tx.category.emoji} {tx.category.name}
+                            </span>
                           </>
                         )}
                       </p>
@@ -180,7 +182,10 @@ export default function CompactRecentFlow() {
                     ) : (
                       <>
                         <button
-                          onClick={(e) => { e.stopPropagation(); handleEdit(tx); }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEdit(tx);
+                          }}
                           className="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface-variant/30 hover:text-on-surface hover:bg-surface-container opacity-0 group-hover:opacity-100 transition-all"
                           title="Edit"
                         >
@@ -234,7 +239,7 @@ export default function CompactRecentFlow() {
                   >
                     {p}
                   </button>
-                )
+                ),
               )}
             </div>
 
@@ -254,10 +259,12 @@ export default function CompactRecentFlow() {
 
       <TransactionModal
         isOpen={isModalOpen}
-        onClose={() => { setIsModalOpen(false); setSelectedTx(null); }}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedTx(null);
+        }}
         transaction={selectedTx}
       />
     </>
   );
 }
-

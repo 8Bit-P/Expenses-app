@@ -14,7 +14,7 @@
   --tertiary-container: #7531e6;
   --error: #ba1a1a;
   --error-container: #ffdad6;
-  
+
   --background: #f7f9fb;
   --on-background: #191c1e;
   --surface: #f7f9fb;
@@ -23,7 +23,7 @@
   --on-surface-variant: #464555;
   --outline: #777587;
   --outline-variant: #c7c4d8;
-  
+
   --surface-container-lowest: #ffffff;
   --surface-container-low: #f2f4f6;
   --surface-container: #eceef0;
@@ -34,7 +34,7 @@
 /* DARK MODE COLORS */
 .dark {
   /* Accent (Indigo Glow) */
-  --primary: #6366f1; 
+  --primary: #6366f1;
   --on-primary: #ffffff;
   --primary-container: rgba(99, 102, 241, 0.15); /* Soft glow for pills/active states */
   --on-primary-container: #818cf8;
@@ -43,31 +43,31 @@
   --secondary: #4edea3;
   --on-secondary: #003824;
   --secondary-container: rgba(78, 222, 163, 0.15);
-  
+
   --error: #ffb4ab;
   --error-container: rgba(255, 180, 171, 0.15);
-  
+
   --tertiary: #d2bbff;
   --tertiary-container: rgba(210, 187, 255, 0.15);
 
   /* Background (Deep Slate) */
-  --background: #0c1324; 
-  --surface: #0c1324; 
-  
+  --background: #0c1324;
+  --surface: #0c1324;
+
   /* Text (Primary & Secondary) */
-  --on-background: #f1f5f9; 
-  --on-surface: #f1f5f9; 
+  --on-background: #f1f5f9;
+  --on-surface: #f1f5f9;
   --on-surface-variant: #94a3b8;
-  
+
   /* Border/Stroke */
   --outline: #64748b;
   --outline-variant: #334155;
 
   /* Surface (Midnight) - Used for Cards */
-  --surface-container-lowest: #151b2d; 
-  
+  --surface-container-lowest: #151b2d;
+
   /* Slightly lighter midnight shades for hovers and nested elements */
-  --surface-container-low: #1a2238; 
+  --surface-container-low: #1a2238;
   --surface-container: #1e2740;
   --surface-container-high: #242e4a;
   --surface-container-highest: #2b3655;
@@ -75,10 +75,16 @@
 
 /* Material Symbols Icon Font Settings */
 .material-symbols-outlined {
-  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
 }
 
 /* Smooth background transition when clicking the Moon/Sun */
 body {
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }

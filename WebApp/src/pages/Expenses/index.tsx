@@ -3,21 +3,26 @@ import MetricsRow from "./components/MetricsRow";
 import SpendingTrendChart from "./components/SpendingTrendChart";
 import CategoryDonut from "./components/CategoryDonut";
 import IncomeVsExpenseChart from "./components/IncomeVsExpenseChart";
-import FilterPanel from "./components/FilterPanel";
+import QuickInsights from "./components/QuickInsights";
 import CompactRecentFlow from "./components/CompactRecentFlow";
+import FilterDrawer from "./components/FilterDrawer";
 import { ExpensesProvider } from "../../context/ExpensesContext";
 
 export default function Expenses() {
   return (
     <ExpensesProvider>
-      <div className="space-y-6 animate-in fade-in duration-500 px-4 md:px-6 py-6 max-w-7xl mx-auto">
+      {/* FilterDrawer lives outside the main scroll so it overlays everything */}
+      <FilterDrawer />
 
+      <div className="space-y-6 animate-in fade-in duration-500 px-4 md:px-6 py-6 max-w-7xl mx-auto">
+        {/* Header + inline date presets */}
         <ExpensesHeader />
+
+        {/* Headline metrics */}
         <MetricsRow />
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-
-          {/* Top Row: Trend (8) + Donut (4) */}
+          {/* Row 1: Spending Trend (8) + Category Donut (4) */}
           <div className="md:col-span-8">
             <SpendingTrendChart />
           </div>
@@ -25,22 +30,20 @@ export default function Expenses() {
             <CategoryDonut />
           </div>
 
-          {/* Middle Row: Bar Chart (8) + Filter Panel (4) */}
+          {/* Row 2: Income vs Expense (8) + Quick Insights (4) */}
           <div className="md:col-span-8">
             <IncomeVsExpenseChart />
           </div>
           <div className="md:col-span-4">
-            <FilterPanel />
+            <QuickInsights />
           </div>
 
-          {/* Bottom Row: Table (full) */}
+          {/* Row 3: Transaction list (full width) */}
           <div className="md:col-span-12">
             <CompactRecentFlow />
           </div>
-
         </div>
       </div>
     </ExpensesProvider>
   );
 }
-

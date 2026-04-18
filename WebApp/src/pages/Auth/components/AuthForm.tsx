@@ -32,8 +32,8 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
           email,
           password,
           options: {
-            emailRedirectTo: window.location.origin
-          }
+            emailRedirectTo: window.location.origin,
+          },
         });
         if (signUpError) throw signUpError;
         setMessage("Success! Check your email for the confirmation link.");
@@ -92,9 +92,7 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
             onClick={() => setShowPassword(!showPassword)}
             className="absolute right-0 inset-y-0 w-12 flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors focus:outline-none cursor-pointer"
           >
-            <span className="material-symbols-outlined text-[18px]">
-              {showPassword ? "lock_open" : "lock"}
-            </span>
+            <span className="material-symbols-outlined text-[18px]">{showPassword ? "lock_open" : "lock"}</span>
           </button>
         </div>
 

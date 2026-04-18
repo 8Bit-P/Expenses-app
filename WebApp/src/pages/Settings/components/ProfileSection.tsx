@@ -5,7 +5,11 @@ export default function ProfileSection() {
         <div className="flex items-center gap-6">
           <div className="relative group cursor-pointer">
             <div className="w-24 h-24 rounded-xl overflow-hidden ring-4 ring-primary-container/30">
-              <img alt="User Avatar" className="w-full h-full object-cover" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Julian" />
+              <img
+                alt="User Avatar"
+                className="w-full h-full object-cover"
+                src="https://api.dicebear.com/7.x/avataaars/svg?seed=Julian"
+              />
             </div>
             <button className="absolute -bottom-2 -right-2 bg-primary text-white p-2 rounded-full shadow-lg scale-90 group-hover:scale-100 transition-transform flex items-center justify-center">
               <span className="material-symbols-outlined text-sm">edit</span>
@@ -21,7 +25,7 @@ export default function ProfileSection() {
           Edit
         </button>
       </div>
-      
+
       <div className="grid grid-cols-2 gap-4">
         <div className="p-4 rounded-xl bg-surface-container-low">
           <p className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest mb-1">Name</p>

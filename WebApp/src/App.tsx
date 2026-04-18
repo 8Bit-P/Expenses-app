@@ -26,11 +26,7 @@ export default function App() {
       </AuthProvider>
 
       {/* Devtools: These automatically hide in production builds, so it's safe to leave this line! */}
-      <ReactQueryDevtools
-        initialIsOpen={false}
-        buttonPosition="bottom-right" 
-        position="bottom" 
-      />
+      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" position="bottom" />
     </QueryClientProvider>
   );
 }

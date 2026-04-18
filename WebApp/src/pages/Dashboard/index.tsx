@@ -5,7 +5,6 @@ import CashFlow from "./components/CashFlow";
 export default function Dashboard() {
   return (
     <div className="space-y-12 animate-in fade-in duration-500">
-      
       {/* Summary Row */}
       <SummaryRow />
 
@@ -17,7 +16,6 @@ export default function Dashboard() {
 
       {/* Bottom Row: Goals & Subscriptions */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-12">
-        
         {/* Savings Goals */}
         <div className="bg-surface-container-lowest p-8 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-8">
@@ -49,7 +47,9 @@ export default function Dashboard() {
           <div className="space-y-4">
             <div className="flex items-center justify-between p-4 bg-surface rounded-2xl border border-transparent hover:border-outline-variant/20 transition-all group">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-error-container flex items-center justify-center text-error font-black italic">N</div>
+                <div className="w-12 h-12 rounded-xl bg-error-container flex items-center justify-center text-error font-black italic">
+                  N
+                </div>
                 <div>
                   <h4 className="font-bold text-sm">Netflix</h4>
                   <p className="text-xs text-on-surface-variant">Due in 3 days</p>
@@ -62,7 +62,6 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-
       </section>
     </div>
   );

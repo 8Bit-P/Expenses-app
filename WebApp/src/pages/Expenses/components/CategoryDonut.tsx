@@ -1,8 +1,19 @@
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { useExpenses } from '../../../context/ExpensesContext';
-import { useTransactions } from '../../../hooks/useTransactions';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { useExpenses } from "../../../context/ExpensesContext";
+import { useTransactions } from "../../../hooks/useTransactions";
 
-const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#14b8a6', '#3b82f6', '#06b6d4'];
+const COLORS = [
+  "#6366f1",
+  "#8b5cf6",
+  "#ec4899",
+  "#f43f5e",
+  "#f97316",
+  "#eab308",
+  "#22c55e",
+  "#14b8a6",
+  "#3b82f6",
+  "#06b6d4",
+];
 
 export default function CategoryDonut() {
   // Read date + category filters from context, but fetch all (no pagination) for the chart
@@ -26,10 +37,10 @@ export default function CategoryDonut() {
   const categoryMap: Record<string, { name: string; emoji: string | null; value: number }> = {};
 
   transactions
-    .filter(t => t.type === 'expense')
-    .forEach(t => {
-      const key = t.category?.id || 'uncategorized';
-      const name = t.category?.name || 'Uncategorized';
+    .filter((t) => t.type === "expense")
+    .forEach((t) => {
+      const key = t.category?.id || "uncategorized";
+      const name = t.category?.name || "Uncategorized";
       const emoji = t.category?.emoji ?? null;
       if (!categoryMap[key]) {
         categoryMap[key] = { name, emoji, value: 0 };
@@ -45,11 +56,10 @@ export default function CategoryDonut() {
     }));
 
   const total = data.reduce((sum, item) => sum + item.value, 0);
-  const topPercent = data.length > 0 ? ((data[0].value / total) * 100).toFixed(0) : '0';
+  const topPercent = data.length > 0 ? ((data[0].value / total) * 100).toFixed(0) : "0";
 
   return (
     <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 flex flex-col">
-
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <div>
@@ -76,14 +86,7 @@ export default function CategoryDonut() {
           <div className="relative w-full shrink-0 min-w-0">
             <ResponsiveContainer width="100%" height={200} minWidth={1} minHeight={1} debounce={50}>
               <PieChart>
-                <Pie
-                  data={data}
-                  innerRadius={62}
-                  outerRadius={84}
-                  paddingAngle={2}
-                  dataKey="value"
-                  stroke="none"
-                >
+                <Pie data={data} innerRadius={62} outerRadius={84} paddingAngle={2} dataKey="value" stroke="none">
                   {data.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
@@ -91,12 +94,12 @@ export default function CategoryDonut() {
                 <Tooltip
                   formatter={(value: any, name: any) => [`$${(value as number).toFixed(2)}`, name]}
                   contentStyle={{
-                    backgroundColor: 'var(--surface-container-lowest)',
-                    borderColor: 'var(--outline-variant)',
-                    borderRadius: '10px',
-                    color: 'var(--on-surface)',
-                    fontWeight: 'bold',
-                    fontSize: '12px',
+                    backgroundColor: "var(--surface-container-lowest)",
+                    borderColor: "var(--outline-variant)",
+                    borderRadius: "10px",
+                    color: "var(--on-surface)",
+                    fontWeight: "bold",
+                    fontSize: "12px",
                   }}
                 />
               </PieChart>
@@ -121,10 +124,12 @@ export default function CategoryDonut() {
 
           <div className="mt-4 category-legend overflow-y-auto max-h-45 pr-2 space-y-1.5">
             {data.map((item, index) => {
-              const pct = total > 0 ? ((item.value / total) * 100).toFixed(0) : '0';
+              const pct = total > 0 ? ((item.value / total) * 100).toFixed(0) : "0";
               return (
-                <div key={index} className="flex items-center gap-3 py-1.5 px-2 rounded-xl hover:bg-surface-container-low/60 transition-colors group cursor-default">
-
+                <div
+                  key={index}
+                  className="flex items-center gap-3 py-1.5 px-2 rounded-xl hover:bg-surface-container-low/60 transition-colors group cursor-default"
+                >
                   {/* Color dot */}
                   <div
                     className="w-2.5 h-2.5 rounded-full shrink-0 group-hover:scale-125 transition-transform"
@@ -133,9 +138,7 @@ export default function CategoryDonut() {
 
                   {/* Emoji + Name */}
                   <div className="flex items-center gap-1.5 flex-1 min-w-0">
-                    {item.emoji && (
-                      <span className="text-base leading-none select-none">{item.emoji}</span>
-                    )}
+                    {item.emoji && <span className="text-base leading-none select-none">{item.emoji}</span>}
                     <span className="text-xs font-semibold text-on-surface-variant group-hover:text-on-surface transition-colors truncate">
                       {item.name}
                     </span>
@@ -148,14 +151,12 @@ export default function CategoryDonut() {
                       ${item.value >= 1000 ? `${(item.value / 1000).toFixed(1)}k` : item.value.toFixed(2)}
                     </span>
                   </div>
-
                 </div>
               );
             })}
           </div>
         </>
       )}
-
     </div>
   );
 }

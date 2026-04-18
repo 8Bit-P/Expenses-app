@@ -1,7 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '../lib/supabase';
-import { useAuth } from '../context/AuthContext';
-import type { Transaction, TransactionFilters } from '../types/expenses';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "../lib/supabase";
+import { useAuth } from "../context/AuthContext";
+import type { Transaction, TransactionFilters } from "../types/expenses";
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -16,25 +16,20 @@ export function useTransactions(filters?: TransactionFilters) {
   const to = from + pageSize - 1;
 
   // --- 1. FETCH TRANSACTIONS (paginated) ---
-  const {
-    data,
-    isLoading,
-    error,
-    refetch,
-  } = useQuery({
-    queryKey: ['transactions', userId, filters],
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["transactions", userId, filters],
     queryFn: async () => {
       let query = supabase
-        .from('transactions')
-        .select('*, category:categories(*)', { count: 'exact' })
-        .eq('user_id', userId!)
-        .order('date', { ascending: false });
+        .from("transactions")
+        .select("*, category:categories(*)", { count: "exact" })
+        .eq("user_id", userId!)
+        .order("date", { ascending: false });
 
-      if (filters?.startDate) query = query.gte('date', filters.startDate);
-      if (filters?.endDate) query = query.lte('date', filters.endDate);
-      if (filters?.categoryId) query = query.eq('category_id', filters.categoryId);
-      if (filters?.type) query = query.eq('type', filters.type);
-      if (filters?.search) query = query.ilike('description', `%${filters.search}%`);
+      if (filters?.startDate) query = query.gte("date", filters.startDate);
+      if (filters?.endDate) query = query.lte("date", filters.endDate);
+      if (filters?.categoryId) query = query.eq("category_id", filters.categoryId);
+      if (filters?.type) query = query.eq("type", filters.type);
+      if (filters?.search) query = query.ilike("description", `%${filters.search}%`);
 
       // Apply pagination range
       query = query.range(from, to);
@@ -53,17 +48,17 @@ export function useTransactions(filters?: TransactionFilters) {
 
   // --- 2. ADD TRANSACTION ---
   const addTransaction = useMutation({
-    mutationFn: async (transaction: Omit<Transaction, 'id' | 'created_at' | 'user_id'>) => {
+    mutationFn: async (transaction: Omit<Transaction, "id" | "created_at" | "user_id">) => {
       const { data, error } = await supabase
-        .from('transactions')
+        .from("transactions")
         .insert([{ ...transaction, user_id: userId }])
-        .select('*, category:categories(*)')
+        .select("*, category:categories(*)")
         .single();
       if (error) throw new Error(error.message);
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
     },
   });
 
@@ -71,28 +66,28 @@ export function useTransactions(filters?: TransactionFilters) {
   const updateTransaction = useMutation({
     mutationFn: async ({ id, updates }: { id: string; updates: Partial<Transaction> }) => {
       const { data, error } = await supabase
-        .from('transactions')
+        .from("transactions")
         .update(updates)
-        .eq('id', id)
-        .select('*, category:categories(*)')
+        .eq("id", id)
+        .select("*, category:categories(*)")
         .single();
       if (error) throw new Error(error.message);
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
     },
   });
 
   // --- 4. DELETE TRANSACTION ---
   const deleteTransaction = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from('transactions').delete().eq('id', id);
+      const { error } = await supabase.from("transactions").delete().eq("id", id);
       if (error) throw new Error(error.message);
       return true;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
     },
   });
 
