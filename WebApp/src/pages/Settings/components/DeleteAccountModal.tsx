@@ -1,15 +1,17 @@
+import { useDeleteAccount } from "../../../hooks/useDeleteAccount";
+
 interface DeleteAccountModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
 export default function DeleteAccountModal({ isOpen, onClose }: DeleteAccountModalProps) {
+  const { mutate: deleteAccount, isPending } = useDeleteAccount();
+
   if (!isOpen) return null;
 
   const handleDelete = () => {
-    // TODO: Wire up to Supabase deletion logic later
-    console.log("Account deleted");
-    onClose();
+    deleteAccount();
   };
 
   return (
@@ -29,15 +31,24 @@ export default function DeleteAccountModal({ isOpen, onClose }: DeleteAccountMod
         <div className="p-4 bg-surface-container-low flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 py-3 px-4 rounded-xl font-bold text-sm text-on-surface hover:bg-surface-container-highest transition-colors"
+            disabled={isPending}
+            className="flex-1 py-3 px-4 rounded-xl font-bold text-sm text-on-surface hover:bg-surface-container-highest transition-colors disabled:opacity-50"
           >
             Cancel
           </button>
           <button
             onClick={handleDelete}
-            className="flex-1 py-3 px-4 rounded-xl font-bold text-sm bg-error text-white shadow-md hover:bg-error/90 active:scale-95 transition-all"
+            disabled={isPending}
+            className="flex-1 py-3 px-4 rounded-xl font-bold text-sm bg-error text-white shadow-md hover:bg-error/90 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            Yes, Delete Everything
+            {isPending ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Deleting…
+              </>
+            ) : (
+              "Yes, Delete Everything"
+            )}
           </button>
         </div>
       </div>

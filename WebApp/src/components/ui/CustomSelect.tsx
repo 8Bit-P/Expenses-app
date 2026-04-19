@@ -24,7 +24,7 @@ export function CustomSelect<T extends string = string>({
 }: CustomSelectProps<T>) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const selected = options.find((o) => o.value === value) ?? options[0];
+  const selected = options.find((o) => o.value === value) ?? options[0] ?? { value: "", label: "" };
 
   // Close on outside click
   useEffect(() => {
