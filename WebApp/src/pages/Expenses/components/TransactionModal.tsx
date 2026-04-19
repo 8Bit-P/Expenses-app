@@ -9,7 +9,7 @@ import EmojiPicker, { EmojiStyle } from "emoji-picker-react";
 interface TransactionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  transaction?: any; // Pass null for "New", pass object for "Edit"
+  transaction?: any;
 }
 
 export default function TransactionModal({ isOpen, onClose, transaction }: TransactionModalProps) {
@@ -17,7 +17,6 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
   const { addTransaction, updateTransaction } = useTransactions();
   const { currency } = useUserPreferences();
 
-  // Local state for form fields
   const [type, setType] = useState<TransactionType>("expense");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
@@ -31,7 +30,6 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
   const [categoryError, setCategoryError] = useState<string | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  // When modal opens, populate it if we are editing
   useEffect(() => {
     if (isOpen) {
       if (transaction) {
@@ -55,20 +53,12 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
     }
   }, [transaction, isOpen, categories]);
 
-  // Close modal on Escape key press
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
+      if (e.key === "Escape") onClose();
     };
-
-    if (isOpen) {
-      window.addEventListener("keydown", handleKeyDown);
-    }
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
+    if (isOpen) window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
@@ -93,10 +83,8 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
       } else {
         await addTransaction(data);
       }
-
       onClose();
     } catch (err: any) {
-      // TanStack Query throws the error, so we catch it here
       alert(err.message || "Something went wrong while saving.");
     } finally {
       setIsSubmitting(false);
@@ -104,37 +92,35 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
   };
 
   return (
-    // Overlay
-    <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm animate-in fade-in duration-200">
-      {/* Modal Window */}
-      <div className="bg-surface-container-lowest/90 backdrop-blur-xl w-full max-w-xl rounded-2xl shadow-2xl border border-outline-variant/20 ring-1 ring-black/5 animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/60 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="bg-surface-container-lowest/95 backdrop-blur-xl w-full max-w-xl rounded-3xl shadow-2xl border border-outline-variant/20 ring-1 ring-black/5 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 overflow-visible">
         {/* Header */}
-        <div className="px-8 pt-8 pb-6">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-2xl font-extrabold text-on-surface tracking-tight font-headline">
+        <div className="px-8 pt-8 pb-6 border-b border-outline-variant/5">
+          <div className="flex justify-between items-center mb-1">
+            <h2 className="text-2xl font-black text-on-surface tracking-tight font-headline">
               {isEditing ? "Modify Transaction" : "New Transaction"}
             </h2>
             <button
               onClick={onClose}
-              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors"
+              className="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container-low hover:bg-surface-container-high transition-colors text-on-surface-variant"
             >
-              <span className="material-symbols-outlined text-on-surface-variant text-[20px]">close</span>
+              <span className="material-symbols-outlined text-[20px]">close</span>
             </button>
           </div>
-          <p className="text-on-surface-variant text-sm font-medium">
+          <p className="text-on-surface-variant/80 text-sm font-medium">
             {isEditing ? "Update the details of your ledger entry." : "Record your financial movements with precision."}
           </p>
         </div>
 
         {/* Body */}
-        <div className="px-8 pb-8 space-y-6">
+        <div className="p-8 space-y-6">
           {/* Type Toggle */}
-          <div className="flex bg-surface-container-low p-1 rounded-xl gap-1">
+          <div className="flex bg-surface-container-low p-1.5 rounded-xl gap-1 border border-outline-variant/5">
             <button
               onClick={() => setType("expense")}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 cursor-pointer rounded-lg font-bold text-sm transition-all duration-300 ${
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-black text-xs uppercase tracking-widest transition-all duration-300 ${
                 type === "expense"
-                  ? "bg-error-container text-error shadow-sm"
+                  ? "bg-error text-on-error shadow-md shadow-error/20 scale-[1.02]"
                   : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
               }`}
             >
@@ -143,9 +129,9 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
             </button>
             <button
               onClick={() => setType("income")}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 cursor-pointer rounded-lg font-bold text-sm transition-all duration-300 ${
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-black text-xs uppercase tracking-widest transition-all duration-300 ${
                 type === "income"
-                  ? "bg-secondary-container text-secondary shadow-sm"
+                  ? "bg-secondary text-on-secondary shadow-md shadow-secondary/20 scale-[1.02]"
                   : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
               }`}
             >
@@ -154,15 +140,22 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
             </button>
           </div>
 
-          {/* Amount Input */}
-          <div className="relative group">
-            <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
+          {/* Amount Input (Hero Section) */}
+          <div
+            className={`relative group p-5 rounded-2xl border transition-all duration-300 ${type === "expense" ? "bg-error/5 border-error/20 focus-within:border-error/50 focus-within:ring-4 focus-within:ring-error/10" : "bg-secondary/5 border-secondary/20 focus-within:border-secondary/50 focus-within:ring-4 focus-within:ring-secondary/10"}`}
+          >
+            <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1">
               Amount
             </label>
-            <div className="relative flex items-center">
-              <span className="absolute left-6 text-2xl font-bold text-on-surface-variant">{currency.symbol}</span>
+            <div className="flex items-center">
+              <span
+                className={`text-3xl font-black mr-2 ${type === "expense" ? "text-error/70" : "text-secondary/70"}`}
+              >
+                {currency.symbol}
+              </span>
               <input
-                className="w-full bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-5 pl-12 pr-6 text-3xl font-black text-on-surface transition-all placeholder:text-on-surface-variant/30 outline-none"
+                autoFocus
+                className="w-full bg-transparent border-none text-4xl font-black text-on-surface placeholder:text-on-surface-variant/30 outline-none p-0 focus:ring-0"
                 type="number"
                 step="0.01"
                 placeholder="0.00"
@@ -172,152 +165,156 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
             </div>
           </div>
 
-          {/* Date Picker */}
-          <div className="space-y-2">
+          {/* Category (Moved up below Amount for max dropdown space) */}
+          <div className="space-y-2 relative z-50">
             <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-              Date
+              Category
             </label>
-            <input
-              type="date"
-              className="w-full bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-3 px-4 text-sm font-semibold text-on-surface outline-none"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-            />
+            {isCreatingCategory ? (
+              <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 flex items-center bg-surface-container border border-outline-variant/30 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20 rounded-xl px-1 transition-all">
+                    <div className="relative flex items-center">
+                      <button
+                        type="button"
+                        onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                        className="w-12 h-12 flex items-center justify-center bg-transparent border-none outline-none text-2xl hover:bg-surface-container-high rounded-lg transition-colors select-none"
+                      >
+                        {newCategoryEmoji}
+                      </button>
+
+                      {showEmojiPicker && (
+                        <div className="absolute top-[110%] left-0 z-[60] shadow-2xl rounded-xl animate-in fade-in zoom-in-95 border border-outline-variant/20">
+                          <EmojiPicker
+                            emojiStyle={EmojiStyle.NATIVE}
+                            onEmojiClick={(e) => {
+                              setNewCategoryEmoji(e.emoji);
+                              setShowEmojiPicker(false);
+                            }}
+                            skinTonesDisabled
+                            theme={"dark" as any}
+                            width={320}
+                            height={350}
+                          />
+                        </div>
+                      )}
+                    </div>
+                    <div className="w-px h-6 bg-outline-variant/30 mx-1" />
+                    <input
+                      type="text"
+                      className="flex-1 bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-sm font-semibold text-on-surface placeholder:text-on-surface-variant/40 py-3.5 px-3"
+                      value={newCategoryName}
+                      onChange={(e) => setNewCategoryName(e.target.value)}
+                      placeholder="Name this category..."
+                      autoFocus
+                    />
+                  </div>
+
+                  <button
+                    onClick={async () => {
+                      if (!newCategoryName) {
+                        setCategoryError("Name required");
+                        return;
+                      }
+                      setIsSubmitting(true);
+                      setCategoryError(null);
+                      try {
+                        const newCat = await addCategory({ name: newCategoryName, emoji: newCategoryEmoji });
+                        setCategoryId(newCat.id);
+                        setIsCreatingCategory(false);
+                        setNewCategoryName("");
+                        setNewCategoryEmoji("📦");
+                      } catch (e: any) {
+                        setCategoryError(e.message || "Error creating category");
+                      } finally {
+                        setIsSubmitting(false);
+                      }
+                    }}
+                    disabled={isSubmitting}
+                    className="w-14 h-14 shrink-0 rounded-xl bg-primary text-on-primary flex items-center justify-center hover:opacity-90 active:scale-95 transition-all outline-none"
+                  >
+                    <span className="material-symbols-outlined text-[20px]">check</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsCreatingCategory(false);
+                      setNewCategoryName("");
+                      setCategoryError(null);
+                    }}
+                    className="w-14 h-14 shrink-0 rounded-xl bg-surface-container-high border border-outline-variant/10 text-on-surface-variant flex items-center justify-center hover:bg-surface-container-highest transition-colors outline-none"
+                  >
+                    <span className="material-symbols-outlined text-[20px]">close</span>
+                  </button>
+                </div>
+                {categoryError && (
+                  <p className="text-xs font-bold text-error px-2 flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[14px]">error</span>
+                    {categoryError}
+                  </p>
+                )}
+              </div>
+            ) : (
+              <CustomSelect
+                value={categoryId}
+                options={[
+                  ...(categoryId === "" ? [{ value: "", label: "Select Category" }] : []),
+                  ...categories.map((cat: Category) => ({ value: cat.id, label: `${cat.emoji ?? ""} ${cat.name}` })),
+                ]}
+                onChange={setCategoryId}
+                className="w-full bg-surface-container border-none rounded-xl py-1 text-sm font-semibold focus:ring-2 focus:ring-primary/50"
+                onAddAction={() => setIsCreatingCategory(true)}
+                addActionLabel="Create new category"
+              />
+            )}
           </div>
 
-          {/* Description & Category */}
-          <div className="space-y-4">
+          {/* Date & Description Row (Side by side) */}
+          <div className="grid grid-cols-2 gap-4 relative z-40">
+            <div className="space-y-2">
+              <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
+                Date
+              </label>
+              <div className="relative">
+                <input
+                  type="date"
+                  className="w-full bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-3.5 px-4 text-sm font-semibold text-on-surface outline-none [&::-webkit-calendar-picker-indicator]:opacity-50"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                />
+              </div>
+            </div>
+
             <div className="space-y-2">
               <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
                 Description
               </label>
               <input
-                className="w-full bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-3 px-4 text-sm font-semibold text-on-surface placeholder:text-on-surface-variant/50 outline-none"
+                className="w-full bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-3.5 px-4 text-sm font-semibold text-on-surface placeholder:text-on-surface-variant/40 outline-none"
                 placeholder="e.g. Grocery Run"
                 type="text"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
-            <div className="space-y-2">
-              <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                Category
-              </label>
-              {isCreatingCategory ? (
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1 flex items-center w-full bg-surface-container border border-outline-variant/30 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/30 rounded-xl px-1 transition-all">
-                      <div className="relative flex items-center">
-                        <button
-                          type="button"
-                          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                          className="w-12 text-center bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-xl py-2 hover:bg-surface-container-high rounded-lg transition-colors select-none"
-                        >
-                          {newCategoryEmoji}
-                        </button>
-                        
-                        {showEmojiPicker && (
-                          <div className="absolute top-[110%] left-0 z-50 shadow-2xl rounded-xl animate-in fade-in zoom-in-95">
-                            <EmojiPicker
-                              emojiStyle={EmojiStyle.NATIVE}
-                              onEmojiClick={(e) => {
-                                setNewCategoryEmoji(e.emoji);
-                                setShowEmojiPicker(false);
-                              }}
-                              skinTonesDisabled
-                              theme={"dark" as any}
-                              width={300}
-                              height={350}
-                            />
-                          </div>
-                        )}
-                      </div>
-                      <div className="w-px h-6 bg-outline-variant/30 mx-1" />
-                      <input
-                        type="text"
-                        className="flex-1 bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-sm font-semibold text-on-surface placeholder:text-on-surface-variant/40 py-3 px-2"
-                        value={newCategoryName}
-                        onChange={(e) => setNewCategoryName(e.target.value)}
-                        placeholder="Category Name"
-                        autoFocus
-                      />
-                    </div>
-                    <button 
-                      onClick={async () => {
-                        if (!newCategoryName) {
-                          setCategoryError("Please enter a category name");
-                          return;
-                        }
-                        setIsSubmitting(true);
-                        setCategoryError(null);
-                        try {
-                          const newCat = await addCategory({ name: newCategoryName, emoji: newCategoryEmoji });
-                          setCategoryId(newCat.id);
-                          setIsCreatingCategory(false);
-                          setNewCategoryName("");
-                          setNewCategoryEmoji("📦");
-                        } catch (e: any) {
-                          setCategoryError(e.message || "Error creating category");
-                        } finally {
-                          setIsSubmitting(false);
-                        }
-                      }}
-                      className="w-11 h-11 shrink-0 rounded-xl bg-primary text-on-primary flex items-center justify-center hover:opacity-90 active:scale-95 transition-all outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                      disabled={isSubmitting}
-                    >
-                      <span className="material-symbols-outlined text-[18px]">check</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                          setIsCreatingCategory(false);
-                          setNewCategoryName("");
-                          setCategoryError(null);
-                      }}
-                      className="w-11 h-11 shrink-0 rounded-xl bg-surface-container border border-outline-variant/30 text-on-surface-variant flex items-center justify-center hover:bg-surface-container-high transition-colors outline-none focus:ring-2 focus:ring-offset-2 focus:ring-outline-variant"
-                    >
-                      <span className="material-symbols-outlined text-[18px]">close</span>
-                    </button>
-                  </div>
-                  {categoryError && (
-                    <p className="text-xs font-semibold text-error px-1 flex items-center gap-1 animate-in fade-in slide-in-from-top-1">
-                      <span className="material-symbols-outlined text-[14px]">error</span>
-                      {categoryError}
-                    </p>
-                  )}
-                </div>
-              ) : (
-                <CustomSelect
-                  value={categoryId}
-                  options={[
-                    ...(categoryId === "" ? [{ value: "", label: "Select Category" }] : []),
-                    ...categories.map((cat: Category) => ({ value: cat.id, label: `${cat.emoji ?? ""} ${cat.name}` })),
-                  ]}
-                  onChange={setCategoryId}
-                  className="w-full"
-                  onAddAction={() => setIsCreatingCategory(true)}
-                  addActionLabel="Create new category"
-                />
-              )}
-            </div>
           </div>
+        </div>
 
-          {/* Action Buttons */}
-          <div className="flex items-center gap-4 pt-6">
-            <button
-              onClick={onClose}
-              className="flex-1 py-3 px-4 rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container transition-all"
-              disabled={isSubmitting}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleSave}
-              disabled={isSubmitting || !amount || !categoryId}
-              className="flex-2 py-3 px-4 rounded-xl font-bold text-sm text-on-primary bg-primary hover:opacity-90 active:scale-[0.98] transition-all shadow-sm disabled:opacity-50"
-            >
-              {isSubmitting ? "Saving..." : isEditing ? "Save Changes" : "Confirm Entry"}
-            </button>
-          </div>
+        {/* Action Buttons */}
+        <div className="p-6 bg-surface-container-lowest border-t border-outline-variant/10 flex items-center gap-4 rounded-b-3xl">
+          <button
+            onClick={onClose}
+            className="flex-1 py-3.5 px-4 rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container-high transition-all"
+            disabled={isSubmitting}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={isSubmitting || !amount || !categoryId}
+            className="flex-[2] py-3.5 px-4 rounded-xl font-bold text-sm text-on-primary bg-primary hover:opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:shadow-none"
+          >
+            {isSubmitting ? "Saving Entry..." : isEditing ? "Save Changes" : "Confirm Entry"}
+          </button>
         </div>
       </div>
     </div>

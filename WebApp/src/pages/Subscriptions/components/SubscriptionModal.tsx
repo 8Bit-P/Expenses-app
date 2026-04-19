@@ -3,6 +3,7 @@ import type { BillingCycle, Subscription } from "../../../types/expenses";
 import { useSubscriptions } from "../../../hooks/useSubscriptions";
 import { useCategories } from "../../../hooks/useCategories";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
+import { CustomSelect } from "../../../components/ui/CustomSelect";
 
 interface SubscriptionModalProps {
   isOpen: boolean;
@@ -159,25 +160,15 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
                 <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
                   Category
                 </label>
-                <div className="relative">
-                  <select
-                    className="w-full bg-surface-container border-none rounded-xl px-4 py-3.5 text-sm font-semibold text-on-surface focus:ring-2 focus:ring-primary/50 transition-all appearance-none outline-none cursor-pointer"
-                    value={categoryId}
-                    onChange={(e) => setCategoryId(e.target.value)}
-                  >
-                    <option value="" disabled>
-                      Select category
-                    </option>
-                    {categories.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
-                        {cat.emoji} {cat.name}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">
-                    <span className="material-symbols-outlined text-[18px]">expand_more</span>
-                  </div>
-                </div>
+                <CustomSelect
+                  value={categoryId}
+                  options={[
+                    ...(categoryId === "" ? [{ value: "", label: "Select category" }] : []),
+                    ...categories.map((cat) => ({ value: cat.id, label: `${cat.emoji} ${cat.name}` })),
+                  ]}
+                  onChange={setCategoryId}
+                  className="w-full"
+                />
               </div>
             </div>
 
