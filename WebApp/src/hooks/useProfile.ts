@@ -27,9 +27,12 @@ export function useProfile() {
     mutationFn: async (updates: Partial<Profile>) => {
       if (!userId) throw new Error("User not authenticated");
 
+      const email = session?.user?.email;
+      if (!email) throw new Error("User email not found");
+
       const { data, error } = await supabase
         .from("profiles")
-        .upsert({ id: userId, ...updates })
+        .upsert({ id: userId, email, ...updates })
         .select()
         .single();
 
