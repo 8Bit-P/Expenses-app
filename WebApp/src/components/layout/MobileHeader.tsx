@@ -1,6 +1,6 @@
 import { useUserPreferences } from "../../context/UserPreferencesContext";
 
-export default function MobileHeader() {
+export default function MobileHeader({ onNewTransaction }: { onNewTransaction: () => void }) {
   const { resolvedTheme, setTheme } = useUserPreferences();
   const isDark = resolvedTheme === "dark";
 
@@ -20,6 +20,17 @@ export default function MobileHeader() {
 
       {/* Actions (Theme & Notifications) */}
       <div className="flex items-center gap-1">
+        <button
+          onClick={onNewTransaction}
+          className="h-9 px-4 rounded-full bg-primary text-on-primary shadow-sm shadow-primary/20 hover:shadow-md active:scale-95 transition-all ml-1 flex items-center justify-center gap-2"
+          aria-label="New Transaction"
+        >
+          <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'wght' 700" }}>
+            add
+          </span>
+          <span className="text-[10px] font-black uppercase tracking-[0.1em]">New</span>
+        </button>
+
         {/* Seamless Sun/Moon Theme Toggle */}
         <button
           onClick={() => setTheme(isDark ? "light" : "dark")}

@@ -1,5 +1,8 @@
 export type TransactionType = "expense" | "income";
 
+export type BillingCycle = "monthly" | "yearly" | "weekly" | "quarterly";
+export type SubscriptionStatus = "active" | "paused" | "cancelled";
+
 export interface Category {
   id: string;
   user_id: string;
@@ -7,6 +10,20 @@ export interface Category {
   description: string | null;
   emoji: string | null;
   created_at: string;
+}
+
+export interface Subscription {
+  id: string;
+  user_id: string;
+  name: string;
+  amount: number;
+  billing_cycle: BillingCycle;
+  next_billing_date: string;
+  status: SubscriptionStatus;
+  created_at: string;
+  // Metadata for UI
+  icon?: string;
+  color?: string;
 }
 
 export interface Transaction {

@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { CustomSelect } from "../../../components/ui/CustomSelect";
 import { CURRENCIES, DATE_FORMATS } from "../../../constants/preferences";
 import type { Theme, Currency, DateFormat } from "../../../types/preferences";
-
 
 function ThemeButton({
   value,
@@ -33,30 +32,41 @@ function ThemeButton({
 }
 
 export default function PreferencesSection() {
-  const {
-    theme,
-    setTheme,
-    currency,
-    setCurrency,
-    dateFormat,
-    setDateFormat,
-    monthlyBudget,
-    setMonthlyBudget,
-    budgetLoading,
-  } = useUserPreferences();
+  const { theme, setTheme, currency, setCurrency, dateFormat, monthlyBudget, updateFinancialSettings, budgetLoading } =
+    useUserPreferences();
 
   const [budgetInput, setBudgetInput] = useState(monthlyBudget > 0 ? monthlyBudget.toString() : "");
-  const [budgetSaving, setBudgetSaving] = useState(false);
-  const [budgetSaved, setBudgetSaved] = useState(false);
+  const [localCurrency, setLocalCurrency] = useState<Currency>(currency.code);
+  const [localDateFormat, setLocalDateFormat] = useState<DateFormat>(dateFormat);
 
-  const handleBudgetSave = async () => {
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+
+  // Sync local state when budget/currency/date changes from DB loading
+  useEffect(() => {
+    setBudgetInput(monthlyBudget > 0 ? monthlyBudget.toString() : "");
+    setLocalCurrency(currency.code);
+    setLocalDateFormat(dateFormat);
+  }, [monthlyBudget, currency.code, dateFormat]);
+
+  const handleSave = async () => {
     const parsed = parseFloat(budgetInput);
     const amount = isNaN(parsed) ? 0 : parsed;
-    setBudgetSaving(true);
-    await setMonthlyBudget(amount);
-    setBudgetSaving(false);
-    setBudgetSaved(true);
-    setTimeout(() => setBudgetSaved(false), 2000);
+
+    setIsSaving(true);
+    try {
+      await updateFinancialSettings({
+        monthlyBudget: amount,
+        currency: localCurrency,
+        dateFormat: localDateFormat,
+      });
+      setIsSaved(true);
+      setTimeout(() => setIsSaved(false), 2000);
+    } catch (error) {
+      console.error("Failed to save settings:", error);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -96,9 +106,9 @@ export default function PreferencesSection() {
             <p className="text-xs text-on-surface-variant mt-0.5">Used across all amounts</p>
           </div>
           <CustomSelect
-            value={currency.code}
+            value={localCurrency}
             options={CURRENCIES.map((c) => ({ value: c.code, label: c.label }))}
-            onChange={(code) => setCurrency(code as Currency)}
+            onChange={(code) => setLocalCurrency(code as Currency)}
           />
         </div>
 
@@ -109,9 +119,9 @@ export default function PreferencesSection() {
             <p className="text-xs text-on-surface-variant mt-0.5">How dates are displayed</p>
           </div>
           <CustomSelect
-            value={dateFormat}
+            value={localDateFormat}
             options={DATE_FORMATS.map((f) => ({ value: f.value, label: f.label }))}
-            onChange={(f) => setDateFormat(f as DateFormat)}
+            onChange={(f) => setLocalDateFormat(f as DateFormat)}
           />
         </div>
 
@@ -139,23 +149,31 @@ export default function PreferencesSection() {
                 className="w-full bg-surface-container rounded-lg pl-8 pr-3 py-2.5 text-sm font-bold text-on-surface outline-none focus:ring-2 focus:ring-primary/40 border-none"
               />
             </div>
-            <button
-              onClick={handleBudgetSave}
-              disabled={budgetSaving}
-              className={`px-4 py-2.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${
-                budgetSaved ? "bg-secondary/20 text-secondary" : "bg-primary/10 hover:bg-primary/20 text-primary"
-              } disabled:opacity-50`}
-            >
-              {budgetSaving ? "Saving…" : budgetSaved ? "✓ Saved" : "Save"}
-            </button>
           </div>
           {monthlyBudget > 0 && (
-            <p className="text-xs text-on-surface-variant/60 font-medium">
-              Current: {currency.symbol}
-              {monthlyBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}/month
+            <p className="text-[10px] text-on-surface-variant/40 font-bold uppercase tracking-widest mt-2 ml-1">
+              Current active budget: {currency.symbol}
+              {monthlyBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}
             </p>
           )}
         </div>
+      </div>
+
+      <div className="pt-2 flex justify-end">
+        <button
+          onClick={handleSave}
+          disabled={isSaving}
+          className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 ${
+            isSaved 
+              ? "bg-secondary/20 text-secondary border border-secondary/20" 
+              : "bg-primary text-on-primary shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98]"
+          } disabled:opacity-50`}
+        >
+          <span className="material-symbols-outlined text-[18px]">
+            {isSaving ? "sync" : isSaved ? "check_circle" : "save"}
+          </span>
+          {isSaving ? "Saving Preferences…" : isSaved ? "Preferences Saved" : "Save All Changes"}
+        </button>
       </div>
     </section>
   );

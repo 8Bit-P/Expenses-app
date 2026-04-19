@@ -8,6 +8,7 @@ import AppLayout from "../components/layout/AppLayout";
 const Auth = lazy(() => import("../pages/Auth"));
 const Dashboard = lazy(() => import("../pages/Dashboard"));
 const Expenses = lazy(() => import("../pages/Expenses"));
+const Subscriptions = lazy(() => import("../pages/Subscriptions"));
 const Settings = lazy(() => import("../pages/Settings"));
 
 // A clean, premium loading spinner that fits the Vault aesthetic
@@ -41,14 +42,7 @@ export default function AppRouter() {
               }
             />
 
-            <Route
-              path="/subscriptions"
-              element={
-                <div className="flex items-center justify-center h-64 text-on-surface-variant font-headline font-bold">
-                  Subscriptions Page Coming Soon
-                </div>
-              }
-            />
+            <Route path="/subscriptions" element={<Subscriptions />} />
           </Route>
         </Route>
 

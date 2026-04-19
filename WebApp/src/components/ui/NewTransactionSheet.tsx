@@ -1,68 +1,34 @@
 import { useState } from "react";
 import TransactionModal from "../../pages/Expenses/components/TransactionModal";
+import SubscriptionModal from "../../pages/Subscriptions/components/SubscriptionModal";
+import { TRANSACTION_KINDS, type TransactionKind } from "../../constants/transactions";
 
 interface NewTransactionSheetProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-type TransactionKind = "expense" | "subscription" | "investment";
-
-const TRANSACTION_KINDS: {
-  kind: TransactionKind;
-  icon: string;
-  label: string;
-  description: string;
-  available: boolean;
-  gradient: string;
-  iconBg: string;
-  iconColor: string;
-}[] = [
-  {
-    kind: "expense",
-    icon: "receipt_long",
-    label: "Expense",
-    description: "Record a purchase or payment",
-    available: true,
-    gradient: "from-red-500/10 to-rose-500/5",
-    iconBg: "bg-red-500/15",
-    iconColor: "text-red-400",
-  },
-  {
-    kind: "subscription",
-    icon: "autorenew",
-    label: "Subscription",
-    description: "Track recurring charges",
-    available: false,
-    gradient: "from-violet-500/10 to-purple-500/5",
-    iconBg: "bg-violet-500/15",
-    iconColor: "text-violet-400",
-  },
-  {
-    kind: "investment",
-    icon: "trending_up",
-    label: "Investment",
-    description: "Log an asset or portfolio entry",
-    available: false,
-    gradient: "from-emerald-500/10 to-teal-500/5",
-    iconBg: "bg-emerald-500/15",
-    iconColor: "text-emerald-400",
-  },
-];
-
 export default function NewTransactionSheet({ isOpen, onClose }: NewTransactionSheetProps) {
   const [expenseOpen, setExpenseOpen] = useState(false);
+  const [subOpen, setSubOpen] = useState(false);
 
-  if (!isOpen && !expenseOpen) return null;
+  if (!isOpen && !expenseOpen && !subOpen) return null;
 
   const handleKindSelect = (kind: TransactionKind) => {
     if (kind === "expense") {
       setExpenseOpen(true);
+    } else if (kind === "subscription") {
+      setSubOpen(true);
     }
   };
 
   const handleExpenseClose = () => {
     setExpenseOpen(false);
+    onClose();
+  };
+
+  const handleSubClose = () => {
+    setSubOpen(false);
     onClose();
   };
 
@@ -89,9 +55,7 @@ export default function NewTransactionSheet({ isOpen, onClose }: NewTransactionS
             {/* Header */}
             <div className="flex items-center justify-between px-6 pt-5 pb-4">
               <div>
-                <h2 className="text-xl font-extrabold text-on-surface tracking-tight font-headline">
-                  New Transaction
-                </h2>
+                <h2 className="text-xl font-extrabold text-on-surface tracking-tight font-headline">New Transaction</h2>
                 <p className="text-xs text-on-surface-variant font-medium mt-0.5">
                   What type would you like to record?
                 </p>
@@ -112,12 +76,15 @@ export default function NewTransactionSheet({ isOpen, onClose }: NewTransactionS
                   onClick={() => handleKindSelect(kind)}
                   disabled={!available}
                   className={`group w-full flex items-center gap-4 p-4 rounded-2xl border transition-all duration-200 text-left
-                    ${available
-                      ? `bg-gradient-to-r ${gradient} border-outline-variant/20 hover:border-outline-variant/40 hover:scale-[1.01] active:scale-[0.99] cursor-pointer`
-                      : "border-outline-variant/10 bg-surface-container/40 cursor-not-allowed opacity-60"
+                    ${
+                      available
+                        ? `bg-gradient-to-r ${gradient} border-outline-variant/20 hover:border-outline-variant/40 hover:scale-[1.01] active:scale-[0.99] cursor-pointer`
+                        : "border-outline-variant/10 bg-surface-container/40 cursor-not-allowed opacity-60"
                     }`}
                 >
-                  <div className={`w-12 h-12 rounded-xl ${iconBg} flex items-center justify-center shrink-0 transition-transform duration-200 ${available ? "group-hover:scale-110" : ""}`}>
+                  <div
+                    className={`w-12 h-12 rounded-xl ${iconBg} flex items-center justify-center shrink-0 transition-transform duration-200 ${available ? "group-hover:scale-110" : ""}`}
+                  >
                     <span className={`material-symbols-outlined text-[24px] ${iconColor}`}>{icon}</span>
                   </div>
                   <div className="flex-1 min-w-0">
@@ -145,6 +112,9 @@ export default function NewTransactionSheet({ isOpen, onClose }: NewTransactionS
 
       {/* Expense Modal */}
       <TransactionModal isOpen={expenseOpen} onClose={handleExpenseClose} />
+
+      {/* Subscription Modal */}
+      <SubscriptionModal isOpen={subOpen} onClose={handleSubClose} />
 
       <style>{`
         @keyframes ntSheetIn {

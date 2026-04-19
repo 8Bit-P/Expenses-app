@@ -18,7 +18,7 @@ export default function AppLayout() {
 
       <div className="flex-1 flex flex-col desk:ml-64 pb-24 desk:pb-0">
         {/* Mobile Header (Hidden on desktop) */}
-        <MobileHeader />
+        <MobileHeader onNewTransaction={() => setIsNewTxOpen(true)} />
 
         {/* Desktop TopBar (Hidden on mobile/tablet) */}
         <div className="hidden desk:block">
@@ -30,19 +30,9 @@ export default function AppLayout() {
         </main>
       </div>
 
-      {/* Mobile Bottom Nav & Floating Action Button */}
-      <BottomNav />
 
-      <div className="fixed bottom-24 right-6 z-40 desk:hidden">
-        <button
-          onClick={() => setIsNewTxOpen(true)}
-          className="w-14 h-14 bg-linear-to-br from-primary to-primary-container text-on-primary rounded-2xl shadow-lg flex items-center justify-center active:scale-90 transition-transform"
-        >
-          <span className="material-symbols-outlined" style={{ fontSize: "32px" }}>
-            add
-          </span>
-        </button>
-      </div>
+      {/* Mobile Bottom Nav */}
+      <BottomNav />
 
       {/* Global New Transaction Sheet */}
       <NewTransactionSheet isOpen={isNewTxOpen} onClose={() => setIsNewTxOpen(false)} />

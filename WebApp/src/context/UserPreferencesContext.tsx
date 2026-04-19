@@ -27,9 +27,13 @@ interface UserPreferencesContextType {
   dateFormat: DateFormat;
   setDateFormat: (f: DateFormat) => void;
 
-  // Monthly budget (Supabase-backed)
+  // Financial Settings (Supabase-backed)
   monthlyBudget: number;
-  setMonthlyBudget: (amount: number) => Promise<void>;
+  updateFinancialSettings: (prefs: {
+    monthlyBudget?: number;
+    currency?: Currency;
+    dateFormat?: DateFormat;
+  }) => Promise<void>;
   budgetLoading: boolean;
 
   // Notifications (localStorage)
@@ -129,22 +133,12 @@ export function UserPreferencesProvider({ children }: { children: ReactNode }) {
     const meta = CURRENCIES.find((c) => c.code === code) ?? CURRENCIES[0];
     setCurrencyState(meta);
     setLocalStorageItem("pref:currency", code); // optimistic local update
-    if (userId) {
-      supabase
-        .from("user_preferences")
-        .upsert({ user_id: userId, currency: code }, { onConflict: "user_id" });
-    }
-  }, [userId]);
+  }, []);
 
   const setDateFormat = useCallback((f: DateFormat) => {
     setDateFormatState(f);
     setLocalStorageItem("pref:dateFormat", f); // optimistic local update
-    if (userId) {
-      supabase
-        .from("user_preferences")
-        .upsert({ user_id: userId, date_format: f }, { onConflict: "user_id" });
-    }
-  }, [userId]);
+  }, []);
 
   const setNotifications = useCallback((partial: Partial<NotificationPrefs>) => {
     setNotificationsState((prev) => {
@@ -154,14 +148,29 @@ export function UserPreferencesProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const setMonthlyBudget = useCallback(
-    async (amount: number) => {
+  const updateFinancialSettings = useCallback(
+    async (prefs: { monthlyBudget?: number; currency?: Currency; dateFormat?: DateFormat }) => {
       if (!userId) return;
-      setMonthlyBudgetState(amount);
-      await supabase.from("user_preferences").upsert(
-        { user_id: userId, monthly_budget: amount },
-        { onConflict: "user_id" }
-      );
+
+      const updates: any = { user_id: userId };
+      if (prefs.monthlyBudget !== undefined) {
+        setMonthlyBudgetState(prefs.monthlyBudget);
+        updates.monthly_budget = prefs.monthlyBudget;
+      }
+      if (prefs.currency !== undefined) {
+        const meta = CURRENCIES.find((c) => c.code === prefs.currency) ?? CURRENCIES[0];
+        setCurrencyState(meta);
+        setLocalStorageItem("pref:currency", prefs.currency);
+        updates.currency = prefs.currency;
+      }
+      if (prefs.dateFormat !== undefined) {
+        setDateFormatState(prefs.dateFormat);
+        setLocalStorageItem("pref:dateFormat", prefs.dateFormat);
+        updates.date_format = prefs.dateFormat;
+      }
+
+      const { error } = await supabase.from("user_preferences").upsert(updates, { onConflict: "user_id" });
+      if (error) throw error;
     },
     [userId]
   );
@@ -177,7 +186,7 @@ export function UserPreferencesProvider({ children }: { children: ReactNode }) {
         dateFormat,
         setDateFormat,
         monthlyBudget,
-        setMonthlyBudget,
+        updateFinancialSettings,
         budgetLoading,
         notifications,
         setNotifications,
