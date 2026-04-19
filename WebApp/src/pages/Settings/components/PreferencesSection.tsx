@@ -3,6 +3,7 @@ import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { CustomSelect } from "../../../components/ui/CustomSelect";
 import { CURRENCIES, DATE_FORMATS } from "../../../constants/preferences";
 import type { Theme, Currency, DateFormat } from "../../../types/preferences";
+import { toast } from "sonner";
 
 function ThemeButton({
   value,
@@ -60,10 +61,15 @@ export default function PreferencesSection() {
         currency: localCurrency,
         dateFormat: localDateFormat,
       });
+      toast.success("Preferences updated", {
+        description: "Your financial vault settings are now synchronized.",
+      });
       setIsSaved(true);
       setTimeout(() => setIsSaved(false), 2000);
-    } catch (error) {
-      console.error("Failed to save settings:", error);
+    } catch (error: any) {
+      toast.error("Save failed", {
+        description: error.message || "Could not update your preferences.",
+      });
     } finally {
       setIsSaving(false);
     }

@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 interface SidebarProps {
   onNewTransaction: () => void;
@@ -6,6 +7,7 @@ interface SidebarProps {
 
 export default function Sidebar({ onNewTransaction }: SidebarProps) {
   const location = useLocation();
+  const { signOut } = useAuth();
 
   const navItems = [
     { label: "Dashboard", icon: "dashboard", path: "/" },
@@ -56,15 +58,31 @@ export default function Sidebar({ onNewTransaction }: SidebarProps) {
         })}
       </nav>
 
-      {/* Sleek, Premium Action Button */}
-      <div className="mt-auto">
+      {/* Sleek, Premium Action Buttons Section */}
+      <div className="mt-auto space-y-4">
         <button
           onClick={onNewTransaction}
-          className="w-full py-3.5 px-4 bg-surface-container-lowest hover:bg-surface-container-low text-on-surface rounded-xl flex items-center justify-center gap-2 font-bold transition-all border border-outline-variant/50 active:scale-95 group shadow-sm"
+          className="w-full py-4 px-4 bg-primary text-on-primary rounded-2xl flex items-center justify-center gap-2 font-black text-sm transition-all active:scale-[0.98] group shadow-xl shadow-primary/25 hover:opacity-90"
         >
-          <span className="material-symbols-outlined text-primary group-hover:rotate-90 transition-transform">add</span>
-          New Transaction
+          <span className="material-symbols-outlined text-[20px] group-hover:rotate-90 transition-transform">add</span>
+          Add Transaction
         </button>
+
+        <div className="bg-surface-container-lowest/50 backdrop-blur-md rounded-2xl p-2 border border-outline-variant/10">
+          <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-all group">
+            <span className="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">help</span>
+            <span className="text-xs font-bold">Help</span>
+          </button>
+          <button
+            onClick={() => signOut()}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:text-error hover:bg-error/5 transition-all group"
+          >
+            <span className="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">
+              logout
+            </span>
+            <span className="text-xs font-bold">Sign Out</span>
+          </button>
+        </div>
       </div>
     </aside>
   );

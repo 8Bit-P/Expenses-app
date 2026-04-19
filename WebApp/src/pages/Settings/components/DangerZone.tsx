@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { supabase } from "../../../lib/supabase";
 import { useAuth } from "../../../context/AuthContext";
+import { toast } from "sonner";
 
 interface DangerZoneProps {
   onDeleteClick: () => void;
@@ -40,9 +41,13 @@ export default function DangerZone({ onDeleteClick }: DangerZoneProps) {
       link.download = `transactions-${new Date().toISOString().split("T")[0]}.csv`;
       link.click();
       URL.revokeObjectURL(url);
+      toast.success("Data exported", {
+        description: "Your ledger is ready for external review.",
+      });
     } catch (err) {
-      console.error("CSV export failed:", err);
-      alert("Export failed. Please try again.");
+      toast.error("Export failed", {
+        description: "Could not generate your vault report.",
+      });
     } finally {
       setExporting(false);
     }

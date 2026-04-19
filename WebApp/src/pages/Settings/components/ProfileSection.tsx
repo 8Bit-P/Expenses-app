@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import { supabase } from "../../../lib/supabase";
 import { useProfile } from "../../../hooks/useProfile";
+import { toast } from "sonner";
 
 export default function ProfileSection() {
   const { session } = useAuth();
@@ -40,8 +41,14 @@ export default function ProfileSection() {
 
       // 3. Update Profile Database
       await updateProfile.mutateAsync({ avatar_url: publicUrl });
-    } catch (error) {
-      alert("Error uploading image.");
+
+      toast.success("Avatar updated", {
+        description: "Your vault profile has been secured.",
+      });
+    } catch (error: any) {
+      toast.error("Upload failed", {
+        description: error.message || "Could not update profile picture.",
+      });
     } finally {
       setIsUploading(false);
     }

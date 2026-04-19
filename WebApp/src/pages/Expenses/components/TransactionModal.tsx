@@ -5,6 +5,7 @@ import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { CustomSelect } from "../../../components/ui/CustomSelect";
 import type { Category, TransactionType } from "../../../types/expenses";
 import EmojiPicker, { EmojiStyle } from "emoji-picker-react";
+import { toast } from "sonner";
 
 interface TransactionModalProps {
   isOpen: boolean;
@@ -83,9 +84,16 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
       } else {
         await addTransaction(data);
       }
+
+      toast.success(isEditing ? "Transaction updated" : "Transaction recorded", {
+        description: `${description || (type === "expense" ? "Expense" : "Income")} of ${currency.symbol}${amount} secured.`,
+      });
+
       onClose();
     } catch (err: any) {
-      alert(err.message || "Something went wrong while saving.");
+      toast.error("Save failed", {
+        description: err.message || "Something went wrong while saving.",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -220,11 +228,17 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
                       setCategoryError(null);
                       try {
                         const newCat = await addCategory({ name: newCategoryName, emoji: newCategoryEmoji });
+                        toast.success("Category created", {
+                          description: `${newCategoryEmoji} ${newCategoryName} is now available.`,
+                        });
                         setCategoryId(newCat.id);
                         setIsCreatingCategory(false);
                         setNewCategoryName("");
                         setNewCategoryEmoji("📦");
                       } catch (e: any) {
+                        toast.error("Category failed", {
+                          description: e.message || "Error creating category",
+                        });
                         setCategoryError(e.message || "Error creating category");
                       } finally {
                         setIsSubmitting(false);

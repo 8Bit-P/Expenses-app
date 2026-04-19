@@ -6,6 +6,7 @@ import FlowTableHeader from "./FlowTableHeader";
 import FlowSkeleton from "./FlowSkeleton";
 import FlowRow from "./FlowRow";
 import FlowPagination from "./FlowPagination";
+import { toast } from "sonner";
 
 export default function CompactRecentFlow() {
   const { transactions, loading, page, setPage, totalPages, totalCount, deleteTransaction } = useExpenses();
@@ -34,12 +35,14 @@ export default function CompactRecentFlow() {
     setDeletingId(id);
     setConfirmDeleteId(null);
     try {
-      console.log("Attempting to delete transaction...", id);
       await deleteTransaction(id);
-      console.log("Delete success!");
+      toast.success("Transaction removed", {
+        description: "The ledger entry has been purged from your vault.",
+      });
     } catch (e: any) {
-      console.error("Delete failed:", e);
-      alert(`Delete failed: ${e?.message ?? "Unknown error"}`);
+      toast.error("Delete failed", {
+        description: e?.message ?? "Could not remove the entry.",
+      });
     } finally {
       setDeletingId(null);
     }

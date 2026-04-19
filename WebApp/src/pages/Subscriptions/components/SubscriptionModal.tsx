@@ -4,6 +4,7 @@ import { useSubscriptions } from "../../../hooks/useSubscriptions";
 import { useCategories } from "../../../hooks/useCategories";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { CustomSelect } from "../../../components/ui/CustomSelect";
+import { toast } from "sonner";
 
 interface SubscriptionModalProps {
   isOpen: boolean;
@@ -78,8 +79,16 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
           status: "active",
         });
       }
+
+      toast.success(isEditing ? "Service updated" : "Service added", {
+        description: `${name} has been synchronized with your vault.`,
+      });
+
       onClose();
     } catch (err: any) {
+      toast.error("Process failed", {
+        description: err.message || "Could not save your service.",
+      });
       setErrorMsg(err.message || "Something went wrong.");
     } finally {
       setIsSubmitting(false);
@@ -92,8 +101,14 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
     setIsSubmitting(true);
     try {
       await deleteSubscription.mutateAsync(subscription.id);
+      toast.success("Service removed", {
+        description: `${subscription.name} has been purged from your vault.`,
+      });
       onClose();
     } catch (err: any) {
+      toast.error("Deletion failed", {
+        description: err.message || "Could not remove the service.",
+      });
       setErrorMsg(err.message || "Failed to delete subscription.");
     } finally {
       setIsSubmitting(false);
