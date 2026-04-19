@@ -19,7 +19,7 @@ export function useSubscriptions() {
       if (!userId) return [];
       const { data, error } = await supabase
         .from("subscriptions")
-        .select("*")
+        .select("*, category:categories(*)")
         .eq("user_id", userId)
         .order("next_billing_date", { ascending: true });
 

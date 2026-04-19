@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import type { BillingCycle, Subscription } from "../../../types/expenses";
 import { useSubscriptions } from "../../../hooks/useSubscriptions";
+import { useCategories } from "../../../hooks/useCategories";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 
 interface SubscriptionModalProps {
@@ -11,12 +12,14 @@ interface SubscriptionModalProps {
 
 export default function SubscriptionModal({ isOpen, onClose, subscription }: SubscriptionModalProps) {
   const { addSubscription, updateSubscription, deleteSubscription } = useSubscriptions();
+  const { categories } = useCategories();
   const { currency } = useUserPreferences();
 
   const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
   const [billingCycle, setBillingCycle] = useState<BillingCycle>("monthly");
   const [nextDate, setNextDate] = useState(new Date().toISOString().split("T")[0]);
+  const [categoryId, setCategoryId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -29,12 +32,14 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
       setAmount(subscription.amount.toString());
       setBillingCycle(subscription.billing_cycle);
       setNextDate(subscription.next_billing_date);
+      setCategoryId(subscription.category_id || "");
     } else {
       // Reset for new subscription
       setName("");
       setAmount("");
       setBillingCycle("monthly");
       setNextDate(new Date().toISOString().split("T")[0]);
+      setCategoryId("");
     }
   }, [subscription, isOpen]);
 
@@ -42,7 +47,7 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name || !amount || !nextDate) {
+    if (!name || !amount || !nextDate || !categoryId) {
       setErrorMsg("Please fill in all required fields.");
       return;
     }
@@ -59,6 +64,7 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
             amount: parseFloat(amount),
             billing_cycle: billingCycle,
             next_billing_date: nextDate,
+            category_id: categoryId,
           },
         });
       } else {
@@ -67,6 +73,7 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
           amount: parseFloat(amount),
           billing_cycle: billingCycle,
           next_billing_date: nextDate,
+          category_id: categoryId,
           status: "active",
         });
       }
@@ -93,149 +100,175 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-slate-950/60 backdrop-blur-md animate-in fade-in duration-300"
+      <div
+        className="absolute inset-0 bg-background/60 backdrop-blur-sm animate-in fade-in duration-200"
         onClick={onClose}
       />
-      
+
       {/* Modal Container */}
-      <div 
-        className="relative w-full max-w-lg bg-[#0c1324] text-slate-100 rounded-3xl shadow-2xl overflow-hidden border border-slate-800/50 animate-in zoom-in-95 slide-in-from-bottom-8 duration-300"
+      <div
+        className="relative w-full max-w-lg bg-surface-container-lowest/90 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-outline-variant/20 ring-1 ring-black/5 animate-in zoom-in-95 slide-in-from-bottom-8 duration-300"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-8">
           {/* Header */}
-          <div className="flex items-center space-x-4 mb-10">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 flex items-center justify-center text-indigo-400">
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>add_circle</span>
+          <div className="flex items-center space-x-4 mb-8">
+            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
+                {isEditing ? "edit_square" : "add_circle"}
+              </span>
             </div>
             <div>
-              <h2 className="text-2xl font-black font-headline tracking-tight">
-                {isEditing ? "Manage" : "Add"} Subscription
+              <h2 className="text-2xl font-extrabold font-headline text-on-surface tracking-tight">
+                {isEditing ? "Manage Service" : "New Subscription"}
               </h2>
-              <p className="text-slate-400 text-sm font-medium">
-                {isEditing ? "Update your vault entry." : "Secure your ledger with a new commitment."}
+              <p className="text-on-surface-variant text-sm font-medium">
+                {isEditing ? "Update your recurring vault entry." : "Track a new automated expense."}
               </p>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {errorMsg && (
-              <div className="p-4 bg-error/10 border border-error/20 rounded-2xl text-error text-xs font-bold leading-relaxed">
+              <div className="p-4 bg-error-container/50 border border-error/20 rounded-xl text-error text-xs font-bold leading-relaxed">
                 {errorMsg}
               </div>
             )}
 
-            {/* Service Name */}
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Service Name</label>
-              <div className="relative">
-                <input 
-                  autoFocus
-                  className="w-full bg-slate-800/50 border-none rounded-2xl px-5 py-4 text-slate-100 focus:ring-2 focus:ring-indigo-500 transition-all placeholder-slate-600 outline-none"
-                  placeholder="e.g., Netflix, Spotify"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  type="text"
-                />
+            {/* Service Name & Category Row */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
+                  Service Name
+                </label>
+                <div className="relative">
+                  <input
+                    autoFocus
+                    className="w-full bg-surface-container border-none rounded-xl px-4 py-3.5 text-sm font-semibold text-on-surface focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-on-surface-variant/50 outline-none"
+                    placeholder="e.g., Netflix"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    type="text"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
+                  Category
+                </label>
+                <div className="relative">
+                  <select
+                    className="w-full bg-surface-container border-none rounded-xl px-4 py-3.5 text-sm font-semibold text-on-surface focus:ring-2 focus:ring-primary/50 transition-all appearance-none outline-none cursor-pointer"
+                    value={categoryId}
+                    onChange={(e) => setCategoryId(e.target.value)}
+                  >
+                    <option value="" disabled>
+                      Select category
+                    </option>
+                    {categories.map((cat) => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.emoji} {cat.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">
+                    <span className="material-symbols-outlined text-[18px]">expand_more</span>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Amount & Currency */}
-            <div className="grid grid-cols-3 gap-4">
-              <div className="col-span-2 space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Amount</label>
-                <div className="relative">
-                  <input 
-                    className="w-full bg-slate-800/50 border-none rounded-2xl px-5 py-4 text-slate-100 focus:ring-2 focus:ring-indigo-500 transition-all placeholder-slate-600 outline-none"
+            {/* Amount & Billing Cycle Row */}
+            <div className="grid grid-cols-2 gap-4 items-end">
+              <div className="space-y-2">
+                <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
+                  Amount
+                </label>
+                <div className="relative flex items-center">
+                  <span className="absolute left-4 text-lg font-bold text-on-surface-variant">{currency.symbol}</span>
+                  <input
+                    className="w-full bg-surface-container border-none rounded-xl py-3.5 pl-10 pr-4 text-lg font-black text-on-surface focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-on-surface-variant/30 outline-none"
                     placeholder="0.00"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     type="number"
                     step="0.01"
                   />
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-sm pointer-events-none">
-                    {currency.code}
-                  </div>
                 </div>
               </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1 opacity-50">Currency</label>
-                <div className="w-full bg-slate-800/30 border-none rounded-2xl px-5 py-4 text-slate-500 font-bold opacity-50 cursor-not-allowed">
-                  {currency.code}
-                </div>
-              </div>
-            </div>
 
-            {/* Billing Cycle */}
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Billing Cycle</label>
-              <div className="flex p-1 bg-slate-800/50 rounded-2xl self-start max-w-[200px]">
-                <button 
-                  type="button"
-                  onClick={() => setBillingCycle("monthly")}
-                  className={`flex-1 py-2.5 text-[10px] font-black uppercase tracking-wider rounded-xl transition-all ${billingCycle === "monthly" ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20" : "text-slate-400 hover:text-slate-200"}`}
-                >
-                  Monthly
-                </button>
-                <button 
-                  type="button"
-                  onClick={() => setBillingCycle("yearly")}
-                  className={`flex-1 py-2.5 text-[10px] font-black uppercase tracking-wider rounded-xl transition-all ${billingCycle === "yearly" ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20" : "text-slate-400 hover:text-slate-200"}`}
-                >
-                  Yearly
-                </button>
+              <div className="space-y-2">
+                <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
+                  Billing Cycle
+                </label>
+                <div className="flex bg-surface-container-low p-1 rounded-xl">
+                  <button
+                    type="button"
+                    onClick={() => setBillingCycle("monthly")}
+                    className={`flex-1 py-2 text-[10px] font-black uppercase tracking-wider rounded-lg transition-all duration-300 ${billingCycle === "monthly" ? "bg-primary text-on-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface"}`}
+                  >
+                    Monthly
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setBillingCycle("yearly")}
+                    className={`flex-1 py-2 text-[10px] font-black uppercase tracking-wider rounded-lg transition-all duration-300 ${billingCycle === "yearly" ? "bg-primary text-on-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface"}`}
+                  >
+                    Yearly
+                  </button>
+                </div>
               </div>
             </div>
 
             {/* Payment Date */}
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Next Payment Date</label>
+              <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
+                Next Payment Date
+              </label>
               <div className="relative">
-                <input 
-                  className="w-full bg-slate-800/50 border-none rounded-2xl px-5 py-4 text-slate-100 focus:ring-2 focus:ring-indigo-500 transition-all [color-scheme:dark] outline-none [&::-webkit-calendar-picker-indicator]:hidden"
+                <input
+                  className="w-full bg-surface-container border-none rounded-xl px-4 py-3.5 text-sm font-semibold text-on-surface focus:ring-2 focus:ring-primary/50 transition-all outline-none"
                   value={nextDate}
                   onChange={(e) => setNextDate(e.target.value)}
                   type="date"
                 />
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-indigo-400">
-                  <span className="material-symbols-outlined text-[20px]">calendar_month</span>
-                </div>
               </div>
             </div>
 
             {/* Actions */}
-            <div className="flex flex-col space-y-4 pt-4">
-              <button 
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full py-5 bg-gradient-to-r from-indigo-700 to-indigo-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.1em] shadow-xl shadow-indigo-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
-              >
-                {isSubmitting ? "Processing..." : isEditing ? "Save Changes" : "Add Subscription"}
-              </button>
-              
-              {isEditing && (
-                <button 
-                  type="button"
-                  onClick={handleDelete}
-                  disabled={isSubmitting}
-                  className="w-full py-2 text-rose-500 font-bold hover:text-rose-400 text-[10px] uppercase tracking-widest transition-colors flex items-center justify-center gap-2"
-                >
-                  <span className="material-symbols-outlined text-[16px]">delete</span>
-                  Delete Service
-                </button>
-              )}
-
-              <button 
+            <div className="flex items-center gap-4 pt-6 mt-2 border-t border-outline-variant/10">
+              <button
                 type="button"
                 onClick={onClose}
-                className="w-full py-2 text-slate-500 font-bold hover:text-slate-300 text-xs uppercase tracking-widest transition-colors"
+                className="flex-1 py-3 px-4 rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container transition-all"
+                disabled={isSubmitting}
               >
                 Cancel
               </button>
+              <button
+                type="submit"
+                disabled={isSubmitting || !name || !amount || !categoryId}
+                className="flex-2 py-3 px-4 rounded-xl font-bold text-sm text-on-primary bg-primary hover:opacity-90 active:scale-[0.98] transition-all shadow-sm disabled:opacity-50"
+              >
+                {isSubmitting ? "Processing..." : isEditing ? "Save Changes" : "Confirm Entry"}
+              </button>
             </div>
+
+            {/* Delete Option (Centered below primary actions) */}
+            {isEditing && (
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={isSubmitting}
+                className="w-full py-2 mt-2 text-error font-bold hover:text-error/80 text-[10px] uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5"
+              >
+                <span className="material-symbols-outlined text-[16px]">delete</span>
+                Permanently Delete Service
+              </button>
+            )}
           </form>
         </div>
       </div>

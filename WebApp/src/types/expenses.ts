@@ -15,6 +15,7 @@ export interface Category {
 export interface Subscription {
   id: string;
   user_id: string;
+  category_id: string;
   name: string;
   amount: number;
   billing_cycle: BillingCycle;
@@ -24,12 +25,15 @@ export interface Subscription {
   // Metadata for UI
   icon?: string;
   color?: string;
+  // Joined fields
+  category?: Category;
 }
 
 export interface Transaction {
   id: string;
   user_id: string;
   category_id: string;
+  subscription_id?: string;
   type: TransactionType;
   amount: number;
   date: string;

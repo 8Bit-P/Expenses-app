@@ -44,10 +44,17 @@ export default function SubscriptionCard({ subscription, onManage }: Subscriptio
         {subscription.name}
       </h3>
       
-      <p className="text-xs font-bold text-on-surface-variant/60 mb-6 flex items-center gap-1.5">
+      <p className="text-xs font-bold text-on-surface-variant/60 mb-2 flex items-center gap-1.5">
         <span className="material-symbols-outlined text-[14px]">event</span>
         Renewal: {format(nextDate, "MMM d, yyyy")}
       </p>
+
+      {subscription.category && (
+        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/40 flex items-center gap-1.5 mb-6">
+          <span className="text-[12px]">{subscription.category.emoji}</span>
+          {subscription.category.name}
+        </p>
+      )}
 
       <div className="mt-auto pt-2">
         <button 
