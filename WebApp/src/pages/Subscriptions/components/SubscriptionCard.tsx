@@ -9,7 +9,7 @@ interface SubscriptionCardProps {
 
 export default function SubscriptionCard({ subscription, onManage }: SubscriptionCardProps) {
   const { currency } = useUserPreferences();
-  
+
   const fmt = (n: number) =>
     `${currency.symbol}${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
@@ -19,7 +19,7 @@ export default function SubscriptionCard({ subscription, onManage }: Subscriptio
     <div className="group bg-surface-container-lowest p-6 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-outline-variant/10 flex flex-col h-full">
       <div className="flex items-start justify-between mb-6">
         {/* Logo/Icon Wrapper */}
-        <div 
+        <div
           className="w-12 h-12 rounded-2xl flex items-center justify-center overflow-hidden bg-primary/10 text-primary"
           style={subscription.color ? { backgroundColor: `${subscription.color}20`, color: subscription.color } : {}}
         >
@@ -43,7 +43,7 @@ export default function SubscriptionCard({ subscription, onManage }: Subscriptio
       <h3 className="text-lg font-extrabold text-on-surface mb-1 group-hover:text-primary transition-colors">
         {subscription.name}
       </h3>
-      
+
       <p className="text-xs font-bold text-on-surface-variant/60 mb-2 flex items-center gap-1.5">
         <span className="material-symbols-outlined text-[14px]">event</span>
         Renewal: {format(nextDate, "MMM d, yyyy")}
@@ -57,7 +57,7 @@ export default function SubscriptionCard({ subscription, onManage }: Subscriptio
       )}
 
       <div className="mt-auto pt-2">
-        <button 
+        <button
           onClick={() => onManage(subscription)}
           className="w-full bg-surface-container hover:bg-primary hover:text-white text-on-surface font-black py-3 rounded-xl transition-all duration-300 active:scale-95 text-xs uppercase tracking-widest"
         >

@@ -1,13 +1,7 @@
-import { supabase } from "../../../lib/supabase";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
 export default function SessionSection() {
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/auth"); // Kick them back to the login screen
-  };
+  const { signOut } = useAuth();
 
   return (
     <section className="col-span-12 lg:col-span-4 space-y-4">
@@ -32,7 +26,7 @@ export default function SessionSection() {
         </p>
 
         <button
-          onClick={handleLogout}
+          onClick={() => signOut()}
           className="w-full mt-auto py-3 bg-surface-container-lowest border border-outline-variant/30 rounded-xl text-on-surface font-bold shadow-sm hover:shadow-md hover:text-error transition-all flex items-center justify-center gap-2 group"
         >
           <span className="material-symbols-outlined text-[18px] group-hover:-translate-x-1 transition-transform">

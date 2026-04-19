@@ -124,9 +124,7 @@ export default function Subscriptions() {
                       className="h-48 bg-surface-container-lowest/50 rounded-2xl animate-pulse border border-outline-variant/10"
                     />
                   ))
-                : subscriptions.map((s) => (
-                    <SubscriptionCard key={s.id} subscription={s} onManage={handleManage} viewMode={viewMode} />
-                  ))}
+                : subscriptions.map((s) => <SubscriptionCard key={s.id} subscription={s} onManage={handleManage} />)}
             </div>
           )}
         </div>

@@ -18,14 +18,14 @@ const queryClient = new QueryClient({
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <UserPreferencesProvider>
-          <BrowserRouter>
+      <BrowserRouter>
+        <AuthProvider>
+          <UserPreferencesProvider>
             {/* All routing logic is securely isolated here */}
             <AppRouter />
-          </BrowserRouter>
-        </UserPreferencesProvider>
-      </AuthProvider>
+          </UserPreferencesProvider>
+        </AuthProvider>
+      </BrowserRouter>
     </QueryClientProvider>
   );
 }
