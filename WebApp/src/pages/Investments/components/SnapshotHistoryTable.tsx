@@ -63,9 +63,9 @@ export default function SnapshotHistoryTable({ assets, stealthMode }: SnapshotHi
 
   return (
     <div className="bg-surface-container-lowest rounded-3xl shadow-sm border border-outline-variant/10 overflow-hidden flex flex-col">
-      <div className="p-8 border-b border-outline-variant/10">
+      <div className="p-6 sm:p-8 border-b border-outline-variant/10">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+          <div className="w-10 h-10 shrink-0 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
             <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>
               history
             </span>
@@ -80,7 +80,7 @@ export default function SnapshotHistoryTable({ assets, stealthMode }: SnapshotHi
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
+        <table className="w-full min-w-[600px] text-left border-collapse">
           <thead>
             <tr className="bg-surface-container-low/50">
               <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70 whitespace-nowrap">
@@ -138,14 +138,14 @@ export default function SnapshotHistoryTable({ assets, stealthMode }: SnapshotHi
                   </td>
 
                   {/* Total Value */}
-                  <td className="px-8 py-4 whitespace-nowrap text-right">
+                  <td className="px-6 sm:px-8 py-4 whitespace-nowrap text-right">
                     <span className="text-sm font-black font-headline text-on-surface">
                       {formatCurrency(Number(snap.total_value))}
                     </span>
                   </td>
 
                   {/* Actions */}
-                  <td className="px-8 py-4 whitespace-nowrap text-center">
+                  <td className="px-6 sm:px-8 py-4 whitespace-nowrap text-center">
                     <button
                       onClick={() => setSnapshotToDelete({ id: snap.id, name: snap.assetName })}
                       disabled={isDeleting}

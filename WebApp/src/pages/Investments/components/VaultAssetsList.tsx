@@ -38,8 +38,8 @@ export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: 
   };
 
   return (
-    <div className="bg-surface-container-lowest p-8 rounded-3xl shadow-sm border border-outline-variant/10 h-full flex flex-col">
-      <div className="flex justify-between items-center mb-8">
+    <div className="bg-surface-container-lowest p-6 sm:p-8 rounded-3xl shadow-sm border border-outline-variant/10 h-full flex flex-col">
+      <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4 sm:gap-0 mb-6 sm:mb-8">
         <div>
           <h3 className="text-xl font-headline font-black text-on-surface">Your Vault Assets</h3>
           <p className="text-xs font-bold text-on-surface-variant mt-1">
@@ -128,7 +128,7 @@ export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: 
       </div>
 
       {assets.length > ITEMS_PER_PAGE && (
-        <div className="mt-8 pt-6 border-t border-outline-variant/10 flex items-center justify-between">
+        <div className="mt-6 sm:mt-8 pt-6 border-t border-outline-variant/10 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0">
           <p className="text-xs font-bold text-on-surface-variant">
             Showing <span className="text-on-surface">{startIndex + 1}</span> -{" "}
             <span className="text-on-surface">{Math.min(startIndex + ITEMS_PER_PAGE, assets.length)}</span> of{" "}
