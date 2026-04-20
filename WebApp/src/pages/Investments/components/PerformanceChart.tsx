@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
+import { formatCurrency, formatCompactCurrency } from "../../../utils/currency";
 import type { TimeRange } from "../../../types/investments";
 import { format, subMonths, subYears, parseISO } from "date-fns";
 import { ResponsiveContainer, ComposedChart, Bar, Line, XAxis, YAxis, Tooltip, Cell } from "recharts";
@@ -89,10 +90,7 @@ export default function PerformanceChart({ assets, stealthMode }: PerformanceCha
   // Y-Axis formatter
   const formatYAxis = (value: number) => {
     if (stealthMode) return "****";
-    // Compact formatting for Y axis (e.g., $150k instead of $150,000)
-    if (value >= 1000000) return `${currency.symbol}${(value / 1000000).toFixed(1)}M`;
-    if (value >= 1000) return `${currency.symbol}${(value / 1000).toFixed(0)}k`;
-    return `${currency.symbol}${value}`;
+    return formatCompactCurrency(value, currency.code);
   };
 
   // Enhanced Tooltip showing Value, Invested, and Profit
@@ -115,7 +113,7 @@ export default function PerformanceChart({ assets, stealthMode }: PerformanceCha
               <span className="text-sm font-black text-on-surface">
                 {stealthMode
                   ? "****"
-                  : `${currency.symbol}${data.totalValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
+                  : formatCurrency(data.totalValue, currency.code)}
               </span>
             </div>
 
@@ -126,7 +124,7 @@ export default function PerformanceChart({ assets, stealthMode }: PerformanceCha
               <span className="text-sm font-bold text-on-surface-variant">
                 {stealthMode
                   ? "****"
-                  : `${currency.symbol}${data.invested.toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
+                  : formatCurrency(data.invested, currency.code)}
               </span>
             </div>
 
@@ -139,9 +137,8 @@ export default function PerformanceChart({ assets, stealthMode }: PerformanceCha
                   "****"
                 ) : (
                   <>
-                    {isPositive ? "+" : "-"}
-                    {currency.symbol}
-                    {Math.abs(data.gain).toLocaleString(undefined, { minimumFractionDigits: 0 })}
+                    {isPositive ? "+" : ""}
+                    {formatCurrency(data.gain, currency.code)}
                     <span className="text-[10px] bg-current/10 px-1.5 py-0.5 rounded-md ml-1">
                       {isPositive ? "+" : ""}
                       {data.roi.toFixed(1)}%

@@ -5,10 +5,11 @@ import { useExpenses } from "../../../context/ExpensesContext";
 import { useTransactions } from "../../../hooks/useTransactions";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { formatDateLabel } from "../../../utils/dateFormatters";
+import { formatCurrency } from "../../../utils/currency";
 
 export default function SpendingTrendChart() {
   const { filters } = useExpenses();
-  const { monthlyBudget } = useUserPreferences();
+  const { monthlyBudget, currency } = useUserPreferences();
   const now = new Date();
 
   // Resolve the "current" period from context filters, falling back to this month
@@ -199,7 +200,7 @@ export default function SpendingTrendChart() {
               tickLine={false}
               tick={{ fontSize: 11, fill: "currentColor" }}
               className="text-on-surface-variant/60 font-semibold"
-              tickFormatter={(v) => `$${typeof v === "number" ? v.toFixed(0) : v}`}
+              tickFormatter={(v) => formatCurrency(v, currency.code, { notation: 'compact', maximumFractionDigits: 0 })}
             />
 
             <Tooltip
@@ -214,7 +215,7 @@ export default function SpendingTrendChart() {
               }}
               itemStyle={{ color: "var(--on-surface)" }}
               formatter={(value: any, name: string) => [
-                value != null ? `$${(value as number).toFixed(2)}` : "—",
+                value != null ? formatCurrency(value as number, currency.code) : "—",
                 name === "current" ? currentLabel : previousLabel,
               ]}
             />

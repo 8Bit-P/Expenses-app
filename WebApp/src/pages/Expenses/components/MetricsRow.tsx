@@ -2,6 +2,7 @@ import { useExpenses } from "../../../context/ExpensesContext";
 import { usePeriodMetrics } from "../hooks/usePeriodMetrics";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { startOfMonth, endOfMonth, format } from "date-fns";
+import { formatCurrency, formatCompactCurrency } from "../../../utils/currency";
 
 
 function DeltaBadge({ pct }: { pct: number | null }) {
@@ -38,10 +39,7 @@ export default function MetricsRow() {
     );
   }
 
-  const fmt = (n: number) =>
-    n >= 1000
-      ? `${currency.symbol}${(n / 1000).toFixed(1)}k`
-      : `${currency.symbol}${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const internalFmt = (n: number) => formatCompactCurrency(n, currency.code);
 
   // Pacing label
   const pacePct = m.pacePercent;
@@ -66,7 +64,7 @@ export default function MetricsRow() {
           <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Total Spend</span>
         </div>
         <div>
-          <h2 className="text-3xl font-black text-on-surface font-headline tracking-tight">{fmt(m.currentSpend)}</h2>
+          <h2 className="text-3xl font-black text-on-surface font-headline tracking-tight">{internalFmt(m.currentSpend)}</h2>
           <div className="mt-2 flex items-center gap-2">
             <DeltaBadge pct={m.spendDeltaPct} />
           </div>
@@ -97,7 +95,7 @@ export default function MetricsRow() {
           <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Projected Spend</span>
         </div>
 
-        <h2 className="text-3xl font-black text-on-surface font-headline tracking-tight">{fmt(m.projectedSpend)}</h2>
+        <h2 className="text-3xl font-black text-on-surface font-headline tracking-tight">{internalFmt(m.projectedSpend)}</h2>
 
         <div className="mt-2 flex items-center gap-2">
           {m.isRunningHot ? (
@@ -115,7 +113,7 @@ export default function MetricsRow() {
 
         <p className="text-xs font-bold text-on-surface-variant mt-3 flex items-center gap-1.5">
           <span className="material-symbols-outlined text-[14px]">speed</span>
-          {fmt(m.dailyAverage)} / day avg · {m.daysElapsed} of {m.totalPeriodDays} days
+          {internalFmt(m.dailyAverage)} / day avg · {m.daysElapsed} of {m.totalPeriodDays} days
         </p>
       </div>
 
@@ -135,7 +133,7 @@ export default function MetricsRow() {
               <span className="truncate">{m.topCategory.name}</span>
             </h2>
             <p className="text-xs font-bold text-on-surface-variant mt-2 ml-1 flex items-center gap-1">
-              {fmt(m.topCategory.amount)}
+              {internalFmt(m.topCategory.amount)}
               <span className="opacity-40">·</span>
               {m.topCategoryPercent.toFixed(0)}% of total
             </p>
@@ -158,11 +156,11 @@ export default function MetricsRow() {
               <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Monthly Budget</span>
             </div>
             <h2 className={`text-3xl font-black font-headline tracking-tight ${over ? "text-error" : "text-on-surface"}`}>
-              {fmt(monthlyBudget)}
+              {internalFmt(monthlyBudget)}
             </h2>
             <div className="mt-3 space-y-1">
               <div className="flex justify-between text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-wider">
-                <span>{over ? "Over budget" : `${fmt(remaining)} left`}</span>
+                <span>{over ? "Over budget" : `${internalFmt(remaining)} left`}</span>
                 <span>{budgetPct.toFixed(0)}%</span>
               </div>
               <div className="h-1.5 rounded-full bg-surface-container overflow-hidden">
@@ -172,7 +170,7 @@ export default function MetricsRow() {
                 />
               </div>
               <p className="text-[10px] text-on-surface-variant/50 font-medium">
-                Spent {fmt(m.currentSpend)} of {fmt(monthlyBudget)}
+                Spent {internalFmt(m.currentSpend)} of {internalFmt(monthlyBudget)}
               </p>
             </div>
           </div>

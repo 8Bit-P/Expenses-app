@@ -2,8 +2,11 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { useTransactions } from "../../../hooks/useTransactions";
 import { startOfMonth, subMonths, format, eachMonthOfInterval } from "date-fns";
 import { useMemo } from "react";
+import { useUserPreferences } from "../../../context/UserPreferencesContext";
+import { formatCurrency } from "../../../utils/currency";
 
 export default function IncomeVsExpenseChart() {
+  const { currency } = useUserPreferences();
   const now = new Date();
   const startDate = startOfMonth(subMonths(now, 5)); // 6 months ago
 
@@ -91,7 +94,7 @@ export default function IncomeVsExpenseChart() {
               tickLine={false}
               tick={{ fontSize: 11, fill: "currentColor" }}
               className="text-on-surface-variant/60 font-semibold"
-              tickFormatter={(value) => `$${value}`}
+              tickFormatter={(value) => formatCurrency(value, currency.code, { notation: 'compact', maximumFractionDigits: 0 })}
             />
 
             <Tooltip
@@ -105,7 +108,7 @@ export default function IncomeVsExpenseChart() {
                 fontWeight: "bold",
                 fontSize: "12px",
               }}
-              formatter={(value: any) => [`$${value.toFixed(2)}`, ""]}
+              formatter={(value: any) => [formatCurrency(value as number, currency.code), ""]}
             />
 
             <Bar dataKey="income" fill="var(--secondary)" radius={[4, 4, 0, 0]} maxBarSize={40} />

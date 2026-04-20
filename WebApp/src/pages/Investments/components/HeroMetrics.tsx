@@ -1,4 +1,5 @@
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
+import { formatCurrency } from "../../../utils/currency";
 
 interface HeroMetricsProps {
   metrics: {
@@ -13,9 +14,9 @@ interface HeroMetricsProps {
 export default function HeroMetrics({ metrics, stealthMode, onToggleStealth }: HeroMetricsProps) {
   const { currency } = useUserPreferences();
 
-  const formatCurrency = (val: number) => {
+  const internalFormatCurrency = (val: number) => {
     if (stealthMode) return "••••••";
-    return val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return formatCurrency(val, currency.code);
   };
 
   const isPositiveROI = metrics.roi >= 0;
@@ -68,11 +69,6 @@ export default function HeroMetrics({ metrics, stealthMode, onToggleStealth }: H
         {/* Main Balance */}
         <div className="mb-6 md:mb-8">
           <div className="flex items-baseline gap-2.5">
-            {!stealthMode && (
-              <span className="text-3xl md:text-4xl font-black text-on-surface-variant/40 dark:text-white/30 font-headline transition-colors">
-                {currency.symbol}
-              </span>
-            )}
             <h1
               className={`font-headline font-black tracking-tighter leading-[1.1] transition-all duration-500 break-all sm:break-normal ${
                 stealthMode
@@ -80,7 +76,7 @@ export default function HeroMetrics({ metrics, stealthMode, onToggleStealth }: H
                   : "text-4xl sm:text-5xl md:text-7xl text-on-surface dark:bg-gradient-to-br dark:from-white dark:via-white/90 dark:to-white/50 dark:bg-clip-text dark:text-transparent"
               }`}
             >
-              {formatCurrency(metrics.totalValue)}
+              {internalFormatCurrency(metrics.totalValue)}
             </h1>
           </div>
         </div>
@@ -95,7 +91,7 @@ export default function HeroMetrics({ metrics, stealthMode, onToggleStealth }: H
                 Total Invested
               </p>
               <p className="text-sm font-black text-on-surface dark:text-white/80 font-headline transition-colors">
-                {stealthMode ? "••••" : `${currency.symbol}${formatCurrency(metrics.totalInvested)}`}
+                {stealthMode ? "••••" : formatCurrency(metrics.totalInvested, currency.code)}
               </p>
             </div>
           </div>
@@ -129,7 +125,8 @@ export default function HeroMetrics({ metrics, stealthMode, onToggleStealth }: H
                   {isPositiveROI ? "Total Gain" : "Total Loss"}
                 </p>
                 <p className={`text-sm font-black font-headline transition-colors ${isPositiveROI ? "text-on-surface-variant dark:text-white/70" : "text-red-600 dark:text-red-400"}`}>
-                  {isPositiveROI ? "+" : "-"}{currency.symbol}{Math.abs(totalGain).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  {isPositiveROI ? "+" : ""}
+                  {formatCurrency(totalGain, currency.code)}
                 </p>
               </div>
             </div>

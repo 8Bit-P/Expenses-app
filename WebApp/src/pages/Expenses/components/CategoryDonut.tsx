@@ -1,6 +1,8 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { useExpenses } from "../../../context/ExpensesContext";
 import { useTransactions } from "../../../hooks/useTransactions";
+import { useUserPreferences } from "../../../context/UserPreferencesContext";
+import { formatCurrency, formatCompactCurrency } from "../../../utils/currency";
 
 const COLORS = [
   "#6366f1",
@@ -16,6 +18,7 @@ const COLORS = [
 ];
 
 export default function CategoryDonut() {
+  const { currency } = useUserPreferences();
   // Read date + category filters from context, but fetch all (no pagination) for the chart
   const { filters } = useExpenses();
   const { transactions, loading } = useTransactions({
@@ -90,7 +93,7 @@ export default function CategoryDonut() {
                 </Pie>
                 <Tooltip
                   wrapperStyle={{ zIndex: 1000 }}
-                  formatter={(value: any, name: any) => [`$${(value as number).toFixed(2)}`, name]}
+                  formatter={(value: any, name: any) => [formatCurrency(value as number, currency.code), name]}
                   contentStyle={{
                     backgroundColor: "var(--surface-container-lowest)",
                     borderColor: "var(--outline-variant)",
@@ -106,7 +109,7 @@ export default function CategoryDonut() {
             {/* Center Total Text */}
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
               <span className="text-xl font-black text-on-surface">
-                {total >= 1000 ? `$${(total / 1000).toFixed(1)}k` : `$${total.toFixed(0)}`}
+                {formatCompactCurrency(total, currency.code)}
               </span>
               <span className="text-[9px] font-bold text-on-surface-variant uppercase tracking-widest">Expenses</span>
             </div>
@@ -146,7 +149,7 @@ export default function CategoryDonut() {
                   <div className="flex items-center gap-2 shrink-0">
                     <span className="text-[10px] font-bold text-on-surface-variant/50 tabular-nums">{pct}%</span>
                     <span className="text-xs font-bold text-on-surface tabular-nums">
-                      ${item.value >= 1000 ? `${(item.value / 1000).toFixed(1)}k` : item.value.toFixed(2)}
+                      {formatCompactCurrency(item.value, currency.code)}
                     </span>
                   </div>
                 </div>

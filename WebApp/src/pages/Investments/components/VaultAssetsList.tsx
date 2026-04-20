@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
+import { formatCurrency } from "../../../utils/currency";
 import type { AssetWithSnapshots } from "../../../types/investments";
 import { formatDistanceToNow, differenceInDays } from "date-fns";
 
@@ -32,9 +33,9 @@ export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: 
     setCurrentPage(totalPages);
   }
 
-  const formatCurrency = (val: number) => {
+  const internalFormatCurrency = (val: number) => {
     if (stealthMode) return "****";
-    return val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return formatCurrency(val, currency.code);
   };
 
   return (
@@ -111,10 +112,7 @@ export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: 
                       Value
                     </span>
                     <span className="text-lg font-black text-on-surface font-headline">
-                      {!stealthMode && (
-                        <span className="text-sm text-on-surface-variant/70 mr-0.5">{currency.symbol}</span>
-                      )}
-                      {formatCurrency(currentValue)}
+                      {internalFormatCurrency(currentValue)}
                     </span>
                   </div>
                   <span className="material-symbols-outlined text-primary opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all hidden sm:block">

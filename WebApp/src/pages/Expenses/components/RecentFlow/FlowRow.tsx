@@ -1,4 +1,6 @@
 import { formatTransactionDate } from "../../../../utils/dateFormatters";
+import { useUserPreferences } from "../../../../context/UserPreferencesContext";
+import { formatCurrency } from "../../../../utils/currency";
 
 export interface Transaction {
   id: string;
@@ -87,6 +89,8 @@ export default function FlowRow({
   onDeleteConfirm,
   onCancelDelete,
 }: FlowRowProps) {
+  const { currency } = useUserPreferences();
+
   return (
     <div
       onClick={() => !isConfirming && onEdit()}
@@ -134,7 +138,8 @@ export default function FlowRow({
       <span
         className={`text-right md:text-left font-black text-sm tabular-nums tracking-tight ${tx.type === "income" ? "text-green-500" : "text-on-surface"}`}
       >
-        {tx.type === "income" ? "+" : ""}${tx.amount.toFixed(2)}
+        {tx.type === "income" ? "+" : ""}
+        {formatCurrency(tx.amount, currency.code)}
       </span>
 
       {/* Actions */}

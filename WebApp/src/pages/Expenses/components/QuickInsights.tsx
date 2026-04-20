@@ -2,6 +2,7 @@ import { useExpenses } from "../../../context/ExpensesContext";
 import { usePeriodMetrics } from "../hooks/usePeriodMetrics";
 import { formatDateLabel } from "../../../utils/dateFormatters";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
+import { formatCurrency, formatCompactCurrency } from "../../../utils/currency";
 
 interface InsightItem {
   icon: string;
@@ -33,7 +34,7 @@ export default function QuickInsights() {
     );
   }
 
-  const fmt = (n: number) => (n >= 1000 ? `${currency.symbol}${(n / 1000).toFixed(1)}k` : `${currency.symbol}${n.toFixed(2)}`);
+  const internalFmt = (n: number) => formatCompactCurrency(n, currency.code);
 
   // Compute biggest category mover (vs previous period)
   const biggestMover = (() => {
@@ -65,7 +66,7 @@ export default function QuickInsights() {
       iconColor: m.isRunningHot ? "text-red-400 bg-red-400/10" : "text-green-500 bg-green-500/10",
       label: "Spend Pace",
       value: m.isRunningHot ? "Running Hot" : "On Track",
-      sub: `${fmt(m.dailyAverage)}/day · ${m.daysElapsed} of ${m.totalPeriodDays} days elapsed`,
+      sub: `${internalFmt(m.dailyAverage)}/day · ${m.daysElapsed} of ${m.totalPeriodDays} days elapsed`,
       highlight: m.isRunningHot ? "negative" : "positive",
     },
     // 2. Net cash flow
@@ -73,7 +74,7 @@ export default function QuickInsights() {
       icon: netFlow >= 0 ? "savings" : "account_balance_wallet",
       iconColor: netFlow >= 0 ? "text-green-500 bg-green-500/10" : "text-red-400 bg-red-400/10",
       label: "Net Cash Flow",
-      value: `${netFlow >= 0 ? "+" : ""}${fmt(netFlow)}`,
+      value: `${netFlow >= 0 ? "+" : ""}${internalFmt(netFlow)}`,
       sub: netFlow >= 0 ? `${m.savingsRate.toFixed(0)}% saved this period` : "Spending exceeds income",
       highlight: netFlow >= 0 ? "positive" : "negative",
     },
@@ -105,8 +106,8 @@ export default function QuickInsights() {
             icon: over ? "warning" : "account_balance",
             iconColor: over ? "text-red-400 bg-red-400/10" : budgetPct >= 80 ? "text-amber-400 bg-amber-400/10" : "text-primary bg-primary/10",
             label: "Budget Status",
-            value: over ? `Over by ${fmt(Math.abs(remaining))}` : `${fmt(remaining)} left`,
-            sub: `${budgetPct.toFixed(0)}% of ${fmt(monthlyBudget)} budget used`,
+            value: over ? `Over by ${internalFmt(Math.abs(remaining))}` : `${internalFmt(remaining)} left`,
+            sub: `${budgetPct.toFixed(0)}% of ${internalFmt(monthlyBudget)} budget used`,
             highlight: (over ? "negative" : budgetPct >= 80 ? "negative" : "positive") as "positive" | "negative" | "neutral",
           };
         })()
@@ -117,7 +118,7 @@ export default function QuickInsights() {
               iconColor: "text-primary bg-primary/10",
               label: "Income Covers",
               value: `${burnDays} days`,
-              sub: `at current ${fmt(m.dailyAverage)}/day burn rate`,
+              sub: `at current ${internalFmt(m.dailyAverage)}/day burn rate`,
               highlight: "neutral" as const,
             }
           : {

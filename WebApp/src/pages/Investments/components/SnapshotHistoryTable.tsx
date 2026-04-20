@@ -3,6 +3,7 @@ import { format, parseISO } from "date-fns";
 import type { AssetWithSnapshots, AssetSnapshot } from "../../../types/investments";
 import { useInvestments } from "../../../hooks/useInvestments";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
+import { formatCurrency } from "../../../utils/currency";
 import DeleteConfirmModal from "../../../components/ui/DeleteConfirmModal";
 
 interface SnapshotHistoryTableProps {
@@ -54,9 +55,9 @@ export default function SnapshotHistoryTable({ assets, stealthMode }: SnapshotHi
     }
   };
 
-  const formatCurrency = (val: number) => {
+  const internalFormatCurrency = (val: number) => {
     if (stealthMode) return "****";
-    return `${currency.symbol}${val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return formatCurrency(val, currency.code);
   };
 
   if (allHistory.length === 0) return null; // Don't show the table if there is no data
@@ -132,7 +133,7 @@ export default function SnapshotHistoryTable({ assets, stealthMode }: SnapshotHi
                       {stealthMode
                         ? "****"
                         : snap.contribution
-                          ? `${currency.symbol}${Number(snap.contribution).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                          ? formatCurrency(Number(snap.contribution), currency.code)
                           : "-"}
                     </span>
                   </td>
@@ -140,7 +141,7 @@ export default function SnapshotHistoryTable({ assets, stealthMode }: SnapshotHi
                   {/* Total Value */}
                   <td className="px-6 sm:px-8 py-4 whitespace-nowrap text-right">
                     <span className="text-sm font-black font-headline text-on-surface">
-                      {formatCurrency(Number(snap.total_value))}
+                      {internalFormatCurrency(Number(snap.total_value))}
                     </span>
                   </td>
 
