@@ -5,6 +5,7 @@ import LogSnapshotModal from "./components/LogSnapshotModal";
 import VaultAssetsList from "./components/VaultAssetsList";
 import HeroMetrics from "./components/HeroMetrics";
 import PerformanceChart from "./components/PerformanceChart";
+import SnapshotHistoryTable from "./components/SnapshotHistoryTable";
 
 export default function Investments() {
   const { assets, metrics, isLoading, error } = useInvestments();
@@ -90,6 +91,11 @@ export default function Investments() {
               }}
             />
           </div>
+        </div>
+
+        {/* Historical Ledger Table */}
+        <div className="w-full">
+          <SnapshotHistoryTable assets={assets} stealthMode={stealthMode} />
         </div>
       </div>
 

@@ -89,6 +89,7 @@ export default function CategoryDonut() {
                   ))}
                 </Pie>
                 <Tooltip
+                  wrapperStyle={{ zIndex: 1000 }}
                   formatter={(value: any, name: any) => [`$${(value as number).toFixed(2)}`, name]}
                   contentStyle={{
                     backgroundColor: "var(--surface-container-lowest)",

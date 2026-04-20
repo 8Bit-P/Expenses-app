@@ -134,6 +134,26 @@ export function useInvestments() {
     },
   });
 
+  const deleteSnapshot = useMutation({
+    mutationFn: async (snapshotId: string) => {
+      if (!userId) throw new Error("User not authenticated");
+
+      const { error } = await supabase.from("asset_snapshots").delete().eq("id", snapshotId);
+
+      if (error) throw error;
+      return snapshotId;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["investments", userId] });
+      toast.success("Snapshot deleted", { description: "Portfolio timeline updated." });
+    },
+    onError: (error) => {
+      toast.error("Failed to delete snapshot", {
+        description: error.message,
+      });
+    },
+  });
+
   return {
     assets,
     isLoading,
@@ -145,5 +165,6 @@ export function useInvestments() {
     },
     createAsset,
     createSnapshot,
+    deleteSnapshot,
   };
 }
