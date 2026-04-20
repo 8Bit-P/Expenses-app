@@ -78,7 +78,7 @@ export default function NewTransactionSheet({ isOpen, onClose }: NewTransactionS
                   className={`group w-full flex items-center gap-4 p-4 rounded-2xl border transition-all duration-200 text-left
                     ${
                       available
-                        ? `bg-gradient-to-r ${gradient} border-outline-variant/20 hover:border-outline-variant/40 hover:scale-[1.01] active:scale-[0.99] cursor-pointer`
+                        ? `bg-linear-to-r ${gradient} border-outline-variant/20 hover:border-outline-variant/40 hover:scale-[1.01] active:scale-[0.99] cursor-pointer`
                         : "border-outline-variant/10 bg-surface-container/40 cursor-not-allowed opacity-60"
                     }`}
                 >

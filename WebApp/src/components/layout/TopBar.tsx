@@ -1,8 +1,18 @@
+import { useNavigate } from "react-router-dom";
 import { useUserPreferences } from "../../context/UserPreferencesContext";
+import { useAuth } from "../../context/AuthContext";
+import { useProfile } from "../../hooks/useProfile";
 
 export default function TopBar() {
+  const navigate = useNavigate();
+  const { session } = useAuth();
+  const { profile } = useProfile();
   const { resolvedTheme, setTheme } = useUserPreferences();
   const isDark = resolvedTheme === "dark";
+
+  const userEmail = session?.user?.email || "";
+  const fallbackAvatar = `https://api.dicebear.com/7.x/micah/svg?seed=${userEmail}&backgroundColor=transparent`;
+  const avatarSrc = profile?.avatar_url || fallbackAvatar;
 
   return (
     <header className="flex justify-between items-center w-full px-8 py-4 font-headline bg-background/80 backdrop-blur-md sticky top-0 z-40 border-b border-surface-container-low/50">
@@ -59,12 +69,11 @@ export default function TopBar() {
         <div className="w-px h-6 bg-surface-container-highest mx-2"></div>
 
         {/* User Profile (Corners sharpened to match the new aesthetic) */}
-        <button className="w-9 h-9 rounded-xl overflow-hidden bg-surface-container-highest border border-surface-container-highest shadow-sm cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all">
-          <img
-            alt="User Profile"
-            src="https://api.dicebear.com/7.x/avataaars/svg?seed=PersonalVault"
-            className="w-full h-full object-cover"
-          />
+        <button
+          onClick={() => navigate("/settings")}
+          className="w-9 h-9 rounded-xl overflow-hidden bg-surface-container-highest border border-surface-container-highest shadow-sm cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all"
+        >
+          <img alt="User Profile" src={avatarSrc} className="w-full h-full object-cover" />
         </button>
       </div>
     </header>

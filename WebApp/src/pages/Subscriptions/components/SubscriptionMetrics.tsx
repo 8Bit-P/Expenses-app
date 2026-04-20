@@ -16,7 +16,7 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="h-[180px] bg-surface-container-lowest/50 rounded-2xl animate-pulse border border-outline-variant/10"
+            className="h-45 bg-surface-container-lowest/50 rounded-2xl animate-pulse border border-outline-variant/10"
           />
         ))}
       </div>
@@ -46,7 +46,7 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
       {/* 1. Monthly Spend */}
-      <div className="group relative p-8 bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/10 hover:border-primary/30 transition-all duration-500 overflow-hidden flex flex-col justify-between h-[180px]">
+      <div className="group relative p-8 bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/10 hover:border-primary/30 transition-all duration-500 overflow-hidden flex flex-col justify-between h-45">
         {/* Subtle background glow */}
         <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-all duration-500"></div>
 
@@ -60,7 +60,7 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
         </div>
 
         <div className="flex flex-col relative z-10">
-          <span className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-on-surface to-on-surface-variant/70 font-headline tracking-tighter">
+          <span className="text-5xl font-black text-transparent bg-clip-text bg-linear-to-br from-on-surface to-on-surface-variant/70 font-headline tracking-tighter">
             {fmt(totalMonthlySpend)}
           </span>
           <span className="text-on-surface-variant/60 font-bold text-xs mt-2 flex items-center gap-1">
@@ -71,7 +71,7 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
       </div>
 
       {/* 2. Active Count */}
-      <div className="group relative p-8 bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/10 hover:border-secondary/30 transition-all duration-500 overflow-hidden flex flex-col justify-between h-[180px]">
+      <div className="group relative p-8 bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/10 hover:border-secondary/30 transition-all duration-500 overflow-hidden flex flex-col justify-between h-45">
         <div className="absolute -top-12 -right-12 w-32 h-32 bg-secondary/10 rounded-full blur-3xl group-hover:bg-secondary/20 transition-all duration-500"></div>
 
         <div className="flex items-center justify-between relative z-10">
@@ -84,7 +84,7 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
         </div>
 
         <div className="flex items-end justify-between relative z-10">
-          <span className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-on-surface to-on-surface-variant/70 font-headline tracking-tighter">
+          <span className="text-5xl font-black text-transparent bg-clip-text bg-linear-to-br from-on-surface to-on-surface-variant/70 font-headline tracking-tighter">
             {activeSubs.length}
           </span>
 
@@ -98,9 +98,9 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
       </div>
 
       {/* 3. Next Up (Sleek urgency instead of bright block) */}
-      <div className="relative p-8 bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/10 hover:border-outline-variant/30 transition-all duration-500 overflow-hidden flex flex-col justify-between h-[180px]">
+      <div className="relative p-8 bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/10 hover:border-outline-variant/30 transition-all duration-500 overflow-hidden flex flex-col justify-between h-45">
         {/* Accent Top Border to denote time/urgency */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-error to-primary opacity-70"></div>
+        <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-error to-primary opacity-70"></div>
 
         <div className="flex items-center justify-between relative z-10">
           <span className="text-on-surface-variant font-black text-[12px] uppercase tracking-[0.2em]">
