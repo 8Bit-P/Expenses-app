@@ -4,6 +4,7 @@ import AllocationDonut from "./components/AllocationDonut";
 import LogSnapshotModal from "./components/LogSnapshotModal";
 import VaultAssetsList from "./components/VaultAssetsList";
 import HeroMetrics from "./components/HeroMetrics";
+import PerformanceChart from "./components/PerformanceChart";
 
 export default function Investments() {
   const { assets, metrics, isLoading, error } = useInvestments();
@@ -69,6 +70,11 @@ export default function Investments() {
       <div className="space-y-8">
         <HeroMetrics metrics={metrics} stealthMode={stealthMode} onToggleStealth={() => setStealthMode(!stealthMode)} />
 
+        {/* Investment Performance Graphic */}
+        <div className="w-full">
+          <PerformanceChart assets={assets} stealthMode={stealthMode} />
+        </div>
+
         <div className="grid grid-cols-12 gap-8">
           <div className="col-span-12 xl:col-span-4 h-full">
             <AllocationDonut assets={assets} stealthMode={stealthMode} />
@@ -77,7 +83,7 @@ export default function Investments() {
             <VaultAssetsList
               assets={assets}
               stealthMode={stealthMode}
-              onLogSnapshot={(id) => {
+              onLogSnapshot={() => {
                 // Future wiring: You can pass the specific asset ID into the modal
                 // state here so it auto-selects when clicking a specific asset!
                 setIsModalOpen(true);

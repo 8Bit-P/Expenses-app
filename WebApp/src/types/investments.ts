@@ -1,4 +1,6 @@
 export type AssetType = "cash" | "fund" | "stock" | "crypto" | "real_estate" | "other";
+export type TimeRange = "6M" | "1Y" | "ALL";
+
 
 export interface Asset {
   id: string;

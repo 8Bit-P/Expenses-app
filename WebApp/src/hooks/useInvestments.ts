@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
-import type { Asset, AssetSnapshot, AssetWithSnapshots } from "../types/investments";
+import type { AssetSnapshot, AssetType, AssetWithSnapshots } from "../types/investments";
 import { toast } from "sonner";
 
 export function useInvestments() {
@@ -82,17 +82,33 @@ export function useInvestments() {
 
   // 3. Mutations
   const createAsset = useMutation({
-    mutationFn: async (newAsset: Omit<Asset, "id" | "user_id" | "created_at">) => {
+    mutationFn: async ({ name, type, initialValue }: { name: string; type: AssetType; initialValue: number }) => {
       if (!userId) throw new Error("User not authenticated");
 
-      const { data, error } = await supabase
+      // 1. Create the Asset
+      const { data: asset, error: assetError } = await supabase
         .from("assets")
-        .insert([{ ...newAsset, user_id: userId }])
+        .insert([{ name, type, user_id: userId }])
         .select()
         .single();
 
-      if (error) throw error;
-      return data;
+      if (assetError) throw assetError;
+
+      // 2. Immediately create the initial Snapshot if provided
+      if (initialValue > 0) {
+        const { error: snapError } = await supabase.from("asset_snapshots").insert([
+          {
+            asset_id: asset.id,
+            total_value: initialValue,
+            contribution: initialValue, // Initial value counts as the first contribution
+            date: new Date().toISOString().split("T")[0],
+          },
+        ]);
+
+        if (snapError) throw snapError;
+      }
+
+      return asset;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["investments", userId] });

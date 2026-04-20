@@ -1,305 +1,405 @@
-import { useState, useEffect } from "react";
-import { CustomSelect } from "../../../components/ui/CustomSelect";
+import { useState, useEffect, useMemo } from "react";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { useInvestments } from "../../../hooks/useInvestments";
 import type { AssetWithSnapshots, AssetType } from "../../../types/investments";
 import { toast } from "sonner";
+import { formatDistanceToNow } from "date-fns";
 
-interface LogSnapshotModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  // Passing assets here to easily form the select list
-  assets: AssetWithSnapshots[];
-}
-
-export default function LogSnapshotModal({ isOpen, onClose, assets }: LogSnapshotModalProps) {
-  const { currency } = useUserPreferences();
+// ==========================================
+// 1. THE CUSTOM HOOK (Logic Separation)
+// ==========================================
+function useSnapshotForm(assets: AssetWithSnapshots[], onClose: () => void) {
   const { createAsset, createSnapshot } = useInvestments();
 
-  // Mode: "snapshot" (default) or "new_asset"
-  const [mode, setMode] = useState<"snapshot" | "new_asset">("snapshot");
+  // Tabs & Modes
+  const [activeTab, setActiveTab] = useState<"snapshot" | "new_asset">("snapshot");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Flow 1: New Asset State
+  // New Asset State
   const [newAssetName, setNewAssetName] = useState("");
   const [newAssetType, setNewAssetType] = useState<AssetType>("fund");
+  const [initialValue, setInitialValue] = useState("");
 
-  // Flow 2: Snapshot State
-  // Default to first asset if available
+  // Snapshot State
   const [selectedAssetId, setSelectedAssetId] = useState("");
   const [totalValue, setTotalValue] = useState("");
-  const [movementType, setMovementType] = useState<"none" | "contribution" | "withdrawal">("none");
+  const [movementType, setMovementType] = useState<"none" | "in" | "out">("none");
   const [movementAmount, setMovementAmount] = useState("");
   const [snapshotDate, setSnapshotDate] = useState(new Date().toISOString().split("T")[0]);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Sync state cleanly when modal opens
+  // Auto-select first asset or force "new_asset" tab if vault is empty
   useEffect(() => {
-    if (isOpen) {
-      setMode(assets.length === 0 ? "new_asset" : "snapshot");
-      setSelectedAssetId(assets.length > 0 ? assets[0].id : "");
-      setTotalValue("");
-      setMovementType("none");
-      setMovementAmount("");
-      setSnapshotDate(new Date().toISOString().split("T")[0]);
-      setNewAssetName("");
-      setNewAssetType("fund");
+    if (assets.length === 0) {
+      setActiveTab("new_asset");
+    } else if (!selectedAssetId) {
+      setSelectedAssetId(assets[0].id);
+      setActiveTab("snapshot");
     }
-  }, [isOpen, assets.length]); // Added assets.length to quickly auto-switch if they delete all
+  }, [assets, selectedAssetId]);
 
-  if (!isOpen) return null;
+  // Derived State: Calculate Real-Time Growth Preview
+  const preview = useMemo(() => {
+    const asset = assets.find((a) => a.id === selectedAssetId);
+    const lastSnapshot = asset?.asset_snapshots?.[0];
+    const prevValue = lastSnapshot ? Number(lastSnapshot.total_value) : 0;
 
-  const handleCreateAsset = async (e: React.FormEvent) => {
+    const newVal = Number(totalValue) || 0;
+    const moveAmt = Number(movementAmount) || 0;
+    const netContribution = movementType === "in" ? moveAmt : movementType === "out" ? -moveAmt : 0;
+
+    // Growth = New Balance - Old Balance - Net Contributions
+    const organicGrowth = newVal > 0 ? newVal - prevValue - netContribution : 0;
+
+    return {
+      prevValue,
+      lastDate: lastSnapshot ? lastSnapshot.date : null,
+      organicGrowth,
+      isPositive: organicGrowth >= 0,
+    };
+  }, [assets, selectedAssetId, totalValue, movementType, movementAmount]);
+
+  // Handlers
+  const submitNewAsset = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newAssetName || !newAssetType) return;
-    
+    if (!newAssetName) return;
     setIsSubmitting(true);
     try {
       const created = await createAsset.mutateAsync({
         name: newAssetName,
         type: newAssetType,
+        initialValue: Number(initialValue) || 0,
       });
-      toast.success("Asset added", { description: `${newAssetName} is now tracked.` });
-      // Switch back to snapshot mode and preselect the new asset
-      setMode("snapshot");
+      toast.success("Asset Secured", { description: `${newAssetName} added to vault.` });
+      setNewAssetName("");
+      setInitialValue("");
       setSelectedAssetId(created.id);
+      setActiveTab("snapshot");
     } catch (error: any) {
-      toast.error("Failed to create", { description: error.message || "Could not add asset." });
+      toast.error("Failed to create", { description: error.message });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleCreateSnapshot = async (e: React.FormEvent) => {
+  const submitSnapshot = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedAssetId || !totalValue) return;
-
     setIsSubmitting(true);
     try {
-      // Calculate contribution positive/negative
-      let finalContribution = 0;
-      if (movementType !== "none" && movementAmount) {
-        const amt = parseFloat(movementAmount);
-        finalContribution = movementType === "contribution" ? amt : -amt;
-      }
+      const moveAmt = Number(movementAmount) || 0;
+      const netContribution = movementType === "in" ? moveAmt : movementType === "out" ? -moveAmt : 0;
 
       await createSnapshot.mutateAsync({
         asset_id: selectedAssetId,
         date: snapshotDate,
-        total_value: parseFloat(totalValue),
-        contribution: finalContribution,
+        total_value: Number(totalValue),
+        contribution: netContribution,
       });
 
-      toast.success("Snapshot logged", { description: "Your vault timeline has been updated." });
+      toast.success("Snapshot Logged", { description: "Portfolio timeline updated." });
+      // Reset form on success
+      setTotalValue("");
+      setMovementType("none");
+      setMovementAmount("");
       onClose();
     } catch (error: any) {
-      toast.error("Failed to log", { description: error.message || "Could not save your snapshot." });
+      toast.error("Failed to log", { description: error.message });
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  return {
+    activeTab,
+    setActiveTab,
+    isSubmitting,
+    preview,
+    newAsset: {
+      name: newAssetName,
+      setName: setNewAssetName,
+      type: newAssetType,
+      setType: setNewAssetType,
+      initialValue: initialValue,
+      setInitialValue: setInitialValue,
+      submit: submitNewAsset,
+    },
+    snapshot: {
+      assetId: selectedAssetId,
+      setAssetId: setSelectedAssetId,
+      value: totalValue,
+      setValue: setTotalValue,
+      moveType: movementType,
+      setMoveType: setMovementType,
+      moveAmt: movementAmount,
+      setMoveAmt: setMovementAmount,
+      date: snapshotDate,
+      setDate: setSnapshotDate,
+      submit: submitSnapshot,
+    },
+  };
+}
+
+// ==========================================
+// 2. THE UI COMPONENT
+// ==========================================
+interface LogSnapshotModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  assets: AssetWithSnapshots[];
+}
+
+export default function LogSnapshotModal({ isOpen, onClose, assets }: LogSnapshotModalProps) {
+  const { currency } = useUserPreferences();
+  const form = useSnapshotForm(assets, onClose);
+
+  if (!isOpen) return null;
+
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      {/* Backdrop */}
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+      {/* Dark Ethereal Backdrop */}
       <div
-        className="absolute inset-0 bg-background/60 backdrop-blur-sm animate-in fade-in duration-200"
+        className="absolute inset-0 bg-inverse-surface/40 backdrop-blur-md animate-in fade-in duration-300"
         onClick={onClose}
       />
 
-      <div
-        className="relative w-full max-w-md bg-surface-container-lowest/90 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-outline-variant/20 ring-1 ring-black/5 animate-in zoom-in-95 slide-in-from-bottom-8 duration-300"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="p-8">
-          <div className="flex items-center space-x-4 mb-8">
-            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
-                {mode === "new_asset" ? "account_balance" : "add_chart"}
-              </span>
-            </div>
-            <div>
-              <h2 className="text-2xl font-extrabold font-headline text-on-surface tracking-tight">
-                {mode === "new_asset" ? "Add Vault Asset" : "Log Snapshot"}
-              </h2>
-              <p className="text-on-surface-variant text-sm font-medium">
-                {mode === "new_asset" ? "Track a new class of wealth." : "Update your portfolio's current value."}
-              </p>
-            </div>
+      {/* Modal Container */}
+      <div className="relative w-full max-w-lg bg-surface-container-lowest/95 backdrop-blur-2xl rounded-3xl shadow-2xl overflow-hidden border border-outline-variant/20 ring-1 ring-black/5 animate-in zoom-in-95 slide-in-from-bottom-8 duration-300 flex flex-col max-h-[90vh]">
+        {/* Header & Tabs */}
+        <div className="p-6 md:p-8 border-b border-outline-variant/10 shrink-0">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-black font-headline text-on-surface tracking-tight flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary">add_chart</span>
+              Update Ledger
+            </h2>
+            <button
+              onClick={onClose}
+              className="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container hover:bg-surface-container-highest transition-colors text-on-surface-variant"
+            >
+              <span className="material-symbols-outlined text-[18px]">close</span>
+            </button>
           </div>
 
-          {mode === "new_asset" ? (
-            <form onSubmit={handleCreateAsset} className="space-y-6 animate-in slide-in-from-right-4 fade-in">
+          {/* Segmented Control Tabs */}
+          <div className="flex p-1 bg-surface-container-low rounded-xl">
+            <button
+              onClick={() => form.setActiveTab("snapshot")}
+              disabled={assets.length === 0}
+              className={`flex-1 py-2.5 text-sm font-bold rounded-lg transition-all duration-300 ${form.activeTab === "snapshot" ? "bg-surface-container-lowest text-on-surface shadow-sm ring-1 ring-outline-variant/10" : "text-on-surface-variant hover:text-on-surface disabled:opacity-30"}`}
+            >
+              Log Snapshot
+            </button>
+            <button
+              onClick={() => form.setActiveTab("new_asset")}
+              className={`flex-1 py-2.5 text-sm font-bold rounded-lg transition-all duration-300 ${form.activeTab === "new_asset" ? "bg-surface-container-lowest text-on-surface shadow-sm ring-1 ring-outline-variant/10" : "text-on-surface-variant hover:text-on-surface"}`}
+            >
+              Add New Asset
+            </button>
+          </div>
+        </div>
+
+        {/* Scrollable Form Body */}
+        <div className="p-6 md:p-8 overflow-y-auto">
+          {form.activeTab === "new_asset" ? (
+            // --- NEW ASSET FLOW ---
+            <form onSubmit={form.newAsset.submit} className="space-y-6 animate-in fade-in slide-in-from-right-4">
               <div className="space-y-2">
-                <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
+                <label className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
                   Asset Name
                 </label>
                 <input
                   autoFocus
-                  className="w-full bg-surface-container border-none rounded-xl px-4 py-3.5 text-sm font-semibold text-on-surface focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-on-surface-variant/50 outline-none"
-                  placeholder="e.g., Malaga Beach House"
-                  value={newAssetName}
-                  onChange={(e) => setNewAssetName(e.target.value)}
-                  type="text"
+                  placeholder="e.g., Vanguard S&P 500"
+                  className="w-full bg-surface-container-low border-none rounded-2xl px-5 py-4 text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/50 transition-all outline-none"
+                  value={form.newAsset.name}
+                  onChange={(e) => form.newAsset.setName(e.target.value)}
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                  Asset Class
+                <label className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
+                  Initial Balance (Optional)
                 </label>
-                <CustomSelect
-                  value={newAssetType}
-                  options={[
-                    { value: "fund", label: "Index Fund" },
-                    { value: "stock", label: "Stock" },
-                    { value: "crypto", label: "Cryptocurrency" },
-                    { value: "real_estate", label: "Real Estate" },
-                    { value: "cash", label: "Cash / Bank Account" },
-                    { value: "other", label: "Other Asset" },
-                  ]}
-                  onChange={(val: string) => setNewAssetType(val as AssetType)}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="flex items-center gap-4 pt-4 border-t border-outline-variant/10">
-                {assets.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => setMode("snapshot")}
-                    className="flex-1 py-3 px-4 rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container transition-all"
-                  >
-                    Back
-                  </button>
-                )}
-                <button
-                  type="submit"
-                  disabled={isSubmitting || !newAssetName}
-                  className="flex-2 w-full py-3 px-4 rounded-xl font-bold text-sm text-on-primary bg-primary hover:opacity-90 active:scale-[0.98] transition-all shadow-sm disabled:opacity-50"
-                >
-                  {isSubmitting ? "Saving..." : "Create Asset"}
-                </button>
-              </div>
-            </form>
-          ) : (
-            <form onSubmit={handleCreateSnapshot} className="space-y-6 animate-in slide-in-from-left-4 fade-in">
-              <div className="space-y-2">
-                <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                  Select Asset
-                </label>
-                <CustomSelect
-                  value={selectedAssetId}
-                  options={assets.map((a) => ({ value: a.id, label: a.name }))}
-                  onChange={setSelectedAssetId}
-                  onAddAction={() => setMode("new_asset")}
-                  addActionLabel="Create New Asset"
-                  className="w-full"
-                />
-              </div>
-
-              <div className="space-y-2 relative z-50">
-                <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 border-b border-transparent">
-                  Current Total Value
-                </label>
-                <div className="relative flex items-center bg-primary/5 rounded-xl border border-primary/20 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20 transition-all p-1">
+                <div className="relative flex items-center bg-primary/5 rounded-2xl border border-primary/20 focus-within:border-primary/50 transition-all p-1">
                   <span className="absolute left-4 text-xl font-black text-primary">{currency.symbol}</span>
                   <input
                     className="w-full bg-transparent border-none py-3.5 pl-10 pr-4 text-xl font-black text-on-surface placeholder:text-on-surface-variant/30 outline-none focus:ring-0"
                     placeholder="0.00"
-                    value={totalValue}
-                    onChange={(e) => setTotalValue(e.target.value)}
                     type="number"
                     step="0.01"
                     min="0"
+                    value={form.newAsset.initialValue}
+                    onChange={(e) => form.newAsset.setInitialValue(e.target.value)}
                   />
                 </div>
-                <p className="text-xs font-bold text-on-surface-variant/70 mt-1 ml-1 px-1">
-                  Input the entire current worth.
+                <p className="text-[10px] font-semibold text-on-surface-variant/60 ml-2 mt-1">
+                  This will be recorded as your starting snapshot.
                 </p>
               </div>
 
-              {/* Movement Toggle */}
               <div className="space-y-2">
-                <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                  Did cash move in or out? (Optional)
+                <label className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
+                  Asset Class
                 </label>
-                <div className="flex bg-surface-container-low p-1 rounded-xl">
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { id: "fund", icon: "pie_chart", label: "Fund" },
+                    { id: "stock", icon: "trending_up", label: "Stock" },
+                    { id: "crypto", icon: "currency_bitcoin", label: "Crypto" },
+                    { id: "real_estate", icon: "real_estate_agent", label: "Real Estate" },
+                    { id: "cash", icon: "payments", label: "Cash" },
+                    { id: "other", icon: "category", label: "Other" },
+                  ].map((type) => (
+                    <button
+                      key={type.id}
+                      type="button"
+                      onClick={() => form.newAsset.setType(type.id as AssetType)}
+                      className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${form.newAsset.type === type.id ? "border-primary bg-primary/5 text-primary shadow-sm" : "border-outline-variant/20 text-on-surface-variant hover:bg-surface-container"}`}
+                    >
+                      <span className="material-symbols-outlined text-[20px]">{type.icon}</span>
+                      <span className="text-sm font-bold">{type.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={form.isSubmitting || !form.newAsset.name}
+                className="w-full py-4 rounded-2xl font-black text-sm text-on-primary bg-primary hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 disabled:opacity-50 mt-4"
+              >
+                {form.isSubmitting ? "Creating..." : "Create Asset"}
+              </button>
+            </form>
+          ) : (
+            // --- LOG SNAPSHOT FLOW ---
+            <form onSubmit={form.snapshot.submit} className="space-y-6 animate-in fade-in slide-in-from-left-4">
+              <div className="space-y-2">
+                <label className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
+                  Target Asset
+                </label>
+                <select
+                  className="w-full bg-surface-container-low border-none rounded-2xl px-5 py-4 text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/50 outline-none appearance-none cursor-pointer"
+                  value={form.snapshot.assetId}
+                  onChange={(e) => form.snapshot.setAssetId(e.target.value)}
+                >
+                  {assets.map((a) => (
+                    <option key={a.id} value={a.id}>
+                      {a.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-end justify-between ml-1 mb-1">
+                  <label className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant">
+                    Current Total Value
+                  </label>
+                  {form.preview.prevValue > 0 && (
+                    <span className="text-[10px] font-bold text-on-surface-variant/60">
+                      Previous: {currency.symbol}
+                      {form.preview.prevValue.toLocaleString()}
+                      {form.preview.lastDate &&
+                        ` (${formatDistanceToNow(new Date(form.preview.lastDate), { addSuffix: true })})`}
+                    </span>
+                  )}
+                </div>
+                <div className="relative flex items-center bg-primary/5 rounded-2xl border border-primary/20 focus-within:border-primary/50 focus-within:ring-4 focus-within:ring-primary/10 transition-all overflow-hidden">
+                  <span className="absolute left-5 text-2xl font-black text-primary">{currency.symbol}</span>
+                  <input
+                    className="w-full bg-transparent border-none py-5 pl-12 pr-5 text-3xl font-black text-on-surface placeholder:text-on-surface-variant/30 outline-none focus:ring-0"
+                    placeholder="0.00"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={form.snapshot.value}
+                    onChange={(e) => form.snapshot.setValue(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-surface-container-low space-y-4">
+                <label className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant">
+                  Did cash move in or out?
+                </label>
+
+                <div className="flex bg-surface-container p-1 rounded-xl">
                   <button
                     type="button"
-                    onClick={() => setMovementType("none")}
-                    className={`flex-1 py-2 text-[10px] font-black uppercase tracking-wider rounded-lg transition-all duration-300 ${movementType === "none" ? "bg-surface-container-highest text-on-surface shadow-sm" : "text-on-surface-variant hover:text-on-surface"}`}
+                    onClick={() => form.snapshot.setMoveType("none")}
+                    className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${form.snapshot.moveType === "none" ? "bg-surface-container-lowest text-on-surface shadow-sm" : "text-on-surface-variant"}`}
                   >
                     No
                   </button>
                   <button
                     type="button"
-                    onClick={() => setMovementType("contribution")}
-                    className={`flex-1 flex justify-center gap-1 py-2 text-[10px] font-black uppercase tracking-wider rounded-lg transition-all duration-300 ${movementType === "contribution" ? "bg-emerald-500 text-white shadow-sm" : "text-on-surface-variant hover:text-emerald-500"}`}
+                    onClick={() => form.snapshot.setMoveType("in")}
+                    className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${form.snapshot.moveType === "in" ? "bg-emerald-500 text-white shadow-sm" : "text-on-surface-variant"}`}
                   >
-                    In <span className="material-symbols-outlined text-[14px]">arrow_downward</span>
+                    + Deposit
                   </button>
                   <button
                     type="button"
-                    onClick={() => setMovementType("withdrawal")}
-                    className={`flex-1 flex justify-center gap-1 py-2 text-[10px] font-black uppercase tracking-wider rounded-lg transition-all duration-300 ${movementType === "withdrawal" ? "bg-error text-white shadow-sm" : "text-on-surface-variant hover:text-error"}`}
+                    onClick={() => form.snapshot.setMoveType("out")}
+                    className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${form.snapshot.moveType === "out" ? "bg-error text-white shadow-sm" : "text-on-surface-variant"}`}
                   >
-                    Out <span className="material-symbols-outlined text-[14px]">arrow_upward</span>
+                    - Withdraw
                   </button>
                 </div>
-              </div>
 
-              {movementType !== "none" && (
-                <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                    Movement Amount
-                  </label>
-                  <div className="relative flex items-center">
-                    <span className={`absolute left-4 text-sm font-bold ${movementType === "contribution" ? "text-emerald-500" : "text-error"}`}>
-                      {movementType === "contribution" ? "+" : "-"} {currency.symbol}
+                {form.snapshot.moveType !== "none" && (
+                  <div className="relative animate-in slide-in-from-top-2 fade-in">
+                    <span
+                      className={`absolute left-4 top-1/2 -translate-y-1/2 font-black ${form.snapshot.moveType === "in" ? "text-emerald-500" : "text-error"}`}
+                    >
+                      {currency.symbol}
                     </span>
                     <input
-                      className="w-full bg-surface-container border-none rounded-xl py-3 pl-10 pr-4 text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-on-surface-variant/30 outline-none"
-                      placeholder="0.00"
-                      value={movementAmount}
-                      onChange={(e) => setMovementAmount(e.target.value)}
+                      className="w-full bg-surface-container-lowest border-none rounded-xl py-3 pl-10 pr-4 text-sm font-bold text-on-surface outline-none focus:ring-2 focus:ring-primary/50"
+                      placeholder="Amount moved..."
                       type="number"
                       step="0.01"
                       min="0"
+                      value={form.snapshot.moveAmt}
+                      onChange={(e) => form.snapshot.setMoveAmt(e.target.value)}
                     />
                   </div>
+                )}
+              </div>
+
+              {/* Dynamic Growth Preview Card */}
+              {form.snapshot.value && form.preview.prevValue > 0 && (
+                <div
+                  className={`p-4 rounded-2xl flex items-center justify-between border animate-in slide-in-from-bottom-2 fade-in ${form.preview.isPositive ? "bg-emerald-500/10 border-emerald-500/20" : "bg-error/10 border-error/20"}`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`material-symbols-outlined ${form.preview.isPositive ? "text-emerald-500" : "text-error"}`}
+                    >
+                      {form.preview.isPositive ? "trending_up" : "trending_down"}
+                    </span>
+                    <span className="text-xs font-bold text-on-surface">Calculated Market Growth</span>
+                  </div>
+                  <span
+                    className={`font-black tracking-tight ${form.preview.isPositive ? "text-emerald-500" : "text-error"}`}
+                  >
+                    {form.preview.isPositive ? "+" : "-"}
+                    {currency.symbol}
+                    {Math.abs(form.preview.organicGrowth).toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </span>
                 </div>
               )}
 
-              <div className="space-y-2">
-                <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                  Snapshot Date
-                </label>
-                <div className="relative">
-                  <input
-                    className="w-full bg-surface-container border-none rounded-xl px-4 py-3.5 text-sm font-semibold text-on-surface focus:ring-2 focus:ring-primary/50 transition-all outline-none"
-                    value={snapshotDate}
-                    onChange={(e) => setSnapshotDate(e.target.value)}
-                    type="date"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4 pt-4 border-t border-outline-variant/10">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="flex-1 py-3 px-4 rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container transition-all line-clamp-1"
-                  disabled={isSubmitting}
-                >
-                  Cancel
-                </button>
+              <div className="pt-2">
                 <button
                   type="submit"
-                  disabled={isSubmitting || !selectedAssetId || !totalValue}
-                  className="flex-[2] py-3 px-4 rounded-xl font-bold text-sm text-on-primary bg-primary hover:opacity-90 active:scale-[0.98] transition-all shadow-sm disabled:opacity-50 line-clamp-1"
+                  disabled={form.isSubmitting || !form.snapshot.assetId || !form.snapshot.value}
+                  className="w-full py-4 rounded-2xl font-black text-sm text-on-primary bg-primary hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
                 >
-                  {isSubmitting ? "Logging..." : "Confirm Snapshot"}
+                  {form.isSubmitting ? "Encrypting Data..." : "Confirm Snapshot"}
                 </button>
               </div>
             </form>

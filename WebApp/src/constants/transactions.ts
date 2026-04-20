@@ -37,7 +37,7 @@ export const TRANSACTION_KINDS: TransactionKindOption[] = [
     icon: "trending_up",
     label: "Investment",
     description: "Log an asset or portfolio entry",
-    available: false,
+    available: true,
     gradient: "from-emerald-500/10 to-teal-500/5",
     iconBg: "bg-emerald-500/15",
     iconColor: "text-emerald-400",

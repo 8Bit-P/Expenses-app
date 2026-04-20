@@ -1,7 +1,9 @@
 import { useState } from "react";
 import TransactionModal from "../../pages/Expenses/components/TransactionModal";
 import SubscriptionModal from "../../pages/Subscriptions/components/SubscriptionModal";
+import LogSnapshotModal from "../../pages/Investments/components/LogSnapshotModal";
 import { TRANSACTION_KINDS, type TransactionKind } from "../../constants/transactions";
+import { useInvestments } from "../../hooks/useInvestments";
 
 interface NewTransactionSheetProps {
   isOpen: boolean;
@@ -11,14 +13,19 @@ interface NewTransactionSheetProps {
 export default function NewTransactionSheet({ isOpen, onClose }: NewTransactionSheetProps) {
   const [expenseOpen, setExpenseOpen] = useState(false);
   const [subOpen, setSubOpen] = useState(false);
+  const [snapshotOpen, setSnapshotOpen] = useState(false);
+  
+  const { assets } = useInvestments();
 
-  if (!isOpen && !expenseOpen && !subOpen) return null;
+  if (!isOpen && !expenseOpen && !subOpen && !snapshotOpen) return null;
 
   const handleKindSelect = (kind: TransactionKind) => {
     if (kind === "expense") {
       setExpenseOpen(true);
     } else if (kind === "subscription") {
       setSubOpen(true);
+    } else if (kind === "investment") {
+      setSnapshotOpen(true);
     }
   };
 
@@ -29,6 +36,11 @@ export default function NewTransactionSheet({ isOpen, onClose }: NewTransactionS
 
   const handleSubClose = () => {
     setSubOpen(false);
+    onClose();
+  };
+
+  const handleSnapshotClose = () => {
+    setSnapshotOpen(false);
     onClose();
   };
 
@@ -115,6 +127,9 @@ export default function NewTransactionSheet({ isOpen, onClose }: NewTransactionS
 
       {/* Subscription Modal */}
       <SubscriptionModal isOpen={subOpen} onClose={handleSubClose} />
+
+      {/* Investment Snapshot Modal */}
+      <LogSnapshotModal isOpen={snapshotOpen} onClose={handleSnapshotClose} assets={assets} />
 
       <style>{`
         @keyframes ntSheetIn {
