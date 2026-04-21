@@ -6,7 +6,7 @@ export default function SummaryRow() {
       change: "+2.4%",
       changeType: "positive",
       icon: "account_balance_wallet",
-      bg: "bg-primary-fixed",
+      bg: "bg-primary/10",
       text: "text-primary",
     },
     {
@@ -15,7 +15,7 @@ export default function SummaryRow() {
       change: "+12%",
       changeType: "positive",
       icon: "trending_up",
-      bg: "bg-secondary-fixed",
+      bg: "bg-secondary/10",
       text: "text-secondary",
     },
     {
@@ -24,7 +24,7 @@ export default function SummaryRow() {
       change: "-5.2%",
       changeType: "negative",
       icon: "shopping_cart",
-      bg: "bg-error-container",
+      bg: "bg-error/10",
       text: "text-error",
     },
     {
@@ -33,7 +33,7 @@ export default function SummaryRow() {
       change: "+8.1%",
       changeType: "positive",
       icon: "auto_graph",
-      bg: "bg-tertiary-fixed",
+      bg: "bg-tertiary/10",
       text: "text-tertiary",
     },
   ];
@@ -43,24 +43,35 @@ export default function SummaryRow() {
       {metrics.map((metric, idx) => (
         <div
           key={idx}
-          className="bg-surface-container-lowest p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+          className="bg-surface-container-lowest p-6 rounded-3xl shadow-sm border border-outline-variant/10 group hover:shadow-md transition-all duration-300 relative overflow-hidden"
         >
-          <div className="flex justify-between items-start mb-4">
-            <div className={`w-10 h-10 rounded-full ${metric.bg} flex items-center justify-center`}>
+          {/* Subtle glow effect on hover */}
+          <div
+            className={`absolute -top-10 -right-10 w-24 h-24 ${metric.bg} rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+          ></div>
+
+          <div className="flex justify-between items-start mb-6 relative z-10">
+            <div
+              className={`w-12 h-12 rounded-2xl ${metric.bg} flex items-center justify-center border border-white/10`}
+            >
               <span className={`material-symbols-outlined ${metric.text}`}>{metric.icon}</span>
             </div>
             <span
-              className={`text-xs font-bold px-2 py-1 rounded-full ${
+              className={`text-xs font-black px-2.5 py-1 rounded-lg ${
                 metric.changeType === "positive"
-                  ? "text-secondary bg-secondary-container"
-                  : "text-error bg-error-container"
+                  ? "text-secondary bg-secondary-container/50"
+                  : "text-error bg-error-container/50"
               }`}
             >
               {metric.change}
             </span>
           </div>
-          <p className="text-on-surface-variant text-sm font-medium mb-1">{metric.title}</p>
-          <h3 className="text-2xl font-extrabold font-headline tracking-tight">{metric.amount}</h3>
+          <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70 mb-1 relative z-10">
+            {metric.title}
+          </p>
+          <h3 className="text-3xl font-extrabold font-headline tracking-tight text-on-surface relative z-10">
+            {metric.amount}
+          </h3>
         </div>
       ))}
     </section>
