@@ -1,3 +1,4 @@
+import { useRef, useState, useEffect } from "react";
 import { useExpenses } from "../../../../context/ExpensesContext";
 import { usePeriodMetrics } from "../../hooks/usePeriodMetrics";
 import { useUserPreferences } from "../../../../context/UserPreferencesContext";
@@ -16,6 +17,24 @@ export default function MetricsRow() {
   const { monthlyBudget, currency } = useUserPreferences();
 
   const internalFmt = (n: number) => formatCompactCurrency(n, currency.code);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const handleScroll = () => {
+    if (!scrollRef.current) return;
+    const { scrollLeft, offsetWidth } = scrollRef.current;
+    if (offsetWidth === 0) return;
+    const index = Math.round(scrollLeft / offsetWidth);
+    setActiveIndex(index);
+  };
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", handleScroll);
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, []);
 
   if (m.loading) {
     return (
@@ -40,11 +59,14 @@ export default function MetricsRow() {
   const isThisMonth =
     (filters.startDate ?? thisMonthStart) === thisMonthStart && (filters.endDate ?? thisMonthEnd) === thisMonthEnd;
 
+  const showBudget = isThisMonth && monthlyBudget > 0;
+
   return (
     <div className="grid grid-cols-1 w-full min-w-0">
       <div
+        ref={scrollRef}
         className={`flex sm:grid gap-4 sm:gap-6 -mx-3 md:-mx-6 px-3 md:px-6 overflow-x-auto pb-4 sm:pb-0 snap-x snap-mandatory hide-scrollbar ${
-          isThisMonth && monthlyBudget > 0 ? "sm:grid-cols-4" : "sm:grid-cols-3"
+          showBudget ? "sm:grid-cols-4" : "sm:grid-cols-3"
         }`}
       >
         <SpendCard
@@ -84,6 +106,18 @@ export default function MetricsRow() {
         )}
 
         <div className="w-1 shrink-0 sm:hidden"></div>
+      </div>
+
+      {/* Pagination Dots (Dynamic) */}
+      <div className="flex sm:hidden justify-center gap-1.5 mt-2 mb-4">
+        {Array.from({ length: showBudget ? 4 : 3 }).map((_, i) => (
+          <div
+            key={i}
+            className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+              activeIndex === i ? "bg-primary w-3" : "bg-surface-container-high"
+            }`}
+          />
+        ))}
       </div>
     </div>
   );

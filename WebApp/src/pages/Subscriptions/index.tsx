@@ -28,7 +28,7 @@ export default function Subscriptions() {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 max-w-7xl mx-auto w-full px-4 md:px-0 pb-24">
+    <div className="space-y-8 animate-in fade-in duration-500 max-w-7xl mx-auto w-full px-2 md:px-0 pb-24">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mt-4">
         <div className="space-y-1">
