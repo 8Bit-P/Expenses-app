@@ -158,7 +158,7 @@ export default function PerformanceChart({ assets, stealthMode }: PerformanceCha
   const lastBarFill = "#191c1e"; // on-surface
 
   return (
-    <div className="bg-surface-container-lowest p-8 rounded-3xl shadow-sm border border-outline-variant/10 h-96 flex flex-col group relative">
+    <div className="bg-surface-container-lowest p-8 rounded-2xl shadow-sm border border-outline-variant/10 h-96 flex flex-col group relative">
       <div className="flex justify-between items-center mb-8 shrink-0">
         <div>
           <h3 className="text-xl font-headline font-black text-on-surface flex items-center gap-2">

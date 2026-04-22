@@ -14,8 +14,14 @@ export default function MobileHeader({ onNewTransaction }: { onNewTransaction: (
   const fallbackAvatar = `https://api.dicebear.com/7.x/micah/svg?seed=${userEmail}&backgroundColor=transparent`;
   const avatarSrc = profile?.avatar_url || fallbackAvatar;
 
+  const firstName = profile?.full_name?.split(" ")[0] || "User";
+  const hour = new Date().getHours();
+  let greeting = "Good morning";
+  if (hour >= 12 && hour < 18) greeting = "Good afternoon";
+  if (hour >= 18) greeting = "Good evening";
+
   return (
-    <header className="fixed top-0 w-full z-40 bg-background/80 backdrop-blur-xl border-b border-outline-variant/10 flex justify-between items-center px-4 py-3 desk:hidden transition-colors duration-300">
+    <header className="fixed top-0 w-full z-40 bg-background/80 backdrop-blur-md border-b border-outline-variant/10 flex justify-between items-center px-4 py-3 desk:hidden transition-colors duration-300">
       {/* User Profile & Branding */}
       <div className="flex items-center gap-3">
         <button
@@ -24,21 +30,19 @@ export default function MobileHeader({ onNewTransaction }: { onNewTransaction: (
         >
           <img alt="User" className="w-full h-full object-cover" src={avatarSrc} />
         </button>
-        <span className="font-headline font-bold text-on-surface tracking-tight text-lg">Vault</span>
+        <div className="flex flex-col">
+          <span className="text-[10px] uppercase tracking-widest text-on-surface-variant font-black leading-tight">
+            {greeting}
+          </span>
+          <span className="text-sm font-black text-on-surface leading-tight">
+            {firstName}
+          </span>
+        </div>
       </div>
 
       {/* Actions (Theme & Notifications) */}
       <div className="flex items-center gap-1">
-        <button
-          onClick={onNewTransaction}
-          className="h-9 px-4 rounded-full bg-primary text-on-primary shadow-sm shadow-primary/20 hover:shadow-md active:scale-95 transition-all ml-1 flex items-center justify-center gap-2"
-          aria-label="New Transaction"
-        >
-          <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'wght' 700" }}>
-            add
-          </span>
-          <span className="text-[10px] font-black uppercase tracking-[0.1em]">New</span>
-        </button>
+
 
         {/* Seamless Sun/Moon Theme Toggle */}
         <button

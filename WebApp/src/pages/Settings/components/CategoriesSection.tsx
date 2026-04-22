@@ -66,7 +66,7 @@ export default function CategoriesSection() {
   };
 
   return (
-    <section className="bg-surface-container-lowest p-8 rounded-3xl shadow-sm border border-outline-variant/10 h-full flex flex-col relative overflow-hidden">
+    <section className="bg-surface-container-lowest p-8 rounded-2xl shadow-sm border border-outline-variant/10 h-full flex flex-col relative overflow-hidden">
       {/* Background glow */}
       <div className="absolute -top-12 -right-12 w-32 h-32 bg-secondary/10 rounded-full blur-2xl pointer-events-none"></div>
 

@@ -56,13 +56,13 @@ export default function ProfileSection() {
 
   return (
     <section className="col-span-12 lg:col-span-7">
-      <div className="bg-surface-container-lowest border border-outline-variant/10 rounded-3xl p-8 shadow-sm h-full">
+      <div className="bg-surface-container-lowest border border-outline-variant/10 rounded-2xl p-8 shadow-sm h-full">
         <div className="flex items-start justify-between mb-8">
           {/* Avatar & Info Container */}
           <div className="flex items-center gap-6">
             {/* Avatar Wrapper */}
             <div className="relative group">
-              <div className="w-24 h-24 rounded-3xl bg-surface-container overflow-hidden border border-outline-variant/20 relative">
+              <div className="w-24 h-24 rounded-2xl bg-surface-container overflow-hidden border border-outline-variant/20 relative">
                 <img
                   src={avatarSrc}
                   alt="Profile"

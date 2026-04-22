@@ -125,7 +125,7 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
 
       {/* Modal Container */}
       <div
-        className="relative w-full max-w-lg bg-surface-container-lowest/90 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-outline-variant/20 ring-1 ring-black/5 animate-in zoom-in-95 slide-in-from-bottom-8 duration-300"
+        className="relative w-full max-w-lg bg-surface-container-lowest/90 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-outline-variant/20 ring-1 ring-black/5 animate-in zoom-in-95 slide-in-from-bottom-8 duration-300"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-8">

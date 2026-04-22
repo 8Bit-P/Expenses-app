@@ -63,7 +63,7 @@ export default function AllocationDonut({ assets, stealthMode }: AllocationDonut
   };
 
   return (
-    <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant/10 h-full flex flex-col overflow-hidden">
+    <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/10 h-full flex flex-col overflow-hidden">
       {/* Header */}
       <div className="px-7 pt-7 pb-5 border-b border-outline-variant/10 shrink-0">
         <div className="flex items-center gap-2.5">

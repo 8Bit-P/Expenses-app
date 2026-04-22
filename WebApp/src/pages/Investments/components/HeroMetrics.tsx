@@ -23,7 +23,7 @@ export default function HeroMetrics({ metrics, stealthMode, onToggleStealth }: H
   const totalGain = metrics.totalValue - metrics.totalInvested;
 
   return (
-    <div className="relative rounded-3xl overflow-hidden bg-surface-container-lowest shadow-sm border border-outline-variant/10 transition-colors duration-300">
+    <div className="relative rounded-2xl overflow-hidden bg-surface-container-lowest shadow-sm border border-outline-variant/10 transition-colors duration-300">
       {/* Deep gradient background specific to dark mode, clean solid for light mode */}
       <div className="absolute inset-0 hidden dark:block bg-gradient-to-br from-[#0d0c1d] via-[#111827] to-[#0d1117] transition-all" />
       

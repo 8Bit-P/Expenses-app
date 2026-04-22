@@ -163,7 +163,7 @@ export default function LogSnapshotModal({ isOpen, onClose, assets }: LogSnapsho
       />
 
       {/* Modal Container */}
-      <div className="relative w-full max-w-lg bg-surface-container-lowest/95 backdrop-blur-2xl rounded-3xl shadow-2xl overflow-hidden border border-outline-variant/20 ring-1 ring-black/5 animate-in zoom-in-95 slide-in-from-bottom-8 duration-300 flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-lg bg-surface-container-lowest/95 backdrop-blur-2xl rounded-2xl shadow-2xl overflow-hidden border border-outline-variant/20 ring-1 ring-black/5 animate-in zoom-in-95 slide-in-from-bottom-8 duration-300 flex flex-col max-h-[90vh]">
         {/* Header & Tabs */}
         <div className="p-6 md:p-8 border-b border-outline-variant/10 shrink-0">
           <div className="flex items-center justify-between mb-6">

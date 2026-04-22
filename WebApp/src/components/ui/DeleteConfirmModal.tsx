@@ -24,7 +24,7 @@ export default function DeleteConfirmModal({
 
       {/* Modal Container */}
       <div
-        className="relative w-full max-w-sm bg-surface-container-lowest/95 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-error/20 ring-1 ring-black/5 animate-in zoom-in-95 slide-in-from-bottom-8 duration-300"
+        className="relative w-full max-w-sm bg-surface-container-lowest/95 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-error/20 ring-1 ring-black/5 animate-in zoom-in-95 slide-in-from-bottom-8 duration-300"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-8 pb-6 flex flex-col items-center text-center">

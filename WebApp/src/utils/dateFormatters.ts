@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, isToday, isYesterday } from "date-fns";
 
 /**
  * Produces a human-readable label for a date range.
@@ -50,6 +50,21 @@ export function formatTransactionDate(dateString: string): string {
   try {
     const [y, m, d] = dateString.split("-").map(Number);
     return format(new Date(y, m - 1, d), "MMM d");
+  } catch {
+    return dateString;
+  }
+}
+
+/**
+ * Formats a "yyyy-MM-dd" date into "Today", "Yesterday", or "Month d".
+ */
+export function formatRelativeDate(dateString: string): string {
+  try {
+    const [y, m, d] = dateString.split("-").map(Number);
+    const date = new Date(y, m - 1, d);
+    if (isToday(date)) return "Today";
+    if (isYesterday(date)) return "Yesterday";
+    return format(date, "MMMM d");
   } catch {
     return dateString;
   }

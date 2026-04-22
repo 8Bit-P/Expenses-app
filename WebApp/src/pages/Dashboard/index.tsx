@@ -33,7 +33,7 @@ export default function Dashboard() {
       {/* Bottom Row: Goals & Subscriptions */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Savings Goals */}
-        <div className="bg-surface-container-lowest p-8 rounded-3xl shadow-sm border border-outline-variant/10">
+        <div className="bg-surface-container-lowest p-8 rounded-2xl shadow-sm border border-outline-variant/10">
           <div className="flex justify-between items-center mb-8">
             <div>
               <h2 className="text-xl font-black font-headline flex items-center gap-2">
@@ -70,7 +70,7 @@ export default function Dashboard() {
         </div>
 
         {/* Upcoming Subscriptions */}
-        <div className="bg-surface-container-lowest p-8 rounded-3xl shadow-sm border border-outline-variant/10">
+        <div className="bg-surface-container-lowest p-8 rounded-2xl shadow-sm border border-outline-variant/10">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-xl font-black font-headline flex items-center gap-2">
               <span className="material-symbols-outlined text-tertiary">event_repeat</span>

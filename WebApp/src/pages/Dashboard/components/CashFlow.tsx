@@ -29,7 +29,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 export default function CashFlow() {
   return (
-    <div className="lg:col-span-4 bg-surface-container-lowest p-8 rounded-3xl shadow-sm border border-outline-variant/10 flex flex-col">
+    <div className="lg:col-span-4 bg-surface-container-lowest p-8 rounded-2xl shadow-sm border border-outline-variant/10 flex flex-col">
       <div className="mb-8">
         <h2 className="text-xl font-black font-headline text-on-surface flex items-center gap-2">
           <span className="material-symbols-outlined text-secondary">swap_vert</span>

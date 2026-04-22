@@ -101,7 +101,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/60 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="bg-surface-container-lowest/95 backdrop-blur-xl w-full max-w-xl rounded-3xl shadow-2xl border border-outline-variant/20 ring-1 ring-black/5 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 overflow-visible">
+      <div className="bg-surface-container-lowest/95 backdrop-blur-xl w-full max-w-xl rounded-2xl shadow-2xl border border-outline-variant/20 ring-1 ring-black/5 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 overflow-visible">
         {/* Header */}
         <div className="px-8 pt-8 pb-6 border-b border-outline-variant/5">
           <div className="flex justify-between items-center mb-1">

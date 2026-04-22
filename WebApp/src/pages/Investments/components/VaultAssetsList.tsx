@@ -39,7 +39,7 @@ export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: 
   };
 
   return (
-    <div className="bg-surface-container-lowest p-6 sm:p-8 rounded-3xl shadow-sm border border-outline-variant/10 h-full flex flex-col">
+    <div className="bg-surface-container-lowest p-6 sm:p-8 rounded-2xl shadow-sm border border-outline-variant/10 h-full flex flex-col">
       <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4 sm:gap-0 mb-6 sm:mb-8">
         <div>
           <h3 className="text-xl font-headline font-black text-on-surface">Your Vault Assets</h3>

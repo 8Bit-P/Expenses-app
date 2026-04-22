@@ -1,7 +1,7 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 import type { TransactionFilters } from "../types/expenses";
 import { useTransactions as useTransactionsHook } from "../hooks/useTransactions";
-import { PAGE_SIZE, DEFAULT_FILTERS } from "../pages/Expenses/constants";
+import { DEFAULT_FILTERS, PAGE_SIZE } from "../pages/Expenses/constants";
 
 interface ExpensesContextType {
   filters: TransactionFilters;
@@ -11,24 +11,33 @@ interface ExpensesContextType {
   pageSize: number;
   totalPages: number;
   totalCount: number;
-  transactions: ReturnType<typeof useTransactionsHook>["transactions"];
+  transactions: any[];
   loading: boolean;
   error: string | null;
   refetch: () => void;
-  addTransaction: ReturnType<typeof useTransactionsHook>["addTransaction"];
-  updateTransaction: ReturnType<typeof useTransactionsHook>["updateTransaction"];
-  deleteTransaction: ReturnType<typeof useTransactionsHook>["deleteTransaction"];
-  // Filter drawer
+  addTransaction: (tx: any) => Promise<any>;
+  updateTransaction: (data: { id: string; updates: any }) => Promise<any>;
+  deleteTransaction: (id: string) => Promise<boolean>;
   isFilterOpen: boolean;
   setIsFilterOpen: (open: boolean) => void;
+  isMobile: boolean;
 }
 
 const ExpensesContext = createContext<ExpensesContextType | undefined>(undefined);
 
 export function ExpensesProvider({ children }: { children: ReactNode }) {
   const [filters, setFiltersState] = useState<TransactionFilters>(DEFAULT_FILTERS);
-  const [page, setPageState] = useState(1);
+  const [page, setPage] = useState(1);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 768px)");
+    setIsMobile(mql.matches);
+    const listener = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener("change", listener);
+    return () => mql.removeEventListener("change", listener);
+  }, []);
 
   const activeFilters: TransactionFilters = { ...filters, page, pageSize: PAGE_SIZE };
 
@@ -42,15 +51,11 @@ export function ExpensesProvider({ children }: { children: ReactNode }) {
     addTransaction,
     updateTransaction,
     deleteTransaction,
-  } = useTransactionsHook(activeFilters);
+  } = useTransactionsHook(activeFilters, isMobile); // Pass isMobile as isInfinite
 
   const setFilters = (newFilters: TransactionFilters) => {
     setFiltersState(newFilters);
-    setPageState(1);
-  };
-
-  const setPage = (newPage: number) => {
-    setPageState(Math.max(1, Math.min(newPage, totalPages)));
+    setPage(1);
   };
 
   return (
@@ -72,6 +77,7 @@ export function ExpensesProvider({ children }: { children: ReactNode }) {
         deleteTransaction,
         isFilterOpen,
         setIsFilterOpen,
+        isMobile,
       }}
     >
       {children}

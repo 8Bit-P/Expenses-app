@@ -63,7 +63,7 @@ export default function SnapshotHistoryTable({ assets, stealthMode }: SnapshotHi
   if (allHistory.length === 0) return null; // Don't show the table if there is no data
 
   return (
-    <div className="bg-surface-container-lowest rounded-3xl shadow-sm border border-outline-variant/10 overflow-hidden flex flex-col">
+    <div className="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/10 overflow-hidden flex flex-col">
       <div className="p-6 sm:p-8 border-b border-outline-variant/10">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 shrink-0 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">

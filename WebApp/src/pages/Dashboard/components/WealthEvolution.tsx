@@ -30,7 +30,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 export default function WealthEvolution() {
   return (
-    <div className="lg:col-span-8 bg-surface-container-lowest p-8 rounded-3xl shadow-sm border border-outline-variant/10">
+    <div className="lg:col-span-8 bg-surface-container-lowest p-8 rounded-2xl shadow-sm border border-outline-variant/10">
       <div className="flex justify-between items-end mb-8">
         <div>
           <h2 className="text-xl font-black font-headline text-on-surface flex items-center gap-2">

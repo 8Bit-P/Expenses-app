@@ -43,7 +43,7 @@ export default function SummaryRow() {
       {metrics.map((metric, idx) => (
         <div
           key={idx}
-          className="bg-surface-container-lowest p-6 rounded-3xl shadow-sm border border-outline-variant/10 group hover:shadow-md transition-all duration-300 relative overflow-hidden"
+          className="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/10 group hover:shadow-md transition-all duration-300 relative overflow-hidden"
         >
           {/* Subtle glow effect on hover */}
           <div
