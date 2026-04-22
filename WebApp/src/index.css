@@ -91,6 +91,15 @@ body {
     color 0.3s ease;
 }
 
+html,
+body,
+#root {
+  max-width: 100%;
+  overflow-x: hidden;
+  /* Optional: This stops the annoying "pull-to-refresh" bouncing when scrolling left/right */
+  overscroll-behavior-x: none;
+}
+
 @layer base {
   button:not(:disabled) {
     cursor: pointer;
@@ -120,5 +129,14 @@ body {
   }
   ::-webkit-scrollbar-thumb:hover {
     background: var(--outline);
+  }
+
+  /* UTILS */
+  .hide-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
   }
 }

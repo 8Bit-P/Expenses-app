@@ -14,7 +14,8 @@ export default function Expenses() {
       {/* FilterDrawer lives outside the main scroll so it overlays everything */}
       <FilterDrawer />
 
-      <div className="space-y-6 animate-in fade-in duration-500 px-4 md:px-6 py-6 max-w-7xl mx-auto">
+      {/* THE FIX: Added 'w-full' and 'overflow-x-hidden' to this wrapper */}
+      <div className="space-y-6 animate-in fade-in duration-500 px-4 md:px-6 py-6 max-w-7xl mx-auto w-full overflow-x-hidden">
         {/* Header + inline date presets */}
         <ExpensesHeader />
 
