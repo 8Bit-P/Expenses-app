@@ -1,6 +1,6 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import { startOfMonth, endOfMonth, eachDayOfInterval, format, subDays, differenceInDays, parseISO } from "date-fns";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useExpenses } from "../../../context/ExpensesContext";
 import { useTransactions } from "../../../hooks/useTransactions";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
@@ -11,6 +11,16 @@ export default function SpendingTrendChart() {
   const { filters } = useExpenses();
   const { monthlyBudget, currency } = useUserPreferences();
   const now = new Date();
+
+  // Mobile detection
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 640px)");
+    setIsMobile(mql.matches);
+    const listener = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener("change", listener);
+    return () => mql.removeEventListener("change", listener);
+  }, []);
 
   // Resolve the "current" period from context filters, falling back to this month
   const currentStart = filters.startDate ? parseISO(filters.startDate) : startOfMonth(now);
@@ -75,43 +85,69 @@ export default function SpendingTrendChart() {
     );
   }
 
-  const validCurrents = chartData.map(d => d.current).filter(v => v !== null) as number[];
+  const validCurrents = chartData.map((d) => d.current).filter((v) => v !== null) as number[];
   const maxCurrent = validCurrents.length > 0 ? Math.max(...validCurrents) : 0;
   const minCurrent = validCurrents.length > 0 ? Math.min(...validCurrents) : 0;
-  
+
   const maxPrevious = Math.max(0, ...chartData.map((d) => d.previous || 0));
   const maxAmount = Math.max(maxCurrent, maxPrevious);
 
   // Ensure the budget line is always visible inside the chart — pad domain above it
   const chartMaxNum = showBudget
     ? Math.max(maxAmount, monthlyBudget) * 1.05
-    : maxAmount > 0 ? maxAmount * 1.05 : 100;
+    : maxAmount > 0
+      ? maxAmount * 1.05
+      : 100;
   const chartMax = chartMaxNum;
 
-  /**
-   * Y-axis gradient math in Recharts (objectBoundingBox):
-   * 0% is the highest Y point of the drawn path, 100% is the lowest.
-   * - the Fill Area connects to y=0 at the bottom, so its lowest point is 0.
-   * - the Stroke Line just connects the data points, so its lowest point is minCurrent.
-   */
-  const fillThresholdPct = showBudget && maxCurrent > 0
-    ? Math.max(0, Math.min(100, ((maxCurrent - monthlyBudget) / maxCurrent) * 100))
-    : 0;
-    
-  const strokeThresholdPct = showBudget && maxCurrent > minCurrent
-    ? Math.max(0, Math.min(100, ((maxCurrent - monthlyBudget) / (maxCurrent - minCurrent)) * 100))
-    : 0;
+  const fillThresholdPct =
+    showBudget && maxCurrent > 0 ? Math.max(0, Math.min(100, ((maxCurrent - monthlyBudget) / maxCurrent) * 100)) : 0;
+
+  const strokeThresholdPct =
+    showBudget && maxCurrent > minCurrent
+      ? Math.max(0, Math.min(100, ((maxCurrent - monthlyBudget) / (maxCurrent - minCurrent)) * 100))
+      : 0;
 
   const hasOverrun = showBudget && maxCurrent > monthlyBudget;
 
   // Colors
-  const overColor = "var(--error)";   
+  const overColor = "var(--error)";
   const safeColor = "var(--primary)";
+
+  const LegendItems = ({ className = "" }: { className?: string }) => (
+    <div className={`flex items-center gap-4 text-xs font-bold flex-wrap ${className}`}>
+      {showBudget && (
+        <div className="flex items-center gap-1.5">
+          <svg width="18" height="8" viewBox="0 0 18 8">
+            <line
+              x1="0"
+              y1="4"
+              x2="18"
+              y2="4"
+              stroke={overColor}
+              strokeWidth="2"
+              strokeDasharray="4 3"
+              strokeLinecap="round"
+            />
+          </svg>
+          <span className="text-on-surface-variant">Budget</span>
+        </div>
+      )}
+      <div className="flex items-center gap-1.5">
+        <div className="w-2.5 h-2.5 rounded-full bg-primary" />
+        <span className="text-on-surface">{currentLabel}</span>
+      </div>
+      <div className="flex items-center gap-1.5">
+        <div className="w-2.5 h-2.5 rounded-full bg-outline-variant" />
+        <span className="text-on-surface-variant">{previousLabel}</span>
+      </div>
+    </div>
+  );
 
   return (
     <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-start justify-between mb-6">
         <div>
           <h4 className="text-lg font-bold font-headline text-on-surface">Spending Trend</h4>
           <p className="text-xs font-medium text-on-surface-variant mt-0.5">
@@ -119,35 +155,19 @@ export default function SpendingTrendChart() {
           </p>
         </div>
 
-        {/* Legend */}
-        <div className="flex items-center gap-4 text-xs font-bold flex-wrap justify-end">
-          {showBudget && (
-            <div className="flex items-center gap-1.5">
-              <svg width="18" height="8" viewBox="0 0 18 8">
-                <line
-                  x1="0" y1="4" x2="18" y2="4"
-                  stroke={overColor} strokeWidth="2"
-                  strokeDasharray="4 3" strokeLinecap="round"
-                />
-              </svg>
-              <span className="text-on-surface-variant">Budget</span>
-            </div>
-          )}
-          <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-primary" />
-            <span className="text-on-surface">{currentLabel}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-outline-variant" />
-            <span className="text-on-surface-variant">{previousLabel}</span>
-          </div>
-        </div>
+        {/* Legend - Hidden on mobile header, shown on desktop header */}
+        <LegendItems className="hidden sm:flex justify-end" />
       </div>
 
       {/* Chart */}
       <div className="w-full flex-1">
-        <ResponsiveContainer width="100%" height={380} minWidth={1} minHeight={1} debounce={50}>
-          <AreaChart data={chartData} margin={{ top: 10, right: 60, left: -20, bottom: 0 }}>
+        <ResponsiveContainer width="100%" height={isMobile ? 320 : 380} minWidth={1} minHeight={1} debounce={50}>
+          <AreaChart
+            data={chartData}
+            margin={isMobile ? { top: 10, right: 10, left: -40, bottom: 0 } : { top: 10, right: 60, left: -20, bottom: 0 }}
+            style={{ outline: "none" }}
+            accessibilityLayer={false}
+          >
             <defs>
               {/* Fill gradient — red above budget threshold, primary below */}
               <linearGradient id="fillCurrent" x1="0" y1="0" x2="0" y2="1">
@@ -178,12 +198,7 @@ export default function SpendingTrendChart() {
               </linearGradient>
             </defs>
 
-            <CartesianGrid
-              strokeDasharray="3 3"
-              vertical={false}
-              stroke="currentColor"
-              className="text-outline-variant/20"
-            />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-outline-variant/20" />
 
             <XAxis
               dataKey="label"
@@ -192,15 +207,20 @@ export default function SpendingTrendChart() {
               tick={{ fontSize: 9, fill: "currentColor" }}
               className="text-on-surface-variant/60 font-semibold"
               dy={10}
-              interval={Math.max(0, Math.floor(chartData.length / 6) - 1)}
+              interval={
+                isMobile
+                  ? Math.max(0, Math.floor(chartData.length / 4) - 1)
+                  : Math.max(0, Math.floor(chartData.length / 6) - 1)
+              }
             />
             <YAxis
+              hide={isMobile}
               domain={[0, chartMax]}
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 11, fill: "currentColor" }}
               className="text-on-surface-variant/60 font-semibold"
-              tickFormatter={(v) => formatCurrency(v, currency.code, { notation: 'compact', maximumFractionDigits: 0 })}
+              tickFormatter={(v) => formatCurrency(v, currency.code, { notation: "compact", maximumFractionDigits: 0 })}
             />
 
             <Tooltip
@@ -213,6 +233,7 @@ export default function SpendingTrendChart() {
                 fontWeight: "bold",
                 fontSize: "12px",
               }}
+              cursor={{ stroke: "var(--outline)", strokeWidth: 1.5, strokeDasharray: "4 4" }}
               itemStyle={{ color: "var(--on-surface)" }}
               formatter={(value: any, name: any) => [
                 value != null ? formatCurrency(value as number, currency.code) : "—",
@@ -221,13 +242,7 @@ export default function SpendingTrendChart() {
             />
 
             {showBudget && (
-              <ReferenceLine
-                y={monthlyBudget}
-                stroke={overColor}
-                strokeWidth={1.5}
-                strokeDasharray="4 4"
-                strokeOpacity={0.8}
-              />
+              <ReferenceLine y={monthlyBudget} stroke={overColor} strokeWidth={1.5} strokeDasharray="4 4" strokeOpacity={0.8} />
             )}
 
             <Area type="monotone" dataKey="previous" stroke="var(--outline-variant)" strokeWidth={2} fill="none" connectNulls />
@@ -243,6 +258,9 @@ export default function SpendingTrendChart() {
           </AreaChart>
         </ResponsiveContainer>
       </div>
+
+      {/* Legend - Shown only on mobile below chart */}
+      <LegendItems className="mt-4 sm:hidden justify-center border-t border-outline-variant/10 pt-4" />
     </div>
   );
 }

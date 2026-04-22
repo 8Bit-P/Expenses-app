@@ -100,6 +100,17 @@ body,
   overscroll-behavior-x: none;
 }
 
+/* Remove Recharts interactive focus outline and box-shadows */
+.recharts-wrapper, 
+.recharts-wrapper *,
+.recharts-surface, 
+.recharts-pie-sector,
+.recharts-responsive-container {
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
 @layer base {
   button:not(:disabled) {
     cursor: pointer;

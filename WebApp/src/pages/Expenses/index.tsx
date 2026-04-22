@@ -22,7 +22,7 @@ export default function Expenses() {
         {/* Headline metrics */}
         <MetricsRow />
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
           {/* Row 1: Spending Trend (8) + Category Donut (4) */}
           <div className="md:col-span-8">
             <SpendingTrendChart />

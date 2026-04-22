@@ -1,24 +1,16 @@
+import { useState } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { useExpenses } from "../../../context/ExpensesContext";
 import { useTransactions } from "../../../hooks/useTransactions";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { formatCurrency, formatCompactCurrency } from "../../../utils/currency";
+import { CATEGORY_COLORS } from "../../../constants/chartColors";
 
-const COLORS = [
-  "#6366f1",
-  "#8b5cf6",
-  "#ec4899",
-  "#f43f5e",
-  "#f97316",
-  "#eab308",
-  "#22c55e",
-  "#14b8a6",
-  "#3b82f6",
-  "#06b6d4",
-];
+
 
 export default function CategoryDonut() {
   const { currency } = useUserPreferences();
+  const [isExpanded, setIsExpanded] = useState(false);
   // Read date + category filters from context, but fetch all (no pagination) for the chart
   const { filters } = useExpenses();
   const { transactions, loading } = useTransactions({
@@ -55,7 +47,7 @@ export default function CategoryDonut() {
     .sort((a, b) => b.value - a.value)
     .map((item, index) => ({
       ...item,
-      color: COLORS[index % COLORS.length],
+      color: CATEGORY_COLORS[index % CATEGORY_COLORS.length],
     }));
 
   const total = data.reduce((sum, item) => sum + item.value, 0);
@@ -85,7 +77,7 @@ export default function CategoryDonut() {
           {/* Chart Area */}
           <div className="relative w-full shrink-0 min-w-0">
             <ResponsiveContainer width="100%" height={200} minWidth={1} minHeight={1} debounce={50}>
-              <PieChart>
+              <PieChart style={{ outline: "none" }} accessibilityLayer={false}>
                 <Pie data={data} innerRadius={62} outerRadius={84} paddingAngle={2} dataKey="value" stroke="none">
                   {data.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
@@ -123,8 +115,8 @@ export default function CategoryDonut() {
             .category-legend::-webkit-scrollbar-thumb:hover { background: var(--on-surface-variant); }
           `}</style>
 
-          <div className="mt-4 category-legend overflow-y-auto max-h-45 pr-2 space-y-1.5">
-            {data.map((item, index) => {
+          <div className={`mt-4 category-legend overflow-y-auto pr-2 space-y-1.5 transition-all duration-300 ${isExpanded ? "max-h-80" : "max-h-45"}`}>
+            {(isExpanded ? data : data.slice(0, 3)).map((item, index) => {
               const pct = total > 0 ? ((item.value / total) * 100).toFixed(0) : "0";
               return (
                 <div
@@ -156,6 +148,18 @@ export default function CategoryDonut() {
               );
             })}
           </div>
+
+          {data.length > 3 && (
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="mt-2 w-full py-2 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50 hover:text-primary hover:bg-primary/5 rounded-xl transition-all group"
+            >
+              <span>{isExpanded ? "Show Less" : `View All (${data.length})`}</span>
+              <span className={`material-symbols-outlined text-base transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}>
+                expand_more
+              </span>
+            </button>
+          )}
         </>
       )}
     </div>
