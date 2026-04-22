@@ -4,10 +4,9 @@ import { useUserPreferences } from "../../../context/UserPreferencesContext";
 
 interface UpcomingRenewalsProps {
   subscriptions: Subscription[];
-  onAdd: () => void;
 }
 
-export default function UpcomingRenewals({ subscriptions, onAdd }: UpcomingRenewalsProps) {
+export default function UpcomingRenewals({ subscriptions }: UpcomingRenewalsProps) {
   const { currency } = useUserPreferences();
 
   // Sort and filter active renewals
@@ -85,17 +84,6 @@ export default function UpcomingRenewals({ subscriptions, onAdd }: UpcomingRenew
         </p>
       </div>
 
-      <div className="mt-8">
-        <button
-          onClick={onAdd}
-          className="w-full bg-primary text-on-primary h-14 rounded-2xl font-black text-sm uppercase tracking-[0.1em] shadow-lg shadow-primary/20 hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 border border-white/10"
-        >
-          <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'wght' 700" }}>
-            add
-          </span>
-          Add Service
-        </button>
-      </div>
     </div>
   );
 }

@@ -56,55 +56,38 @@ export default function ProfileSection() {
 
   return (
     <section className="col-span-12 lg:col-span-7">
-      <div className="bg-surface-container-lowest border border-outline-variant/10 rounded-2xl p-8 shadow-sm h-full">
-        <div className="flex items-start justify-between mb-8">
-          {/* Avatar & Info Container */}
-          <div className="flex items-center gap-6">
-            {/* Avatar Wrapper */}
-            <div className="relative group">
-              <div className="w-24 h-24 rounded-2xl bg-surface-container overflow-hidden border border-outline-variant/20 relative">
-                <img
-                  src={avatarSrc}
-                  alt="Profile"
-                  className={`w-full h-full object-cover ${isUploading ? "opacity-50 blur-sm" : ""}`}
-                />
-              </div>
-
-              {/* Edit Avatar Button */}
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isUploading}
-                className="absolute -bottom-2 -right-2 w-8 h-8 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all border-2 border-surface-container-lowest"
-              >
-                {isUploading ? (
-                  <span className="material-symbols-outlined text-[16px] animate-spin">refresh</span>
-                ) : (
-                  <span className="material-symbols-outlined text-[16px]">edit</span>
-                )}
-              </button>
-              <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
+      <div className="bg-surface-container-lowest border border-outline-variant/10 rounded-3xl p-6 shadow-sm">
+        <div className="flex items-center gap-6">
+          {/* Avatar Container with Overlapping Edit */}
+          <div className="relative shrink-0">
+            <div className="w-20 h-20 rounded-full bg-surface-container overflow-hidden border border-outline-variant/20">
+              <img
+                src={avatarSrc}
+                alt="Profile"
+                className={`w-full h-full object-cover ${isUploading ? "opacity-50 blur-sm" : ""}`}
+              />
             </div>
-
-            <div>
-              <h2 className="text-2xl font-black text-on-surface font-headline tracking-tight">{userName}</h2>
-              <p className="text-on-surface-variant font-medium text-sm">{userEmail}</p>
-            </div>
+            
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploading}
+              className="absolute bottom-0 right-0 w-7 h-7 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-md hover:scale-110 active:scale-95 transition-all border-2 border-surface-container-lowest"
+            >
+              <span className="material-symbols-outlined text-[14px]">
+                {isUploading ? "sync" : "edit"}
+              </span>
+            </button>
+            <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
           </div>
-        </div>
 
-        {/* Info Cards */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-surface-container-low rounded-2xl p-4 border border-outline-variant/5">
-            <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60 block mb-1">
-              Name
-            </span>
-            <span className="font-bold text-on-surface text-sm">{userName}</span>
-          </div>
-          <div className="bg-surface-container-low rounded-2xl p-4 border border-outline-variant/5">
-            <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60 block mb-1">
-              Language
-            </span>
-            <span className="font-bold text-on-surface text-sm">{language}</span>
+          {/* User Info */}
+          <div className="min-w-0 flex-1">
+            <h2 className="text-xl font-black text-on-surface font-headline tracking-tight truncate">
+              {userName}
+            </h2>
+            <p className="text-on-surface-variant font-medium text-sm truncate">
+              {userEmail}
+            </p>
           </div>
         </div>
       </div>

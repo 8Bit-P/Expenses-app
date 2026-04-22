@@ -31,9 +31,9 @@ export default function Subscriptions() {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 max-w-7xl mx-auto w-full px-2 md:px-0 pb-24">
+    <div className="space-y-10 animate-in fade-in duration-500 max-w-7xl mx-auto w-full px-2 md:px-0 pb-24">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mt-4">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mt-6">
         <div className="space-y-1">
           <h1 className="text-4xl font-black tracking-tight text-on-surface font-headline">Subscriptions</h1>
           <p className="text-on-surface-variant font-medium text-sm">
@@ -42,10 +42,10 @@ export default function Subscriptions() {
         </div>
 
         {/* Added: Global Add Button (Crucial for when the empty state is hidden!) */}
-        {/* Demoted Add Button: Secondary on mobile, Primary on desktop */}
+        {/* Secondary Page Action: Ghost style on desktop, icon style on mobile */}
         <button
           onClick={handleOpenNew}
-          className="group flex items-center justify-center gap-2 bg-surface-container-highest md:bg-primary text-on-surface md:text-on-primary px-4 md:px-5 py-2.5 rounded-xl font-bold text-sm hover:opacity-90 active:scale-[0.98] transition-all shadow-sm md:shadow-lg md:shadow-primary/20"
+          className="group flex items-center justify-center gap-2 border-2 border-primary/20 md:border-primary/40 text-primary px-4 md:px-5 py-2 rounded-xl font-bold text-sm hover:bg-primary/5 hover:border-primary active:scale-[0.98] transition-all"
         >
           <span className="material-symbols-outlined text-[20px] group-hover:rotate-90 transition-transform duration-300">
             add
@@ -62,13 +62,13 @@ export default function Subscriptions() {
         {/* Main Grid Area */}
         <div className="flex-1 w-full lg:min-w-0">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-black tracking-tight font-headline">Your Services</h2>
+            <h2 className="text-2xl font-black tracking-tight font-headline">Your Subscriptions</h2>
 
             {/* View Toggle - Hidden on mobile */}
-            <div className="hidden md:flex items-center gap-1 bg-surface-container-lowest rounded-xl p-1 border border-outline-variant/10 shadow-sm">
+            <div className="hidden md:flex items-center gap-1.5 bg-surface-container-lowest rounded-full p-1.5 border border-outline-variant/10 shadow-sm">
               <button
                 onClick={() => setViewMode("grid")}
-                className={`p-2 rounded-lg transition-all ${
+                className={`p-2 rounded-full transition-all ${
                   viewMode === "grid"
                     ? "bg-surface-container-high text-primary shadow-sm"
                     : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
@@ -78,7 +78,7 @@ export default function Subscriptions() {
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`p-2 rounded-lg transition-all ${
+                className={`p-2 rounded-full transition-all ${
                   viewMode === "list"
                     ? "bg-surface-container-high text-primary shadow-sm"
                     : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
@@ -143,7 +143,7 @@ export default function Subscriptions() {
 
         {/* Sidebar */}
         <div className="w-full lg:w-96 shrink-0 sticky top-24">
-          <UpcomingRenewals subscriptions={subscriptions} onAdd={handleOpenNew} />
+          <UpcomingRenewals subscriptions={subscriptions} />
         </div>
       </div>
 

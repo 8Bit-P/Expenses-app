@@ -99,7 +99,7 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
 
           <div className="flex items-center justify-between relative z-10">
             <span className="text-on-surface-variant font-black text-[12px] uppercase tracking-[0.2em]">
-              Active Services
+              Active Subscriptions
             </span>
             <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center border border-secondary/20">
               <span className="material-symbols-outlined text-secondary text-[18px]">layers</span>

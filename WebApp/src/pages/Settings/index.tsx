@@ -12,31 +12,24 @@ export default function Settings() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   return (
-    <div className="px-6 lg:px-12 py-8 max-w-6xl mx-auto animate-in fade-in duration-500">
-      <div className="mb-12">
+    <div className="max-w-7xl mx-auto w-full px-2 md:px-0 pb-40 animate-in fade-in duration-500">
+      <div className="mt-6 mb-8">
         <h2 className="text-4xl font-extrabold tracking-tight font-headline text-on-surface">Settings</h2>
         <p className="text-on-surface-variant mt-2 font-medium">Manage your ethereal vault and guardian preferences.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* LEFT COLUMN: Profile and Categories Stacked */}
-        <div className="col-span-1 lg:col-span-7 flex flex-col gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        {/* Primary Settings Column */}
+        <div className="flex flex-col gap-8">
           <ProfileSection />
+          <PreferencesSection />
           <CategoriesSection />
         </div>
 
-        {/* RIGHT COLUMN: General & Financial */}
-        <div className="col-span-1 lg:col-span-5 h-full">
-          <PreferencesSection />
-        </div>
-
-        <div className="col-span-1 lg:col-span-4 h-full">
+        {/* Secondary/Utility Settings Column */}
+        <div className="flex flex-col gap-8">
           <SecuritySection />
-        </div>
-        <div className="col-span-1 lg:col-span-4 h-full">
           <NotificationsSection />
-        </div>
-        <div className="col-span-1 lg:col-span-4 h-full">
           <SessionSection />
         </div>
       </div>
