@@ -100,7 +100,7 @@ export default function CategoryDonut() {
 
             {/* Center Total Text */}
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-xl font-black text-on-surface">
+              <span className="text-xl font-black text-on-surface font-headline">
                 {formatCompactCurrency(total, currency.code)}
               </span>
               <span className="text-[9px] font-bold text-on-surface-variant uppercase tracking-widest">Expenses</span>
@@ -140,7 +140,7 @@ export default function CategoryDonut() {
                   {/* Percentage + Amount */}
                   <div className="flex items-center gap-2 shrink-0">
                     <span className="text-[10px] font-bold text-on-surface-variant/50 tabular-nums">{pct}%</span>
-                    <span className="text-xs font-bold text-on-surface tabular-nums">
+                    <span className="text-xs font-bold text-on-surface tabular-nums font-headline">
                       {formatCompactCurrency(item.value, currency.code)}
                     </span>
                   </div>

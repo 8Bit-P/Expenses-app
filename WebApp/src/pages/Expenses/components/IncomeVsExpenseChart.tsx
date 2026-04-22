@@ -5,6 +5,30 @@ import { useMemo } from "react";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { formatCurrency } from "../../../utils/currency";
 
+const CustomTooltip = ({ active, payload, label, currency }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-xl p-3 flex flex-col gap-1.5 min-w-[140px]">
+        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60 border-b border-outline-variant/10 pb-1 mb-0.5">
+          {label}
+        </p>
+        {payload.map((entry: any, index: number) => (
+          <div key={index} className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.fill }}></div>
+              <span className="text-xs font-bold text-on-surface capitalize">{entry.name}</span>
+            </div>
+            <span className="text-xs font-black text-on-surface">
+              {formatCurrency(entry.value, currency.code)}
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
+
 export default function IncomeVsExpenseChart() {
   const { currency } = useUserPreferences();
   const now = new Date();
@@ -73,7 +97,7 @@ export default function IncomeVsExpenseChart() {
 
       <div className="w-full">
         <ResponsiveContainer width="100%" height={300} minWidth={1} minHeight={1} debounce={50}>
-          <BarChart data={chartData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }} barGap={6}>
+          <BarChart data={chartData} margin={{ top: 10, right: 0, left: -25, bottom: 0 }} barGap={2}>
             <CartesianGrid
               strokeDasharray="3 3"
               vertical={false}
@@ -99,20 +123,11 @@ export default function IncomeVsExpenseChart() {
 
             <Tooltip
               cursor={{ fill: "var(--surface-container-low)", opacity: 0.4 }}
-              contentStyle={{
-                backgroundColor: "var(--surface-container-lowest)",
-                borderColor: "var(--outline-variant)",
-                borderRadius: "12px",
-                boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
-                color: "var(--on-surface)",
-                fontWeight: "bold",
-                fontSize: "12px",
-              }}
-              formatter={(value: any) => [formatCurrency(value as number, currency.code), ""]}
+              content={<CustomTooltip currency={currency} />}
             />
 
-            <Bar dataKey="income" fill="var(--secondary)" radius={[4, 4, 0, 0]} maxBarSize={40} />
-            <Bar dataKey="expense" fill="var(--primary)" radius={[4, 4, 0, 0]} maxBarSize={40} />
+            <Bar dataKey="income" name="Income" fill="var(--secondary)" radius={[2, 2, 0, 0]} barSize={10} />
+            <Bar dataKey="expense" name="Expense" fill="var(--primary)" radius={[2, 2, 0, 0]} barSize={10} />
           </BarChart>
         </ResponsiveContainer>
       </div>

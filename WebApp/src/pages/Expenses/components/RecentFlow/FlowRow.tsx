@@ -108,22 +108,22 @@ export default function FlowRow({
         isDeleting ? "opacity-40 pointer-events-none" : "hover:bg-surface-container-low/50"
       } ${isConfirming ? "bg-error/5" : ""}`}
     >
-
-
       {/* Avatar + description */}
       <div className="flex items-center gap-3 min-w-0">
-        <div 
+        <div
           className="w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0 group-hover:scale-110 transition-transform duration-200"
           style={{ backgroundColor: `${getCategoryColor(tx.category?.name || "Uncategorized")}1a` }} // 1a is ~10% opacity
         >
           {tx.category?.emoji || "💰"}
         </div>
         <div className="min-w-0">
-          <h4 className="font-bold text-sm text-on-surface flex items-center gap-1.5 leading-none">
-            <span className="truncate">{tx.description?.replace(/\(Auto-renew\)/gi, "").trim() || tx.category?.name || "Untitled"}</span>
+          <h4 className="font-bold text-sm text-on-surface flex items-center gap-1 leading-none">
+            <span className="truncate">
+              {tx.description?.replace(/\(Auto-renew\)/gi, "").trim() || tx.category?.name || "Untitled"}
+            </span>
             {tx.description?.toLowerCase().includes("(auto-renew)") && (
-              <span className="material-symbols-outlined text-[14px] text-tertiary" title="Subscription">
-                autorenew
+              <span className="material-symbols-outlined text-[10px] text-tertiary/50 shrink-0" title="Subscription">
+                sync
               </span>
             )}
           </h4>
