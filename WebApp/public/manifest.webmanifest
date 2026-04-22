@@ -1,0 +1,17 @@
+{
+  "name": "Personal Vault",
+  "short_name": "Vault",
+  "description": "Your Secure Financial Guardian.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#0f0069",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
