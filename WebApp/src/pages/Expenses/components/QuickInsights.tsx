@@ -2,7 +2,7 @@ import { useExpenses } from "../../../context/ExpensesContext";
 import { usePeriodMetrics } from "../hooks/usePeriodMetrics";
 import { formatDateLabel } from "../../../utils/dateFormatters";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
-import { formatCurrency, formatCompactCurrency } from "../../../utils/currency";
+import { formatCompactCurrency } from "../../../utils/currency";
 
 interface InsightItem {
   icon: string;
@@ -125,7 +125,7 @@ export default function QuickInsights() {
               icon: "receipt_long",
               iconColor: "text-primary bg-primary/10",
               label: "Transactions",
-              value: `${m.categoryBreakdown.reduce((s, c) => s, 0)} movements`,
+              value: `${m.categoryBreakdown.reduce((s, _) => s, 0)} movements`,
               highlight: "neutral" as const,
             },
       ]),

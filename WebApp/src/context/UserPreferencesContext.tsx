@@ -41,7 +41,7 @@ interface UserPreferencesContextType {
   setNotifications: (prefs: Partial<NotificationPrefs>) => void;
 }
 
-import { getSystemTheme, applyTheme } from "../utils/theme";
+import { applyTheme } from "../utils/theme";
 import { getLocalStorageItem, setLocalStorageItem } from "../utils/storage";
 
 // ─── Context ──────────────────────────────────────────────────────────────────

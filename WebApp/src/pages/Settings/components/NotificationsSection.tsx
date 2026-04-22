@@ -46,7 +46,7 @@ function NotifRow({ icon, title, subtitle, checked, onToggle, children }: NotifR
             <p className="text-xs text-on-surface-variant mt-0.5">{subtitle}</p>
           </div>
         </div>
-        <Toggle checked={checked} onToggle={() => {}} onChange={onToggle} />
+        <Toggle checked={checked} onChange={onToggle} />
       </div>
       {checked && children && (
         <div className="ml-9 animate-in fade-in slide-in-from-top-1 duration-200">

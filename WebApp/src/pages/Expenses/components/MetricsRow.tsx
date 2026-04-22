@@ -2,7 +2,7 @@ import { useExpenses } from "../../../context/ExpensesContext";
 import { usePeriodMetrics } from "../hooks/usePeriodMetrics";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { startOfMonth, endOfMonth, format } from "date-fns";
-import { formatCurrency, formatCompactCurrency } from "../../../utils/currency";
+import { formatCompactCurrency } from "../../../utils/currency";
 
 
 function DeltaBadge({ pct }: { pct: number | null }) {

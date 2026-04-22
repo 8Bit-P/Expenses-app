@@ -33,7 +33,7 @@ function ThemeButton({
 }
 
 export default function PreferencesSection() {
-  const { theme, setTheme, currency, setCurrency, dateFormat, monthlyBudget, updateFinancialSettings, budgetLoading } =
+  const { theme, setTheme, currency, dateFormat, monthlyBudget, updateFinancialSettings, budgetLoading } =
     useUserPreferences();
 
   const [budgetInput, setBudgetInput] = useState(monthlyBudget > 0 ? monthlyBudget.toString() : "");

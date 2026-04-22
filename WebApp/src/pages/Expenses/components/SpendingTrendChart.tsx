@@ -214,7 +214,7 @@ export default function SpendingTrendChart() {
                 fontSize: "12px",
               }}
               itemStyle={{ color: "var(--on-surface)" }}
-              formatter={(value: any, name: string) => [
+              formatter={(value: any, name: any) => [
                 value != null ? formatCurrency(value as number, currency.code) : "—",
                 name === "current" ? currentLabel : previousLabel,
               ]}
