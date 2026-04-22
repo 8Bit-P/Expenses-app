@@ -1,6 +1,7 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import { startOfMonth, endOfMonth, eachDayOfInterval, format, subDays, differenceInDays, parseISO } from "date-fns";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo } from "react";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useExpenses } from "../../../context/ExpensesContext";
 import { useTransactions } from "../../../hooks/useTransactions";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
@@ -13,14 +14,7 @@ export default function SpendingTrendChart() {
   const now = new Date();
 
   // Mobile detection
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const mql = window.matchMedia("(max-width: 640px)");
-    setIsMobile(mql.matches);
-    const listener = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mql.addEventListener("change", listener);
-    return () => mql.removeEventListener("change", listener);
-  }, []);
+  const isMobile = useIsMobile(640);
 
   // Resolve the "current" period from context filters, falling back to this month
   const currentStart = filters.startDate ? parseISO(filters.startDate) : startOfMonth(now);

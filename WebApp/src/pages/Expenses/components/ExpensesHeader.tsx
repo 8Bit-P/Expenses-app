@@ -21,7 +21,7 @@ export default function ExpensesHeader() {
     <div className="mb-6">
       {/* 1. Title & Current Date Context (Functional Button) */}
       <div className="flex flex-col gap-0.5 mb-6 cursor-pointer group w-fit" onClick={() => setIsFilterOpen(true)}>
-        <h1 className="text-2xl font-black text-on-surface font-headline tracking-tight group-hover:text-primary transition-colors">
+        <h1 className="text-4xl font-black text-on-surface font-headline tracking-tight group-hover:text-primary transition-colors">
           Overview
         </h1>
         <div className="flex items-center gap-1.5">

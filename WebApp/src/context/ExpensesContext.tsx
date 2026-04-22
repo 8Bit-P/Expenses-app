@@ -1,7 +1,8 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 import type { TransactionFilters } from "../types/expenses";
 import { useTransactions as useTransactionsHook } from "../hooks/useTransactions";
 import { DEFAULT_FILTERS, PAGE_SIZE } from "../pages/Expenses/constants";
+import { useIsMobile } from "../hooks/useIsMobile";
 
 interface ExpensesContextType {
   filters: TransactionFilters;
@@ -29,15 +30,7 @@ export function ExpensesProvider({ children }: { children: ReactNode }) {
   const [filters, setFiltersState] = useState<TransactionFilters>(DEFAULT_FILTERS);
   const [page, setPage] = useState(1);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mql = window.matchMedia("(max-width: 768px)");
-    setIsMobile(mql.matches);
-    const listener = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mql.addEventListener("change", listener);
-    return () => mql.removeEventListener("change", listener);
-  }, []);
+  const isMobile = useIsMobile(768);
 
   const activeFilters: TransactionFilters = { ...filters, page, pageSize: PAGE_SIZE };
 

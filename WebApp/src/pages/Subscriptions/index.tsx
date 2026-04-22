@@ -5,12 +5,15 @@ import SubscriptionCard from "./components/SubscriptionCard";
 import UpcomingRenewals from "./components/UpcomingRenewals";
 import SubscriptionModal from "./components/SubscriptionModal";
 import type { Subscription } from "../../types/expenses";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 export default function Subscriptions() {
   const { subscriptions, loading } = useSubscriptions();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
+
+  const isMobile = useIsMobile(768);
 
   const handleManage = (s: Subscription) => {
     setSelectedSubscription(s);
@@ -33,20 +36,22 @@ export default function Subscriptions() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mt-4">
         <div className="space-y-1">
           <h1 className="text-4xl font-black tracking-tight text-on-surface font-headline">Subscriptions</h1>
-          <p className="text-on-surface-variant font-bold text-sm uppercase tracking-widest opacity-60">
-            Managed Services
+          <p className="text-on-surface-variant font-medium text-sm">
+            Active recurring payments
           </p>
         </div>
 
         {/* Added: Global Add Button (Crucial for when the empty state is hidden!) */}
+        {/* Demoted Add Button: Secondary on mobile, Primary on desktop */}
         <button
           onClick={handleOpenNew}
-          className="group flex items-center gap-2 bg-primary text-on-primary px-5 py-2.5 rounded-xl font-bold text-sm hover:opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-primary/20"
+          className="group flex items-center justify-center gap-2 bg-surface-container-highest md:bg-primary text-on-surface md:text-on-primary px-4 md:px-5 py-2.5 rounded-xl font-bold text-sm hover:opacity-90 active:scale-[0.98] transition-all shadow-sm md:shadow-lg md:shadow-primary/20"
         >
           <span className="material-symbols-outlined text-[20px] group-hover:rotate-90 transition-transform duration-300">
             add
           </span>
-          New Subscription
+          <span className="hidden md:inline">New Subscription</span>
+          <span className="md:hidden">Add</span>
         </button>
       </div>
 
@@ -59,8 +64,8 @@ export default function Subscriptions() {
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-black tracking-tight font-headline">Your Services</h2>
 
-            {/* View Toggle */}
-            <div className="flex items-center gap-1 bg-surface-container-lowest rounded-xl p-1 border border-outline-variant/10 shadow-sm">
+            {/* View Toggle - Hidden on mobile */}
+            <div className="hidden md:flex items-center gap-1 bg-surface-container-lowest rounded-xl p-1 border border-outline-variant/10 shadow-sm">
               <button
                 onClick={() => setViewMode("grid")}
                 className={`p-2 rounded-lg transition-all ${
@@ -113,8 +118,8 @@ export default function Subscriptions() {
           ) : (
             /* Populated State */
             <div
-              className={`grid gap-6 transition-all duration-300 ${
-                viewMode === "grid" ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" : "grid-cols-1"
+              className={`grid gap-4 transition-all duration-300 ${
+                viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 xl:grid-cols-3" : "grid-cols-1"
               }`}
             >
               {loading
@@ -124,7 +129,14 @@ export default function Subscriptions() {
                       className="h-48 bg-surface-container-lowest/50 rounded-2xl animate-pulse border border-outline-variant/10"
                     />
                   ))
-                : subscriptions.map((s) => <SubscriptionCard key={s.id} subscription={s} onManage={handleManage} />)}
+                : subscriptions.map((s) => (
+                    <SubscriptionCard
+                      key={s.id}
+                      subscription={s}
+                      onManage={handleManage}
+                      variant={isMobile ? "list" : viewMode}
+                    />
+                  ))}
             </div>
           )}
         </div>

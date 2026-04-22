@@ -51,7 +51,7 @@ export default function Investments() {
               {assets.length} Active {assets.length === 1 ? "Asset" : "Assets"}
             </span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black font-headline tracking-tight text-on-surface">Net Worth</h1>
+          <h1 className="text-4xl font-black font-headline tracking-tight text-on-surface">Net Worth</h1>
           <p className="text-sm text-on-surface-variant font-medium mt-2 max-w-md">
             Monitor your overarching wealth, track contributions, and securely record your portfolio's growth.
           </p>

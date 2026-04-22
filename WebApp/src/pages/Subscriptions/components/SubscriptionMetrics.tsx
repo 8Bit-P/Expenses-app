@@ -64,9 +64,9 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
 
   return (
     <div className="grid grid-cols-1 w-full min-w-0">
-      <div 
+      <div
         ref={scrollRef}
-        className="flex md:grid md:grid-cols-3 gap-6 mb-12 -mx-2 md:-mx-0 px-2 md:px-0 overflow-x-auto pb-4 md:pb-0 snap-x snap-mandatory hide-scrollbar"
+        className="flex md:grid md:grid-cols-3 gap-6 mb-6 md:mb-12 -mx-2 md:-mx-0 px-2 md:px-0 overflow-x-auto pb-4 md:pb-0 snap-x snap-mandatory hide-scrollbar"
       >
         {/* 1. Monthly Spend */}
         <div className="flex-none w-[82vw] md:w-auto group relative p-8 bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/10 hover:border-primary/30 transition-all duration-500 overflow-hidden flex flex-col justify-between h-45 snap-start">
@@ -162,7 +162,7 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
       </div>
 
       {/* Pagination Dots (Dynamic) */}
-      <div className="flex md:hidden justify-center gap-1.5 -mt-2 mb-8">
+      <div className="flex md:hidden justify-center gap-1.5 -mt-2 mb-4">
         {[0, 1, 2].map((i) => (
           <div
             key={i}

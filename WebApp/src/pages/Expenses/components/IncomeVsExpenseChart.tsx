@@ -1,7 +1,8 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useTransactions } from "../../../hooks/useTransactions";
 import { startOfMonth, subMonths, format, eachMonthOfInterval } from "date-fns";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo } from "react";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { formatCurrency } from "../../../utils/currency";
 
@@ -34,14 +35,7 @@ export default function IncomeVsExpenseChart() {
   const now = new Date();
   const startDate = startOfMonth(subMonths(now, 5)); // 6 months ago
 
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const mql = window.matchMedia("(max-width: 640px)");
-    setIsMobile(mql.matches);
-    const listener = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mql.addEventListener("change", listener);
-    return () => mql.removeEventListener("change", listener);
-  }, []);
+  const isMobile = useIsMobile(640);
 
   const { transactions, loading } = useTransactions({
     startDate: format(startDate, "yyyy-MM-dd"),

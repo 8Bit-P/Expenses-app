@@ -5,9 +5,10 @@ import { useUserPreferences } from "../../../context/UserPreferencesContext";
 interface SubscriptionCardProps {
   subscription: Subscription;
   onManage: (s: Subscription) => void;
+  variant?: "grid" | "list";
 }
 
-export default function SubscriptionCard({ subscription, onManage }: SubscriptionCardProps) {
+export default function SubscriptionCard({ subscription, onManage, variant = "list" }: SubscriptionCardProps) {
   const { currency } = useUserPreferences();
 
   const fmt = (n: number) =>
@@ -15,54 +16,71 @@ export default function SubscriptionCard({ subscription, onManage }: Subscriptio
 
   const nextDate = parseISO(subscription.next_billing_date);
 
-  return (
-    <div className="group bg-surface-container-lowest p-6 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-outline-variant/10 flex flex-col h-full">
-      <div className="flex items-start justify-between mb-6">
-        {/* Logo/Icon Wrapper */}
-        <div
-          className="w-12 h-12 rounded-2xl flex items-center justify-center overflow-hidden bg-primary/10 text-primary"
-          style={subscription.color ? { backgroundColor: `${subscription.color}20`, color: subscription.color } : {}}
-        >
-          {subscription.icon ? (
-            <span className="text-2xl select-none">{subscription.icon}</span>
-          ) : (
-            <span className="material-symbols-outlined text-[24px]">event_repeat</span>
-          )}
-        </div>
+  const isGrid = variant === "grid";
 
-        <div className="text-right">
-          <span className="block text-2xl font-black text-on-surface font-headline tracking-tight">
-            {fmt(Number(subscription.amount))}
+  return (
+    <div
+      onClick={() => onManage(subscription)}
+      className={`group bg-surface-container-lowest transition-all duration-300 border border-outline-variant/5 cursor-pointer active:scale-[0.99] shadow-sm hover:shadow-md ${
+        isGrid
+          ? "p-8 rounded-3xl flex flex-col gap-6 h-full text-center items-center"
+          : "p-4 rounded-2xl flex flex-row items-center gap-4"
+      }`}
+    >
+      {/* 1. Icon Container */}
+      <div
+        className={`shrink-0 flex items-center justify-center overflow-hidden bg-primary/10 text-primary ${
+          isGrid ? "w-16 h-16 rounded-2xl" : "w-12 h-12 rounded-xl"
+        }`}
+        style={subscription.color ? { backgroundColor: `${subscription.color}15`, color: subscription.color } : {}}
+      >
+        {subscription.icon ? (
+          <span className={`${isGrid ? "text-3xl" : "text-xl"} select-none`}>{subscription.icon}</span>
+        ) : (
+          <span className="material-symbols-outlined" style={{ fontSize: isGrid ? "32px" : "20px" }}>
+            event_repeat
           </span>
-          <span className="text-[10px] uppercase font-black text-on-surface-variant/60 tracking-widest whitespace-nowrap">
-            / {subscription.billing_cycle}
+        )}
+      </div>
+
+      {/* 2. Content */}
+      <div className={`flex-1 min-w-0 ${isGrid ? "w-full" : ""}`}>
+        <h3
+          className={`font-black text-on-surface truncate group-hover:text-primary transition-colors ${
+            isGrid ? "text-xl mb-1" : "text-sm"
+          }`}
+        >
+          {subscription.name}
+        </h3>
+        <div className={`flex items-center gap-1.5 mt-0.5 ${isGrid ? "justify-center" : ""}`}>
+          {subscription.category && (
+            <span className={`${isGrid ? "text-sm" : "text-[11px]"} font-bold text-on-surface-variant/70 truncate`}>
+              {subscription.category.emoji} {subscription.category.name}
+            </span>
+          )}
+          <span className="text-on-surface-variant/30 text-[10px]">•</span>
+          <span className={`${isGrid ? "text-sm" : "text-[11px]"} font-bold text-on-surface-variant/50`}>
+            {format(nextDate, "MMM d")}
           </span>
         </div>
       </div>
 
-      <h3 className="text-lg font-extrabold text-on-surface mb-1 group-hover:text-primary transition-colors">
-        {subscription.name}
-      </h3>
-
-      <p className="text-xs font-bold text-on-surface-variant/60 mb-2 flex items-center gap-1.5">
-        <span className="material-symbols-outlined text-[14px]">event</span>
-        Renewal: {format(nextDate, "MMM d, yyyy")}
-      </p>
-
-      {subscription.category && (
-        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/40 flex items-center gap-1.5 mb-6">
-          <span className="text-[12px]">{subscription.category.emoji}</span>
-          {subscription.category.name}
-        </p>
-      )}
-
-      <div className="mt-auto pt-2">
-        <button
-          onClick={() => onManage(subscription)}
-          className="w-full bg-surface-container hover:bg-primary hover:text-white text-on-surface font-black py-3 rounded-xl transition-all duration-300 active:scale-95 text-xs uppercase tracking-widest"
+      {/* 3. Price & Cycle */}
+      <div className={`${isGrid ? "w-full pt-4 border-t border-outline-variant/5" : "text-right shrink-0"}`}>
+        <div className={`font-black text-on-surface font-headline tracking-tight ${isGrid ? "text-2xl" : "text-sm"}`}>
+          {fmt(Number(subscription.amount))}
+        </div>
+        <div
+          className={`font-black text-on-surface-variant/40 uppercase tracking-widest mt-0.5 ${
+            isGrid ? "text-xs" : "text-[10px]"
+          }`}
         >
-          Manage
-        </button>
+          {subscription.billing_cycle === "monthly"
+            ? "/mo"
+            : subscription.billing_cycle === "yearly"
+              ? "/yr"
+              : `/${subscription.billing_cycle.slice(0, 3)}`}
+        </div>
       </div>
     </div>
   );
