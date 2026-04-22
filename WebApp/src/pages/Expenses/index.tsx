@@ -1,5 +1,5 @@
 import ExpensesHeader from "./components/ExpensesHeader";
-import MetricsRow from "./components/MetricsRow";
+import MetricsRow from "./components/Metrics";
 import SpendingTrendChart from "./components/SpendingTrendChart";
 import CategoryDonut from "./components/CategoryDonut";
 import IncomeVsExpenseChart from "./components/IncomeVsExpenseChart";
