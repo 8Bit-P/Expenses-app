@@ -1,7 +1,7 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useTransactions } from "../../../hooks/useTransactions";
 import { startOfMonth, subMonths, format, eachMonthOfInterval } from "date-fns";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { formatCurrency } from "../../../utils/currency";
 
@@ -33,6 +33,15 @@ export default function IncomeVsExpenseChart() {
   const { currency } = useUserPreferences();
   const now = new Date();
   const startDate = startOfMonth(subMonths(now, 5)); // 6 months ago
+
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 640px)");
+    setIsMobile(mql.matches);
+    const listener = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener("change", listener);
+    return () => mql.removeEventListener("change", listener);
+  }, []);
 
   const { transactions, loading } = useTransactions({
     startDate: format(startDate, "yyyy-MM-dd"),
@@ -97,7 +106,11 @@ export default function IncomeVsExpenseChart() {
 
       <div className="w-full">
         <ResponsiveContainer width="100%" height={300} minWidth={1} minHeight={1} debounce={50}>
-          <BarChart data={chartData} margin={{ top: 10, right: 0, left: -25, bottom: 0 }} barGap={2}>
+          <BarChart 
+            data={chartData} 
+            margin={{ top: 10, right: isMobile ? 0 : 20, left: isMobile ? -25 : 0, bottom: 0 }} 
+            barGap={isMobile ? 2 : 4}
+          >
             <CartesianGrid
               strokeDasharray="3 3"
               vertical={false}
@@ -116,9 +129,13 @@ export default function IncomeVsExpenseChart() {
             <YAxis
               axisLine={false}
               tickLine={false}
+              width={isMobile ? 40 : 80}
               tick={{ fontSize: 11, fill: "currentColor" }}
               className="text-on-surface-variant/60 font-semibold"
-              tickFormatter={(value) => formatCurrency(value, currency.code, { notation: 'compact', maximumFractionDigits: 0 })}
+              tickFormatter={(value) => formatCurrency(value, currency.code, { 
+                notation: isMobile ? 'compact' : 'standard', 
+                maximumFractionDigits: 0 
+              })}
             />
 
             <Tooltip
@@ -126,8 +143,8 @@ export default function IncomeVsExpenseChart() {
               content={<CustomTooltip currency={currency} />}
             />
 
-            <Bar dataKey="income" name="Income" fill="var(--secondary)" radius={[2, 2, 0, 0]} barSize={10} />
-            <Bar dataKey="expense" name="Expense" fill="var(--primary)" radius={[2, 2, 0, 0]} barSize={10} />
+            <Bar dataKey="income" name="Income" fill="var(--secondary)" radius={[2, 2, 0, 0]} barSize={isMobile ? 10 : 24} />
+            <Bar dataKey="expense" name="Expense" fill="var(--primary)" radius={[2, 2, 0, 0]} barSize={isMobile ? 10 : 24} />
           </BarChart>
         </ResponsiveContainer>
       </div>

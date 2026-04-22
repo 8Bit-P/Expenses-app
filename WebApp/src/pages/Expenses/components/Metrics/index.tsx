@@ -20,7 +20,7 @@ export default function MetricsRow() {
   if (m.loading) {
     return (
       <div className="grid grid-cols-1 w-full min-w-0">
-        <div className="flex sm:grid sm:grid-cols-3 gap-4 sm:gap-6 -mx-4 md:-mx-6 px-4 md:px-6 overflow-x-auto pb-4 sm:pb-0 snap-x hide-scrollbar">
+        <div className="flex sm:grid sm:grid-cols-3 gap-4 sm:gap-6 -mx-2 md:-mx-6 px-2 md:px-6 overflow-x-auto pb-4 sm:pb-0 snap-x hide-scrollbar">
           <SkeletonCard />
           <SkeletonCard />
           <SkeletonCard />
@@ -43,7 +43,7 @@ export default function MetricsRow() {
   return (
     <div className="grid grid-cols-1 w-full min-w-0">
       <div
-        className={`flex sm:grid gap-4 sm:gap-6 -mx-4 md:-mx-6 px-4 md:px-6 overflow-x-auto pb-4 sm:pb-0 snap-x snap-mandatory hide-scrollbar ${
+        className={`flex sm:grid gap-4 sm:gap-6 -mx-3 md:-mx-6 px-3 md:px-6 overflow-x-auto pb-4 sm:pb-0 snap-x snap-mandatory hide-scrollbar ${
           isThisMonth && monthlyBudget > 0 ? "sm:grid-cols-4" : "sm:grid-cols-3"
         }`}
       >

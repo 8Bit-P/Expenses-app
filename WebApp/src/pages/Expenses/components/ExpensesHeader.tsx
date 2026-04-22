@@ -20,10 +20,7 @@ export default function ExpensesHeader() {
   return (
     <div className="mb-6">
       {/* 1. Title & Current Date Context (Functional Button) */}
-      <div 
-        className="flex flex-col gap-0.5 mb-6 cursor-pointer group w-fit"
-        onClick={() => setIsFilterOpen(true)}
-      >
+      <div className="flex flex-col gap-0.5 mb-6 cursor-pointer group w-fit" onClick={() => setIsFilterOpen(true)}>
         <h1 className="text-2xl font-black text-on-surface font-headline tracking-tight group-hover:text-primary transition-colors">
           Overview
         </h1>
@@ -39,7 +36,7 @@ export default function ExpensesHeader() {
 
       {/* 2. Full-Bleed Scrolling Pills */}
       <div className="grid grid-cols-1 w-full min-w-0">
-        <div className="flex gap-2 -mx-4 md:-mx-6 px-4 md:px-6 overflow-x-auto hide-scrollbar snap-x snap-mandatory">
+        <div className="flex gap-2 -mx-2 md:-mx-6 px-2 md:px-6 overflow-x-auto hide-scrollbar snap-x snap-mandatory">
           {PRESETS.map((p) => {
             const active = isPresetActive(p.key);
             return (
