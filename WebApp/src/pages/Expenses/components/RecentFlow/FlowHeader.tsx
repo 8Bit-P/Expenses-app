@@ -6,11 +6,11 @@ interface FlowHeaderProps {
 
 export default function FlowHeader({ totalCount, loading, onAddNew }: FlowHeaderProps) {
   return (
-    <div className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 border-b border-outline-variant/10">
-      <div>
+    <div className="flex items-center justify-between px-6 py-5 md:py-4 border-b border-outline-variant/10">
+      <div className="">
         <h4 className="text-lg font-bold font-headline text-on-surface">Recent Flow</h4>
         {!loading && totalCount > 0 && (
-          <p className="text-xs font-medium text-on-surface-variant mt-0.5">
+          <p className="text-xs font-medium text-on-surface-variant mt-1">
             {totalCount.toLocaleString()} movement{totalCount !== 1 ? "s" : ""}
           </p>
         )}

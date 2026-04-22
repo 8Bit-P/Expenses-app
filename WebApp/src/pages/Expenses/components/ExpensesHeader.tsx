@@ -18,59 +18,47 @@ export default function ExpensesHeader() {
   };
 
   return (
-    <div className="space-y-4">
-      {/* Top row: page title + filter button */}
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-on-surface-variant/60 mb-1">
-            Expense Narrative
-          </p>
-          <h1 className="text-3xl sm:text-4xl font-extrabold font-headline tracking-tight text-on-surface">
+    <div className="mb-6">
+      {/* 1. Title & Current Date Context (Functional Button) */}
+      <div 
+        className="flex flex-col gap-0.5 mb-6 cursor-pointer group w-fit"
+        onClick={() => setIsFilterOpen(true)}
+      >
+        <h1 className="text-2xl font-black text-on-surface font-headline tracking-tight group-hover:text-primary transition-colors">
+          Overview
+        </h1>
+        <div className="flex items-center gap-1.5">
+          <p className="text-sm font-bold text-on-surface-variant/60 group-hover:text-on-surface-variant transition-colors">
             {dateLabel}
-          </h1>
-          <p className="text-on-surface-variant mt-1 font-medium text-sm">
-            {activeFilterCount > 0
-              ? `${activeFilterCount} additional filter${activeFilterCount > 1 ? "s" : ""} applied`
-              : "See where your money goes."}
           </p>
-        </div>
-
-        {/* Filters button */}
-        <div className="shrink-0">
-          <button
-            onClick={() => setIsFilterOpen(true)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border font-bold text-sm transition-all ${
-              activeFilterCount > 0
-                ? "bg-primary/10 border-primary/20 text-primary"
-                : "bg-surface-container-lowest border-outline-variant/20 text-on-surface-variant hover:text-on-surface hover:border-outline-variant/40"
-            }`}
-          >
-            <span className="material-symbols-outlined text-[18px]">tune</span>
-            Filters
-            {activeFilterCount > 0 && (
-              <span className="bg-primary text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center">
-                {activeFilterCount}
-              </span>
-            )}
-          </button>
+          <span className="material-symbols-outlined text-[16px] text-on-surface-variant/40 group-hover:text-primary transition-colors">
+            tune
+          </span>
         </div>
       </div>
 
-      {/* Quick preset pills row */}
-      <div className="flex items-center flex-wrap gap-2">
-        {PRESETS.map((p) => (
-          <button
-            key={p.key}
-            onClick={() => applyPreset(p.key)}
-            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all border ${
-              isPresetActive(p.key)
-                ? "bg-primary text-white border-primary shadow-sm shadow-primary/20"
-                : "bg-surface-container-lowest text-on-surface-variant border-outline-variant/20 hover:border-outline-variant/50 hover:text-on-surface"
-            }`}
-          >
-            {p.label}
-          </button>
-        ))}
+      {/* 2. Full-Bleed Scrolling Pills */}
+      <div className="grid grid-cols-1 w-full min-w-0">
+        <div className="flex gap-2 -mx-4 md:-mx-6 px-4 md:px-6 overflow-x-auto hide-scrollbar snap-x snap-mandatory">
+          {PRESETS.map((p) => {
+            const active = isPresetActive(p.key);
+            return (
+              <button
+                key={p.key}
+                onClick={() => applyPreset(p.key)}
+                className={`flex-none px-4 py-1.5 rounded-full text-xs font-bold snap-start transition-all duration-200 border ${
+                  active
+                    ? "bg-primary text-on-primary border-primary shadow-sm shadow-primary/20"
+                    : "bg-surface-container border-outline-variant/10 text-on-surface-variant hover:bg-surface-container-high hover:border-outline-variant/30"
+                }`}
+              >
+                {p.label}
+              </button>
+            );
+          })}
+          {/* Spacer to let the last pill clear the right edge */}
+          <div className="w-1 shrink-0 sm:hidden"></div>
+        </div>
       </div>
     </div>
   );

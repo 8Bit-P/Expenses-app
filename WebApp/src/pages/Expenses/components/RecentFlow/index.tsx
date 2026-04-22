@@ -10,16 +10,7 @@ import { toast } from "sonner";
 import { formatRelativeDate } from "../../../../utils/dateFormatters";
 
 export default function CompactRecentFlow() {
-  const { 
-    transactions, 
-    loading, 
-    page, 
-    setPage, 
-    totalPages, 
-    totalCount, 
-    deleteTransaction,
-    isMobile 
-  } = useExpenses();
+  const { transactions, loading, page, setPage, totalPages, totalCount, deleteTransaction, isMobile } = useExpenses();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTx, setSelectedTx] = useState<any>(null);
@@ -106,23 +97,22 @@ export default function CompactRecentFlow() {
           )}
         </div>
 
-        {!loading && (
-          isMobile ? (
-            page < totalPages && (
-              <div className="p-4 border-t border-outline-variant/5">
-                <button
-                  onClick={() => setPage(page + 1)}
-                  className="w-full py-3 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest text-primary hover:bg-primary/5 rounded-xl transition-all group"
-                >
-                  <span>Load More Movements</span>
-                  <span className="material-symbols-outlined text-sm group-hover:translate-y-0.5 transition-transform">expand_more</span>
-                </button>
-              </div>
-            )
-          ) : (
-            totalPages > 1 && <FlowPagination page={page} totalPages={totalPages} onPageChange={setPage} />
-          )
-        )}
+        {!loading &&
+          (isMobile
+            ? page < totalPages && (
+                <div className="p-4 border-t border-outline-variant/5">
+                  <button
+                    onClick={() => setPage(page + 1)}
+                    className="w-full py-3 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest text-primary hover:bg-primary/5 rounded-xl transition-all group"
+                  >
+                    <span>Load More Movements</span>
+                    <span className="material-symbols-outlined text-sm group-hover:translate-y-0.5 transition-transform">
+                      expand_more
+                    </span>
+                  </button>
+                </div>
+              )
+            : totalPages > 1 && <FlowPagination page={page} totalPages={totalPages} onPageChange={setPage} />)}
       </div>
 
       <TransactionModal
