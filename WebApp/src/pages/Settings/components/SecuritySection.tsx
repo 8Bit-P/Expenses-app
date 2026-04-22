@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 export default function SecuritySection() {
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(true);
 
   return (
     <section className="col-span-12 lg:col-span-4 space-y-4">
@@ -25,26 +24,6 @@ export default function SecuritySection() {
           <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
         </button>
 
-        {/* 2FA Toggle */}
-        <div className="w-full flex items-center justify-between p-5">
-          <div className="flex items-center gap-4">
-            <span className="material-symbols-outlined text-on-surface-variant">verified_user</span>
-            <div>
-              <p className="font-bold text-on-surface text-sm">Two-Factor Auth (2FA)</p>
-              <p className={`text-xs font-bold ${twoFactorEnabled ? "text-secondary" : "text-on-surface-variant"}`}>
-                {twoFactorEnabled ? "Enabled" : "Disabled"}
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={() => setTwoFactorEnabled(!twoFactorEnabled)}
-            className={`w-11 h-6 rounded-full relative transition-colors focus:outline-none ${twoFactorEnabled ? "bg-secondary" : "bg-surface-container-highest"}`}
-          >
-            <div
-              className={`w-5 h-5 rounded-full bg-surface-container-lowest absolute top-0.5 transition-transform duration-300 shadow-sm ${twoFactorEnabled ? "translate-x-5.5" : "translate-x-0.5"}`}
-            ></div>
-          </button>
-        </div>
 
         {/* Privacy */}
         <button className="w-full flex items-center justify-between p-5 text-left hover:bg-surface-container-low transition-colors group">

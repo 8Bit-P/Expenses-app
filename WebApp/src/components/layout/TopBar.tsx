@@ -3,6 +3,7 @@ import { useUserPreferences } from "../../context/UserPreferencesContext";
 import { useAuth } from "../../context/AuthContext";
 import { useProfile } from "../../hooks/useProfile";
 import { format } from "date-fns";
+import NotificationDropdown from "./NotificationDropdown";
 
 export default function TopBar() {
   const navigate = useNavigate();
@@ -68,11 +69,7 @@ export default function TopBar() {
         </button>
 
         {/* Notification Bell with "Live" Ping */}
-        <button className="relative w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-high transition-colors text-on-surface-variant hover:text-on-surface cursor-pointer">
-          <span className="material-symbols-outlined">notifications</span>
-          <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-error z-10"></span>
-          <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-error animate-ping opacity-75"></span>
-        </button>
+        <NotificationDropdown />
       </div>
     </header>
   );

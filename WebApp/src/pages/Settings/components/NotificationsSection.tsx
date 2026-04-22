@@ -5,14 +5,16 @@ interface ToggleProps {
   checked: boolean;
   onChange: () => void;
   color?: string;
+  disabled?: boolean;
 }
 
-function Toggle({ checked, onChange, color = "bg-primary" }: ToggleProps) {
+function Toggle({ checked, onChange, color = "bg-primary", disabled = false }: ToggleProps) {
   return (
     <button
-      onClick={onChange}
-      className={`w-11 h-6 rounded-full relative transition-colors focus:outline-none shrink-0 ${
-        checked ? color : "bg-surface-container-highest"
+      onClick={!disabled ? onChange : undefined}
+      disabled={disabled}
+      className={`w-11 h-6 rounded-full relative transition-all focus:outline-none shrink-0 ${
+        disabled ? "bg-surface-container opacity-40 cursor-not-allowed" : checked ? color : "bg-surface-container-highest cursor-pointer"
       }`}
     >
       <div
@@ -31,24 +33,32 @@ interface NotifRowProps {
   checked: boolean;
   onToggle: () => void;
   children?: React.ReactNode;
+  disabled?: boolean;
 }
 
-function NotifRow({ icon, title, subtitle, checked, onToggle, children }: NotifRowProps) {
+function NotifRow({ icon, title, subtitle, checked, onToggle, children, disabled = false }: NotifRowProps) {
   return (
-    <div className="space-y-2">
+    <div className={`space-y-2 ${disabled ? "opacity-60" : ""}`}>
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-3">
-          <span className={`material-symbols-outlined text-[18px] mt-0.5 ${checked ? "text-primary" : "text-on-surface-variant/50"}`}>
+          <span className={`material-symbols-outlined text-[18px] mt-0.5 ${checked && !disabled ? "text-primary" : "text-on-surface-variant/50"}`}>
             {icon}
           </span>
           <div>
-            <p className="font-bold text-on-surface text-sm">{title}</p>
+            <div className="flex items-center gap-2">
+              <p className="font-bold text-on-surface text-sm">{title}</p>
+              {disabled && (
+                <span className="text-[8px] font-black uppercase tracking-widest bg-surface-container px-1.5 py-0.5 rounded-md text-on-surface-variant/70 border border-outline-variant/10">
+                  Soon
+                </span>
+              )}
+            </div>
             <p className="text-xs text-on-surface-variant mt-0.5">{subtitle}</p>
           </div>
         </div>
-        <Toggle checked={checked} onChange={onToggle} />
+        <Toggle checked={checked} onChange={onToggle} disabled={disabled} />
       </div>
-      {checked && children && (
+      {!disabled && checked && children && (
         <div className="ml-9 animate-in fade-in slide-in-from-top-1 duration-200">
           {children}
         </div>
@@ -76,6 +86,7 @@ export default function NotificationsSection() {
             subtitle="Warn me when I approach my monthly budget"
             checked={notifications.budgetThresholdAlerts}
             onToggle={() => setNotifications({ budgetThresholdAlerts: !notifications.budgetThresholdAlerts })}
+            disabled
           >
             <div className="flex items-center gap-2 mt-1">
               <span className="text-xs text-on-surface-variant font-medium">Warn at</span>
@@ -100,6 +111,7 @@ export default function NotificationsSection() {
             subtitle="Alert me for any single expense over a threshold"
             checked={notifications.largeTransactionRadar}
             onToggle={() => setNotifications({ largeTransactionRadar: !notifications.largeTransactionRadar })}
+            disabled
           >
             <div className="flex items-center gap-2 mt-1">
               <span className="text-xs text-on-surface-variant font-medium">Alert above</span>
@@ -122,6 +134,7 @@ export default function NotificationsSection() {
             subtitle="A quick spending summary every Sunday"
             checked={notifications.weeklyDigest}
             onToggle={() => setNotifications({ weeklyDigest: !notifications.weeklyDigest })}
+            disabled
           />
         </div>
 
@@ -133,6 +146,7 @@ export default function NotificationsSection() {
             subtitle="Remind me to log expenses if inactive for 3 days"
             checked={notifications.trackingReminder}
             onToggle={() => setNotifications({ trackingReminder: !notifications.trackingReminder })}
+            disabled
           />
         </div>
 
@@ -144,6 +158,7 @@ export default function NotificationsSection() {
             subtitle="Remind me 3 days before a recurring charge"
             checked={notifications.subscriptionRenewals}
             onToggle={() => setNotifications({ subscriptionRenewals: !notifications.subscriptionRenewals })}
+            disabled
           />
         </div>
       </div>

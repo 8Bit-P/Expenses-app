@@ -7,7 +7,7 @@ interface DangerZoneProps {
   onDeleteClick: () => void;
 }
 
-export default function DangerZone({ onDeleteClick }: DangerZoneProps) {
+export function ExportData() {
   const { session } = useAuth();
   const [exporting, setExporting] = useState(false);
 
@@ -54,42 +54,45 @@ export default function DangerZone({ onDeleteClick }: DangerZoneProps) {
   };
 
   return (
-    <div className="mt-12 space-y-4">
-      {/* Export Data */}
-      <div className="p-6 rounded-xl bg-surface-container-low border border-outline-variant/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h5 className="font-extrabold font-headline text-on-surface flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-[20px]">download</span>
-            Export Your Data
-          </h5>
-          <p className="text-on-surface-variant text-sm font-medium mt-1">
-            Download a CSV of all your transactions. Your data, always yours.
-          </p>
-        </div>
-        <button
-          onClick={handleExportCSV}
-          disabled={exporting}
-          className="px-6 py-2.5 bg-primary/10 hover:bg-primary/20 text-primary rounded-xl font-bold transition-all active:scale-95 shadow-sm whitespace-nowrap disabled:opacity-50 text-sm"
-        >
-          {exporting ? "Exporting…" : "Export CSV"}
-        </button>
+    <div className="p-6 rounded-2xl bg-surface-container-low border border-outline-variant/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+      <div>
+        <h5 className="font-extrabold font-headline text-on-surface flex items-center gap-2">
+          <span className="material-symbols-outlined text-primary text-[20px]">download</span>
+          Export Your Data
+        </h5>
+        <p className="text-on-surface-variant text-sm font-medium mt-1">
+          Download a CSV of all your transactions. Your data, always yours.
+        </p>
       </div>
+      <button
+        onClick={handleExportCSV}
+        disabled={exporting}
+        className="px-6 py-2.5 bg-primary/10 hover:bg-primary/20 text-primary rounded-xl font-bold transition-all active:scale-95 shadow-sm whitespace-nowrap disabled:opacity-50 text-sm"
+      >
+        {exporting ? "Exporting…" : "Export CSV"}
+      </button>
+    </div>
+  );
+}
 
-      {/* Danger Zone */}
-      <div className="p-8 rounded-xl bg-error-container/20 border border-error/20 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-        <div>
-          <h5 className="text-error font-extrabold font-headline">Danger Zone</h5>
-          <p className="text-error/70 text-sm font-medium mt-1">
-            Permanently delete your vault and all ethereal data.
-          </p>
-        </div>
-        <button
-          onClick={onDeleteClick}
-          className="px-6 py-2.5 bg-error text-white rounded-xl font-bold hover:bg-error/90 transition-all active:scale-95 shadow-sm whitespace-nowrap"
-        >
-          Delete Account
-        </button>
+export default function AccountDeletion({ onDeleteClick }: DangerZoneProps) {
+  return (
+    <div className="p-6 sm:p-8 rounded-2xl bg-error-container/10 border border-error/20 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-sm">
+      <div>
+        <h5 className="text-error font-extrabold font-headline flex items-center gap-2">
+          <span className="material-symbols-outlined text-[20px]">warning</span>
+          Danger Zone
+        </h5>
+        <p className="text-error/70 text-sm font-medium mt-1">
+          Permanently delete your vault and all ethereal data.
+        </p>
       </div>
+      <button
+        onClick={onDeleteClick}
+        className="px-6 py-2.5 bg-error text-white rounded-xl font-bold hover:bg-error/90 transition-all active:scale-95 shadow-sm whitespace-nowrap text-sm"
+      >
+        Delete Account
+      </button>
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { useInvestments } from "../../../hooks/useInvestments";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { formatCurrency } from "../../../utils/currency";
 import DeleteConfirmModal from "../../../components/ui/DeleteConfirmModal";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 
 interface SnapshotHistoryTableProps {
   assets: AssetWithSnapshots[];
@@ -14,6 +15,7 @@ interface SnapshotHistoryTableProps {
 export default function SnapshotHistoryTable({ assets, stealthMode }: SnapshotHistoryTableProps) {
   const { deleteSnapshot } = useInvestments();
   const { currency } = useUserPreferences();
+  const isMobile = useIsMobile(768);
 
   // Combine and sort all snapshots from all assets globally
   const allHistory = useMemo(() => {
@@ -80,54 +82,40 @@ export default function SnapshotHistoryTable({ assets, stealthMode }: SnapshotHi
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[600px] text-left border-collapse">
-          <thead>
-            <tr className="bg-surface-container-low/50">
-              <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70 whitespace-nowrap">
-                Date
-              </th>
-              <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70">
-                Asset
-              </th>
-              <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70 whitespace-nowrap text-right">
-                Net Contribution
-              </th>
-              <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70 whitespace-nowrap text-right">
-                Total Value
-              </th>
-              <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70 whitespace-nowrap text-center">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-outline-variant/5">
-            {allHistory.map((snap) => {
-              const isPositiveFlow = Number(snap.contribution) > 0;
-              const isNegativeFlow = Number(snap.contribution) < 0;
+      {isMobile ? (
+        <div className="divide-y divide-outline-variant/10">
+          {allHistory.map((snap) => {
+            const isPositiveFlow = Number(snap.contribution) > 0;
+            const isNegativeFlow = Number(snap.contribution) < 0;
 
-              return (
-                <tr key={snap.id} className="hover:bg-surface-container-low/30 transition-colors group">
-                  {/* Date */}
-                  <td className="px-8 py-4 whitespace-nowrap">
-                    <p className="text-sm font-bold text-on-surface">{format(parseISO(snap.date), "MMM d, yyyy")}</p>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/50 mt-1">
-                      {format(new Date(snap.created_at), "h:mm a")}
+            return (
+              <div key={snap.id} className="p-5 flex flex-col gap-4 active:bg-surface-container-low transition-colors">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-widest text-on-surface-variant/50">
+                      {format(parseISO(snap.date), "MMM d, yyyy")}
                     </p>
-                  </td>
-
-                  {/* Asset */}
-                  <td className="px-8 py-4">
-                    <p className="text-sm font-bold text-on-surface">{snap.assetName}</p>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/50 mt-1 capitalize">
+                    <h4 className="text-sm font-black text-on-surface mt-1">{snap.assetName}</h4>
+                    <p className="text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-wider mt-0.5">
                       {snap.assetType.replace("_", " ")}
                     </p>
-                  </td>
+                  </div>
+                  <button
+                    onClick={() => setSnapshotToDelete({ id: snap.id, name: snap.assetName })}
+                    disabled={isDeleting}
+                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-error/10 text-error disabled:opacity-50"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">delete</span>
+                  </button>
+                </div>
 
-                  {/* Net Contribution */}
-                  <td className="px-8 py-4 whitespace-nowrap text-right">
+                <div className="flex items-center justify-between pt-3 border-t border-outline-variant/5">
+                  <div>
+                    <span className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/40 block mb-0.5">
+                      Net Flow
+                    </span>
                     <span
-                      className={`text-sm font-black tracking-tight ${isPositiveFlow ? "text-emerald-500" : isNegativeFlow ? "text-red-500" : "text-on-surface-variant"}`}
+                      className={`text-sm font-black ${isPositiveFlow ? "text-emerald-500" : isNegativeFlow ? "text-red-500" : "text-on-surface-variant"}`}
                     >
                       {isPositiveFlow ? "+" : ""}
                       {stealthMode
@@ -136,36 +124,95 @@ export default function SnapshotHistoryTable({ assets, stealthMode }: SnapshotHi
                           ? formatCurrency(Number(snap.contribution), currency.code)
                           : "-"}
                     </span>
-                  </td>
-
-                  {/* Total Value */}
-                  <td className="px-6 sm:px-8 py-4 whitespace-nowrap text-right">
-                    <span className="text-sm font-black font-headline text-on-surface">
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/40 block mb-0.5">
+                      Portfolio Value
+                    </span>
+                    <span className="text-sm font-black text-on-surface font-headline">
                       {internalFormatCurrency(Number(snap.total_value))}
                     </span>
-                  </td>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[600px] text-left border-collapse">
+            <thead>
+              <tr className="bg-surface-container-low/50">
+                <th className="px-6 sm:px-8 py-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70 whitespace-nowrap">
+                  Date
+                </th>
+                <th className="px-6 sm:px-8 py-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70">
+                  Asset
+                </th>
+                <th className="px-6 sm:px-8 py-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70 whitespace-nowrap text-right">
+                  Net Contribution
+                </th>
+                <th className="px-6 sm:px-8 py-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70 whitespace-nowrap text-right">
+                  Total Value
+                </th>
+                <th className="px-6 sm:px-8 py-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70 whitespace-nowrap text-center">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-outline-variant/5">
+              {allHistory.map((snap) => {
+                const isPositiveFlow = Number(snap.contribution) > 0;
+                const isNegativeFlow = Number(snap.contribution) < 0;
 
-                  {/* Actions */}
-                  <td className="px-6 sm:px-8 py-4 whitespace-nowrap text-center">
-                    <button
-                      onClick={() => setSnapshotToDelete({ id: snap.id, name: snap.assetName })}
-                      disabled={isDeleting}
-                      className="w-8 h-8 inline-flex items-center justify-center rounded-lg text-on-surface-variant/40 hover:text-error hover:bg-error/10 transition-all opacity-0 group-hover:opacity-100 disabled:opacity-50"
-                      title="Delete Snapshot"
-                    >
+                return (
+                  <tr key={snap.id} className="hover:bg-surface-container-low/30 transition-colors group">
+                    <td className="px-6 sm:px-8 py-4 whitespace-nowrap">
+                      <p className="text-sm font-bold text-on-surface">{format(parseISO(snap.date), "MMM d, yyyy")}</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/50 mt-1">
+                        {format(new Date(snap.created_at), "h:mm a")}
+                      </p>
+                    </td>
+                    <td className="px-6 sm:px-8 py-4">
+                      <p className="text-sm font-bold text-on-surface">{snap.assetName}</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/50 mt-1 uppercase">
+                        {snap.assetType.replace("_", " ")}
+                      </p>
+                    </td>
+                    <td className="px-6 sm:px-8 py-4 whitespace-nowrap text-right">
                       <span
-                        className="material-symbols-outlined text-[18px]"
+                        className={`text-sm font-black tracking-tight ${isPositiveFlow ? "text-emerald-500" : isNegativeFlow ? "text-red-500" : "text-on-surface-variant"}`}
                       >
-                        delete
+                        {isPositiveFlow ? "+" : ""}
+                        {stealthMode
+                          ? "****"
+                          : snap.contribution
+                            ? formatCurrency(Number(snap.contribution), currency.code)
+                            : "-"}
                       </span>
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+                    </td>
+                    <td className="px-6 sm:px-8 py-4 whitespace-nowrap text-right">
+                      <span className="text-sm font-black font-headline text-on-surface">
+                        {internalFormatCurrency(Number(snap.total_value))}
+                      </span>
+                    </td>
+                    <td className="px-6 sm:px-8 py-4 whitespace-nowrap text-center">
+                      <button
+                        onClick={() => setSnapshotToDelete({ id: snap.id, name: snap.assetName })}
+                        disabled={isDeleting}
+                        className="w-8 h-8 inline-flex items-center justify-center rounded-lg text-on-surface-variant/40 hover:text-error hover:bg-error/10 transition-all opacity-0 group-hover:opacity-100 disabled:opacity-50"
+                        title="Delete Snapshot"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">delete</span>
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       <DeleteConfirmModal
         isOpen={!!snapshotToDelete}

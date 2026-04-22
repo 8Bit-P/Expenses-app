@@ -41,9 +41,9 @@ export default function Investments() {
   }
 
   return (
-    <div className="w-full relative pb-24">
+    <div className="w-full relative pb-24 overflow-x-hidden px-4 md:px-0">
       {/* Refined Page Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6 px-2">
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 sm:mb-8 gap-6">
         <div>
           {/* Dynamic Badge */}
           <div className="flex items-center gap-3 mb-3">
@@ -68,7 +68,7 @@ export default function Investments() {
       </div>
 
       {/* Main Content Grid */}
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8">
         <HeroMetrics metrics={metrics} stealthMode={stealthMode} onToggleStealth={() => setStealthMode(!stealthMode)} />
 
         {/* Investment Performance Graphic */}
@@ -76,7 +76,7 @@ export default function Investments() {
           <PerformanceChart assets={assets} stealthMode={stealthMode} />
         </div>
 
-        <div className="grid grid-cols-12 gap-8">
+        <div className="grid grid-cols-12 gap-6 sm:gap-8">
           <div className="col-span-12 xl:col-span-4 h-full">
             <AllocationDonut assets={assets} stealthMode={stealthMode} />
           </div>

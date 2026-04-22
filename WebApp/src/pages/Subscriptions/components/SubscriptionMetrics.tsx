@@ -10,6 +10,23 @@ interface SubscriptionMetricsProps {
 
 export default function SubscriptionMetrics({ subscriptions, loading }: SubscriptionMetricsProps) {
   const { currency } = useUserPreferences();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const handleScroll = () => {
+    if (!scrollRef.current) return;
+    const { scrollLeft, offsetWidth } = scrollRef.current;
+    if (offsetWidth === 0) return;
+    const index = Math.round(scrollLeft / offsetWidth);
+    setActiveIndex(index);
+  };
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", handleScroll);
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, []);
 
   if (loading) {
     return (
@@ -43,24 +60,6 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
 
   const fmt = (n: number) =>
     `${currency.symbol}${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const handleScroll = () => {
-    if (!scrollRef.current) return;
-    const { scrollLeft, offsetWidth } = scrollRef.current;
-    if (offsetWidth === 0) return;
-    const index = Math.round(scrollLeft / offsetWidth);
-    setActiveIndex(index);
-  };
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    el.addEventListener("scroll", handleScroll);
-    return () => el.removeEventListener("scroll", handleScroll);
-  }, []);
 
   return (
     <div className="grid grid-cols-1 w-full min-w-0">
