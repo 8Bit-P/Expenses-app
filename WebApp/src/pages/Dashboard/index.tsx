@@ -26,39 +26,29 @@ export default function Dashboard() {
       </div>
 
       {/* ROW 1: KPIs */}
-      <div className="order-1">
-        <SummaryRow />
-      </div>
+      <SummaryRow />
 
-      {/* ROW 2: Main Charts & Alerts */}
+      {/* ROW 2: Priority Alerts (Full Width) */}
+      <ActionCenter />
+
+      {/* ROW 3: Main Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* LEFT COLUMN: Action Center + Wealth Evolution */}
-        <div className="lg:col-span-8 flex flex-col gap-6">
-          <div className="order-2">
-            <ActionCenter />
-          </div>
-          <div className="order-4 lg:order-none bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/5">
-            <WealthEvolution />
-          </div>
+        {/* LEFT: Wealth Evolution (8 cols) */}
+        <div className="lg:col-span-8 bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/5">
+          <WealthEvolution />
         </div>
 
-        {/* RIGHT COLUMN: Spending Donut */}
-        <div className="lg:col-span-4 order-5 lg:order-none">
+        {/* RIGHT: Spending Donut (4 cols) */}
+        <div className="lg:col-span-4">
           <SpendingCategories />
         </div>
       </div>
 
-      {/* ROW 3: Details (Full Width Below) */}
+      {/* ROW 4: Details */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="order-3 lg:order-none">
-          <RecentActivity />
-        </div>
-        <div className="order-6 lg:order-none">
-          <SavingsGoals />
-        </div>
-        <div className="order-7 lg:order-none">
-          <UpcomingRenewals />
-        </div>
+        <RecentActivity />
+        <SavingsGoals />
+        <UpcomingRenewals />
       </div>
     </div>
   );

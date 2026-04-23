@@ -10,6 +10,7 @@ export default function SpendingCategories() {
       startDate={start} 
       endDate={end} 
       title="Spending Breakdown" 
+      maxSlices={4}
     />
   );
 }

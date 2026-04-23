@@ -75,6 +75,7 @@ export default function SummaryRow() {
   const incomeTrend = prevMonthIncomeMTD > 0 
     ? ((currentMonthIncome - prevMonthIncomeMTD) / prevMonthIncomeMTD) * 100 
     : 0;
+  const incomeDiff = currentMonthIncome - prevMonthIncomeMTD;
 
   // 3. LOGIC: SAFE TO SPEND
   const currentMonthSpend = currentTx
@@ -100,11 +101,14 @@ export default function SummaryRow() {
   const investmentTrend = value30DaysAgo > 0 
     ? ((invMetrics.totalValue - value30DaysAgo) / value30DaysAgo) * 100 
     : 0;
+  const investmentDiff = invMetrics.totalValue - value30DaysAgo;
+  const totalReturn = invMetrics.totalValue - invMetrics.totalInvested;
 
   const metrics = [
     {
       title: "Net Worth",
       amount: formatCurrency(invMetrics.totalValue, currency.code),
+      subtext: `${investmentDiff >= 0 ? "+" : ""}${formatCurrency(investmentDiff, currency.code)} vs last month`,
       change: `${investmentTrend >= 0 ? "+" : ""}${investmentTrend.toFixed(1)}%`,
       changeType: investmentTrend >= 0 ? "positive" : "negative",
       icon: "account_balance_wallet",
@@ -114,6 +118,7 @@ export default function SummaryRow() {
     {
       title: "Monthly Income",
       amount: formatCurrency(currentMonthIncome, currency.code),
+      subtext: `${incomeDiff >= 0 ? "+" : ""}${formatCurrency(incomeDiff, currency.code)} vs last month`,
       change: `${incomeTrend >= 0 ? "+" : ""}${incomeTrend.toFixed(1)}%`,
       changeType: incomeTrend >= 0 ? "positive" : "negative",
       icon: "trending_up",
@@ -132,6 +137,7 @@ export default function SummaryRow() {
     {
       title: "Total Invested",
       amount: formatCurrency(invMetrics.totalInvested, currency.code),
+      subtext: `${totalReturn >= 0 ? "+" : ""}${formatCurrency(totalReturn, currency.code)} total return`,
       change: invMetrics.roi >= 0 ? `+${invMetrics.roi.toFixed(1)}% ROI` : `${invMetrics.roi.toFixed(1)}% ROI`,
       changeType: invMetrics.roi >= 0 ? "positive" : "negative",
       icon: "auto_graph",
@@ -159,18 +165,19 @@ export default function SummaryRow() {
         {metrics.map((metric, idx) => (
           <div
             key={idx}
-            className="flex-none w-[82vw] sm:w-auto bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/10 group hover:shadow-md transition-all duration-300 relative overflow-hidden snap-start"
+            className="flex-none w-[82vw] sm:w-auto bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/10 group hover:shadow-md transition-all duration-300 relative overflow-hidden snap-start flex flex-col justify-start h-52 sm:h-auto min-h-[180px]"
           >
             {/* Subtle glow effect on hover */}
             <div
               className={`absolute -top-10 -right-10 w-24 h-24 ${metric.bg} rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
             ></div>
 
-            <div className="flex justify-between items-start mb-6 relative z-10">
+            {/* BLOCK 1: TOP (Icon + Change) */}
+            <div className="flex justify-between items-center relative z-10 mb-4">
               <div
-                className={`w-12 h-12 rounded-2xl ${metric.bg} flex items-center justify-center border border-white/5 shadow-inner`}
+                className={`w-11 h-11 rounded-2xl ${metric.bg} flex items-center justify-center border border-white/5 shadow-inner`}
               >
-                <span className={`material-symbols-outlined ${metric.text}`}>{metric.icon}</span>
+                <span className={`material-symbols-outlined ${metric.text} text-[22px]`}>{metric.icon}</span>
               </div>
               {'change' in metric && (
                 <span
@@ -184,24 +191,21 @@ export default function SummaryRow() {
                 </span>
               )}
             </div>
-            <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70 mb-1 relative z-10">
-              {metric.title}
-            </p>
-            <div className="flex flex-col relative z-10">
-              <h3 className="text-2xl font-black font-headline text-on-surface tracking-tight">
+
+            {/* BLOCK 2: BOTTOM (Title + Value + Subtext) */}
+            <div className="mt-auto flex flex-col gap-1 relative z-10">
+              <p className="text-[10px] font-black uppercase tracking-[0.15em] text-on-surface-variant/50">
+                {metric.title}
+              </p>
+              <h3 className="text-2xl font-black font-headline text-on-surface tracking-tight leading-tight">
                 {metric.amount}
               </h3>
-              {'subtext' in metric && (
-                <p className="text-[11px] font-bold text-on-surface-variant/60 mt-1">
-                  {metric.subtext}
-                </p>
-              )}
+              <p className="text-xs text-on-surface-variant/60 font-medium">
+                {metric.subtext}
+              </p>
+              
               {metric.isBudget && (
-                <div className="mt-4 w-full">
-                  <div className="flex justify-between items-center mb-1.5">
-                    <span className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/50">Budget Usage</span>
-                    <span className="text-[10px] font-black text-on-surface">{Math.round(budgetUsagePercent)}%</span>
-                  </div>
+                <div className="mt-3 w-full">
                   <div className="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
                     <div
                       className={`h-full transition-all duration-1000 ${

@@ -12,9 +12,10 @@ interface CategoryDonutProps {
   startDate?: string;
   endDate?: string;
   title?: string;
+  maxSlices?: number;
 }
 
-export default function CategoryDonut({ startDate, endDate, title }: CategoryDonutProps) {
+export default function CategoryDonut({ startDate, endDate, title, maxSlices }: CategoryDonutProps) {
   const { currency } = useUserPreferences();
   const [isExpanded, setIsExpanded] = useState(false);
   
@@ -54,12 +55,24 @@ export default function CategoryDonut({ startDate, endDate, title }: CategoryDon
       categoryMap[key].value += t.amount;
     });
 
-  const data = Object.values(categoryMap)
-    .sort((a, b) => b.value - a.value)
-    .map((item, index) => ({
-      ...item,
-      color: CATEGORY_COLORS[index % CATEGORY_COLORS.length],
-    }));
+  let chartRawData = Object.values(categoryMap).sort((a, b) => b.value - a.value);
+
+  // Apply maxSlices aggregation if requested
+  if (maxSlices && chartRawData.length > maxSlices) {
+    const top = chartRawData.slice(0, maxSlices);
+    const others = chartRawData.slice(maxSlices);
+    const othersValue = others.reduce((sum, item) => sum + item.value, 0);
+    
+    chartRawData = [
+      ...top,
+      { name: "Other", emoji: "📁", value: othersValue }
+    ];
+  }
+
+  const data = chartRawData.map((item, index) => ({
+    ...item,
+    color: item.name === "Other" ? "rgba(119, 117, 135, 0.4)" : CATEGORY_COLORS[index % CATEGORY_COLORS.length],
+  }));
 
   const total = data.reduce((sum, item) => sum + item.value, 0);
   const topPercent = data.length > 0 ? ((data[0].value / total) * 100).toFixed(0) : "0";
