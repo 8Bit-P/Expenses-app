@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
   const [showPassword, setShowPassword] = useState(false);
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -19,9 +20,15 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
     setError(null);
     setMessage(null);
 
-    if (isSignUp && password !== confirmPassword) {
-      setError("Passwords do not match. Please try again.");
-      return;
+    if (isSignUp) {
+      if (!fullName.trim()) {
+        setError("Please enter your full name.");
+        return;
+      }
+      if (password !== confirmPassword) {
+        setError("Passwords do not match. Please try again.");
+        return;
+      }
     }
 
     setLoading(true);
@@ -33,6 +40,9 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
           password,
           options: {
             emailRedirectTo: window.location.origin,
+            data: {
+              full_name: fullName.trim(),
+            },
           },
         });
         if (signUpError) throw signUpError;
@@ -69,6 +79,19 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
 
       {/* Inputs */}
       <div className="space-y-3">
+        {isSignUp && (
+          <div className="animate-in slide-in-from-top-2 fade-in duration-300">
+            <input
+              type="text"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="Full Name"
+              className="w-full bg-surface-container-lowest border border-outline-variant/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 rounded-lg px-4 py-3 text-sm font-medium text-on-surface placeholder:text-on-surface-variant/60 outline-none transition-all shadow-sm"
+              required={isSignUp}
+            />
+          </div>
+        )}
+
         <input
           type="email"
           value={email}

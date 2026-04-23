@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { useUserPreferences } from "../../context/UserPreferencesContext";
 import { useAuth } from "../../context/AuthContext";
 import { useProfile } from "../../hooks/useProfile";
-import { format } from "date-fns";
 import NotificationDropdown from "./NotificationDropdown";
 
 export default function TopBar() {
@@ -13,7 +12,7 @@ export default function TopBar() {
   const isDark = resolvedTheme === "dark";
 
   const userEmail = session?.user?.email || "";
-  const fallbackAvatar = `https://api.dicebear.com/7.x/micah/svg?seed=${userEmail}&backgroundColor=transparent`;
+  const fallbackAvatar = `https://api.dicebear.com/9.x/thumbs/svg?seed=${userEmail}&backgroundColor=transparent`;
   const avatarSrc = profile?.avatar_url || fallbackAvatar;
   const firstName = profile?.full_name?.split(" ")[0] || "User";
 
@@ -33,12 +32,8 @@ export default function TopBar() {
           <img alt="User Profile" src={avatarSrc} className="w-full h-full object-cover" />
         </button>
         <div className="flex flex-col">
-          <span className="text-[10px] uppercase tracking-widest text-on-surface-variant font-black">
-            {greeting}
-          </span>
-          <span className="text-sm font-black text-on-surface leading-tight">
-            {firstName}
-          </span>
+          <span className="text-[10px] uppercase tracking-widest text-on-surface-variant font-black">{greeting}</span>
+          <span className="text-sm font-black text-on-surface leading-tight">{firstName}</span>
         </div>
       </div>
 

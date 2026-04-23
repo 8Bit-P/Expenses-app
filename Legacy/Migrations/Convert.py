@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 INPUT_FILE = 'expenses_rows.csv'
 CATEGORIES_FILE = 'categories.csv'
 TRANSACTIONS_FILE = 'transactions.csv'
-USER_ID = '5fdc6a43-8de2-4542-ac74-f0df1c271964'
+USER_ID = '0f7b6e27-fb80-467a-ae21-061fb0a8dfa9'
 
 def run_conversion():
     # Store unique categories: { 'Subscripciones': 'uuid-1234' }

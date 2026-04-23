@@ -8,7 +8,6 @@ const DEFAULT_PAGE_SIZE = 10;
 export function useTransactions(filters?: TransactionFilters, isInfinite = false) {
   const { session } = useAuth();
   const userId = session?.user?.id;
-  const queryClient = useQueryClient();
 
   const page = filters?.page ?? 1;
   const pageSize = filters?.pageSize ?? DEFAULT_PAGE_SIZE;

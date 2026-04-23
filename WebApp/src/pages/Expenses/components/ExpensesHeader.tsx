@@ -6,7 +6,6 @@ export default function ExpensesHeader() {
   const { filters, setFilters, setIsFilterOpen } = useExpenses();
 
   const dateLabel = formatDateLabel(filters.startDate, filters.endDate);
-  const activeFilterCount = [filters.type, filters.categoryId, filters.search].filter(Boolean).length;
 
   const applyPreset = (key: (typeof PRESETS)[number]["key"]) => {
     setFilters({ ...filters, ...buildPreset(key) });

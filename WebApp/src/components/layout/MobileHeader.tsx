@@ -4,7 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useProfile } from "../../hooks/useProfile";
 import NotificationDropdown from "./NotificationDropdown";
 
-export default function MobileHeader({ onNewTransaction }: { onNewTransaction: () => void }) {
+export default function MobileHeader() {
   const navigate = useNavigate();
   const { session } = useAuth();
   const { profile } = useProfile();
@@ -12,7 +12,7 @@ export default function MobileHeader({ onNewTransaction }: { onNewTransaction: (
   const isDark = resolvedTheme === "dark";
 
   const userEmail = session?.user?.email || "";
-  const fallbackAvatar = `https://api.dicebear.com/7.x/micah/svg?seed=${userEmail}&backgroundColor=transparent`;
+  const fallbackAvatar = `https://api.dicebear.com/9.x/thumbs/svg?seed=${userEmail}&backgroundColor=transparent`;
   const avatarSrc = profile?.avatar_url || fallbackAvatar;
 
   const firstName = profile?.full_name?.split(" ")[0] || "User";
@@ -35,16 +35,12 @@ export default function MobileHeader({ onNewTransaction }: { onNewTransaction: (
           <span className="text-[10px] uppercase tracking-widest text-on-surface-variant font-black leading-tight">
             {greeting}
           </span>
-          <span className="text-sm font-black text-on-surface leading-tight">
-            {firstName}
-          </span>
+          <span className="text-sm font-black text-on-surface leading-tight">{firstName}</span>
         </div>
       </div>
 
       {/* Actions (Theme & Notifications) */}
       <div className="flex items-center gap-1">
-
-
         {/* Seamless Sun/Moon Theme Toggle */}
         <button
           onClick={() => setTheme(isDark ? "light" : "dark")}

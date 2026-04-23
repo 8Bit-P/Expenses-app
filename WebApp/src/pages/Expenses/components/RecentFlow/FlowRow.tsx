@@ -1,4 +1,3 @@
-import { formatTransactionDate } from "../../../../utils/dateFormatters";
 import { useUserPreferences } from "../../../../context/UserPreferencesContext";
 import { formatCurrency } from "../../../../utils/currency";
 import { CATEGORY_COLORS } from "../../../../constants/chartColors";

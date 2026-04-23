@@ -18,7 +18,7 @@ export default function AppLayout() {
 
       <div className="flex-1 flex flex-col desk:ml-64 pb-24 desk:pb-0">
         {/* Mobile Header (Hidden on desktop) */}
-        <MobileHeader onNewTransaction={() => setIsNewTxOpen(true)} />
+        <MobileHeader />
 
         {/* Desktop TopBar (Hidden on mobile/tablet) */}
         <div className="hidden desk:block">

@@ -13,10 +13,9 @@ export default function ProfileSection() {
 
   const userEmail = session?.user?.email || "";
   const userName = profile?.full_name || "Unknown User";
-  const language = "English (US)";
 
   // The Magic Fallback: Generates a unique avatar based on their email
-  const fallbackAvatar = `https://api.dicebear.com/7.x/micah/svg?seed=${userEmail}&backgroundColor=transparent`;
+  const fallbackAvatar = `https://api.dicebear.com/9.x/thumbs/svg?seed=${userEmail}&backgroundColor=transparent`;
   const avatarSrc = profile?.avatar_url || fallbackAvatar;
 
   // Handle Avatar Upload
@@ -67,27 +66,21 @@ export default function ProfileSection() {
                 className={`w-full h-full object-cover ${isUploading ? "opacity-50 blur-sm" : ""}`}
               />
             </div>
-            
+
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploading}
               className="absolute bottom-0 right-0 w-7 h-7 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-md hover:scale-110 active:scale-95 transition-all border-2 border-surface-container-lowest"
             >
-              <span className="material-symbols-outlined text-[14px]">
-                {isUploading ? "sync" : "edit"}
-              </span>
+              <span className="material-symbols-outlined text-[14px]">{isUploading ? "sync" : "edit"}</span>
             </button>
             <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
           </div>
 
           {/* User Info */}
           <div className="min-w-0 flex-1">
-            <h2 className="text-xl font-black text-on-surface font-headline tracking-tight truncate">
-              {userName}
-            </h2>
-            <p className="text-on-surface-variant font-medium text-sm truncate">
-              {userEmail}
-            </p>
+            <h2 className="text-xl font-black text-on-surface font-headline tracking-tight truncate">{userName}</h2>
+            <p className="text-on-surface-variant font-medium text-sm truncate">{userEmail}</p>
           </div>
         </div>
       </div>
