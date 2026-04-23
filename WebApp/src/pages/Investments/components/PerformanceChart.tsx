@@ -4,6 +4,7 @@ import { formatCurrency, formatCompactCurrency } from "../../../utils/currency";
 import type { TimeRange } from "../../../types/investments";
 import { format, subMonths, subYears, parseISO } from "date-fns";
 import { ResponsiveContainer, ComposedChart, Bar, Line, XAxis, YAxis, Tooltip, Cell } from "recharts";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 
 // ==========================================
 // 1. DATA MANIPULATION & AGGREGATION
@@ -72,6 +73,7 @@ export default function PerformanceChart({ assets, stealthMode }: PerformanceCha
   const aggregatedData = usePerformanceChartData(assets);
   const { currency } = useUserPreferences();
   const [timeRange, setTimeRange] = useState<TimeRange>("1Y");
+  const isMobile = useIsMobile(1024);
 
   // Filter data based on selected time range
   const filteredData = useMemo(() => {
@@ -84,6 +86,9 @@ export default function PerformanceChart({ assets, stealthMode }: PerformanceCha
   // X-Axis formatter
   const formatXAxis = (dateStr: string) => {
     const date = parseISO(dateStr);
+    if (isMobile) {
+      return format(date, "MMM");
+    }
     return timeRange === "6M" ? format(date, "MMM d") : format(date, "MMM yyyy");
   };
 
@@ -97,54 +102,39 @@ export default function PerformanceChart({ assets, stealthMode }: PerformanceCha
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload; // Access the full data object for this point
-      const isPositive = data.gain >= 0;
+      const profit = data.totalValue - data.invested;
+      const profitPct = data.invested > 0 ? (profit / data.invested) * 100 : 0;
 
       return (
-        <div className="bg-surface-container-lowest/95 backdrop-blur-xl p-5 rounded-2xl shadow-2xl border border-outline-variant/20 font-body min-w-[220px]">
-          <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-3 border-b border-outline-variant/10 pb-2">
+        <div className="bg-surface-container-lowest p-4 rounded-xl shadow-2xl border border-outline-variant/20 animate-in fade-in zoom-in duration-200 z-[100]">
+          <p className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest mb-3 border-b border-outline-variant/10 pb-2">
             {format(parseISO(label), "MMMM d, yyyy")}
           </p>
-
-          <div className="space-y-2">
-            <div className="flex justify-between items-center gap-4">
-              <span className="text-xs font-bold text-on-surface-variant flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-primary"></div> Total Value
-              </span>
+          <div className="space-y-2.5">
+            <div className="flex items-center justify-between gap-8">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-primary"></div>
+                <span className="text-xs font-bold text-on-surface-variant">Portfolio Value</span>
+              </div>
               <span className="text-sm font-black text-on-surface">
-                {stealthMode
-                  ? "****"
-                  : formatCurrency(data.totalValue, currency.code)}
+                {stealthMode ? "****" : formatCurrency(data.totalValue, currency.code)}
               </span>
             </div>
-
-            <div className="flex justify-between items-center gap-4">
-              <span className="text-xs font-bold text-on-surface-variant flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-outline-variant"></div> Net Invested
-              </span>
-              <span className="text-sm font-bold text-on-surface-variant">
-                {stealthMode
-                  ? "****"
-                  : formatCurrency(data.invested, currency.code)}
+            <div className="flex items-center justify-between gap-8">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-outline-variant"></div>
+                <span className="text-xs font-bold text-on-surface-variant">Net Invested</span>
+              </div>
+              <span className="text-sm font-black text-on-surface">
+                {stealthMode ? "****" : formatCurrency(data.invested, currency.code)}
               </span>
             </div>
-
-            <div
-              className={`mt-3 pt-2 border-t border-outline-variant/10 flex justify-between items-center gap-4 ${stealthMode ? "text-on-surface-variant" : isPositive ? "text-emerald-500" : "text-error"}`}
-            >
-              <span className="text-xs font-black uppercase tracking-wider">Unrealized P/L</span>
-              <span className="text-sm font-black flex items-center gap-1">
-                {stealthMode ? (
-                  "****"
-                ) : (
-                  <>
-                    {isPositive ? "+" : ""}
-                    {formatCurrency(data.gain, currency.code)}
-                    <span className="text-[10px] bg-current/10 px-1.5 py-0.5 rounded-md ml-1">
-                      {isPositive ? "+" : ""}
-                      {data.roi.toFixed(1)}%
-                    </span>
-                  </>
-                )}
+            <div className="flex items-center justify-between gap-8 pt-2 border-t border-outline-variant/10">
+              <span className="text-xs font-bold text-on-surface-variant">Total Gain</span>
+              <span className={`text-sm font-black ${profit >= 0 ? "text-emerald-500" : "text-error"}`}>
+                {stealthMode
+                  ? "****"
+                  : `${profit >= 0 ? "+" : ""}${formatCurrency(profit, currency.code)} (${profitPct.toFixed(1)}%)`}
               </span>
             </div>
           </div>
@@ -158,21 +148,27 @@ export default function PerformanceChart({ assets, stealthMode }: PerformanceCha
   const lastBarFill = "#191c1e"; // on-surface
 
   return (
-    <div className="bg-surface-container-lowest p-8 rounded-2xl shadow-sm border border-outline-variant/10 h-96 flex flex-col group relative">
-      <div className="flex justify-between items-center mb-8 shrink-0">
+    <div
+      className={`bg-surface-container-lowest ${isMobile ? "p-5 h-[340px]" : "p-8 h-96"} rounded-2xl shadow-sm border border-outline-variant/10 flex flex-col group relative overflow-hidden`}
+    >
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 shrink-0">
         <div>
-          <h3 className="text-xl font-headline font-black text-on-surface flex items-center gap-2">
+          <h3
+            className={`${isMobile ? "text-lg" : "text-xl"} font-headline font-black text-on-surface flex items-center gap-2`}
+          >
             <span className="material-symbols-outlined text-primary text-[22px]">insights</span>
             Performance History
           </h3>
-          <p className="text-xs font-bold text-on-surface-variant mt-1">Value vs. Cost Basis over time</p>
+          <p className="text-[10px] sm:text-xs font-bold text-on-surface-variant mt-1">
+            Value vs. Cost Basis over time
+          </p>
         </div>
-        <div className="flex gap-2 p-1 bg-surface-container-low rounded-xl">
+        <div className="flex gap-1 p-1 bg-surface-container-low rounded-xl self-end sm:self-auto">
           {(["6M", "1Y", "ALL"] as TimeRange[]).map((range) => (
             <button
               key={range}
               onClick={() => setTimeRange(range)}
-              className={`px-4 py-1.5 rounded-lg text-xs font-black tracking-wider transition-all duration-300 ${timeRange === range ? "bg-primary text-on-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface"}`}
+              className={`px-3 sm:px-4 py-1.5 rounded-lg text-[10px] sm:text-xs font-black tracking-wider transition-all duration-300 ${timeRange === range ? "bg-primary text-on-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface"}`}
             >
               {range}
             </button>
@@ -186,13 +182,12 @@ export default function PerformanceChart({ assets, stealthMode }: PerformanceCha
           <p className="text-sm font-bold">Log snapshots to visualize your timeline.</p>
         </div>
       ) : (
-        <div className="flex-1 -ml-6 -mr-6 -mb-6 relative">
-          <ResponsiveContainer width="100%" height={300} minWidth={1} minHeight={1} debounce={50}>
-            {/* Switched from BarChart to ComposedChart to support multiple chart types overlaid */}
+        <div className={`flex-1 ${isMobile ? "-ml-4 -mr-2" : "-ml-6 -mr-6"} -mb-6 relative`}>
+          <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1} debounce={50}>
             <ComposedChart
               data={filteredData}
-              margin={{ top: 20, right: 30, left: 10, bottom: 20 }}
-              barCategoryGap="15%" // Makes bars look sleeker
+              margin={{ top: 10, right: isMobile ? 10 : 30, left: 0, bottom: 20 }}
+              barCategoryGap={isMobile ? "25%" : "15%"}
             >
               <defs>
                 <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
@@ -203,37 +198,36 @@ export default function PerformanceChart({ assets, stealthMode }: PerformanceCha
               <XAxis
                 dataKey="date"
                 tickFormatter={formatXAxis}
-                tick={{ fontSize: 10, fontWeight: 800, fill: "#777587" }}
+                tick={{ fontSize: 9, fontWeight: 800, fill: "#777587" }}
                 tickLine={false}
                 axisLine={false}
-                minTickGap={30} // Prevents label overlapping when there are many data points
+                minTickGap={isMobile ? 15 : 30}
                 dy={10}
               />
               <YAxis
                 tickFormatter={formatYAxis}
-                tick={{ fontSize: 10, fontWeight: 800, fill: "#777587" }}
+                tick={{ fontSize: 9, fontWeight: 800, fill: "#777587" }}
                 tickLine={false}
                 axisLine={false}
-                width={65}
-                dx={-10}
+                width={isMobile ? 45 : 65}
+                dx={isMobile ? -5 : -10}
+                hide={isMobile && filteredData.length > 10}
               />
               <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(53, 37, 205, 0.04)" }} />
 
-              {/* Layer 1: The Total Value Bars */}
               <Bar dataKey="totalValue" radius={[6, 6, 0, 0]}>
                 {filteredData.map((_, index) => (
                   <Cell key={`cell-${index}`} fill={index === filteredData.length - 1 ? lastBarFill : barGradient} />
                 ))}
               </Bar>
 
-              {/* Layer 2: The Net Invested Trendline */}
               <Line
                 type="monotone"
                 dataKey="invested"
-                stroke="#c7c4d8" // outline-variant
+                stroke="#c7c4d8"
                 strokeWidth={2}
                 strokeDasharray="4 4"
-                dot={{ r: 3, fill: "#ffffff", stroke: "#c7c4d8", strokeWidth: 2 }}
+                dot={{ r: isMobile ? 2 : 3, fill: "#ffffff", stroke: "#c7c4d8", strokeWidth: 2 }}
                 activeDot={{ r: 5, fill: "#3525cd", stroke: "#ffffff", strokeWidth: 2 }}
               />
             </ComposedChart>
