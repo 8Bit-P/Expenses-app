@@ -1,9 +1,36 @@
+import { useTransactions } from "../../../hooks/useTransactions";
+import { useUserPreferences } from "../../../context/UserPreferencesContext";
+import { formatCurrency } from "../../../utils/currency";
+import { startOfMonth, endOfMonth, differenceInDays } from "date-fns";
+import { useInvestments } from "../../../hooks/useInvestments";
+
 export default function SummaryRow() {
+  const { monthlyBudget } = useUserPreferences();
+  const { metrics: invMetrics } = useInvestments();
+  
+  const start = startOfMonth(new Date()).toISOString().split("T")[0];
+  const end = endOfMonth(new Date()).toISOString().split("T")[0];
+  
+  const { transactions } = useTransactions({
+    startDate: start,
+    endDate: end,
+    type: "expense"
+  });
+
+  const currentMonthSpend = transactions.reduce((sum, tx) => sum + tx.amount, 0);
+  const daysInMonth = differenceInDays(endOfMonth(new Date()), startOfMonth(new Date())) + 1;
+  const daysPassed = differenceInDays(new Date(), startOfMonth(new Date()));
+  const daysRemaining = Math.max(1, daysInMonth - daysPassed);
+  
+  const budgetRemaining = Math.max(0, monthlyBudget - currentMonthSpend);
+  const dailySafe = budgetRemaining / daysRemaining;
+  const budgetUsagePercent = Math.min(100, (currentMonthSpend / monthlyBudget) * 100);
+
   const metrics = [
     {
       title: "Net Worth",
-      amount: "$842,500.00",
-      change: "+2.4%",
+      amount: formatCurrency(invMetrics.totalValue),
+      change: "+2.4%", // Placeholder for now
       changeType: "positive",
       icon: "account_balance_wallet",
       bg: "bg-primary/10",
@@ -11,7 +38,7 @@ export default function SummaryRow() {
     },
     {
       title: "Monthly Income",
-      amount: "$12,450.00",
+      amount: formatCurrency(12450), // Placeholder
       change: "+12%",
       changeType: "positive",
       icon: "trending_up",
@@ -19,17 +46,17 @@ export default function SummaryRow() {
       text: "text-secondary",
     },
     {
-      title: "Monthly Expenses",
-      amount: "$4,210.00",
-      change: "-5.2%",
-      changeType: "negative",
-      icon: "shopping_cart",
-      bg: "bg-error/10",
-      text: "text-error",
+      title: "Safe to Spend",
+      amount: `${formatCurrency(dailySafe)} / day`,
+      subtext: `${formatCurrency(budgetRemaining)} left this month`,
+      icon: "payments",
+      bg: "bg-tertiary/10",
+      text: "text-tertiary",
+      isBudget: true,
     },
     {
       title: "Total Invested",
-      amount: "$512,000.00",
+      amount: formatCurrency(invMetrics.totalInvested),
       change: "+8.1%",
       changeType: "positive",
       icon: "auto_graph",
@@ -56,22 +83,41 @@ export default function SummaryRow() {
             >
               <span className={`material-symbols-outlined ${metric.text}`}>{metric.icon}</span>
             </div>
-            <span
-              className={`text-xs font-black px-2.5 py-1 rounded-lg ${
-                metric.changeType === "positive"
-                  ? "text-secondary bg-secondary-container/50"
-                  : "text-error bg-error-container/50"
-              }`}
-            >
-              {metric.change}
-            </span>
+            {'change' in metric && (
+              <span
+                className={`text-xs font-black px-2.5 py-1 rounded-lg ${
+                  metric.changeType === "positive"
+                    ? "text-secondary bg-secondary-container/50"
+                    : "text-error bg-error-container/50"
+                }`}
+              >
+                {metric.change}
+              </span>
+            )}
           </div>
           <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70 mb-1 relative z-10">
             {metric.title}
           </p>
-          <h3 className="text-3xl font-extrabold font-headline tracking-tight text-on-surface relative z-10">
+          <h3 className="text-2xl font-extrabold font-headline tracking-tight text-on-surface relative z-10">
             {metric.amount}
           </h3>
+          
+          {metric.isBudget && (
+            <div className="mt-4 relative z-10">
+              <div className="flex justify-between items-center mb-1.5">
+                <span className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/50">Budget Usage</span>
+                <span className="text-[10px] font-black text-on-surface">{Math.round(budgetUsagePercent)}%</span>
+              </div>
+              <div className="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+                <div 
+                  className={`h-full rounded-full transition-all duration-1000 ${
+                    budgetUsagePercent > 90 ? 'bg-error' : budgetUsagePercent > 70 ? 'bg-warning' : 'bg-primary'
+                  }`}
+                  style={{ width: `${budgetUsagePercent}%` }}
+                ></div>
+              </div>
+            </div>
+          )}
         </div>
       ))}
     </section>

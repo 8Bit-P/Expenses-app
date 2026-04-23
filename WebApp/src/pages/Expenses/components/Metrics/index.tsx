@@ -23,9 +23,10 @@ export default function MetricsRow() {
 
   const handleScroll = () => {
     if (!scrollRef.current) return;
-    const { scrollLeft, offsetWidth } = scrollRef.current;
-    if (offsetWidth === 0) return;
-    const index = Math.round(scrollLeft / offsetWidth);
+    const { scrollLeft, scrollWidth } = scrollRef.current;
+    const length = showBudget ? 4 : 3;
+    const cardWidth = scrollWidth / length;
+    const index = Math.round(scrollLeft / cardWidth);
     setActiveIndex(index);
   };
 

@@ -15,9 +15,9 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
 
   const handleScroll = () => {
     if (!scrollRef.current) return;
-    const { scrollLeft, offsetWidth } = scrollRef.current;
-    if (offsetWidth === 0) return;
-    const index = Math.round(scrollLeft / offsetWidth);
+    const { scrollLeft, scrollWidth } = scrollRef.current;
+    const cardWidth = scrollWidth / 3;
+    const index = Math.round(scrollLeft / cardWidth);
     setActiveIndex(index);
   };
 
