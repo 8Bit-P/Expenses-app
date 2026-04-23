@@ -24,7 +24,7 @@ interface ExpensesContextType {
   isMobile: boolean;
 }
 
-const ExpensesContext = createContext<ExpensesContextType | undefined>(undefined);
+export const ExpensesContext = createContext<ExpensesContextType | undefined>(undefined);
 
 export function ExpensesProvider({ children }: { children: ReactNode }) {
   const [filters, setFiltersState] = useState<TransactionFilters>(DEFAULT_FILTERS);

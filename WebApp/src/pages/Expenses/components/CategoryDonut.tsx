@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import { useExpenses } from "../../../context/ExpensesContext";
+import { ExpensesContext } from "../../../context/ExpensesContext";
 import { useTransactions } from "../../../hooks/useTransactions";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { formatCurrency, formatCompactCurrency } from "../../../utils/currency";
@@ -8,15 +8,26 @@ import { CATEGORY_COLORS } from "../../../constants/chartColors";
 
 
 
-export default function CategoryDonut() {
+interface CategoryDonutProps {
+  startDate?: string;
+  endDate?: string;
+  title?: string;
+}
+
+export default function CategoryDonut({ startDate, endDate, title }: CategoryDonutProps) {
   const { currency } = useUserPreferences();
   const [isExpanded, setIsExpanded] = useState(false);
-  // Read date + category filters from context, but fetch all (no pagination) for the chart
-  const { filters } = useExpenses();
+  
+  // Try to get filters from ExpensesContext, but fallback to props
+  const expensesContext = useContext(ExpensesContext);
+  const filters = expensesContext?.filters;
+
+  const finalStartDate = startDate || filters?.startDate;
+  const finalEndDate = endDate || filters?.endDate;
+
   const { transactions, loading } = useTransactions({
-    startDate: filters.startDate,
-    endDate: filters.endDate,
-    categoryId: filters.categoryId,
+    startDate: finalStartDate,
+    endDate: finalEndDate,
     pageSize: 1000,
   });
 
@@ -58,7 +69,7 @@ export default function CategoryDonut() {
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <div>
-          <h4 className="text-lg font-bold font-headline text-on-surface">Spending by Category</h4>
+          <h4 className="text-lg font-bold font-headline text-on-surface">{title || "Spending by Category"}</h4>
           {data.length > 0 && (
             <p className="text-xs font-medium text-on-surface-variant mt-0.5">
               {data[0].emoji} <span className="font-bold">{data[0].name}</span> leads at {topPercent}%

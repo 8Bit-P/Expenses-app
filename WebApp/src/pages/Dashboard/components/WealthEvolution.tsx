@@ -1,25 +1,29 @@
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { useUserPreferences } from "../../../context/UserPreferencesContext";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
 const data = [
   { name: "Jan", investments: 4000, liquidity: 2400 },
-  { name: "Mar", investments: 4500, liquidity: 2100 },
-  { name: "May", investments: 5200, liquidity: 2800 },
-  { name: "Jul", investments: 5800, liquidity: 2600 },
-  { name: "Sep", investments: 6500, liquidity: 3200 },
-  { name: "Nov", investments: 7100, liquidity: 3800 },
+  { name: "Feb", investments: 4500, liquidity: 2100 },
+  { name: "Mar", investments: 5200, liquidity: 2800 },
+  { name: "Apr", investments: 5800, liquidity: 2600 },
+  { name: "May", investments: 6500, liquidity: 3200 },
+  { name: "Jun", investments: 7100, liquidity: 3800 },
 ];
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-surface-container-lowest/95 backdrop-blur-xl p-4 rounded-2xl shadow-xl border border-outline-variant/20 font-body min-w-[160px]">
+      <div className="bg-surface-container-lowest/95 backdrop-blur-xl p-4 rounded-2xl shadow-xl border border-outline-variant/20 font-body min-w-[160px] animate-in fade-in zoom-in duration-200">
         <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-3 border-b border-outline-variant/10 pb-2">
-          {label} Evolution
+          {label} Snapshot
         </p>
         {payload.map((entry: any, index: number) => (
-          <div key={index} className="flex justify-between items-center gap-4 mb-1">
-            <span className="text-xs font-bold text-on-surface-variant capitalize">{entry.name}</span>
-            <span className="text-sm font-black text-on-surface">${entry.value.toLocaleString()}</span>
+          <div key={index} className="flex justify-between items-center gap-4 mb-1.5">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.fill.includes("url") ? (index === 0 ? "#3525cd" : "#10b981") : entry.fill }}></div>
+              <span className="text-[11px] font-bold text-on-surface-variant capitalize">{entry.name}</span>
+            </div>
+            <span className="text-xs font-black text-on-surface">€{entry.value.toLocaleString()}</span>
           </div>
         ))}
       </div>
@@ -29,76 +33,86 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 export default function WealthEvolution() {
+  const { resolvedTheme } = useUserPreferences();
+  const gapColor = resolvedTheme === "dark" ? "#0d0e11" : "#ffffff";
+  const axisColor = resolvedTheme === "dark" ? "rgba(119, 117, 135, 0.4)" : "rgba(100, 116, 139, 0.5)";
+
   return (
-    <div className="lg:col-span-8 bg-surface-container-lowest p-8 rounded-2xl shadow-sm border border-outline-variant/10">
+    <div className="w-full flex flex-col">
       <div className="flex justify-between items-end mb-8">
         <div>
-          <h2 className="text-xl font-black font-headline text-on-surface flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary">monitoring</span>
+          <h2 className="text-lg font-black font-headline text-on-surface flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary">bar_chart</span>
             Wealth Evolution
           </h2>
-          <p className="text-xs font-bold text-on-surface-variant mt-1">Portfolio trajectory over 12 months</p>
+          <p className="text-[10px] font-bold text-on-surface-variant mt-1">Portfolio growth segmented by asset class</p>
         </div>
-        <div className="flex gap-4 p-2 bg-surface-container-low rounded-xl">
+        <div className="flex gap-4 p-1.5 bg-surface-container-low rounded-xl">
           <div className="flex items-center gap-2 px-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-primary"></div>
-            <span className="text-xs font-bold text-on-surface">Investments</span>
+            <div className="w-2 h-2 rounded-full bg-primary"></div>
+            <span className="text-[10px] font-black uppercase tracking-wider text-on-surface-variant">Investments</span>
           </div>
           <div className="flex items-center gap-2 px-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-slate-300"></div>
-            <span className="text-xs font-bold text-on-surface">Liquidity</span>
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
+            <span className="text-[10px] font-black uppercase tracking-wider text-on-surface-variant">Liquidity</span>
           </div>
         </div>
       </div>
 
-      <div className="w-full text-[10px] font-bold uppercase tracking-widest text-slate-400">
-        <ResponsiveContainer width="100%" height={300} minWidth={1} minHeight={1} debounce={50}>
-          <AreaChart data={data} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+      <div className="w-full h-[300px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data} margin={{ top: 10, right: 0, left: -20, bottom: 0 }} barGap={0}>
             <defs>
-              <linearGradient id="colorInv" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#3525cd" stopOpacity={0.4} />
-                <stop offset="95%" stopColor="#3525cd" stopOpacity={0} />
+              <linearGradient id="barInv" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#4f46e5" stopOpacity={1} />
+                <stop offset="100%" stopColor="#3525cd" stopOpacity={1} />
               </linearGradient>
-              <linearGradient id="colorLiq" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#94a3b8" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#94a3b8" stopOpacity={0} />
+              <linearGradient id="barLiq" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#34d399" stopOpacity={1} />
+                <stop offset="100%" stopColor="#10b981" stopOpacity={1} />
               </linearGradient>
             </defs>
+            <CartesianGrid 
+              vertical={false} 
+              stroke={resolvedTheme === "dark" ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)"} 
+              strokeDasharray="4 4" 
+            />
             <XAxis
               dataKey="name"
               axisLine={false}
               tickLine={false}
               dy={10}
-              tick={{ fill: "#777587", fontWeight: 800 }}
+              tick={{ fill: axisColor, fontWeight: 800, fontSize: 10 }}
             />
             <YAxis
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "#777587", fontWeight: 800 }}
-              tickFormatter={(val) => `$${val / 1000}k`}
+              tick={{ fill: axisColor, fontWeight: 800, fontSize: 10 }}
+              tickFormatter={(val) => `€${val / 1000}k`}
             />
             <Tooltip
               content={<CustomTooltip />}
-              cursor={{ stroke: "rgba(53, 37, 205, 0.2)", strokeWidth: 2, strokeDasharray: "4 4" }}
+              cursor={{ fill: resolvedTheme === "dark" ? "rgba(255, 255, 255, 0.02)" : "rgba(0, 0, 0, 0.02)" }}
             />
-            <Area
-              type="monotone"
-              dataKey="liquidity"
-              stackId="1"
-              stroke="#94a3b8"
-              strokeWidth={2}
-              fill="url(#colorLiq)"
-            />
-            <Area
-              type="monotone"
+            <Bar
               dataKey="investments"
-              stackId="1"
-              stroke="#3525cd"
+              stackId="wealth"
+              fill="url(#barInv)"
+              radius={[0, 0, 6, 6]}
+              stroke={gapColor}
               strokeWidth={2}
-              fill="url(#colorInv)"
-              activeDot={{ r: 6, fill: "#3525cd", stroke: "#fff", strokeWidth: 2 }}
+              barSize={48}
             />
-          </AreaChart>
+            <Bar
+              dataKey="liquidity"
+              stackId="wealth"
+              fill="url(#barLiq)"
+              radius={[6, 6, 0, 0]}
+              stroke={gapColor}
+              strokeWidth={2}
+              barSize={48}
+            />
+          </BarChart>
         </ResponsiveContainer>
       </div>
     </div>

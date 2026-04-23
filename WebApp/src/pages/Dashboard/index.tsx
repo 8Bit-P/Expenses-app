@@ -8,8 +8,8 @@ import UpcomingRenewals from "./components/UpcomingRenewals";
 
 export default function Dashboard() {
   return (
-    <div className="space-y-10 animate-in fade-in duration-500 pb-32">
-      {/* Premium Dashboard Header */}
+    <div className="space-y-8 animate-in fade-in duration-500 pb-32">
+      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-2">
         <div>
           <h1 className="text-4xl md:text-5xl font-black font-headline tracking-tight text-on-surface">
@@ -25,38 +25,40 @@ export default function Dashboard() {
         </button>
       </div>
 
-      {/* Summary Row (KPIs) */}
-      <SummaryRow />
+      {/* ROW 1: KPIs */}
+      <div className="order-1">
+        <SummaryRow />
+      </div>
 
-      {/* Main Grid Architecture (12-column) */}
+      {/* ROW 2: Main Charts & Alerts */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* LEFT SIDE (8 Columns) */}
-        <div className="lg:col-span-8 flex flex-col gap-6 order-2 lg:order-1">
-          {/* Action Center */}
-          <ActionCenter />
-          
-          {/* Wealth Evolution Chart */}
-          <div className="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/5">
+        {/* LEFT COLUMN: Action Center + Wealth Evolution */}
+        <div className="lg:col-span-8 flex flex-col gap-6">
+          <div className="order-2">
+            <ActionCenter />
+          </div>
+          <div className="order-4 lg:order-none bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/5">
             <WealthEvolution />
           </div>
         </div>
 
-        {/* RIGHT SIDE (4 Columns) */}
-        <div className="lg:col-span-4 h-full order-4 lg:order-2">
+        {/* RIGHT COLUMN: Spending Donut */}
+        <div className="lg:col-span-4 order-5 lg:order-none">
           <SpendingCategories />
         </div>
       </div>
 
-      {/* Bottom Data & Transactions (3-column grid) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 order-3 lg:order-3">
-        {/* Col 1: Recent Activity */}
-        <RecentActivity />
-
-        {/* Col 2: Savings Goals */}
-        <SavingsGoals />
-
-        {/* Col 3: Upcoming Renewals */}
-        <UpcomingRenewals />
+      {/* ROW 3: Details (Full Width Below) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="order-3 lg:order-none">
+          <RecentActivity />
+        </div>
+        <div className="order-6 lg:order-none">
+          <SavingsGoals />
+        </div>
+        <div className="order-7 lg:order-none">
+          <UpcomingRenewals />
+        </div>
       </div>
     </div>
   );
