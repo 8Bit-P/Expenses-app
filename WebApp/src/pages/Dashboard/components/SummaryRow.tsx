@@ -1,6 +1,7 @@
+import { useRef, useState, useEffect } from "react";
 import { useTransactions } from "../../../hooks/useTransactions";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
-import { formatCurrency } from "../../../utils/currency";
+import { formatCurrency, formatCompactCurrency } from "../../../utils/currency";
 import { 
   startOfMonth, 
   endOfMonth, 
@@ -17,6 +18,24 @@ export default function SummaryRow() {
   const { monthlyBudget, currency } = useUserPreferences();
   const { metrics: invMetrics, assets } = useInvestments();
   
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const handleScroll = () => {
+    if (!scrollRef.current) return;
+    const { scrollLeft, scrollWidth } = scrollRef.current;
+    const cardWidth = scrollWidth / 4;
+    const index = Math.round(scrollLeft / cardWidth);
+    setActiveIndex(index);
+  };
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", handleScroll);
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const now = new Date();
   const currentDayOfMonth = getDate(now);
   
@@ -123,75 +142,92 @@ export default function SummaryRow() {
 
   if (loadingCurrent && currentTx.length === 0) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-pulse">
+      <div className="flex sm:grid sm:grid-cols-4 gap-6 -mx-2 md:mx-0 px-2 md:px-0 overflow-x-auto pb-4 sm:pb-0 hide-scrollbar animate-pulse">
         {[1, 2, 3, 4].map(i => (
-          <div key={i} className="h-40 bg-surface-container-lowest rounded-2xl border border-outline-variant/10"></div>
+          <div key={i} className="flex-none w-[82vw] sm:w-auto h-40 bg-surface-container-lowest rounded-2xl border border-outline-variant/10"></div>
         ))}
       </div>
     );
   }
 
   return (
-    <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {metrics.map((metric, idx) => (
-        <div
-          key={idx}
-          className="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/10 group hover:shadow-md transition-all duration-300 relative overflow-hidden"
-        >
-          {/* Subtle glow effect on hover */}
+    <div className="grid grid-cols-1 w-full min-w-0">
+      <div
+        ref={scrollRef}
+        className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-6 -mx-2 md:mx-0 px-2 md:px-0 overflow-x-auto pb-6 sm:pb-0 snap-x snap-mandatory hide-scrollbar"
+      >
+        {metrics.map((metric, idx) => (
           <div
-            className={`absolute -top-10 -right-10 w-24 h-24 ${metric.bg} rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
-          ></div>
-
-          <div className="flex justify-between items-start mb-6 relative z-10">
+            key={idx}
+            className="flex-none w-[82vw] sm:w-auto bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/10 group hover:shadow-md transition-all duration-300 relative overflow-hidden snap-start"
+          >
+            {/* Subtle glow effect on hover */}
             <div
-              className={`w-12 h-12 rounded-2xl ${metric.bg} flex items-center justify-center border border-white/5 shadow-inner`}
-            >
-              <span className={`material-symbols-outlined ${metric.text}`}>{metric.icon}</span>
-            </div>
-            {'change' in metric && (
-              <span
-                className={`text-[10px] font-black px-2.5 py-1 rounded-lg ${
-                  metric.changeType === "positive"
-                    ? "text-emerald-500 bg-emerald-500/10"
-                    : "text-error bg-error/10"
-                }`}
+              className={`absolute -top-10 -right-10 w-24 h-24 ${metric.bg} rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+            ></div>
+
+            <div className="flex justify-between items-start mb-6 relative z-10">
+              <div
+                className={`w-12 h-12 rounded-2xl ${metric.bg} flex items-center justify-center border border-white/5 shadow-inner`}
               >
-                {metric.change}
-              </span>
-            )}
-          </div>
-          <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70 mb-1 relative z-10">
-            {metric.title}
-          </p>
-          <div className="flex flex-col relative z-10">
-            <h3 className="text-2xl font-black font-headline text-on-surface tracking-tight">
-              {metric.amount}
-            </h3>
-            {'subtext' in metric && (
-              <p className="text-[11px] font-bold text-on-surface-variant/60 mt-1">
-                {metric.subtext}
-              </p>
-            )}
-            {metric.isBudget && (
-              <div className="mt-4 w-full">
-                <div className="flex justify-between items-center mb-1.5">
-                  <span className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/50">Budget Usage</span>
-                  <span className="text-[10px] font-black text-on-surface">{Math.round(budgetUsagePercent)}%</span>
-                </div>
-                <div className="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
-                  <div
-                    className={`h-full transition-all duration-1000 ${
-                      budgetUsagePercent > 90 ? "bg-error" : budgetUsagePercent > 70 ? "bg-orange-500" : "bg-emerald-500"
-                    }`}
-                    style={{ width: `${Math.min(100, budgetUsagePercent)}%` }}
-                  ></div>
-                </div>
+                <span className={`material-symbols-outlined ${metric.text}`}>{metric.icon}</span>
               </div>
-            )}
+              {'change' in metric && (
+                <span
+                  className={`text-[10px] font-black px-2.5 py-1 rounded-lg ${
+                    metric.changeType === "positive"
+                      ? "text-emerald-500 bg-emerald-500/10"
+                      : "text-error bg-error/10"
+                  }`}
+                >
+                  {metric.change}
+                </span>
+              )}
+            </div>
+            <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70 mb-1 relative z-10">
+              {metric.title}
+            </p>
+            <div className="flex flex-col relative z-10">
+              <h3 className="text-2xl font-black font-headline text-on-surface tracking-tight">
+                {metric.amount}
+              </h3>
+              {'subtext' in metric && (
+                <p className="text-[11px] font-bold text-on-surface-variant/60 mt-1">
+                  {metric.subtext}
+                </p>
+              )}
+              {metric.isBudget && (
+                <div className="mt-4 w-full">
+                  <div className="flex justify-between items-center mb-1.5">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/50">Budget Usage</span>
+                    <span className="text-[10px] font-black text-on-surface">{Math.round(budgetUsagePercent)}%</span>
+                  </div>
+                  <div className="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+                    <div
+                      className={`h-full transition-all duration-1000 ${
+                        budgetUsagePercent > 90 ? "bg-error" : budgetUsagePercent > 70 ? "bg-orange-500" : "bg-emerald-500"
+                      }`}
+                      style={{ width: `${Math.min(100, budgetUsagePercent)}%` }}
+                    ></div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
-    </section>
+        ))}
+      </div>
+
+      {/* Pagination Dots (Mobile Only) */}
+      <div className="flex sm:hidden justify-center gap-1.5 mt-2 mb-4">
+        {metrics.map((_, i) => (
+          <div
+            key={i}
+            className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+              activeIndex === i ? "bg-primary w-3" : "bg-surface-container-high"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
