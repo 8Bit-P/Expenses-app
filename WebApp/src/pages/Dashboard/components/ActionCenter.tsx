@@ -1,7 +1,7 @@
 import { useSubscriptions } from "../../../hooks/useSubscriptions";
 import { useTransactions } from "../../../hooks/useTransactions";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
-import { differenceInDays, parseISO, startOfMonth, endOfMonth } from "date-fns";
+import { differenceInDays, parseISO, startOfMonth, endOfMonth, getDate } from "date-fns";
 
 export default function ActionCenter() {
   const { subscriptions } = useSubscriptions();
@@ -13,32 +13,58 @@ export default function ActionCenter() {
   const { transactions } = useTransactions({
     startDate: start,
     endDate: end,
-    pageSize: 20
+    pageSize: 1000 // Increased to ensure accurate monthly totals
   });
 
   // Programmatic Logic Block
   const alerts = [];
 
   // 1. Budget Usage Alert
+  if (monthlyBudget > 0) {
+    const currentMonthSpend = transactions
+      .filter(tx => tx.type === 'expense')
+      .reduce((sum, tx) => sum + tx.amount, 0);
+    
+    const budgetUsage = (currentMonthSpend / monthlyBudget) * 100;
+
+    if (budgetUsage > 85) {
+      alerts.push({
+        id: "budget-alert",
+        priority: 1,
+        title: "Budget Warning",
+        message: `You've used ${budgetUsage.toFixed(0)}% of your monthly budget. Consider scaling back.`,
+        icon: "warning",
+        bg: "bg-error/5",
+        border: "border-error/30",
+        accent: "text-error"
+      });
+    }
+  }
+
+  // 2. Negative Cashflow Alert
+  const currentMonthIncome = transactions
+    .filter(tx => tx.type === 'income')
+    .reduce((sum, tx) => sum + tx.amount, 0);
+  
   const currentMonthSpend = transactions
     .filter(tx => tx.type === 'expense')
     .reduce((sum, tx) => sum + tx.amount, 0);
-  
-  const budgetUsage = (currentMonthSpend / (monthlyBudget || 1)) * 100;
 
-  if (budgetUsage > 85) {
+  const dayOfMonth = getDate(new Date());
+  if (currentMonthSpend > currentMonthIncome && dayOfMonth > 5) {
     alerts.push({
-      id: "budget-alert",
-      title: "Budget Warning",
-      message: `You've used ${budgetUsage.toFixed(0)}% of your monthly budget. Consider scaling back.`,
-      icon: "warning",
-      bg: "bg-error/5",
-      border: "border-error/30",
-      accent: "text-error"
+      id: "negative-cashflow",
+      priority: 2,
+      title: "Negative Cashflow",
+      message: "Your expenses have exceeded your income this month. Monitor your liquidity.",
+      icon: "trending_down",
+      bg: "bg-orange-500/5",
+      border: "border-orange-500/30",
+      accent: "text-orange-500"
     });
   }
 
-  // 2. Subscription Renewal Alert
+  // 3. Subscription Renewal Alert
   const soonRenewal = subscriptions.find(s => {
     const days = differenceInDays(parseISO(s.next_billing_date), new Date());
     return days >= 0 && days <= 3;
@@ -46,10 +72,16 @@ export default function ActionCenter() {
 
   if (soonRenewal) {
     const days = differenceInDays(parseISO(soonRenewal.next_billing_date), new Date());
+    let timingStr = "";
+    if (days === 0) timingStr = "today";
+    else if (days === 1) timingStr = "tomorrow";
+    else timingStr = `in ${days} days`;
+
     alerts.push({
       id: "sub-renewal",
+      priority: 3,
       title: "Upcoming Charge",
-      message: `'${soonRenewal.name}' renews in ${days === 0 ? "today" : days === 1 ? "tomorrow" : `${days} days`} (€${soonRenewal.amount}).`,
+      message: `'${soonRenewal.name}' renews ${timingStr} (€${soonRenewal.amount}).`,
       icon: "sync",
       bg: "bg-primary/5",
       border: "border-primary/30",
@@ -57,11 +89,17 @@ export default function ActionCenter() {
     });
   }
 
-  // 3. Large Transaction Alert
-  const largeTx = transactions.find(tx => tx.amount > 200 && tx.type === 'expense');
+  // 4. Large Transaction Alert (Last 3 days only)
+  const largeTx = transactions.find(tx => 
+    tx.amount > 200 && 
+    tx.type === 'expense' && 
+    differenceInDays(new Date(), parseISO(tx.date)) <= 3
+  );
+
   if (largeTx) {
     alerts.push({
       id: "large-tx",
+      priority: 4,
       title: "Large Expense",
       message: `A transaction of €${largeTx.amount} at '${largeTx.description}' was detected.`,
       icon: "credit_card",
@@ -71,7 +109,12 @@ export default function ActionCenter() {
     });
   }
 
-  if (alerts.length === 0) return null;
+  // Sort by priority and take top 2
+  const activeAlerts = [...alerts]
+    .sort((a, b) => a.priority - b.priority)
+    .slice(0, 2);
+
+  if (activeAlerts.length === 0) return null;
 
   return (
     <div className="space-y-4">
@@ -85,8 +128,8 @@ export default function ActionCenter() {
         </span>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {alerts.slice(0, 2).map(alert => (
+      <div className={`grid gap-4 ${activeAlerts.length === 1 ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2"}`}>
+        {activeAlerts.map(alert => (
           <div 
             key={alert.id}
             className={`${alert.bg} p-4 rounded-2xl border ${alert.border} flex gap-4 items-start transition-all hover:scale-[1.01] cursor-pointer group`}

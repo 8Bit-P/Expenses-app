@@ -1,23 +1,14 @@
 import { useRef, useState, useEffect } from "react";
 import { useTransactions } from "../../../hooks/useTransactions";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
-import { formatCurrency, formatCompactCurrency } from "../../../utils/currency";
-import { 
-  startOfMonth, 
-  endOfMonth, 
-  differenceInDays, 
-  subMonths, 
-  format, 
-  getDate, 
-  isAfter,
-  parseISO
-} from "date-fns";
+import { formatCurrency } from "../../../utils/currency";
+import { startOfMonth, endOfMonth, differenceInDays, subMonths, format, getDate, isAfter, parseISO } from "date-fns";
 import { useInvestments } from "../../../hooks/useInvestments";
 
 export default function SummaryRow() {
   const { monthlyBudget, currency } = useUserPreferences();
   const { metrics: invMetrics, assets } = useInvestments();
-  
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -38,7 +29,7 @@ export default function SummaryRow() {
 
   const now = new Date();
   const currentDayOfMonth = getDate(now);
-  
+
   // 1. DATES FOR TRANSACTIONS
   const currentStart = startOfMonth(now);
   const currentEnd = endOfMonth(now);
@@ -49,42 +40,37 @@ export default function SummaryRow() {
   const { transactions: currentTx, loading: loadingCurrent } = useTransactions({
     startDate: format(currentStart, "yyyy-MM-dd"),
     endDate: format(currentEnd, "yyyy-MM-dd"),
-    pageSize: 1000
+    pageSize: 1000,
   });
 
   // Previous Month Data (to calculate trend)
   const { transactions: prevTx } = useTransactions({
     startDate: format(prevStart, "yyyy-MM-dd"),
     endDate: format(prevEnd, "yyyy-MM-dd"),
-    pageSize: 1000
+    pageSize: 1000,
   });
 
   // 2. LOGIC: MONTHLY INCOME
-  const currentMonthIncome = currentTx
-    .filter(tx => tx.type === 'income')
-    .reduce((sum, tx) => sum + tx.amount, 0);
+  const currentMonthIncome = currentTx.filter((tx) => tx.type === "income").reduce((sum, tx) => sum + tx.amount, 0);
 
   const prevMonthIncomeMTD = prevTx
-    .filter(tx => {
-      if (tx.type !== 'income') return false;
+    .filter((tx) => {
+      if (tx.type !== "income") return false;
       const txDay = getDate(parseISO(tx.date));
       return txDay <= currentDayOfMonth;
     })
     .reduce((sum, tx) => sum + tx.amount, 0);
 
-  const incomeTrend = prevMonthIncomeMTD > 0 
-    ? ((currentMonthIncome - prevMonthIncomeMTD) / prevMonthIncomeMTD) * 100 
-    : 0;
+  const incomeTrend =
+    prevMonthIncomeMTD > 0 ? ((currentMonthIncome - prevMonthIncomeMTD) / prevMonthIncomeMTD) * 100 : 0;
   const incomeDiff = currentMonthIncome - prevMonthIncomeMTD;
 
   // 3. LOGIC: SAFE TO SPEND
-  const currentMonthSpend = currentTx
-    .filter(tx => tx.type === 'expense')
-    .reduce((sum, tx) => sum + tx.amount, 0);
+  const currentMonthSpend = currentTx.filter((tx) => tx.type === "expense").reduce((sum, tx) => sum + tx.amount, 0);
 
   const daysInMonth = differenceInDays(currentEnd, currentStart) + 1;
   const daysRemaining = Math.max(1, daysInMonth - currentDayOfMonth + 1);
-  
+
   const budgetRemaining = Math.max(0, monthlyBudget - currentMonthSpend);
   const safeToSpend = budgetRemaining / daysRemaining;
   const budgetUsagePercent = monthlyBudget > 0 ? (currentMonthSpend / monthlyBudget) * 100 : 0;
@@ -92,15 +78,13 @@ export default function SummaryRow() {
   // 4. LOGIC: INVESTMENTS TREND (Value 30 days ago)
   const date30DaysAgo = subMonths(now, 1);
   let value30DaysAgo = 0;
-  
-  assets.forEach(asset => {
-    const snap30 = asset.asset_snapshots.find(s => !isAfter(parseISO(s.date), date30DaysAgo));
+
+  assets.forEach((asset) => {
+    const snap30 = asset.asset_snapshots.find((s) => !isAfter(parseISO(s.date), date30DaysAgo));
     value30DaysAgo += Number(snap30?.total_value || 0);
   });
 
-  const investmentTrend = value30DaysAgo > 0 
-    ? ((invMetrics.totalValue - value30DaysAgo) / value30DaysAgo) * 100 
-    : 0;
+  const investmentTrend = value30DaysAgo > 0 ? ((invMetrics.totalValue - value30DaysAgo) / value30DaysAgo) * 100 : 0;
   const investmentDiff = invMetrics.totalValue - value30DaysAgo;
   const totalReturn = invMetrics.totalValue - invMetrics.totalInvested;
 
@@ -149,8 +133,11 @@ export default function SummaryRow() {
   if (loadingCurrent && currentTx.length === 0) {
     return (
       <div className="flex sm:grid sm:grid-cols-4 gap-6 -mx-2 md:mx-0 px-2 md:px-0 overflow-x-auto pb-4 sm:pb-0 hide-scrollbar animate-pulse">
-        {[1, 2, 3, 4].map(i => (
-          <div key={i} className="flex-none w-[82vw] sm:w-auto h-40 bg-surface-container-lowest rounded-2xl border border-outline-variant/10"></div>
+        {[1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            className="flex-none w-[82vw] sm:w-auto h-40 bg-surface-container-lowest rounded-2xl border border-outline-variant/10"
+          ></div>
         ))}
       </div>
     );
@@ -179,12 +166,10 @@ export default function SummaryRow() {
               >
                 <span className={`material-symbols-outlined ${metric.text} text-[22px]`}>{metric.icon}</span>
               </div>
-              {'change' in metric && (
+              {"change" in metric && (
                 <span
                   className={`text-[10px] font-black px-2.5 py-1 rounded-lg ${
-                    metric.changeType === "positive"
-                      ? "text-emerald-500 bg-emerald-500/10"
-                      : "text-error bg-error/10"
+                    metric.changeType === "positive" ? "text-emerald-500 bg-emerald-500/10" : "text-error bg-error/10"
                   }`}
                 >
                   {metric.change}
@@ -200,16 +185,18 @@ export default function SummaryRow() {
               <h3 className="text-2xl font-black font-headline text-on-surface tracking-tight leading-tight">
                 {metric.amount}
               </h3>
-              <p className="text-xs text-on-surface-variant/60 font-medium">
-                {metric.subtext}
-              </p>
-              
+              <p className="text-xs text-on-surface-variant/60 font-medium">{metric.subtext}</p>
+
               {metric.isBudget && (
                 <div className="mt-3 w-full">
                   <div className="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
                     <div
                       className={`h-full transition-all duration-1000 ${
-                        budgetUsagePercent > 90 ? "bg-error" : budgetUsagePercent > 70 ? "bg-orange-500" : "bg-emerald-500"
+                        budgetUsagePercent > 90
+                          ? "bg-error"
+                          : budgetUsagePercent > 70
+                            ? "bg-orange-500"
+                            : "bg-emerald-500"
                       }`}
                       style={{ width: `${Math.min(100, budgetUsagePercent)}%` }}
                     ></div>

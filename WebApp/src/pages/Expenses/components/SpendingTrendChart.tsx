@@ -45,6 +45,21 @@ export default function SpendingTrendChart() {
     if (loading) return [];
 
     const days = eachDayOfInterval({ start: currentStart, end: currentEnd });
+    const todayFmt = format(now, "yyyy-MM-dd");
+
+    // PREDICTION MATH: Calculate Average Daily Spend for current month
+    let totalSpendToDate = 0;
+    let daysPassed = 0;
+    
+    if (isThisMonth) {
+      const currentPeriodTxs = transactions.filter(
+        (t) => t.date >= format(currentStart, "yyyy-MM-dd") && t.date <= todayFmt
+      );
+      totalSpendToDate = currentPeriodTxs.reduce((sum, t) => sum + t.amount, 0);
+      daysPassed = differenceInDays(now, currentStart) + 1;
+    }
+    const avgDailySpend = daysPassed > 0 ? totalSpendToDate / daysPassed : 0;
+
     let cumulativeCurrent = 0;
     let cumulativePrevious = 0;
 
@@ -58,10 +73,24 @@ export default function SpendingTrendChart() {
         cumulativePrevious += transactions.filter((t) => t.date === prevDay).reduce((s, t) => s + t.amount, 0);
       }
 
+      // PREDICTION LOGIC: Anchor on today, project to the future
+      let predictionValue = null;
+      if (isThisMonth) {
+        if (fmtDay === todayFmt) {
+          // Anchor point: Connects seamlessly to the end of the solid line
+          predictionValue = cumulativeCurrent;
+        } else if (day > now) {
+          // Extrapolate future days based on average run rate
+          const futureDays = differenceInDays(day, now);
+          predictionValue = totalSpendToDate + avgDailySpend * futureDays;
+        }
+      }
+
       return {
         label: format(day, "d MMM"),
         current: day <= now ? cumulativeCurrent : null,
         previous: cumulativePrevious,
+        prediction: predictionValue,
       };
     });
   }, [transactions, loading, currentStart, currentEnd, periodDays, prevStart, now]);
@@ -80,11 +109,16 @@ export default function SpendingTrendChart() {
   }
 
   const validCurrents = chartData.map((d) => d.current).filter((v) => v !== null) as number[];
+  const validPredictions = chartData.map((d) => d.prediction).filter((v) => v !== null) as number[];
+  
   const maxCurrent = validCurrents.length > 0 ? Math.max(...validCurrents) : 0;
+  const maxPrediction = validPredictions.length > 0 ? Math.max(...validPredictions) : 0;
   const minCurrent = validCurrents.length > 0 ? Math.min(...validCurrents) : 0;
 
   const maxPrevious = Math.max(0, ...chartData.map((d) => d.previous || 0));
-  const maxAmount = Math.max(maxCurrent, maxPrevious);
+  
+  // Ensure the chart scales high enough to fit the prediction line if it exceeds current spend
+  const maxAmount = Math.max(maxCurrent, maxPrevious, maxPrediction);
 
   // Ensure the budget line is always visible inside the chart — pad domain above it
   const chartMaxNum = showBudget
@@ -131,6 +165,14 @@ export default function SpendingTrendChart() {
         <div className="w-2.5 h-2.5 rounded-full bg-primary" />
         <span className="text-on-surface">{currentLabel}</span>
       </div>
+      {isThisMonth && (
+        <div className="flex items-center gap-1.5">
+          <svg width="18" height="4" viewBox="0 0 18 4">
+             <line x1="0" y1="2" x2="18" y2="2" stroke={safeColor} strokeWidth="2" strokeDasharray="3 3" opacity={0.6} />
+          </svg>
+          <span className="text-on-surface-variant">Predicted</span>
+        </div>
+      )}
       <div className="flex items-center gap-1.5">
         <div className="w-2.5 h-2.5 rounded-full bg-outline-variant" />
         <span className="text-on-surface-variant">{previousLabel}</span>
@@ -229,10 +271,14 @@ export default function SpendingTrendChart() {
               }}
               cursor={{ stroke: "var(--outline)", strokeWidth: 1.5, strokeDasharray: "4 4" }}
               itemStyle={{ color: "var(--on-surface)" }}
-              formatter={(value: any, name: any) => [
-                value != null ? formatCurrency(value as number, currency.code) : "—",
-                name === "current" ? currentLabel : previousLabel,
-              ]}
+              formatter={(value: any, name: any) => {
+                if (value == null) return ["—", name];
+                const formatted = formatCurrency(value as number, currency.code);
+                if (name === "current") return [formatted, currentLabel];
+                if (name === "previous") return [formatted, previousLabel];
+                if (name === "prediction") return [formatted, "Predicted (Run Rate)"];
+                return [formatted, name];
+              }}
             />
 
             {showBudget && (
@@ -240,6 +286,17 @@ export default function SpendingTrendChart() {
             )}
 
             <Area type="monotone" dataKey="previous" stroke="var(--outline-variant)" strokeWidth={2} fill="none" connectNulls />
+            
+            {/* The new dashed prediction line overlay */}
+            <Area 
+              type="monotone" 
+              dataKey="prediction" 
+              stroke={safeColor} 
+              strokeOpacity={0.5} 
+              strokeWidth={2} 
+              strokeDasharray="5 5" 
+              fill="none" 
+            />
             <Area
               type="monotone"
               dataKey="current"

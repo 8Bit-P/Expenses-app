@@ -10,11 +10,10 @@ export default function Sidebar({ onNewTransaction }: SidebarProps) {
   const { signOut } = useAuth();
 
   const navItems = [
-    { label: "Dashboard", icon: "dashboard", path: "/" },
-    { label: "Investments", icon: "show_chart", path: "/investments" },
+    { label: "Home", icon: "grid_view", path: "/" },
     { label: "Expenses", icon: "payments", path: "/expenses" },
-    { label: "Subscriptions", icon: "event_repeat", path: "/subscriptions" },
-    { label: "Settings", icon: "settings", path: "/settings" },
+    { label: "Assets", icon: "show_chart", path: "/investments" },
+    { label: "Recurring", icon: "sync", path: "/subscriptions" },
   ];
 
   return (
@@ -69,6 +68,22 @@ export default function Sidebar({ onNewTransaction }: SidebarProps) {
         </button>
 
         <div className="bg-surface-container-lowest/50 backdrop-blur-md rounded-2xl p-2 border border-outline-variant/10">
+          <Link
+            to="/settings"
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group ${
+              location.pathname === "/settings"
+                ? "text-primary font-bold bg-primary-container/20"
+                : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low"
+            }`}
+          >
+            <span
+              className="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform"
+              style={{ fontVariationSettings: location.pathname === "/settings" ? "'FILL' 1" : "'FILL' 0" }}
+            >
+              settings
+            </span>
+            <span className="text-xs font-bold">Settings</span>
+          </Link>
           <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-all group">
             <span className="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">help</span>
             <span className="text-xs font-bold">Help</span>
