@@ -1,6 +1,7 @@
 import type { Subscription } from "../../../types/expenses";
 import { format, parseISO, isSameDay, isTomorrow, isThisWeek } from "date-fns";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
+import { formatCurrency } from "../../../utils/currency";
 
 interface UpcomingRenewalsProps {
   subscriptions: Subscription[];
@@ -14,9 +15,6 @@ export default function UpcomingRenewals({ subscriptions }: UpcomingRenewalsProp
     .filter((s) => s.status === "active")
     .sort((a, b) => new Date(a.next_billing_date).getTime() - new Date(b.next_billing_date).getTime())
     .slice(0, 5); // Just show next 5
-
-  const fmt = (n: number) =>
-    `${currency.symbol}${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   const getDayLabel = (dateStr: string) => {
     const d = parseISO(dateStr);
@@ -62,7 +60,7 @@ export default function UpcomingRenewals({ subscriptions }: UpcomingRenewalsProp
                   <span
                     className={`font-black text-sm shrink-0 ${isToday ? "text-primary" : "text-on-surface-variant"}`}
                   >
-                    {fmt(Number(s.amount))}
+                    {formatCurrency(Number(s.amount), currency.code)}
                   </span>
                 </div>
               </div>
@@ -80,7 +78,7 @@ export default function UpcomingRenewals({ subscriptions }: UpcomingRenewalsProp
           Total this week
         </p>
         <p className="text-3xl font-black text-center mt-2 text-primary font-headline tracking-tighter">
-          {fmt(totalThisWeek)}
+          {formatCurrency(totalThisWeek, currency.code)}
         </p>
       </div>
 

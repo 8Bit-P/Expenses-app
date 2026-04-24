@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import type { Subscription } from "../../../types/expenses";
 import { isSameDay, parseISO, formatDistanceToNowStrict } from "date-fns";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
+import { formatCurrency } from "../../../utils/currency";
 
 interface SubscriptionMetricsProps {
   subscriptions: Subscription[];
@@ -58,9 +59,6 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
   );
   const nextRenewal = sortedByDate[0];
 
-  const fmt = (n: number) =>
-    `${currency.symbol}${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-
   return (
     <div className="grid grid-cols-1 w-full min-w-0">
       <div
@@ -83,7 +81,7 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
 
           <div className="flex flex-col relative z-10">
             <span className="text-5xl font-black text-transparent bg-clip-text bg-linear-to-br from-on-surface to-on-surface-variant/70 font-headline tracking-tighter">
-              {fmt(totalMonthlySpend)}
+              {formatCurrency(totalMonthlySpend, currency.code)}
             </span>
             <span className="text-on-surface-variant/60 font-bold text-xs mt-2 flex items-center gap-1">
               <span className="material-symbols-outlined text-[14px]">calculate</span>
@@ -138,7 +136,9 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
               <>
                 <div className="flex items-baseline gap-2 mb-1">
                   <span className="text-3xl font-black text-on-surface font-headline truncate">{nextRenewal.name}</span>
-                  <span className="text-lg font-bold text-on-surface-variant">{fmt(Number(nextRenewal.amount))}</span>
+                  <span className="text-lg font-bold text-on-surface-variant">
+                    {formatCurrency(Number(nextRenewal.amount), currency.code)}
+                  </span>
                 </div>
                 <span className="text-primary font-bold text-sm flex items-center gap-1.5 bg-primary/10 w-fit px-2.5 py-1 rounded-md mt-1">
                   <span className="material-symbols-outlined text-[14px]">schedule</span>

@@ -145,7 +145,7 @@ export default function PerformanceChart({ assets, stealthMode }: PerformanceCha
   };
 
   const barGradient = "url(#barGradient)";
-  const lastBarFill = "#191c1e"; // on-surface
+  const latestBarGradient = "url(#latestBarGradient)";
 
   return (
     <div
@@ -194,6 +194,10 @@ export default function PerformanceChart({ assets, stealthMode }: PerformanceCha
                   <stop offset="0%" stopColor="#3525cd" stopOpacity={0.85} />
                   <stop offset="100%" stopColor="#c3c0ff" stopOpacity={0.1} />
                 </linearGradient>
+                <linearGradient id="latestBarGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#3525cd" stopOpacity={1} />
+                  <stop offset="100%" stopColor="#3525cd" stopOpacity={0.4} />
+                </linearGradient>
               </defs>
               <XAxis
                 dataKey="date"
@@ -217,7 +221,7 @@ export default function PerformanceChart({ assets, stealthMode }: PerformanceCha
 
               <Bar dataKey="totalValue" radius={[6, 6, 0, 0]}>
                 {filteredData.map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={index === filteredData.length - 1 ? lastBarFill : barGradient} />
+                  <Cell key={`cell-${index}`} fill={index === filteredData.length - 1 ? latestBarGradient : barGradient} />
                 ))}
               </Bar>
 

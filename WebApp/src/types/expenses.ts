@@ -22,9 +22,6 @@ export interface Subscription {
   next_billing_date: string;
   status: SubscriptionStatus;
   created_at: string;
-  // Metadata for UI
-  icon?: string;
-  color?: string;
   // Joined fields
   category?: Category;
 }

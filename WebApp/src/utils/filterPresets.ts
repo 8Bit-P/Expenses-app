@@ -5,6 +5,7 @@ export const PRESETS = [
   { key: "last_month", label: "Last Month" },
   { key: "last_3m", label: "3 Months" },
   { key: "ytd", label: "Year to Date" },
+  { key: "upcoming", label: "Upcoming" },
 ] as const;
 
 export type PresetKey = (typeof PRESETS)[number]["key"];
@@ -38,6 +39,13 @@ export function buildPreset(preset: PresetKey): { startDate: string; endDate: st
       return {
         startDate: format(new Date(n.getFullYear(), 0, 1), "yyyy-MM-dd"),
         endDate: format(endOfMonth(n), "yyyy-MM-dd"),
+      };
+    }
+    case "upcoming": {
+      const nextMonth = new Date(n.getFullYear(), n.getMonth() + 1, n.getDate());
+      return {
+        startDate: format(n, "yyyy-MM-dd"),
+        endDate: format(nextMonth, "yyyy-MM-dd"),
       };
     }
   }

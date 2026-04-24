@@ -1,15 +1,20 @@
 import { useSubscriptions } from "../../../hooks/useSubscriptions";
 import { formatCurrency } from "../../../utils/currency";
-import { differenceInDays, parseISO } from "date-fns";
+import { differenceInDays, parseISO, startOfDay } from "date-fns";
+import { useMemo } from "react";
+import { useUserPreferences } from "../../../context/UserPreferencesContext";
 
 export default function UpcomingRenewals() {
   const { subscriptions, loading } = useSubscriptions();
+  const { currency } = useUserPreferences();
 
   // Get next 3 renewals
-  const upcoming = [...subscriptions]
-    .filter(s => s.next_billing_date)
-    .sort((a, b) => new Date(a.next_billing_date).getTime() - new Date(b.next_billing_date).getTime())
-    .slice(0, 3);
+  const upcoming = useMemo(() => {
+    return [...subscriptions]
+      .filter((s) => s.next_billing_date)
+      .sort((a, b) => new Date(a.next_billing_date).getTime() - new Date(b.next_billing_date).getTime())
+      .slice(0, 3);
+  }, [subscriptions]);
 
   return (
     <div className="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/5">
@@ -34,7 +39,7 @@ export default function UpcomingRenewals() {
           <p className="text-center py-8 text-xs font-medium text-on-surface-variant italic">No renewals found.</p>
         ) : (
           upcoming.map((s) => {
-            const daysLeft = differenceInDays(parseISO(s.next_billing_date), new Date());
+            const daysLeft = differenceInDays(startOfDay(parseISO(s.next_billing_date)), startOfDay(new Date()));
             const isCritical = daysLeft <= 3;
 
             return (
@@ -44,11 +49,7 @@ export default function UpcomingRenewals() {
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center text-on-surface font-black text-sm shadow-sm overflow-hidden border border-outline-variant/10">
-                    {s.icon_url ? (
-                      <img src={s.icon_url} alt={s.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <span>{s.name.charAt(0)}</span>
-                    )}
+                    <span className="text-lg">{s.category?.emoji || s.name.charAt(0)}</span>
                   </div>
                   <div>
                     <h4 className="font-bold text-xs text-on-surface">{s.name}</h4>
@@ -63,7 +64,7 @@ export default function UpcomingRenewals() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-black text-sm text-on-surface">{formatCurrency(s.amount)}</p>
+                  <p className="font-black text-sm text-on-surface">{formatCurrency(s.amount, currency.code)}</p>
                   <p className="text-[9px] uppercase font-black text-on-surface-variant/60 tracking-widest">
                     {s.billing_cycle}
                   </p>

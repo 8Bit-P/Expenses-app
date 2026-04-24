@@ -1,8 +1,10 @@
 import { useRecentActivity } from "../../../hooks/useRecentActivity";
 import { formatCurrency } from "../../../utils/currency";
+import { useUserPreferences } from "../../../context/UserPreferencesContext";
 
 export default function RecentActivity() {
   const { activity, loading } = useRecentActivity(6);
+  const { currency } = useUserPreferences();
 
   return (
     <div className="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/5">
@@ -47,7 +49,7 @@ export default function RecentActivity() {
                   </div>
                   <div className="text-right shrink-0">
                     <p className={`font-black text-sm ${tx.type === "income" ? "text-secondary" : "text-on-surface"}`}>
-                      {tx.type === "income" ? "+" : "-"}{formatCurrency(tx.amount)}
+                      {tx.type === "income" ? "+" : "-"}{formatCurrency(tx.amount, currency.code)}
                     </p>
                   </div>
                 </div>
@@ -72,7 +74,7 @@ export default function RecentActivity() {
                   </div>
                 </div>
                 <div className="text-right shrink-0">
-                  <p className="font-black text-sm text-on-surface">{formatCurrency(snap.total_value)}</p>
+                  <p className="font-black text-sm text-on-surface">{formatCurrency(snap.total_value, currency.code)}</p>
                 </div>
               </div>
             );

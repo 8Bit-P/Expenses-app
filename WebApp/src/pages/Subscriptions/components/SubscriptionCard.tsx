@@ -1,6 +1,7 @@
 import type { Subscription } from "../../../types/expenses";
 import { format, parseISO } from "date-fns";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
+import { formatCurrency } from "../../../utils/currency";
 
 interface SubscriptionCardProps {
   subscription: Subscription;
@@ -10,10 +11,6 @@ interface SubscriptionCardProps {
 
 export default function SubscriptionCard({ subscription, onManage, variant = "list" }: SubscriptionCardProps) {
   const { currency } = useUserPreferences();
-
-  const fmt = (n: number) =>
-    `${currency.symbol}${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-
   const nextDate = parseISO(subscription.next_billing_date);
 
   const isGrid = variant === "grid";
@@ -32,10 +29,9 @@ export default function SubscriptionCard({ subscription, onManage, variant = "li
         className={`shrink-0 flex items-center justify-center overflow-hidden bg-primary/10 text-primary ${
           isGrid ? "w-16 h-16 rounded-2xl" : "w-12 h-12 rounded-xl"
         }`}
-        style={subscription.color ? { backgroundColor: `${subscription.color}15`, color: subscription.color } : {}}
       >
-        {subscription.icon ? (
-          <span className={`${isGrid ? "text-3xl" : "text-xl"} select-none`}>{subscription.icon}</span>
+        {subscription.category?.emoji ? (
+          <span className={`${isGrid ? "text-3xl" : "text-xl"} select-none`}>{subscription.category.emoji}</span>
         ) : (
           <span className="material-symbols-outlined" style={{ fontSize: isGrid ? "32px" : "20px" }}>
             event_repeat
@@ -68,7 +64,7 @@ export default function SubscriptionCard({ subscription, onManage, variant = "li
       {/* 3. Price & Cycle */}
       <div className={`${isGrid ? "w-full pt-4 border-t border-outline-variant/5" : "text-right shrink-0"}`}>
         <div className={`font-black text-on-surface font-headline tracking-tight ${isGrid ? "text-2xl" : "text-sm"}`}>
-          {fmt(Number(subscription.amount))}
+          {formatCurrency(Number(subscription.amount), currency.code)}
         </div>
         <div
           className={`font-black text-on-surface-variant/40 uppercase tracking-widest mt-0.5 ${
