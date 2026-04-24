@@ -155,7 +155,7 @@ export default function SpendingTrendChart() {
 
       {/* Chart */}
       <div className="w-full flex-1">
-        <ResponsiveContainer width="100%" height={isMobile ? 320 : 380} minWidth={1} minHeight={1} debounce={50}>
+        <ResponsiveContainer width="100%" height={isMobile ? 320 : 380} minWidth={0} minHeight={0} debounce={50}>
           <AreaChart
             data={chartData}
             margin={isMobile ? { top: 10, right: 10, left: -40, bottom: 0 } : { top: 10, right: 60, left: -20, bottom: 0 }}

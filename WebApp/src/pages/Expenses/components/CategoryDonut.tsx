@@ -100,7 +100,7 @@ export default function CategoryDonut({ startDate, endDate, title, maxSlices }: 
         <>
           {/* Chart Area */}
           <div className="relative w-full shrink-0 min-w-0">
-            <ResponsiveContainer width="100%" height={200} minWidth={1} minHeight={1} debounce={50}>
+            <ResponsiveContainer width="100%" height={200} minWidth={0} minHeight={0} debounce={50}>
               <PieChart style={{ outline: "none" }} accessibilityLayer={false}>
                 <Pie data={data} innerRadius={62} outerRadius={84} paddingAngle={2} dataKey="value" stroke="none">
                   {data.map((entry, index) => (

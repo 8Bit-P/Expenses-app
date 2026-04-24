@@ -39,7 +39,7 @@ export default function CashFlow() {
       </div>
 
       <div className="w-full text-[10px] font-bold text-slate-400 flex-1">
-        <ResponsiveContainer width="100%" height={300} minWidth={1} minHeight={1} debounce={50}>
+        <ResponsiveContainer width="100%" height={300} minWidth={0} minHeight={0} debounce={50}>
           <BarChart data={data} margin={{ top: 0, right: 0, left: 0, bottom: 0 }} barGap={4}>
             <XAxis
               dataKey="name"

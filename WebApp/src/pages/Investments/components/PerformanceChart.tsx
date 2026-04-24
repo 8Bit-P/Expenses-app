@@ -183,7 +183,7 @@ export default function PerformanceChart({ assets, stealthMode }: PerformanceCha
         </div>
       ) : (
         <div className={`flex-1 ${isMobile ? "-ml-4 -mr-2" : "-ml-6 -mr-6"} -mb-6 relative`}>
-          <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1} debounce={50}>
+          <ResponsiveContainer width="100%" height={isMobile ? 240 : 280} minWidth={0} minHeight={0} debounce={50}>
             <ComposedChart
               data={filteredData}
               margin={{ top: 10, right: isMobile ? 10 : 30, left: 0, bottom: 20 }}

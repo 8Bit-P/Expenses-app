@@ -99,7 +99,7 @@ export default function IncomeVsExpenseChart() {
       </div>
 
       <div className="w-full">
-        <ResponsiveContainer width="100%" height={300} minWidth={1} minHeight={1} debounce={50}>
+        <ResponsiveContainer width="100%" height={300} minWidth={0} minHeight={0} debounce={50}>
           <BarChart 
             data={chartData} 
             margin={{ top: 10, right: isMobile ? 0 : 20, left: isMobile ? -25 : 0, bottom: 0 }} 

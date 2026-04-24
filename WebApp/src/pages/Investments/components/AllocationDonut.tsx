@@ -83,7 +83,7 @@ export default function AllocationDonut({ assets, stealthMode }: AllocationDonut
         <div className="flex flex-col items-center p-7 gap-8 flex-1">
           {/* Donut Graphic using Recharts */}
           <div className="relative flex items-center justify-center w-full h-[220px]">
-             <ResponsiveContainer width="100%" height={220} minWidth={1} minHeight={1} debounce={50}>
+             <ResponsiveContainer width="100%" height={220} minWidth={0} minHeight={0} debounce={50}>
               <PieChart>
                 <Pie
                   data={allocations}

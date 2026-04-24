@@ -60,7 +60,7 @@ export default function WealthEvolution() {
       </div>
 
       <div className="w-full h-[300px]">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height={300} minWidth={0} minHeight={0} debounce={50}>
           <BarChart data={data} margin={{ top: 10, right: 0, left: -20, bottom: 0 }} barGap={0}>
             <defs>
               <linearGradient id="barInv" x1="0" y1="0" x2="0" y2="1">
