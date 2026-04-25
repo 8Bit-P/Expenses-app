@@ -54,7 +54,7 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
         });
         if (signInError) throw signInError;
 
-        navigate("/");
+        navigate("/home");
       }
     } catch (err: any) {
       setError(err.message || "An error occurred during authentication.");

@@ -5,6 +5,7 @@ import AppLayout from "../components/layout/AppLayout";
 
 // --- Lazy Load Pages for Production Performance ---
 // These won't be bundled until the user navigates to the specific route
+const Landing = lazy(() => import("../pages/Landing"));
 const Auth = lazy(() => import("../pages/Auth"));
 const Dashboard = lazy(() => import("../pages/Dashboard"));
 const Expenses = lazy(() => import("../pages/Expenses"));
@@ -23,17 +24,18 @@ export default function AppRouter() {
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
-        {/* 1. Public Route */}
+        {/* 1. Public Routes */}
+        <Route path="/" element={<Landing />} />
         <Route path="/auth" element={<Auth />} />
 
         {/* 2. Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/home" element={<Dashboard />} />
             <Route path="/expenses" element={<Expenses />} />
             <Route path="/settings" element={<Settings />} />
-            <Route path="/investments" element={<Investments />} />
-            <Route path="/subscriptions" element={<Subscriptions />} />
+            <Route path="/assets" element={<Investments />} />
+            <Route path="/recurring" element={<Subscriptions />} />
           </Route>
         </Route>
 

@@ -11,16 +11,16 @@ export default function Sidebar({ onNewTransaction }: SidebarProps) {
   const { signOut } = useAuth();
 
   const navItems = [
-    { label: "Home", icon: "grid_view", path: "/" },
+    { label: "Home", icon: "grid_view", path: "/home" },
     { label: "Expenses", icon: "payments", path: "/expenses" },
-    { label: "Assets", icon: "show_chart", path: "/investments" },
-    { label: "Recurring", icon: "sync", path: "/subscriptions" },
+    { label: "Assets", icon: "show_chart", path: "/assets" },
+    { label: "Recurring", icon: "sync", path: "/recurring" },
   ];
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 p-6 bg-background/80 backdrop-blur-xl border-r border-outline-variant/20 font-headline tracking-tight z-50 flex flex-col transition-colors duration-300">
       {/* Friendly Logo & Title Section */}
-      <div className="mb-10 flex items-center gap-3 cursor-pointer group">
+      <Link to="/home" className="mb-10 flex items-center gap-3 cursor-pointer group">
         <div className="w-10 h-10 rounded-xl bg-primary-container/30 text-primary flex items-center justify-center border border-primary/20 shadow-sm group-hover:scale-105 transition-transform">
           <VaultIcon className="text-primary" width="24" height="24" />
         </div>
@@ -28,7 +28,7 @@ export default function Sidebar({ onNewTransaction }: SidebarProps) {
           <h1 className="text-lg font-extrabold text-on-surface tracking-tight">Vault</h1>
           <p className="text-[9px] uppercase tracking-widest text-on-surface-variant font-bold mt-0.5">Secure Ledger</p>
         </div>
-      </div>
+      </Link>
 
       {/* Navigation Links */}
       <nav className="flex-1 space-y-2">

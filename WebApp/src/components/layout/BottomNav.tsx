@@ -4,10 +4,10 @@ export default function BottomNav() {
   const location = useLocation();
 
   const navItems = [
-    { label: "Home", icon: "grid_view", path: "/" },
+    { label: "Home", icon: "grid_view", path: "/home" },
     { label: "Expenses", icon: "payments", path: "/expenses" },
-    { label: "Assets", icon: "show_chart", path: "/investments" },
-    { label: "Recurring", icon: "sync", path: "/subscriptions" },
+    { label: "Assets", icon: "show_chart", path: "/assets" },
+    { label: "Recurring", icon: "sync", path: "/recurring" },
   ];
 
   return (
