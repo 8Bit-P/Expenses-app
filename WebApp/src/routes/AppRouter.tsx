@@ -12,6 +12,7 @@ const Expenses = lazy(() => import("../pages/Expenses"));
 const Subscriptions = lazy(() => import("../pages/Subscriptions"));
 const Settings = lazy(() => import("../pages/Settings"));
 const Investments = lazy(() => import("../pages/Investments"));
+const SearchResults = lazy(() => import("../pages/Search"));
 
 // A clean, premium loading spinner that fits the Vault aesthetic
 const PageLoader = () => (
@@ -36,6 +37,7 @@ export default function AppRouter() {
             <Route path="/settings" element={<Settings />} />
             <Route path="/assets" element={<Investments />} />
             <Route path="/recurring" element={<Subscriptions />} />
+            <Route path="/search" element={<SearchResults />} />
           </Route>
         </Route>
 

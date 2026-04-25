@@ -3,6 +3,7 @@ import { useUserPreferences } from "../../context/UserPreferencesContext";
 import { useAuth } from "../../context/AuthContext";
 import { useProfile } from "../../hooks/useProfile";
 import NotificationDropdown from "./NotificationDropdown";
+import GlobalSearchBar from "../ui/GlobalSearchBar";
 
 export default function TopBar() {
   const navigate = useNavigate();
@@ -35,6 +36,11 @@ export default function TopBar() {
           <span className="text-[10px] uppercase tracking-widest text-on-surface-variant font-black">{greeting}</span>
           <span className="text-sm font-black text-on-surface leading-tight">{firstName}</span>
         </div>
+      </div>
+
+      {/* Global Search Center */}
+      <div className="flex-1 flex justify-center px-6">
+        <GlobalSearchBar />
       </div>
 
       {/* Global Actions Context */}
