@@ -3,7 +3,7 @@ export default function SocialLogins() {
     <div className="w-full space-y-3">
       <button
         disabled
-        className="w-full flex items-center justify-center gap-2 py-2.5 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-sm font-bold text-on-surface shadow-sm opacity-50 cursor-not-allowed"
+        className="w-full flex items-center justify-center gap-2 py-3 bg-surface-container border border-outline-variant/30 rounded-xl text-sm font-bold text-on-surface shadow-sm opacity-50 cursor-not-allowed transition-all"
       >
         <svg className="w-4 h-4" viewBox="0 0 24 24">
           <path
@@ -28,7 +28,7 @@ export default function SocialLogins() {
 
       <button
         disabled
-        className="w-full flex items-center justify-center gap-2 py-2.5 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-sm font-bold text-on-surface shadow-sm opacity-50 cursor-not-allowed"
+        className="w-full flex items-center justify-center gap-2 py-3 bg-surface-container border border-outline-variant/30 rounded-xl text-sm font-bold text-on-surface shadow-sm opacity-50 cursor-not-allowed transition-all"
       >
         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
           <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.04 2.26-.74 3.58-.79 1.58-.06 2.94.48 3.86 1.43-3.2 1.65-2.62 5.76.62 6.84-1.02 2.37-2.15 3.75-3.14 4.69zM12.03 7.25C11.97 4.14 14.54 1.4 17.5 1c.21 3.25-2.8 5.92-5.47 6.25z" />

@@ -86,7 +86,7 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="Full Name"
-              className="w-full bg-surface-container-lowest border border-outline-variant/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 rounded-lg px-4 py-3 text-sm font-medium text-on-surface placeholder:text-on-surface-variant/60 outline-none transition-all shadow-sm"
+              className="w-full bg-surface-container-low border border-outline-variant/30 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-3.5 text-sm font-medium text-on-surface placeholder:text-on-surface-variant/40 outline-none transition-all"
               required={isSignUp}
             />
           </div>
@@ -97,7 +97,7 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
-          className="w-full bg-surface-container-lowest border border-outline-variant/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 rounded-lg px-4 py-3 text-sm font-medium text-on-surface placeholder:text-on-surface-variant/60 outline-none transition-all shadow-sm"
+          className="w-full bg-surface-container-low border border-outline-variant/30 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-3.5 text-sm font-medium text-on-surface placeholder:text-on-surface-variant/40 outline-none transition-all"
           required
         />
 
@@ -107,7 +107,7 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
-            className="w-full bg-surface-container-lowest border border-outline-variant/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 rounded-lg pl-4 pr-12 py-3 text-sm font-medium text-on-surface placeholder:text-on-surface-variant/60 outline-none transition-all shadow-sm"
+            className="w-full bg-surface-container-low border border-outline-variant/30 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl pl-4 pr-12 py-3.5 text-sm font-medium text-on-surface placeholder:text-on-surface-variant/40 outline-none transition-all"
             required
           />
           <button
@@ -126,7 +126,7 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirm Password"
-              className="w-full bg-surface-container-lowest border border-outline-variant/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 rounded-lg pl-4 pr-12 py-3 text-sm font-medium text-on-surface placeholder:text-on-surface-variant/60 outline-none transition-all shadow-sm"
+              className="w-full bg-surface-container-low border border-outline-variant/30 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl pl-4 pr-12 py-3.5 text-sm font-medium text-on-surface placeholder:text-on-surface-variant/40 outline-none transition-all"
               required={isSignUp}
             />
           </div>
@@ -148,7 +148,7 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-3 bg-on-surface hover:bg-on-surface/90 text-surface disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-bold text-sm shadow-md transition-all active:scale-[0.98] flex items-center justify-center"
+        className="w-full py-3.5 bg-primary hover:bg-primary/90 text-on-primary disabled:opacity-50 disabled:cursor-not-allowed rounded-xl font-bold text-sm shadow-xl shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center mt-2"
       >
         {loading ? (
           <div className="w-5 h-5 border-2 border-surface border-t-transparent rounded-full animate-spin"></div>

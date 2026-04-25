@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import VaultIcon from "../ui/VaultIcon";
 
 interface SidebarProps {
   onNewTransaction: () => void;
@@ -21,12 +22,10 @@ export default function Sidebar({ onNewTransaction }: SidebarProps) {
       {/* Friendly Logo & Title Section */}
       <div className="mb-10 flex items-center gap-3 cursor-pointer group">
         <div className="w-10 h-10 rounded-xl bg-primary-container/30 text-primary flex items-center justify-center border border-primary/20 shadow-sm group-hover:scale-105 transition-transform">
-          <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
-            lock
-          </span>
+          <VaultIcon className="text-primary" width="24" height="24" />
         </div>
         <div>
-          <h1 className="text-lg font-extrabold text-on-surface tracking-tight">Personal Vault</h1>
+          <h1 className="text-lg font-extrabold text-on-surface tracking-tight">Vault</h1>
           <p className="text-[9px] uppercase tracking-widest text-on-surface-variant font-bold mt-0.5">Secure Ledger</p>
         </div>
       </div>
@@ -85,7 +84,9 @@ export default function Sidebar({ onNewTransaction }: SidebarProps) {
             <span className="text-xs font-bold">Settings</span>
           </Link>
           <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-all group">
-            <span className="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">help</span>
+            <span className="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">
+              help
+            </span>
             <span className="text-xs font-bold">Help</span>
           </button>
           <button

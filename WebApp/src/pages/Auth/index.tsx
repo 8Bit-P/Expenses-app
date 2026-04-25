@@ -4,6 +4,7 @@ import AuthForm from "./components/AuthForm";
 import SocialLogins from "./components/SocialLogin";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import VaultIcon from "../../components/ui/VaultIcon";
 
 export default function Auth() {
   const { session, loading } = useAuth();
@@ -23,29 +24,34 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4 animate-in fade-in duration-500">
-      <div className="w-full max-w-85 flex flex-col items-center">
-        {/* Logo */}
-        <div className="w-12 h-12 bg-on-surface text-surface rounded-xl flex items-center justify-center mb-6 shadow-md">
-          <span className="material-symbols-outlined text-[28px]" style={{ fontVariationSettings: "'FILL' 1" }}>
-            account_balance
-          </span>
+      <div className="w-full max-w-95 flex flex-col items-center">
+        {/* Logo & Header */}
+        <div className="flex flex-col items-center mb-10 text-center animate-in fade-in slide-in-from-top-4 duration-700">
+          <div className="w-16 h-16 flex items-center justify-center mb-4 transition-transform hover:scale-110 duration-500">
+            <VaultIcon className="text-primary" width="64" height="64" />
+          </div>
+          <h1 className="text-3xl font-headline font-extrabold text-on-surface tracking-tight">Vault</h1>
+          <p className="text-sm text-on-surface-variant font-medium mt-1 opacity-80">
+            {isSignUp ? "Secure your wealth" : "Welcome back"}
+          </p>
         </div>
 
-        <h1 className="text-2xl font-headline font-semibold text-on-surface mb-8 tracking-tight">Personal Vault</h1>
+        {/* Card Container */}
+        <div className="w-full bg-surface-container-lowest border border-outline-variant/10 rounded-2xl p-8 shadow-2xl backdrop-blur-sm animate-in fade-in slide-in-from-bottom-4 duration-700">
+          {/* Modular Components */}
+          <AuthTabs isSignUp={isSignUp} setIsSignUp={setIsSignUp} />
 
-        {/* Modular Components */}
-        <AuthTabs isSignUp={isSignUp} setIsSignUp={setIsSignUp} />
+          <AuthForm isSignUp={isSignUp} />
 
-        <AuthForm isSignUp={isSignUp} />
+          {/* Divider */}
+          <div className="w-full flex items-center gap-3 my-8">
+            <div className="flex-1 h-px bg-outline-variant/10"></div>
+            <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest opacity-40">Or</span>
+            <div className="flex-1 h-px bg-outline-variant/10"></div>
+          </div>
 
-        {/* Divider */}
-        <div className="w-full flex items-center gap-3 my-6">
-          <div className="flex-1 h-px bg-outline-variant/30"></div>
-          <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Or</span>
-          <div className="flex-1 h-px bg-outline-variant/30"></div>
+          <SocialLogins />
         </div>
-
-        <SocialLogins />
 
         {/* Footer */}
         <div className="mt-10 flex items-center gap-1 text-[11px] font-semibold text-on-surface-variant">
