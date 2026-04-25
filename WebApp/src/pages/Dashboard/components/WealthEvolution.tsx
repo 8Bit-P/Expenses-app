@@ -3,7 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGri
 import { useInvestments } from "../../../hooks/useInvestments";
 import { useTransactions } from "../../../hooks/useTransactions";
 import { useMemo } from "react";
-import { subMonths, endOfMonth, format, parseISO, isBefore, isAfter, startOfMonth } from "date-fns";
+import { subMonths, endOfMonth, format, parseISO, isAfter } from "date-fns";
 import { formatCurrency } from "../../../utils/currency";
 
 const CustomTooltip = ({ active, payload, label, currencyCode }: any) => {
@@ -16,7 +16,16 @@ const CustomTooltip = ({ active, payload, label, currencyCode }: any) => {
         {payload.map((entry: any, index: number) => (
           <div key={index} className="flex justify-between items-center gap-4 mb-1.5">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.fill.includes("url") ? (entry.dataKey === 'investments' ? "#3525cd" : "#10b981") : entry.fill }}></div>
+              <div
+                className="w-2 h-2 rounded-full"
+                style={{
+                  backgroundColor: entry.fill.includes("url")
+                    ? entry.dataKey === "investments"
+                      ? "#3525cd"
+                      : "#10b981"
+                    : entry.fill,
+                }}
+              ></div>
               <span className="text-[11px] font-bold text-on-surface-variant capitalize">{entry.name}</span>
             </div>
             <span className="text-xs font-black text-on-surface">{formatCurrency(entry.value, currencyCode)}</span>
@@ -70,7 +79,9 @@ export default function WealthEvolution() {
   if (invLoading || txLoading) {
     return (
       <div className="w-full h-[380px] flex items-center justify-center bg-surface-container-lowest rounded-2xl animate-pulse border border-outline-variant/10">
-        <div className="text-on-surface-variant text-[10px] font-black uppercase tracking-widest">Synchronizing Vault...</div>
+        <div className="text-on-surface-variant text-[10px] font-black uppercase tracking-widest">
+          Synchronizing Vault...
+        </div>
       </div>
     );
   }
@@ -83,7 +94,9 @@ export default function WealthEvolution() {
             <span className="material-symbols-outlined text-primary">bar_chart</span>
             Wealth Evolution
           </h2>
-          <p className="text-[10px] font-bold text-on-surface-variant mt-1">Portfolio growth segmented by asset class</p>
+          <p className="text-[10px] font-bold text-on-surface-variant mt-1">
+            Portfolio growth segmented by asset class
+          </p>
         </div>
         <div className="flex gap-4 p-1.5 bg-surface-container-low rounded-xl">
           <div className="flex items-center gap-2 px-2">
@@ -110,10 +123,10 @@ export default function WealthEvolution() {
                 <stop offset="100%" stopColor="#10b981" stopOpacity={1} />
               </linearGradient>
             </defs>
-            <CartesianGrid 
-              vertical={false} 
-              stroke={resolvedTheme === "dark" ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)"} 
-              strokeDasharray="4 4" 
+            <CartesianGrid
+              vertical={false}
+              stroke={resolvedTheme === "dark" ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)"}
+              strokeDasharray="4 4"
             />
             <XAxis
               dataKey="name"

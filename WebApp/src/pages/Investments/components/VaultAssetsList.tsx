@@ -3,6 +3,8 @@ import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { formatCurrency } from "../../../utils/currency";
 import type { AssetWithSnapshots } from "../../../types/investments";
 import { formatDistanceToNow, differenceInDays } from "date-fns";
+import { useInvestments } from "../../../hooks/useInvestments";
+import DeleteConfirmationModal from "../../../components/ui/DeleteConfirmationModal";
 
 interface VaultAssetsListProps {
   assets: AssetWithSnapshots[];
@@ -21,7 +23,15 @@ const TYPE_ICONS: Record<string, string> = {
 
 export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: VaultAssetsListProps) {
   const { currency } = useUserPreferences();
+  const { deleteAsset } = useInvestments();
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Delete modal state
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; id: string; name: string }>({
+    isOpen: false,
+    id: "",
+    name: "",
+  });
   const ITEMS_PER_PAGE = 5;
 
   const totalPages = Math.ceil(assets.length / ITEMS_PER_PAGE);
@@ -36,6 +46,20 @@ export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: 
   const internalFormatCurrency = (val: number) => {
     if (stealthMode) return "****";
     return formatCurrency(val, currency.code);
+  };
+
+  const handleDelete = (e: React.MouseEvent, id: string, name: string) => {
+    e.stopPropagation();
+    setDeleteModal({ isOpen: true, id, name });
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteAsset.mutateAsync(deleteModal.id);
+      setDeleteModal({ isOpen: false, id: "", name: "" });
+    } catch (err) {
+      console.error("Delete failed:", err);
+    }
   };
 
   return (
@@ -106,7 +130,7 @@ export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: 
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto mt-2 sm:mt-0 pt-2 sm:pt-0 border-t border-outline-variant/10 sm:border-t-0">
+                <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto mt-2 sm:mt-0 pt-2 sm:pt-0 border-t border-outline-variant/10 sm:border-t-0">
                   <div className="text-right">
                     <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant block mb-0.5">
                       Value
@@ -115,9 +139,18 @@ export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: 
                       {internalFormatCurrency(currentValue)}
                     </span>
                   </div>
-                  <span className="material-symbols-outlined text-primary opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all hidden sm:block">
-                    edit_square
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={(e) => handleDelete(e, asset.id, asset.name)}
+                      className="w-9 h-9 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-error/10 hover:text-error transition-all"
+                      title="Delete Asset"
+                    >
+                      <span className="material-symbols-outlined text-[20px]">delete</span>
+                    </button>
+                    <span className="material-symbols-outlined text-primary opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all hidden sm:block">
+                      edit_square
+                    </span>
+                  </div>
                 </div>
               </div>
             );
@@ -128,26 +161,19 @@ export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: 
       {assets.length > ITEMS_PER_PAGE && (
         <div className="mt-6 sm:mt-8 pt-6 border-t border-outline-variant/10 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0">
           <p className="text-xs font-bold text-on-surface-variant">
-            Showing <span className="text-on-surface">{startIndex + 1}</span> -{" "}
-            <span className="text-on-surface">{Math.min(startIndex + ITEMS_PER_PAGE, assets.length)}</span> of{" "}
-            <span className="text-on-surface">{assets.length}</span>
+            Page {currentPage} of {totalPages}
           </p>
           <div className="flex gap-2">
             <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              onClick={() => setCurrentPage((prev) => prev - 1)}
               className="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container hover:bg-surface-container-highest transition-all disabled:opacity-30 disabled:cursor-not-allowed border border-outline-variant/10"
             >
               <span className="material-symbols-outlined text-[20px]">chevron_left</span>
             </button>
-            <div className="flex items-center px-4 bg-surface-container-low rounded-xl border border-outline-variant/5">
-              <span className="text-xs font-black text-on-surface">
-                {currentPage} <span className="text-on-surface-variant/40 mx-1">/</span> {totalPages}
-              </span>
-            </div>
             <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((prev) => prev + 1)}
               className="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container hover:bg-surface-container-highest transition-all disabled:opacity-30 disabled:cursor-not-allowed border border-outline-variant/10"
             >
               <span className="material-symbols-outlined text-[20px]">chevron_right</span>
@@ -155,6 +181,16 @@ export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: 
           </div>
         </div>
       )}
+
+      <DeleteConfirmationModal
+        isOpen={deleteModal.isOpen}
+        onClose={() => setDeleteModal({ ...deleteModal, isOpen: false })}
+        onConfirm={handleConfirmDelete}
+        title="Purge Asset?"
+        description="This action is irreversible. All historical snapshots, performance metrics, and contribution data for this asset will be permanently erased from your ledger."
+        itemName={deleteModal.name}
+        isDeleting={deleteAsset.isPending}
+      />
     </div>
   );
 }

@@ -154,6 +154,26 @@ export function useInvestments() {
     },
   });
 
+  const deleteAsset = useMutation({
+    mutationFn: async (assetId: string) => {
+      if (!userId) throw new Error("User not authenticated");
+
+      const { error } = await supabase.from("assets").delete().eq("id", assetId);
+
+      if (error) throw error;
+      return assetId;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["investments", userId] });
+      toast.success("Asset purged", { description: "The asset has been removed from your vault." });
+    },
+    onError: (error) => {
+      toast.error("Failed to delete asset", {
+        description: error.message,
+      });
+    },
+  });
+
   return {
     assets,
     isLoading,
@@ -166,5 +186,6 @@ export function useInvestments() {
     createAsset,
     createSnapshot,
     deleteSnapshot,
+    deleteAsset,
   };
 }
