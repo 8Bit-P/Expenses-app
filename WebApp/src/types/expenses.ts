@@ -1,4 +1,4 @@
-export type TransactionType = "expense" | "income";
+export type TransactionType = "expense" | "income" | "transfer";
 
 export type BillingCycle = "monthly" | "yearly" | "weekly" | "quarterly";
 export type SubscriptionStatus = "active" | "paused" | "cancelled";
@@ -31,6 +31,7 @@ export interface Transaction {
   user_id: string;
   category_id: string;
   subscription_id?: string;
+  reserve_id?: string;
   type: TransactionType;
   amount: number;
   date: string;

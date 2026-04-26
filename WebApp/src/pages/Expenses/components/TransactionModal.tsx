@@ -2,10 +2,13 @@ import { useState, useEffect } from "react";
 import { useCategories } from "../../../hooks/useCategories";
 import { useTransactions } from "../../../hooks/useTransactions";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
+import { useReserves } from "../../../hooks/useReserves";
 import { CustomSelect } from "../../../components/ui/CustomSelect";
 import type { Category, TransactionType } from "../../../types/expenses";
 import EmojiPicker, { EmojiStyle } from "emoji-picker-react";
 import { toast } from "sonner";
+import VaultConfirmationModal from "../../../components/ui/VaultConfirmationModal";
+import { supabase } from "../../../lib/supabase";
 
 interface TransactionModalProps {
   isOpen: boolean;
@@ -22,15 +25,19 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState("");
+  const [reserveId, setReserveId] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [needsReview, setNeedsReview] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { reserves } = useReserves();
 
   const [isCreatingCategory, setIsCreatingCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [newCategoryEmoji, setNewCategoryEmoji] = useState("📦");
   const [categoryError, setCategoryError] = useState<string | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -39,6 +46,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
         setAmount(transaction.amount.toString());
         setDescription(transaction.description || transaction.name || "");
         setCategoryId(transaction.category_id || transaction.category?.id || "");
+        setReserveId(transaction.reserve_id || "");
         setDate(transaction.date || new Date().toISOString().split("T")[0]);
         setNeedsReview(!!transaction.needs_review);
       } else {
@@ -46,6 +54,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
         setAmount("");
         setDescription("");
         setCategoryId(categories[0]?.id || "");
+        setReserveId("");
         setDate(new Date().toISOString().split("T")[0]);
         setNeedsReview(false);
       }
@@ -85,12 +94,33 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
         type,
         amount: parseFloat(amount),
         description,
-        category_id: finalCategoryId,
+        category_id: type === "transfer" ? null : finalCategoryId,
+        reserve_id: type === "transfer" ? reserveId : null,
         date,
         needs_review: needsReview,
       };
 
       if (isEditing) {
+        // If it was a transfer and still is, or became one, handle the math sync
+        if (type === "transfer" && reserveId) {
+          const oldAmount = transaction.amount;
+          const newAmount = parseFloat(amount);
+          const delta = newAmount - oldAmount;
+
+          if (delta !== 0) {
+            // Update the reserve's current_amount
+            const { data: reserveData } = await supabase
+              .from("reserves")
+              .select("current_amount")
+              .eq("id", reserveId)
+              .single();
+
+            await supabase
+              .from("reserves")
+              .update({ current_amount: (reserveData?.current_amount || 0) + delta })
+              .eq("id", reserveId);
+          }
+        }
         await updateTransaction({ id: transaction.id, updates: data });
       } else {
         await addTransaction(data);
@@ -111,8 +141,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
   };
 
   const handleDelete = async () => {
-    if (!transaction?.id || !window.confirm("Are you sure you want to delete this transaction? This action cannot be undone.")) return;
-
+    if (!transaction?.id) return;
     setIsSubmitting(true);
     try {
       await deleteTransaction(transaction.id);
@@ -124,8 +153,20 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
       });
     } finally {
       setIsSubmitting(false);
+      setShowDeleteConfirm(false);
     }
   };
+
+          {isEditing && (
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              disabled={isSubmitting}
+              className="w-12 h-12 flex items-center justify-center rounded-xl text-on-surface-variant/40 hover:text-error hover:bg-error/10 transition-all border border-outline-variant/10"
+              title="Delete Transaction"
+            >
+              <span className="material-symbols-outlined text-[20px]">delete</span>
+            </button>
+          )}
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/60 backdrop-blur-md animate-in fade-in duration-200">
@@ -154,7 +195,8 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
           <div className="flex bg-surface-container-low p-1.5 rounded-xl gap-1 border border-outline-variant/5">
             <button
               onClick={() => setType("expense")}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-black text-xs uppercase tracking-widest transition-all duration-300 ${
+              disabled={isEditing && transaction?.reserve_id}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-black text-xs uppercase tracking-widest transition-all duration-300 disabled:opacity-50 ${
                 type === "expense"
                   ? "bg-error text-on-error shadow-md shadow-error/20 scale-[1.02]"
                   : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
@@ -164,8 +206,20 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
               Expense
             </button>
             <button
-              onClick={() => setType("income")}
+              onClick={() => setType("transfer")}
               className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-black text-xs uppercase tracking-widest transition-all duration-300 ${
+                type === "transfer"
+                  ? "bg-primary text-on-primary shadow-md shadow-primary/20 scale-[1.02]"
+                  : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">swap_horiz</span>
+              Transfer
+            </button>
+            <button
+              onClick={() => setType("income")}
+              disabled={isEditing && transaction?.reserve_id}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-black text-xs uppercase tracking-widest transition-all duration-300 disabled:opacity-50 ${
                 type === "income"
                   ? "bg-secondary text-on-secondary shadow-md shadow-secondary/20 scale-[1.02]"
                   : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
@@ -178,20 +232,30 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
 
           {/* Amount Input (Hero Section) */}
           <div
-            className={`relative group p-5 rounded-2xl border transition-all duration-300 ${type === "expense" ? "bg-error/5 border-error/20 focus-within:border-error/50 focus-within:ring-4 focus-within:ring-error/10" : "bg-secondary/5 border-secondary/20 focus-within:border-secondary/50 focus-within:ring-4 focus-within:ring-secondary/10"}`}
+            className={`relative group p-5 rounded-2xl border transition-all duration-300 ${
+              type === "expense" 
+                ? "bg-error/5 border-error/20 focus-within:border-error/50 focus-within:ring-4 focus-within:ring-error/10" 
+                : type === "transfer"
+                ? "bg-primary/5 border-primary/20 focus-within:border-primary/50 focus-within:ring-4 focus-within:ring-primary/10"
+                : "bg-secondary/5 border-secondary/20 focus-within:border-secondary/50 focus-within:ring-4 focus-within:ring-secondary/10"
+            }`}
           >
             <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1">
               Amount
             </label>
             <div className="flex items-center">
               <span
-                className={`text-3xl font-black mr-2 ${type === "expense" ? "text-error/70" : "text-secondary/70"}`}
+                className={`text-3xl font-black mr-2 ${
+                  type === "expense" ? "text-error/70" : type === "transfer" ? "text-primary/70" : "text-secondary/70"
+                }`}
               >
                 {currency.symbol}
               </span>
               <input
                 autoFocus
-                className="w-full bg-transparent border-none text-4xl font-black text-on-surface placeholder:text-on-surface-variant/30 outline-none p-0 focus:ring-0"
+                className={`w-full bg-transparent border-none text-4xl font-black placeholder:text-on-surface-variant/30 outline-none p-0 focus:ring-0 ${
+                  type === "income" ? "text-emerald-400" : type === "transfer" ? "text-primary" : "text-white"
+                }`}
                 type="number"
                 step="0.01"
                 placeholder="0.00"
@@ -201,12 +265,23 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
             </div>
           </div>
 
-          {/* Category (Moved up below Amount for max dropdown space) */}
+          {/* Category or Reserve Selector */}
           <div className="space-y-2 relative z-50">
             <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-              Category
+              {type === "transfer" ? "Destination Reserve" : "Category"}
             </label>
-            {isCreatingCategory ? (
+            
+            {type === "transfer" ? (
+              <CustomSelect
+                value={reserveId}
+                options={[
+                  ...(reserveId === "" ? [{ value: "", label: "Select Reserve" }] : []),
+                  ...reserves.map((r) => ({ value: r.id, label: `${r.icon || "💰"} ${r.name}` })),
+                ]}
+                onChange={setReserveId}
+                className="w-full bg-surface-container border-none rounded-xl py-1 text-sm font-semibold focus:ring-2 focus:ring-primary/50"
+              />
+            ) : isCreatingCategory ? (
               <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
                 <div className="flex items-center gap-2">
                   <div className="flex-1 flex items-center bg-surface-container border border-outline-variant/30 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20 rounded-xl px-1 transition-all">
@@ -390,6 +465,17 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
           </button>
         </div>
       </div>
+      <VaultConfirmationModal
+        isOpen={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+        onConfirm={handleDelete}
+        title="Delete Transaction?"
+        description="This will permanently remove this entry from your vault and reverse any linked reserve updates."
+        confirmLabel="Purge Entry"
+        cancelLabel="Keep Entry"
+        isLoading={isSubmitting}
+        variant="danger"
+      />
     </div>
   );
 }

@@ -13,7 +13,7 @@ const getCategoryColor = (name: string) => {
 
 export interface Transaction {
   id: string;
-  type: "income" | "expense";
+  type: "income" | "expense" | "transfer";
   amount: number;
   date: string;
   description?: string;
@@ -145,14 +145,25 @@ export default function FlowRow({
       </div>
 
       {/* Amount */}
-      <span
-        className={`text-right md:text-left font-black text-sm tabular-nums tracking-tight ${
-          tx.type === "income" ? "text-primary" : "text-on-surface-variant/80"
-        }`}
-      >
-        {tx.type === "income" ? "+" : "-"}
-        {formatCurrency(tx.amount, currency.code)}
-      </span>
+      <div className="flex items-center justify-end md:justify-start gap-1.5">
+        {tx.type === "transfer" && (
+          <span className="material-symbols-outlined text-[14px] text-on-surface-variant/40 shrink-0">
+            arrow_right_alt
+          </span>
+        )}
+        <span
+          className={`font-black text-sm tabular-nums tracking-tight ${
+            tx.type === "income"
+              ? "text-primary"
+              : tx.type === "transfer"
+              ? "text-on-surface-variant/40"
+              : "text-on-surface-variant/80"
+          }`}
+        >
+          {tx.type === "income" ? "+" : "-"}
+          {formatCurrency(tx.amount, currency.code)}
+        </span>
+      </div>
 
       {/* Actions */}
       <div className="hidden md:flex items-center justify-end gap-1" onClick={(e) => e.stopPropagation()}>

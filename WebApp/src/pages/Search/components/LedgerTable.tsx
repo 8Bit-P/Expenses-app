@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { List, Loader2, Search, TrendingUp, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
+import { List, Loader2, Search, TrendingUp, ChevronLeft, ChevronRight, ChevronDown, ArrowRightLeft } from "lucide-react";
 import { formatTransactionDate } from "../../../utils/dateFormatters";
 import { formatCurrency } from "../../../utils/currency";
 import type { LedgerRow } from "../types";
@@ -14,14 +14,17 @@ interface LedgerTableProps {
 }
 
 // ── Source badge config ───────────────────────────────────────────────────────
-function SourceBadge({ domain, amount }: { domain: LedgerRow["domain"]; amount: number }) {
-  const isIncome = domain === "Transactions" && amount > 0;
+function SourceBadge({ row }: { row: LedgerRow }) {
+  const isTransfer = row.domain === "Transactions" && row.raw?.type === "transfer";
+  const isIncome = row.domain === "Transactions" && row.raw?.type === "income";
 
-  const config = isIncome
+  const config = isTransfer
+    ? { label: "TRF", bg: "bg-primary/10", text: "text-primary", icon: <ArrowRightLeft size={9} /> }
+    : isIncome
     ? { label: "INC", bg: "bg-emerald-500/10", text: "text-emerald-400", icon: <TrendingUp size={9} /> }
-    : domain === "Transactions"
+    : row.domain === "Transactions"
     ? { label: "TXN", bg: "bg-red-500/10", text: "text-red-400", icon: null }
-    : domain === "Assets"
+    : row.domain === "Assets"
     ? { label: "AST", bg: "bg-violet-500/10", text: "text-violet-400", icon: null }
     : { label: "REC", bg: "bg-blue-500/10", text: "text-blue-400", icon: null };
 
@@ -130,14 +133,18 @@ export function LedgerTable({ rows, loading, currencyCode }: LedgerTableProps) {
                     {row.description}
                   </td>
                   <td className="px-5 py-3.5 text-center">
-                    <SourceBadge domain={row.domain} amount={row.amount} />
+                    <SourceBadge row={row} />
                   </td>
                   <td
                     className={`px-5 py-3.5 text-right font-black whitespace-nowrap tabular-nums ${
-                      row.amount >= 0 ? "text-emerald-400" : "text-on-surface"
+                      row.raw?.type === "transfer"
+                        ? "text-primary"
+                        : row.amount >= 0
+                        ? "text-emerald-400"
+                        : "text-on-surface"
                     }`}
                   >
-                    {row.amount >= 0 ? "+" : "−"}
+                    {row.raw?.type === "transfer" ? (row.amount >= 0 ? "→" : "←") : row.amount >= 0 ? "+" : "−"}
                     {formatCurrency(Math.abs(row.amount), currencyCode)}
                   </td>
                 </tr>
