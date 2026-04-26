@@ -42,38 +42,44 @@ export function useCategories() {
     },
   });
 
+  const getOrCreateUnknownCategory = async () => {
+    if (!userId) throw new Error("Authentication required");
+    
+    let { data: unknownCat } = await supabase
+      .from("categories")
+      .select("id")
+      .eq("user_id", userId)
+      .ilike("name", "Unknown")
+      .maybeSingle();
+
+    if (unknownCat?.id) return unknownCat.id;
+
+    const { data: newCat, error: createError } = await supabase
+      .from("categories")
+      .insert([
+        {
+          user_id: userId,
+          name: "Unknown",
+          emoji: "❓",
+          description: "System category for reassigned movements",
+        },
+      ])
+      .select("id")
+      .single();
+
+    if (createError) throw new Error("Failed to generate fallback category.");
+    
+    // Invalidate categories after creating
+    queryClient.invalidateQueries({ queryKey: ["categories"] });
+    
+    return newCat.id;
+  };
+
   const { mutateAsync: deleteCategory } = useMutation({
     mutationFn: async (categoryId: string) => {
       if (!userId) throw new Error("Authentication required to delete category");
 
-      // Check if an "Unknown" or "Uncategorized" category already exists
-      let { data: unknownCat } = await supabase
-        .from("categories")
-        .select("id")
-        .eq("user_id", userId)
-        .ilike("name", "Unknown") // Case-insensitive search
-        .maybeSingle(); // Use maybeSingle to avoid errors if it returns 0 rows
-
-      let unknownCatId = unknownCat?.id;
-
-      // If it doesn't exist, generate it silently
-      if (!unknownCatId) {
-        const { data: newCat, error: createError } = await supabase
-          .from("categories")
-          .insert([
-            {
-              user_id: userId,
-              name: "Unknown",
-              emoji: "❓",
-              description: "System category for reassigned movements",
-            },
-          ])
-          .select("id")
-          .single();
-
-        if (createError) throw new Error("Failed to generate fallback category.");
-        unknownCatId = newCat.id;
-      }
+      const unknownCatId = await getOrCreateUnknownCategory();
 
       // Safeguard: Prevent the user from deleting the Unknown category itself
       if (categoryId === unknownCatId) {
@@ -109,5 +115,5 @@ export function useCategories() {
     },
   });
 
-  return { categories, loading: isLoading, error, addCategory, deleteCategory };
+  return { categories, loading: isLoading, error, addCategory, deleteCategory, getOrCreateUnknownCategory };
 }

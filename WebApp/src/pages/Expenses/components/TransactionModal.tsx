@@ -14,7 +14,7 @@ interface TransactionModalProps {
 }
 
 export default function TransactionModal({ isOpen, onClose, transaction }: TransactionModalProps) {
-  const { categories, addCategory } = useCategories();
+  const { categories, addCategory, getOrCreateUnknownCategory } = useCategories();
   const { addTransaction, updateTransaction, deleteTransaction } = useTransactions();
   const { currency } = useUserPreferences();
 
@@ -70,19 +70,26 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
   const isEditing = !!transaction;
 
   const handleSave = async () => {
-    if (!amount || !categoryId) return;
+    if (!amount) return;
 
     setIsSubmitting(true);
-    const data = {
-      type,
-      amount: parseFloat(amount),
-      description,
-      category_id: categoryId,
-      date,
-      needs_review: needsReview,
-    };
+    let finalCategoryId = categoryId;
 
     try {
+      if (!finalCategoryId) {
+        finalCategoryId = await getOrCreateUnknownCategory();
+        setCategoryId(finalCategoryId);
+      }
+
+      const data = {
+        type,
+        amount: parseFloat(amount),
+        description,
+        category_id: finalCategoryId,
+        date,
+        needs_review: needsReview,
+      };
+
       if (isEditing) {
         await updateTransaction({ id: transaction.id, updates: data });
       } else {
@@ -376,7 +383,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
 
           <button
             onClick={handleSave}
-            disabled={isSubmitting || !amount || !categoryId}
+            disabled={isSubmitting || !amount}
             className="flex-[2] py-3.5 px-4 rounded-xl font-bold text-sm text-on-primary bg-primary hover:opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:shadow-none"
           >
             {isSubmitting ? "Saving Entry..." : isEditing ? "Save Changes" : "Confirm Entry"}
