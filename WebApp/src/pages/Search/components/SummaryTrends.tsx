@@ -28,7 +28,7 @@ import type { ChartBucket } from "../hooks/useLedgerData";
 type ChartView = "bar" | "line" | "donut";
 
 interface SummaryTrendsProps {
-  totalExpenses: number;
+  totalSpent: number;
   totalIncome: number;
   netFlow: number;
   currencyCode: string;
@@ -97,7 +97,7 @@ function KpiCard({
 }
 
 export function SummaryTrends({
-  totalExpenses,
+  totalSpent,
   totalIncome,
   netFlow,
   currencyCode,
@@ -110,7 +110,7 @@ export function SummaryTrends({
   // Donut data
   const donutData = [
     { name: "Income", value: totalIncome, color: COLOR_INCOME },
-    { name: "Expenses", value: totalExpenses, color: COLOR_EXPENSE },
+    { name: "Transactions", value: totalSpent, color: COLOR_EXPENSE },
     { name: "Assets", value: chartData.reduce((s, d) => s + d.assets, 0), color: COLOR_ASSET },
   ].filter((d) => d.value > 0);
 
@@ -133,7 +133,7 @@ export function SummaryTrends({
         />
         <KpiCard
           label="Total Spent"
-          value={totalExpenses}
+          value={totalSpent}
           color={COLOR_EXPENSE}
           icon={<ArrowDownRight size={16} />}
           currencyCode={currencyCode}
@@ -203,7 +203,7 @@ export function SummaryTrends({
                   wrapperStyle={{ fontSize: 10, paddingTop: 4 }}
                 />
                 <Bar dataKey="income" name="Income" fill={COLOR_INCOME} radius={[3, 3, 0, 0]} />
-                <Bar dataKey="expenses" name="Expenses" fill={COLOR_EXPENSE} radius={[3, 3, 0, 0]} />
+                <Bar dataKey="expenses" name="Spent" fill={COLOR_EXPENSE} radius={[3, 3, 0, 0]} />
                 <Bar dataKey="assets" name="Assets" fill={COLOR_ASSET} radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -237,7 +237,7 @@ export function SummaryTrends({
                 <Line
                   type="monotone"
                   dataKey="expenses"
-                  name="Expenses"
+                  name="Spent"
                   stroke={COLOR_EXPENSE}
                   strokeWidth={2}
                   dot={false}

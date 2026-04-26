@@ -3,6 +3,7 @@ import { formatCurrency } from "../../../utils/currency";
 import { differenceInDays, parseISO, startOfDay } from "date-fns";
 import { useMemo } from "react";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
+import { Link } from "react-router-dom";
 
 export default function UpcomingRenewals() {
   const { subscriptions, loading } = useSubscriptions();
@@ -23,9 +24,12 @@ export default function UpcomingRenewals() {
           <span className="material-symbols-outlined text-tertiary text-[20px]">event_repeat</span>
           Upcoming Renewals
         </h2>
-        <button className="text-primary text-[10px] font-bold uppercase tracking-widest hover:underline transition-all">
+        <Link 
+          to="/recurring" 
+          className="text-primary text-[10px] font-bold uppercase tracking-widest hover:underline transition-all"
+        >
           View All
-        </button>
+        </Link>
       </div>
 
       <div className="space-y-3">

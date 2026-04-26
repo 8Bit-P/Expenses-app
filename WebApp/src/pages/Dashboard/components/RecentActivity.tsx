@@ -1,6 +1,7 @@
 import { useRecentActivity } from "../../../hooks/useRecentActivity";
 import { formatCurrency } from "../../../utils/currency";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
+import { Link } from "react-router-dom";
 
 export default function RecentActivity() {
   const { activity, loading } = useRecentActivity(6);
@@ -13,9 +14,12 @@ export default function RecentActivity() {
           <span className="material-symbols-outlined text-primary text-[20px]">history</span>
           Recent Activity
         </h2>
-        <button className="text-primary text-[10px] font-bold uppercase tracking-widest hover:underline transition-all">
+        <Link 
+          to="/search" 
+          className="text-primary text-[10px] font-bold uppercase tracking-widest hover:underline transition-all"
+        >
           View All
-        </button>
+        </Link>
       </div>
 
       <div className="space-y-1">

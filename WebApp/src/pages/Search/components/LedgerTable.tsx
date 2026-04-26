@@ -14,12 +14,12 @@ interface LedgerTableProps {
 
 // ── Source badge config ───────────────────────────────────────────────────────
 function SourceBadge({ domain, amount }: { domain: LedgerRow["domain"]; amount: number }) {
-  const isIncome = domain === "Expenses" && amount > 0;
+  const isIncome = domain === "Transactions" && amount > 0;
 
   const config = isIncome
     ? { label: "INC", bg: "bg-emerald-500/10", text: "text-emerald-400", icon: <TrendingUp size={9} /> }
-    : domain === "Expenses"
-    ? { label: "EXP", bg: "bg-red-500/10", text: "text-red-400", icon: null }
+    : domain === "Transactions"
+    ? { label: "TXN", bg: "bg-red-500/10", text: "text-red-400", icon: null }
     : domain === "Assets"
     ? { label: "AST", bg: "bg-violet-500/10", text: "text-violet-400", icon: null }
     : { label: "REC", bg: "bg-blue-500/10", text: "text-blue-400", icon: null };

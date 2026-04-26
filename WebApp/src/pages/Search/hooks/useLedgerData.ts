@@ -69,7 +69,7 @@ export function useLedgerData({
     const items: LedgerRow[] = [];
 
     // Transactions (expenses + income)
-    if (activeDomains.has("Expenses")) {
+    if (activeDomains.has("Transactions")) {
       transactions.forEach((tx: Transaction) => {
         items.push({
           id: tx.id,
@@ -78,7 +78,7 @@ export function useLedgerData({
           categoryName: tx.category?.name ?? "Unknown",
           description: tx.description || "—",
           amount: tx.type === "expense" ? -Math.abs(tx.amount) : Math.abs(tx.amount),
-          domain: "Expenses",
+          domain: "Transactions",
         });
       });
     }
@@ -152,15 +152,15 @@ export function useLedgerData({
   ]);
 
   // ── Summary stats ───────────────────────────────────────────────────────────
-  const totalExpenses = useMemo(
+  const totalSpent = useMemo(
     () => rows.filter((r) => r.amount < 0 && r.domain !== "Assets").reduce((sum, r) => sum + Math.abs(r.amount), 0),
     [rows]
   );
   const totalIncome = useMemo(
-    () => rows.filter((r) => r.amount > 0 && r.domain === "Expenses").reduce((sum, r) => sum + r.amount, 0),
+    () => rows.filter((r) => r.amount > 0 && r.domain === "Transactions").reduce((sum, r) => sum + r.amount, 0),
     [rows]
   );
-  const netFlow = totalIncome - totalExpenses;
+  const netFlow = totalIncome - totalSpent;
 
   // ── Multi-bar chart data ─────────────────────────────────────────────────────
   const chartData: ChartBucket[] = useMemo(() => {
@@ -201,7 +201,7 @@ export function useLedgerData({
   return {
     rows,
     loading,
-    totalExpenses,
+    totalSpent,
     totalIncome,
     netFlow,
     chartData,

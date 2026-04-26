@@ -19,9 +19,15 @@ export default function Dashboard() {
             Your real-time financial command center. Monitor liquidity, track goals, and analyze growth.
           </p>
         </div>
-        <button className="shrink-0 px-6 py-3.5 bg-on-surface text-surface-container-lowest font-bold rounded-2xl shadow-xl hover:bg-on-surface/90 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+        <button 
+          disabled
+          className="shrink-0 px-6 py-3.5 bg-on-surface text-surface-container-lowest font-bold rounded-2xl shadow-xl opacity-50 cursor-not-allowed transition-all flex items-center justify-center gap-2"
+        >
           <span className="material-symbols-outlined text-[20px]">download</span>
           Export Report
+          <span className="ml-1 px-1.5 py-0.5 bg-surface-container-lowest/20 text-[9px] uppercase tracking-widest font-black rounded-md">
+            Soon
+          </span>
         </button>
       </div>
 

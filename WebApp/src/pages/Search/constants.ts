@@ -1,7 +1,7 @@
 import type { DomainKey } from "./types";
 import type { PresetKey } from "../../utils/filterPresets";
 
-export const ALL_DOMAINS: DomainKey[] = ["Expenses", "Assets", "Subscriptions"];
+export const ALL_DOMAINS: DomainKey[] = ["Transactions", "Assets", "Subscriptions"];
 
 export type TimeframeKey = PresetKey | "all" | "custom";
 
@@ -16,7 +16,7 @@ export const TIMEFRAME_OPTIONS: { key: TimeframeKey; label: string }[] = [
 
 export const domainColor = (domain: DomainKey) => {
   switch (domain) {
-    case "Expenses":
+    case "Transactions":
       return "text-red-400";
     case "Assets":
       return "text-emerald-400";

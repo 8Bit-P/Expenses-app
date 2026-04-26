@@ -28,7 +28,7 @@ export default function SearchResults() {
   const { currency } = useUserPreferences();
 
   // ── Data hook ───────────────────────────────────────────────────────────────
-  const { rows, loading, totalExpenses, totalIncome, netFlow, chartData } = useLedgerData({
+  const { rows, loading, totalSpent, totalIncome, netFlow, chartData } = useLedgerData({
     query,
     timeframe,
     activeDomains,
@@ -65,10 +65,10 @@ export default function SearchResults() {
     setCustomEndDate("");
     setActiveDomains(new Set(ALL_DOMAINS));
     setMinAmount("");
-    setMaxAmount("");
+    maxAmount && setMaxAmount("");
     setSelectedCategoryId("");
     clearSearch();
-  }, [clearSearch]);
+  }, [clearSearch, maxAmount]);
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 w-full">
@@ -103,7 +103,7 @@ export default function SearchResults() {
         <section className="lg:col-span-9 flex flex-col gap-6">
           {/* KPI Cards + Summary Chart */}
           <SummaryTrends
-            totalExpenses={totalExpenses}
+            totalSpent={totalSpent}
             totalIncome={totalIncome}
             netFlow={netFlow}
             currencyCode={currency.code}

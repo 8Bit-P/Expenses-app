@@ -1,4 +1,4 @@
-export type DomainKey = "Expenses" | "Assets" | "Subscriptions";
+export type DomainKey = "Transactions" | "Assets" | "Subscriptions";
 
 export type LedgerRow = {
   id: string;
