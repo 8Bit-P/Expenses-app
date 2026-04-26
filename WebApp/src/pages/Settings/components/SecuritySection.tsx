@@ -1,5 +1,8 @@
+import { useState } from "react";
+import ChangePasswordModal from "./ChangePasswordModal";
 
 export default function SecuritySection() {
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   return (
     <section className="col-span-12 lg:col-span-4 space-y-4">
@@ -10,14 +13,17 @@ export default function SecuritySection() {
 
       <div className="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden divide-y divide-outline-variant/10 border border-outline-variant/10">
         {/* Change Password */}
-        <button className="w-full flex items-center justify-between p-5 text-left hover:bg-surface-container-low transition-colors group">
+        <button 
+          onClick={() => setIsPasswordModalOpen(true)}
+          className="w-full flex items-center justify-between p-5 text-left hover:bg-surface-container-low transition-colors group"
+        >
           <div className="flex items-center gap-4">
             <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">
               password
             </span>
             <div>
               <p className="font-bold text-on-surface text-sm">Change Password</p>
-              <p className="text-xs text-on-surface-variant">Updated 3 months ago</p>
+              <p className="text-xs text-on-surface-variant">Update your vault access credentials</p>
             </div>
           </div>
           <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
@@ -35,6 +41,11 @@ export default function SecuritySection() {
           <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
         </button>
       </div>
+
+      <ChangePasswordModal 
+        isOpen={isPasswordModalOpen} 
+        onClose={() => setIsPasswordModalOpen(false)} 
+      />
     </section>
   );
 }
