@@ -91,6 +91,10 @@ body {
     color 0.3s ease;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 html,
 body,
 #root {

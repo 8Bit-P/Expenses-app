@@ -54,18 +54,18 @@ export default function HeroSection() {
         className="flex flex-col sm:flex-row items-center gap-4 mb-20"
       >
         <Link
-          to="/auth"
+          to="/auth?mode=signup"
           className="group flex items-center gap-2 px-8 py-3.5 bg-violet-600 hover:bg-violet-500 text-white font-bold text-base rounded-full transition-all duration-200 shadow-xl shadow-violet-900/60 hover:shadow-violet-800/80 hover:-translate-y-0.5"
         >
           Start for free
           <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
         </Link>
-        <Link
-          to="#pricing"
+        <a
+          href="#pricing"
           className="px-8 py-3.5 border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-white font-semibold text-base rounded-full transition-all duration-200 hover:-translate-y-0.5"
         >
           View pricing
-        </Link>
+        </a>
       </motion.div>
 
       {/* Dashboard Screenshot Mockup */}
@@ -74,6 +74,8 @@ export default function HeroSection() {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.9, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
         className="w-full max-w-5xl relative"
+        role="img"
+        aria-label="Vault dark mode financial dashboard showing spending trends"
       >
         {/* Glow behind card */}
         <div className="absolute inset-x-0 -bottom-10 h-40 bg-violet-600/20 blur-[60px] rounded-full mx-auto w-3/4 pointer-events-none" />

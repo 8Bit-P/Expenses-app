@@ -38,7 +38,7 @@ export default function Footer() {
             </a>
           ))}
           <Link
-            to="/auth"
+            to="/auth?mode=signin"
             className="text-sm font-bold text-violet-400 hover:text-violet-300 transition-colors"
           >
             Sign In →

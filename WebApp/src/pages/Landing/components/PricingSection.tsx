@@ -8,7 +8,7 @@ const free = {
   period: "forever",
   desc: "For anyone starting their financial journey.",
   cta: "Start for free",
-  ctaLink: "/auth",
+  ctaLink: "/auth?mode=signup",
   features: [
     "Up to 100 transactions/month",
     "Basic expense tracking",
@@ -25,7 +25,7 @@ const pro = {
   badge: "Most Popular",
   desc: "Pay once a year, use forever.",
   cta: "Get Vault Pro",
-  ctaLink: "/auth",
+  ctaLink: "/auth?mode=signup",
   features: [
     "Unlimited transactions",
     "Predictive forecasting",

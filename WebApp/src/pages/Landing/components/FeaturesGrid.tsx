@@ -23,8 +23,8 @@ function RunRatesCard() {
           <TrendingUp size={18} />
         </div>
         <div>
-          <h3 className="font-black text-white text-lg tracking-tight">Predictive Run Rates</h3>
-          <p className="text-slate-500 text-sm mt-0.5">See where your money lands before the month ends.</p>
+          <h2 className="font-black text-white text-lg tracking-tight">Predictive Run Rates</h2>
+          <p className="text-slate-400 text-sm mt-0.5">See where your money lands before the month ends.</p>
         </div>
       </div>
       <div className="flex-1 relative min-h-[120px]">
@@ -82,8 +82,8 @@ function ActionCenterCard() {
           <AlertTriangle size={18} />
         </div>
         <div>
-          <h3 className="font-black text-white text-lg tracking-tight">Action Center</h3>
-          <p className="text-slate-500 text-sm mt-0.5">Priority alerts, surfaced.</p>
+          <h2 className="font-black text-white text-lg tracking-tight">Action Center</h2>
+          <p className="text-slate-400 text-sm mt-0.5">Priority alerts, surfaced.</p>
         </div>
       </div>
       <div className="space-y-3 flex-1">
@@ -113,8 +113,8 @@ function AssetTrackingCard() {
           <BarChart2 size={18} />
         </div>
         <div>
-          <h3 className="font-black text-white text-lg tracking-tight">Asset Tracking</h3>
-          <p className="text-slate-500 text-sm mt-0.5">Total invested, live.</p>
+          <h2 className="font-black text-white text-lg tracking-tight">Asset Tracking</h2>
+          <p className="text-slate-400 text-sm mt-0.5">Total invested, live.</p>
         </div>
       </div>
       <div className="flex-1 flex flex-col items-center justify-center text-center">
@@ -159,8 +159,8 @@ function SecureLedgerCard() {
           <ListOrdered size={18} />
         </div>
         <div>
-          <h3 className="font-black text-white text-lg tracking-tight">Secure Ledger</h3>
-          <p className="text-slate-500 text-sm mt-0.5">Every transaction, end-to-end encrypted.</p>
+          <h2 className="font-black text-white text-lg tracking-tight">Secure Ledger</h2>
+          <p className="text-slate-400 text-sm mt-0.5">Every transaction, end-to-end encrypted.</p>
         </div>
       </div>
       <div className="flex-1 space-y-2 overflow-hidden">

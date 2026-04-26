@@ -3,13 +3,15 @@ import AuthTabs from "./components/AuthTabs";
 import AuthForm from "./components/AuthForm";
 import SocialLogins from "./components/SocialLogin";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import VaultIcon from "../../components/ui/VaultIcon";
 
 export default function Auth() {
   const { session, loading } = useAuth();
   const navigate = useNavigate();
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [searchParams] = useSearchParams();
+  const mode = searchParams.get("mode");
+  const [isSignUp, setIsSignUp] = useState(mode === "signup");
 
   useEffect(() => {
     // If we have a session and we aren't still "loading" the check

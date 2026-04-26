@@ -6,6 +6,7 @@ import HeroSection from "./components/HeroSection";
 import TrustBanner from "./components/TrustBanner";
 import FeaturesGrid from "./components/FeaturesGrid";
 import PricingSection from "./components/PricingSection";
+import FAQSection from "./components/FAQSection";
 import Footer from "./components/Footer";
 
 export default function Landing() {
@@ -25,6 +26,7 @@ export default function Landing() {
       <TrustBanner />
       <FeaturesGrid />
       <PricingSection />
+      <FAQSection />
       <Footer />
     </div>
   );
