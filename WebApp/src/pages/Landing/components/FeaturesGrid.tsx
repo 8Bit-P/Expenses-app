@@ -1,12 +1,12 @@
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { TrendingUp, AlertTriangle, BarChart2, ListOrdered } from "lucide-react";
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 40 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+    transition: { delay: i * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
   }),
 };
 
@@ -14,14 +14,14 @@ function RunRatesCard() {
   const points = [20, 35, 28, 55, 48, 72, 65, 88];
   const max = Math.max(...points);
   const w = 100 / (points.length - 1);
-  const pathD = points
-    .map((p, i) => `${i === 0 ? "M" : "L"} ${i * w} ${100 - (p / max) * 80}`)
-    .join(" ");
+  const pathD = points.map((p, i) => `${i === 0 ? "M" : "L"} ${i * w} ${100 - (p / max) * 80}`).join(" ");
 
   return (
     <div className="h-full flex flex-col justify-between">
       <div className="flex items-start gap-3 mb-4">
-        <div className="p-2 rounded-lg bg-violet-500/15 text-violet-400"><TrendingUp size={18} /></div>
+        <div className="p-2 rounded-lg bg-violet-500/15 text-violet-400">
+          <TrendingUp size={18} />
+        </div>
         <div>
           <h3 className="font-black text-white text-lg tracking-tight">Predictive Run Rates</h3>
           <p className="text-slate-500 text-sm mt-0.5">See where your money lands before the month ends.</p>
@@ -29,7 +29,7 @@ function RunRatesCard() {
       </div>
       <div className="flex-1 relative min-h-[120px]">
         {/* Grid lines */}
-        {[0,1,2,3].map(i => (
+        {[0, 1, 2, 3].map((i) => (
           <div key={i} className="absolute left-0 right-0 border-t border-slate-800/60" style={{ top: `${i * 33}%` }} />
         ))}
         <svg viewBox={`0 0 100 100`} className="w-full h-full" preserveAspectRatio="none">
@@ -43,16 +43,32 @@ function RunRatesCard() {
           <path d={`${pathD} L 100 100 L 0 100 Z`} fill="url(#runGrad)" />
           <path d={pathD} stroke="#7c3aed" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
           {/* Dashed forecast extension */}
-          <path d={`M ${(points.length-1)*w} ${100 - (points[points.length-1]/max)*80} L 100 ${100 - 0.95 * 80}`}
-            stroke="#7c3aed" strokeWidth="2" strokeDasharray="4,4" fill="none" opacity="0.5" />
+          <path
+            d={`M ${(points.length - 1) * w} ${100 - (points[points.length - 1] / max) * 80} L 100 ${100 - 0.95 * 80}`}
+            stroke="#7c3aed"
+            strokeWidth="2"
+            strokeDasharray="4,4"
+            fill="none"
+            opacity="0.5"
+          />
           {/* Dots */}
           {points.map((p, i) => (
-            <circle key={i} cx={i * w} cy={100 - (p / max) * 80} r="2.5" fill="#7c3aed" stroke="#0F172A" strokeWidth="1.5" />
+            <circle
+              key={i}
+              cx={i * w}
+              cy={100 - (p / max) * 80}
+              r="2.5"
+              fill="#7c3aed"
+              stroke="#0F172A"
+              strokeWidth="1.5"
+            />
           ))}
         </svg>
       </div>
       <div className="mt-3 flex items-center gap-2">
-        <span className="text-xs text-violet-400 font-semibold bg-violet-500/10 px-2 py-1 rounded-full">↑ 12% pace vs last month</span>
+        <span className="text-xs text-violet-400 font-semibold bg-violet-500/10 px-2 py-1 rounded-full">
+          ↑ 12% pace vs last month
+        </span>
       </div>
     </div>
   );
@@ -62,7 +78,9 @@ function ActionCenterCard() {
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-start gap-3 mb-5">
-        <div className="p-2 rounded-lg bg-amber-500/15 text-amber-400"><AlertTriangle size={18} /></div>
+        <div className="p-2 rounded-lg bg-amber-500/15 text-amber-400">
+          <AlertTriangle size={18} />
+        </div>
         <div>
           <h3 className="font-black text-white text-lg tracking-tight">Action Center</h3>
           <p className="text-slate-500 text-sm mt-0.5">Priority alerts, surfaced.</p>
@@ -77,7 +95,9 @@ function ActionCenterCard() {
           <div key={label} className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/60 border border-white/5">
             <span className={`w-2 h-2 rounded-full shrink-0 ${color}`} />
             <span className="text-slate-300 text-xs font-medium flex-1">{label}</span>
-            <span className="text-[10px] font-bold text-slate-500 bg-slate-700/60 px-2 py-0.5 rounded-full">{pill}</span>
+            <span className="text-[10px] font-bold text-slate-500 bg-slate-700/60 px-2 py-0.5 rounded-full">
+              {pill}
+            </span>
           </div>
         ))}
       </div>
@@ -89,7 +109,9 @@ function AssetTrackingCard() {
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-start gap-3 mb-5">
-        <div className="p-2 rounded-lg bg-emerald-500/15 text-emerald-400"><BarChart2 size={18} /></div>
+        <div className="p-2 rounded-lg bg-emerald-500/15 text-emerald-400">
+          <BarChart2 size={18} />
+        </div>
         <div>
           <h3 className="font-black text-white text-lg tracking-tight">Asset Tracking</h3>
           <p className="text-slate-500 text-sm mt-0.5">Total invested, live.</p>
@@ -98,7 +120,9 @@ function AssetTrackingCard() {
       <div className="flex-1 flex flex-col items-center justify-center text-center">
         <p className="text-slate-500 text-xs uppercase tracking-widest mb-1">Total Invested</p>
         <p className="text-4xl font-black text-white mb-1">€22,140</p>
-        <span className="text-sm font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full">↑ +8.4% all-time</span>
+        <span className="text-sm font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full">
+          ↑ +8.4% all-time
+        </span>
         <div className="w-full mt-5 space-y-2">
           {[
             { label: "Stocks", pct: 55, color: "bg-violet-500" },
@@ -131,7 +155,9 @@ function SecureLedgerCard() {
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-start gap-3 mb-5">
-        <div className="p-2 rounded-lg bg-blue-500/15 text-blue-400"><ListOrdered size={18} /></div>
+        <div className="p-2 rounded-lg bg-blue-500/15 text-blue-400">
+          <ListOrdered size={18} />
+        </div>
         <div>
           <h3 className="font-black text-white text-lg tracking-tight">Secure Ledger</h3>
           <p className="text-slate-500 text-sm mt-0.5">Every transaction, end-to-end encrypted.</p>
