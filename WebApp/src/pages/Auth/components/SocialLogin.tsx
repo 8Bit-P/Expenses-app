@@ -1,11 +1,11 @@
 export default function SocialLogins() {
+  const buttonClass =
+    "relative w-full flex items-center justify-center gap-2.5 py-3 bg-surface-container border border-outline-variant/20 rounded-xl text-sm font-semibold text-on-surface/40 cursor-not-allowed transition-all";
+
   return (
     <div className="w-full space-y-3">
-      <button
-        disabled
-        className="w-full flex items-center justify-center gap-2 py-3 bg-surface-container border border-outline-variant/30 rounded-xl text-sm font-bold text-on-surface shadow-sm opacity-50 cursor-not-allowed transition-all"
-      >
-        <svg className="w-4 h-4" viewBox="0 0 24 24">
+      <button disabled className={buttonClass}>
+        <svg className="w-4 h-4 opacity-50" viewBox="0 0 24 24">
           <path
             fill="#4285F4"
             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -24,16 +24,15 @@ export default function SocialLogins() {
           />
         </svg>
         Continue with Google
+        <span className="absolute right-3 text-[9px] font-bold text-on-surface-variant/30 uppercase tracking-wider">Soon</span>
       </button>
 
-      <button
-        disabled
-        className="w-full flex items-center justify-center gap-2 py-3 bg-surface-container border border-outline-variant/30 rounded-xl text-sm font-bold text-on-surface shadow-sm opacity-50 cursor-not-allowed transition-all"
-      >
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+      <button disabled className={buttonClass}>
+        <svg className="w-4 h-4 opacity-50" viewBox="0 0 24 24" fill="currentColor">
           <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.04 2.26-.74 3.58-.79 1.58-.06 2.94.48 3.86 1.43-3.2 1.65-2.62 5.76.62 6.84-1.02 2.37-2.15 3.75-3.14 4.69zM12.03 7.25C11.97 4.14 14.54 1.4 17.5 1c.21 3.25-2.8 5.92-5.47 6.25z" />
         </svg>
         Continue with Apple
+        <span className="absolute right-3 text-[9px] font-bold text-on-surface-variant/30 uppercase tracking-wider">Soon</span>
       </button>
     </div>
   );
