@@ -15,7 +15,7 @@ interface TransactionModalProps {
 
 export default function TransactionModal({ isOpen, onClose, transaction }: TransactionModalProps) {
   const { categories, addCategory } = useCategories();
-  const { addTransaction, updateTransaction } = useTransactions();
+  const { addTransaction, updateTransaction, deleteTransaction } = useTransactions();
   const { currency } = useUserPreferences();
 
   const [type, setType] = useState<TransactionType>("expense");
@@ -23,6 +23,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
   const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [needsReview, setNeedsReview] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [isCreatingCategory, setIsCreatingCategory] = useState(false);
@@ -39,12 +40,14 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
         setDescription(transaction.description || transaction.name || "");
         setCategoryId(transaction.category_id || transaction.category?.id || "");
         setDate(transaction.date || new Date().toISOString().split("T")[0]);
+        setNeedsReview(!!transaction.needs_review);
       } else {
         setType("expense");
         setAmount("");
         setDescription("");
         setCategoryId(categories[0]?.id || "");
         setDate(new Date().toISOString().split("T")[0]);
+        setNeedsReview(false);
       }
       setIsCreatingCategory(false);
       setNewCategoryName("");
@@ -76,6 +79,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
       description,
       category_id: categoryId,
       date,
+      needs_review: needsReview,
     };
 
     try {
@@ -93,6 +97,23 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
     } catch (err: any) {
       toast.error("Save failed", {
         description: err.message || "Something went wrong while saving.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!transaction?.id || !window.confirm("Are you sure you want to delete this transaction? This action cannot be undone.")) return;
+
+    setIsSubmitting(true);
+    try {
+      await deleteTransaction(transaction.id);
+      toast.success("Transaction deleted");
+      onClose();
+    } catch (err: any) {
+      toast.error("Deletion failed", {
+        description: err.message || "Something went wrong.",
       });
     } finally {
       setIsSubmitting(false);
@@ -311,6 +332,25 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
               />
             </div>
           </div>
+
+          {/* Review Toggle */}
+          <div className="flex items-center justify-between p-4 bg-surface-container rounded-2xl border border-outline-variant/10">
+            <div className="flex items-center gap-3">
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${needsReview ? "bg-primary/20 text-primary" : "bg-surface-container-high text-on-surface-variant"}`}>
+                <span className="material-symbols-outlined text-[18px]">inbox</span>
+              </div>
+              <div>
+                <p className="text-xs font-bold text-on-surface">Mark for Review</p>
+                <p className="text-[10px] font-medium text-on-surface-variant/60">Place in your dashboard inbox</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setNeedsReview(!needsReview)}
+              className={`relative w-11 h-6 rounded-full transition-colors duration-200 outline-none ${needsReview ? "bg-primary" : "bg-surface-container-highest"}`}
+            >
+              <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform duration-200 ${needsReview ? "translate-x-5" : "translate-x-0"}`} />
+            </button>
+          </div>
         </div>
 
         {/* Action Buttons */}
@@ -322,6 +362,18 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
           >
             Cancel
           </button>
+          
+          {isEditing && (
+            <button
+              onClick={handleDelete}
+              disabled={isSubmitting}
+              className="w-12 h-12 flex items-center justify-center rounded-xl text-on-surface-variant/40 hover:text-error hover:bg-error/10 transition-all border border-outline-variant/10"
+              title="Delete Transaction"
+            >
+              <span className="material-symbols-outlined text-[20px]">delete</span>
+            </button>
+          )}
+
           <button
             onClick={handleSave}
             disabled={isSubmitting || !amount || !categoryId}

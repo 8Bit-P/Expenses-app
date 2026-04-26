@@ -8,4 +8,5 @@ export type LedgerRow = {
   description: string;
   amount: number;
   domain: DomainKey;
+  raw?: any;
 };

@@ -266,6 +266,7 @@ export function SummaryTrends({
                   outerRadius="78%"
                   paddingAngle={3}
                   dataKey="value"
+                  stroke="none"
                 >
                   {donutData.map((entry, i) => (
                     <Cell key={i} fill={entry.color} opacity={0.9} />

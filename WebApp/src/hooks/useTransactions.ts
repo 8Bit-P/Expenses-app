@@ -31,6 +31,13 @@ export function useTransactions(filters?: TransactionFilters, isInfinite = false
       if (filters?.categoryId) query = query.eq("category_id", filters.categoryId);
       if (filters?.type) query = query.eq("type", filters.type);
       if (filters?.search) query = query.ilike("description", `%${filters.search}%`);
+      
+      // Default to false (only reviewed) if not explicitly provided
+      // If null is passed, we show all (no filter)
+      if (filters?.needsReview !== null) {
+        const reviewFilter = filters?.needsReview ?? false;
+        query = query.eq("needs_review", reviewFilter);
+      }
 
       // Apply range based on mode
       query = query.range(from, to);

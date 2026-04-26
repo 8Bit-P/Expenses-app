@@ -5,10 +5,14 @@ import SpendingCategories from "./components/SpendingCategories";
 import RecentActivity from "./components/RecentActivity";
 import SavingsGoals from "./components/SavingsGoals";
 import UpcomingRenewals from "./components/UpcomingRenewals";
+import ReviewWidget from "./components/ReviewWidget";
 
 export default function Dashboard() {
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-32">
+      {/* Review Inbox (Top Priority) */}
+      <ReviewWidget />
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-2">
         <div>

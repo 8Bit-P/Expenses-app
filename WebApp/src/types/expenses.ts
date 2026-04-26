@@ -35,6 +35,7 @@ export interface Transaction {
   amount: number;
   date: string;
   description: string | null;
+  needs_review: boolean;
   created_at: string;
   // Joined fields
   category?: Category;
@@ -46,6 +47,7 @@ export interface TransactionFilters {
   categoryId?: string;
   type?: TransactionType;
   search?: string;
+  needsReview?: boolean | null;
   page?: number;
   pageSize?: number;
 }

@@ -5,6 +5,7 @@ import { formatCurrency } from "../../../utils/currency";
 import type { LedgerRow } from "../types";
 import { buildPageRange } from "../../Expenses/utils/pagination";
 import { useIsMobile } from "../../../hooks/useIsMobile";
+import TransactionModal from "../../Expenses/components/TransactionModal";
 
 interface LedgerTableProps {
   rows: LedgerRow[];
@@ -39,6 +40,8 @@ const PAGE_SIZE = 20;
 export function LedgerTable({ rows, loading, currencyCode }: LedgerTableProps) {
   const isMobile = useIsMobile();
   const [page, setPage] = useState(1);
+  const [selectedTx, setSelectedTx] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Reset page when filters change
   useEffect(() => {
@@ -102,7 +105,13 @@ export function LedgerTable({ rows, loading, currencyCode }: LedgerTableProps) {
               {visibleRows.map((row) => (
                 <tr
                   key={`${row.domain}-${row.id}`}
-                  className="hover:bg-surface-container transition-colors group cursor-pointer"
+                  onClick={() => {
+                    if (row.domain === "Transactions") {
+                      setSelectedTx(row.raw);
+                      setIsModalOpen(true);
+                    }
+                  }}
+                  className={`hover:bg-surface-container transition-colors group ${row.domain === "Transactions" ? "cursor-pointer" : "cursor-default"}`}
                 >
                   <td className="px-5 py-3.5 text-on-surface-variant font-medium text-xs whitespace-nowrap tabular-nums">
                     {formatTransactionDate(row.date)}
@@ -198,6 +207,15 @@ export function LedgerTable({ rows, loading, currencyCode }: LedgerTableProps) {
           )
         )
       )}
+
+      <TransactionModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedTx(null);
+        }}
+        transaction={selectedTx}
+      />
     </div>
   );
 }

@@ -79,6 +79,7 @@ export function useLedgerData({
           description: tx.description || "—",
           amount: tx.type === "expense" ? -Math.abs(tx.amount) : Math.abs(tx.amount),
           domain: "Transactions",
+          raw: tx,
         });
       });
     }
@@ -99,6 +100,7 @@ export function useLedgerData({
           description: sub.name,
           amount: -Math.abs(sub.amount),
           domain: "Subscriptions",
+          raw: sub,
         });
       });
     }
@@ -122,6 +124,7 @@ export function useLedgerData({
           description: asset.name,
           amount: Number(latest.total_value),
           domain: "Assets",
+          raw: asset,
         });
       });
     }
