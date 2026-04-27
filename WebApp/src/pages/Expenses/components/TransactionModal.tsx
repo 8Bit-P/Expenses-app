@@ -8,7 +8,7 @@ import type { Category, TransactionType } from "../../../types/expenses";
 import EmojiPicker, { EmojiStyle } from "emoji-picker-react";
 import { toast } from "sonner";
 import VaultConfirmationModal from "../../../components/ui/VaultConfirmationModal";
-import { supabase } from "../../../lib/supabase";
+import { useTransactionForm } from "../../../hooks/useTransactionForm";
 
 interface TransactionModalProps {
   isOpen: boolean;
@@ -17,9 +17,12 @@ interface TransactionModalProps {
 }
 
 export default function TransactionModal({ isOpen, onClose, transaction }: TransactionModalProps) {
-  const { categories, addCategory, getOrCreateUnknownCategory } = useCategories();
-  const { addTransaction, updateTransaction, deleteTransaction } = useTransactions();
+  const { categories, addCategory } = useCategories();
+  const { deleteTransaction } = useTransactions();
   const { currency } = useUserPreferences();
+  const { reserves } = useReserves();
+  
+  const { handleSave: saveTransaction, isSubmitting: isSaving } = useTransactionForm(transaction);
 
   const [type, setType] = useState<TransactionType>("expense");
   const [amount, setAmount] = useState("");
@@ -28,9 +31,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
   const [reserveId, setReserveId] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [needsReview, setNeedsReview] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const { reserves } = useReserves();
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const [isCreatingCategory, setIsCreatingCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
@@ -79,70 +80,23 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
   const isEditing = !!transaction;
 
   const handleSave = async () => {
-    if (!amount) return;
-
-    setIsSubmitting(true);
-    let finalCategoryId = categoryId;
-
-    try {
-      if (!finalCategoryId) {
-        finalCategoryId = await getOrCreateUnknownCategory();
-        setCategoryId(finalCategoryId);
-      }
-
-      const data = {
+    await saveTransaction(
+      {
         type,
-        amount: parseFloat(amount),
+        amount,
         description,
-        category_id: type === "transfer" ? null : finalCategoryId,
-        reserve_id: type === "transfer" ? reserveId : null,
+        categoryId,
+        reserveId,
         date,
-        needs_review: needsReview,
-      };
-
-      if (isEditing) {
-        // If it was a transfer and still is, or became one, handle the math sync
-        if (type === "transfer" && reserveId) {
-          const oldAmount = transaction.amount;
-          const newAmount = parseFloat(amount);
-          const delta = newAmount - oldAmount;
-
-          if (delta !== 0) {
-            // Update the reserve's current_amount
-            const { data: reserveData } = await supabase
-              .from("reserves")
-              .select("current_amount")
-              .eq("id", reserveId)
-              .single();
-
-            await supabase
-              .from("reserves")
-              .update({ current_amount: (reserveData?.current_amount || 0) + delta })
-              .eq("id", reserveId);
-          }
-        }
-        await updateTransaction({ id: transaction.id, updates: data as any });
-      } else {
-        await addTransaction(data as any);
-      }
-
-      toast.success(isEditing ? "Transaction updated" : "Transaction recorded", {
-        description: `${description || (type === "expense" ? "Expense" : "Income")} of ${currency.symbol}${amount} secured.`,
-      });
-
-      onClose();
-    } catch (err: any) {
-      toast.error("Save failed", {
-        description: err.message || "Something went wrong while saving.",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+        needsReview,
+      },
+      onClose
+    );
   };
 
   const handleDelete = async () => {
     if (!transaction?.id) return;
-    setIsSubmitting(true);
+    setIsDeleting(true);
     try {
       await deleteTransaction(transaction.id);
       toast.success("Transaction deleted");
@@ -152,7 +106,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
         description: err.message || "Something went wrong.",
       });
     } finally {
-      setIsSubmitting(false);
+      setIsDeleting(false);
       setShowDeleteConfirm(false);
     }
   };
@@ -160,7 +114,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
           {isEditing && (
             <button
               onClick={() => setShowDeleteConfirm(true)}
-              disabled={isSubmitting}
+              disabled={isSaving || isDeleting}
               className="w-12 h-12 flex items-center justify-center rounded-xl text-on-surface-variant/40 hover:text-error hover:bg-error/10 transition-all border border-outline-variant/10"
               title="Delete Transaction"
             >
@@ -327,7 +281,6 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
                         setCategoryError("Name required");
                         return;
                       }
-                      setIsSubmitting(true);
                       setCategoryError(null);
                       try {
                         const newCat = await addCategory({ name: newCategoryName, emoji: newCategoryEmoji });
@@ -343,11 +296,9 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
                           description: e.message || "Error creating category",
                         });
                         setCategoryError(e.message || "Error creating category");
-                      } finally {
-                        setIsSubmitting(false);
                       }
                     }}
-                    disabled={isSubmitting}
+                    disabled={isSaving}
                     className="w-14 h-14 shrink-0 rounded-xl bg-primary text-on-primary flex items-center justify-center hover:opacity-90 active:scale-95 transition-all outline-none"
                   >
                     <span className="material-symbols-outlined text-[20px]">check</span>
@@ -440,15 +391,15 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
           <button
             onClick={onClose}
             className="flex-1 py-3.5 px-4 rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container-high transition-all"
-            disabled={isSubmitting}
+            disabled={isSaving || isDeleting}
           >
             Cancel
           </button>
           
           {isEditing && (
             <button
-              onClick={handleDelete}
-              disabled={isSubmitting}
+              onClick={() => setShowDeleteConfirm(true)}
+              disabled={isSaving || isDeleting}
               className="w-12 h-12 flex items-center justify-center rounded-xl text-on-surface-variant/40 hover:text-error hover:bg-error/10 transition-all border border-outline-variant/10"
               title="Delete Transaction"
             >
@@ -458,10 +409,10 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
 
           <button
             onClick={handleSave}
-            disabled={isSubmitting || !amount}
+            disabled={isSaving || isDeleting || !amount}
             className="flex-[2] py-3.5 px-4 rounded-xl font-bold text-sm text-on-primary bg-primary hover:opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:shadow-none"
           >
-            {isSubmitting ? "Saving Entry..." : isEditing ? "Save Changes" : "Confirm Entry"}
+            {isSaving ? "Saving Entry..." : isEditing ? "Save Changes" : "Confirm Entry"}
           </button>
         </div>
       </div>
@@ -473,7 +424,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
         description="This will permanently remove this entry from your vault and reverse any linked reserve updates."
         confirmLabel="Purge Entry"
         cancelLabel="Keep Entry"
-        isLoading={isSubmitting}
+        isLoading={isDeleting}
         variant="danger"
       />
     </div>
