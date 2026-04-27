@@ -5,7 +5,10 @@ import { useMemo } from "react";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { Link } from "react-router-dom";
 
+import { useTranslation } from "react-i18next";
+
 export default function UpcomingRenewals() {
+  const { t } = useTranslation();
   const { subscriptions, loading } = useSubscriptions();
   const { currency } = useUserPreferences();
 
@@ -22,13 +25,13 @@ export default function UpcomingRenewals() {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-lg font-black font-headline flex items-center gap-2">
           <span className="material-symbols-outlined text-tertiary text-[20px]">event_repeat</span>
-          Upcoming Renewals
+          {t("dashboard.upcomingRenewals.title")}
         </h2>
         <Link 
           to="/recurring" 
           className="text-primary text-[10px] font-bold uppercase tracking-widest hover:underline transition-all"
         >
-          View All
+          {t("dashboard.upcomingRenewals.viewAll")}
         </Link>
       </div>
 
@@ -40,7 +43,9 @@ export default function UpcomingRenewals() {
             ))}
           </div>
         ) : upcoming.length === 0 ? (
-          <p className="text-center py-8 text-xs font-medium text-on-surface-variant italic">No renewals found.</p>
+          <p className="text-center py-8 text-xs font-medium text-on-surface-variant italic">
+            {t("dashboard.upcomingRenewals.noRenewals")}
+          </p>
         ) : (
           upcoming.map((s) => {
             const daysLeft = differenceInDays(startOfDay(parseISO(s.next_billing_date)), startOfDay(new Date()));
@@ -63,7 +68,11 @@ export default function UpcomingRenewals() {
                       }`}
                     >
                       {isCritical && <span className="w-1 h-1 bg-error rounded-full animate-pulse"></span>}
-                      {daysLeft === 0 ? "Due Today" : daysLeft === 1 ? "Due Tomorrow" : `Due in ${daysLeft} days`}
+                      {daysLeft === 0 
+                        ? t("dashboard.upcomingRenewals.dueToday") 
+                        : daysLeft === 1 
+                          ? t("dashboard.upcomingRenewals.dueTomorrow") 
+                          : t("dashboard.upcomingRenewals.dueInDays", { days: daysLeft })}
                     </p>
                   </div>
                 </div>

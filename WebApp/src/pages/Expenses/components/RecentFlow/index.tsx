@@ -9,7 +9,10 @@ import FlowPagination from "./FlowPagination";
 import { toast } from "sonner";
 import { formatRelativeDate } from "../../../../utils/dateFormatters";
 
+import { useTranslation } from "react-i18next";
+
 export default function CompactRecentFlow() {
+  const { t } = useTranslation();
   const { transactions, loading, page, setPage, totalPages, totalCount, deleteTransaction, isMobile } = useExpenses();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,12 +40,12 @@ export default function CompactRecentFlow() {
     setConfirmDeleteId(null);
     try {
       await deleteTransaction(id);
-      toast.success("Transaction removed", {
-        description: "The ledger entry has been purged from your vault.",
+      toast.success(t("expenses.recentFlow.toast.removed"), {
+        description: t("expenses.recentFlow.toast.removedDesc"),
       });
     } catch (e: any) {
-      toast.error("Delete failed", {
-        description: e?.message ?? "Could not remove the entry.",
+      toast.error(t("expenses.recentFlow.toast.deleteFailed"), {
+        description: e?.message ?? t("expenses.recentFlow.toast.deleteFailedDesc"),
       });
     } finally {
       setDeletingId(null);
@@ -70,7 +73,9 @@ export default function CompactRecentFlow() {
           ) : transactions.length === 0 ? (
             <div className="py-20 flex flex-col items-center justify-center text-on-surface-variant/30 gap-3">
               <span className="material-symbols-outlined text-5xl">history_toggle_off</span>
-              <span className="text-xs font-bold uppercase tracking-widest">No movements found</span>
+              <span className="text-xs font-bold uppercase tracking-widest">
+                {t("expenses.recentFlow.noMovements")}
+              </span>
             </div>
           ) : (
             dates.map((date) => (
@@ -105,7 +110,7 @@ export default function CompactRecentFlow() {
                     onClick={() => setPage(page + 1)}
                     className="w-full py-3 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest text-primary hover:bg-primary/5 rounded-xl transition-all group"
                   >
-                    <span>Load More Movements</span>
+                    <span>{t("expenses.recentFlow.loadMore")}</span>
                     <span className="material-symbols-outlined text-sm group-hover:translate-y-0.5 transition-transform">
                       expand_more
                     </span>

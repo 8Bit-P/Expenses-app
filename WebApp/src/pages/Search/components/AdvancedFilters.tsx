@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Filter, Calendar, Tag, ChevronDown, Check, CalendarRange } from "lucide-react";
 import type { TimeframeKey } from "../constants";
 import { ALL_DOMAINS, TIMEFRAME_OPTIONS } from "../constants";
@@ -42,17 +43,19 @@ export function AdvancedFilters({
   clearAllFilters,
   currencySymbol,
 }: AdvancedFiltersProps) {
+  const { t } = useTranslation();
   const [timeframeOpen, setTimeframeOpen] = useState(false);
   const [categoryOpen, setCategoryOpen] = useState(false);
 
   const { categories } = useCategories();
 
-  const activeTimeframeLabel =
-    TIMEFRAME_OPTIONS.find((o) => o.key === timeframe)?.label ?? "This Month";
+  const activeTimeframeLabel = t(`search.timeframes.${timeframe}`, {
+    defaultValue: TIMEFRAME_OPTIONS.find((o) => o.key === timeframe)?.label ?? t("search.timeframes.this_month"),
+  });
 
   const activeCategoryLabel = selectedCategoryId
-    ? categories.find((c) => c.id === selectedCategoryId)?.name ?? "Unknown"
-    : "All Categories";
+    ? categories.find((c) => c.id === selectedCategoryId)?.name ?? t("search.unknown")
+    : t("search.allCategories");
 
   const inputBase =
     "w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl py-2 text-sm text-on-surface focus:outline-none focus:border-primary/50";
@@ -61,14 +64,14 @@ export function AdvancedFilters({
     <div className="bg-surface-container-low border border-outline-variant/20 rounded-2xl p-5 shadow-sm flex flex-col h-full">
       <div className="flex items-center gap-2 mb-6 text-on-surface font-bold">
         <Filter size={18} className="text-primary" />
-        <h3>Advanced Filters</h3>
+        <h3>{t("search.advancedFilters")}</h3>
       </div>
 
       <div className="space-y-6 flex-1">
         {/* Timeframe */}
         <div>
           <h4 className="text-[10px] font-black text-on-surface-variant uppercase tracking-wider mb-2">
-            Timeframe
+            {t("search.timeframe")}
           </h4>
           <div className="relative">
             <button
@@ -101,7 +104,7 @@ export function AdvancedFilters({
                   >
                     <span className="flex items-center gap-2">
                       {opt.key === "custom" && <CalendarRange size={14} className="text-on-surface-variant" />}
-                      {opt.label}
+                      {t(`search.timeframes.${opt.key}`)}
                     </span>
                     {timeframe === opt.key && <Check size={14} />}
                   </button>
@@ -115,7 +118,7 @@ export function AdvancedFilters({
             <div className="mt-3 space-y-2">
               <div>
                 <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1 block">
-                  From
+                  {t("search.from")}
                 </label>
                 <input
                   type="date"
@@ -126,7 +129,7 @@ export function AdvancedFilters({
               </div>
               <div>
                 <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1 block">
-                  To
+                  {t("search.to")}
                 </label>
                 <input
                   type="date"
@@ -142,7 +145,7 @@ export function AdvancedFilters({
         {/* Amount Range */}
         <div>
           <h4 className="text-[10px] font-black text-on-surface-variant uppercase tracking-wider mb-2">
-            Amount Range
+            {t("search.amountRange")}
           </h4>
           <div className="flex items-center gap-2">
             <div className="relative flex-1">
@@ -151,7 +154,7 @@ export function AdvancedFilters({
               </span>
               <input
                 type="number"
-                placeholder="Min"
+                placeholder={t("search.min")}
                 value={minAmount}
                 onChange={(e) => setMinAmount(e.target.value)}
                 className={`${inputBase} pl-6 pr-2`}
@@ -164,7 +167,7 @@ export function AdvancedFilters({
               </span>
               <input
                 type="number"
-                placeholder="Max"
+                placeholder={t("search.max")}
                 value={maxAmount}
                 onChange={(e) => setMaxAmount(e.target.value)}
                 className={`${inputBase} pl-6 pr-2`}
@@ -176,7 +179,7 @@ export function AdvancedFilters({
         {/* Domain Checkboxes */}
         <div>
           <h4 className="text-[10px] font-black text-on-surface-variant uppercase tracking-wider mb-3">
-            Domains
+            {t("search.domains")}
           </h4>
           <div className="space-y-3">
             {ALL_DOMAINS.map((domain) => {
@@ -204,7 +207,7 @@ export function AdvancedFilters({
                       isActive ? "text-on-surface" : "text-on-surface-variant"
                     }`}
                   >
-                    {domain}
+                    {t(`search.domainNames.${domain}`, { defaultValue: domain })}
                   </span>
                 </label>
               );
@@ -215,7 +218,7 @@ export function AdvancedFilters({
         {/* Category */}
         <div>
           <h4 className="text-[10px] font-black text-on-surface-variant uppercase tracking-wider mb-2">
-            Category
+            {t("search.category")}
           </h4>
           <div className="relative">
             <button
@@ -244,7 +247,7 @@ export function AdvancedFilters({
                       : "text-on-surface hover:bg-surface-container"
                   }`}
                 >
-                  All Categories
+                  {t("search.allCategories")}
                   {!selectedCategoryId && <Check size={14} />}
                 </button>
                 {categories.map((cat) => (
@@ -279,7 +282,7 @@ export function AdvancedFilters({
           onClick={clearAllFilters}
           className="w-full py-2.5 px-4 rounded-xl text-sm font-bold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors"
         >
-          Clear All Filters
+          {t("search.clearFilters")}
         </button>
       </div>
     </div>

@@ -1,8 +1,10 @@
+import { useTranslation } from "react-i18next";
 import { useExpenses } from "../../../context/ExpensesContext";
 import { formatDateLabel } from "../../../utils/dateFormatters";
 import { PRESETS, buildPreset } from "../../../utils/filterPresets";
 
 export default function ExpensesHeader() {
+  const { t } = useTranslation();
   const { filters, setFilters, setIsFilterOpen } = useExpenses();
 
   const dateLabel = formatDateLabel(filters.startDate, filters.endDate);
@@ -21,13 +23,16 @@ export default function ExpensesHeader() {
       {/* 1. Title & Current Date Context (Functional Button) */}
       <div className="flex flex-col gap-0.5 mb-6 cursor-pointer group w-fit" onClick={() => setIsFilterOpen(true)}>
         <h1 className="text-4xl font-black text-on-surface font-headline tracking-tight group-hover:text-primary transition-colors">
-          Overview
+          {t("expenses.header.title")}
         </h1>
         <div className="flex items-center gap-1.5">
           <p className="text-sm font-bold text-on-surface-variant/60 group-hover:text-on-surface-variant transition-colors">
             {dateLabel}
           </p>
-          <span className="material-symbols-outlined text-[16px] text-on-surface-variant/40 group-hover:text-primary transition-colors">
+          <span 
+            className="material-symbols-outlined text-[16px] text-on-surface-variant/40 group-hover:text-primary transition-colors"
+            title={t("expenses.header.filterTooltip")}
+          >
             tune
           </span>
         </div>
@@ -48,7 +53,7 @@ export default function ExpensesHeader() {
                     : "bg-surface-container border-outline-variant/10 text-on-surface-variant hover:bg-surface-container-high hover:border-outline-variant/30"
                 }`}
               >
-                {p.label}
+                {t(`expenses.presets.${p.key}`)}
               </button>
             );
           })}

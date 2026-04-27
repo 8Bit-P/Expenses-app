@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "../../../lib/supabase";
 import { useAuth } from "../../../context/AuthContext";
 import { toast } from "sonner";
@@ -8,6 +9,7 @@ interface DangerZoneProps {
 }
 
 export function ExportData() {
+  const { t } = useTranslation();
   const { session } = useAuth();
   const [exporting, setExporting] = useState(false);
 
@@ -41,12 +43,12 @@ export function ExportData() {
       link.download = `transactions-${new Date().toISOString().split("T")[0]}.csv`;
       link.click();
       URL.revokeObjectURL(url);
-      toast.success("Data exported", {
-        description: "Your ledger is ready for external review.",
+      toast.success(t("settings.danger.exportSuccess"), {
+        description: t("settings.danger.exportSuccessDesc"),
       });
     } catch (err) {
-      toast.error("Export failed", {
-        description: "Could not generate your vault report.",
+      toast.error(t("settings.danger.exportFailed"), {
+        description: t("settings.danger.exportFailedDesc"),
       });
     } finally {
       setExporting(false);
@@ -58,10 +60,10 @@ export function ExportData() {
       <div>
         <h5 className="font-extrabold font-headline text-on-surface flex items-center gap-2">
           <span className="material-symbols-outlined text-primary text-[20px]">download</span>
-          Export Your Data
+          {t("settings.danger.exportTitle")}
         </h5>
         <p className="text-on-surface-variant text-sm font-medium mt-1">
-          Download a CSV of all your transactions. Your data, always yours.
+          {t("settings.danger.exportDesc")}
         </p>
       </div>
       <button
@@ -69,29 +71,30 @@ export function ExportData() {
         disabled={exporting}
         className="px-6 py-2.5 bg-primary/10 hover:bg-primary/20 text-primary rounded-xl font-bold transition-all active:scale-95 shadow-sm whitespace-nowrap disabled:opacity-50 text-sm"
       >
-        {exporting ? "Exporting…" : "Export CSV"}
+        {exporting ? t("settings.danger.exporting") : t("settings.danger.exportButton")}
       </button>
     </div>
   );
 }
 
 export default function AccountDeletion({ onDeleteClick }: DangerZoneProps) {
+  const { t } = useTranslation();
   return (
     <div className="p-6 sm:p-8 rounded-2xl bg-error-container/10 border border-error/20 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-sm">
       <div>
         <h5 className="text-error font-extrabold font-headline flex items-center gap-2">
           <span className="material-symbols-outlined text-[20px]">warning</span>
-          Danger Zone
+          {t("settings.danger.zoneTitle")}
         </h5>
         <p className="text-error/70 text-sm font-medium mt-1">
-          Permanently delete your vault and all ethereal data.
+          {t("settings.danger.zoneDesc")}
         </p>
       </div>
       <button
         onClick={onDeleteClick}
         className="px-6 py-2.5 bg-error text-white rounded-xl font-bold hover:bg-error/90 transition-all active:scale-95 shadow-sm whitespace-nowrap text-sm"
       >
-        Delete Account
+        {t("settings.danger.deleteButton")}
       </button>
     </div>
   );

@@ -1,5 +1,7 @@
 import type { Subscription } from "../../../types/expenses";
 import { format, parseISO, isSameDay, isTomorrow, isThisWeek } from "date-fns";
+import { useTranslation } from "react-i18next";
+import { es, enUS } from "date-fns/locale";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { formatCurrency } from "../../../utils/currency";
 
@@ -8,7 +10,10 @@ interface UpcomingRenewalsProps {
 }
 
 export default function UpcomingRenewals({ subscriptions }: UpcomingRenewalsProps) {
+  const { t, i18n } = useTranslation();
   const { currency } = useUserPreferences();
+
+  const dateLocale = i18n.language === "es" ? es : enUS;
 
   // Sort and filter active renewals
   const upcoming = [...subscriptions]
@@ -18,10 +23,10 @@ export default function UpcomingRenewals({ subscriptions }: UpcomingRenewalsProp
 
   const getDayLabel = (dateStr: string) => {
     const d = parseISO(dateStr);
-    if (isSameDay(d, new Date())) return "Today";
-    if (isTomorrow(d)) return "Tomorrow";
-    if (isThisWeek(d)) return format(d, "EEEE");
-    return format(d, "MMM d, yyyy");
+    if (isSameDay(d, new Date())) return t("subscriptions.upcoming.today");
+    if (isTomorrow(d)) return t("subscriptions.upcoming.tomorrow");
+    if (isThisWeek(d)) return format(d, "EEEE", { locale: dateLocale });
+    return format(d, "MMM d, yyyy", { locale: dateLocale });
   };
 
   const totalThisWeek = upcoming
@@ -32,7 +37,7 @@ export default function UpcomingRenewals({ subscriptions }: UpcomingRenewalsProp
     <div className="bg-surface-container-lowest/50 backdrop-blur-xl p-8 rounded-xl shadow-sm border border-outline-variant/10 h-fit sticky top-24">
       <h2 className="text-xl font-black mb-8 flex items-center gap-3 text-on-surface font-headline tracking-tight">
         <span className="material-symbols-outlined text-primary">schedule</span>
-        Upcoming Renewals
+        {t("subscriptions.upcoming.title")}
       </h2>
 
       <div className="space-y-8 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-0.5 before:bg-outline-variant/20">
@@ -68,14 +73,14 @@ export default function UpcomingRenewals({ subscriptions }: UpcomingRenewalsProp
           })
         ) : (
           <div className="pl-10 text-xs font-bold text-on-surface-variant/40 italic">
-            No upcoming renewals detected.
+            {t("subscriptions.upcoming.noRenewals")}
           </div>
         )}
       </div>
 
       <div className="mt-12 p-6 bg-surface-container/30 rounded-2xl border border-dashed border-outline-variant/50">
         <p className="text-[10px] font-black uppercase tracking-widest text-center text-on-surface-variant/60">
-          Total this week
+          {t("subscriptions.upcoming.totalThisWeek")}
         </p>
         <p className="text-3xl font-black text-center mt-2 text-primary font-headline tracking-tighter">
           {formatCurrency(totalThisWeek, currency.code)}

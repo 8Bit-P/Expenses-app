@@ -11,7 +11,7 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 w-full bg-background/80 backdrop-blur-lg border-t border-outline-variant/10 pb-safe z-50 flex justify-around items-center px-4 pt-3 desk:hidden transition-colors duration-300">
+    <nav className="fixed bottom-0 w-full bg-background/80 backdrop-blur-lg border-t border-outline-variant/10 pb-[calc(env(safe-area-inset-bottom,0px)+12px)] z-50 flex justify-around items-center px-4 pt-3 desk:hidden transition-colors duration-300">
       {navItems.map((item) => {
         const isActive = location.pathname === item.path;
         return (

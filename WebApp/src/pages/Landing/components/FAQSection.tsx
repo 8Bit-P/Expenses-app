@@ -1,21 +1,25 @@
 import { motion } from "framer-motion";
 
-const faqs = [
-  {
-    question: "How to track net worth privately?",
-    answer: "Vault employs a local-first philosophy combined with optional encrypted sync to ensure your net worth and asset data never leave your control.",
-  },
-  {
-    question: "Is my financial data sold to third parties?",
-    answer: "Absolutely not. Vault is a premium, privacy-first tool. We do not sell data, serve ads, or engage with data brokers.",
-  },
-  {
-    question: "How does the predictive forecasting work?",
-    answer: "Our algorithms analyze your past recurring expenses and income streams locally to accurately predict your run rates without sharing data externally.",
-  },
-];
+import { useTranslation } from "react-i18next";
 
 export default function FAQSection() {
+  const { t } = useTranslation();
+
+  const faqs = [
+    {
+      question: t("landing.faq.q1"),
+      answer: t("landing.faq.a1"),
+    },
+    {
+      question: t("landing.faq.q2"),
+      answer: t("landing.faq.a2"),
+    },
+    {
+      question: t("landing.faq.q3"),
+      answer: t("landing.faq.a3"),
+    },
+  ];
+
   return (
     <section className="py-24 px-6 border-t border-slate-800/60 bg-[#0F172A]">
       <div className="max-w-4xl mx-auto">
@@ -27,10 +31,10 @@ export default function FAQSection() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-black tracking-tighter text-white mb-4">
-            Frequently Asked Questions
+            {t("landing.faq.title")}
           </h2>
           <p className="text-slate-400 text-lg">
-            Everything you need to know about Vault and how we protect you.
+            {t("landing.faq.subtitle")}
           </p>
         </motion.div>
 

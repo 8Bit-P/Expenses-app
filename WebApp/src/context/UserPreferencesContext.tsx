@@ -9,15 +9,19 @@ import {
 import { supabase } from "../lib/supabase";
 import { useAuth } from "./AuthContext";
 
-import type { Theme, Currency, DateFormat, CurrencyMeta, NotificationPrefs } from "../types/preferences";
+import type { Theme, Currency, DateFormat, CurrencyMeta, NotificationPrefs, Language } from "../types/preferences";
 import { CURRENCIES, DEFAULT_NOTIFICATIONS } from "../constants/preferences";
-
+import { useTranslation } from "react-i18next";
 
 interface UserPreferencesContextType {
   // Theme
   theme: Theme;
   setTheme: (t: Theme) => void;
   resolvedTheme: "light" | "dark"; // actual applied theme (system resolved)
+
+  // Language
+  language: Language;
+  setLanguage: (l: Language) => void;
 
   // Currency
   currency: CurrencyMeta;
@@ -33,6 +37,7 @@ interface UserPreferencesContextType {
     monthlyBudget?: number;
     currency?: Currency;
     dateFormat?: DateFormat;
+    language?: Language;
   }) => Promise<void>;
   budgetLoading: boolean;
 
@@ -51,6 +56,13 @@ const UserPreferencesContext = createContext<UserPreferencesContextType | undefi
 export function UserPreferencesProvider({ children }: { children: ReactNode }) {
   const { session } = useAuth();
   const userId = session?.user?.id;
+  const { i18n } = useTranslation();
+
+  // Language
+  const [language, setLanguageState] = useState<Language>(() => {
+    const saved = getLocalStorageItem<Language>("pref:language", i18n.language as Language);
+    return (saved === "es" || saved === "en" ? saved : "en") as Language;
+  });
 
   // Theme
   const [theme, setThemeState] = useState<Theme>(() => getLocalStorageItem("pref:theme", "system" as Theme));
@@ -78,6 +90,13 @@ export function UserPreferencesProvider({ children }: { children: ReactNode }) {
   const [monthlyBudget, setMonthlyBudgetState] = useState(0);
   const [budgetLoading, setBudgetLoading] = useState(false);
 
+  // ── Sync i18n Language ───────────────────────────────────────────────────
+  useEffect(() => {
+    if (i18n.language !== language) {
+      i18n.changeLanguage(language);
+    }
+  }, [language, i18n]);
+
   // ── Apply theme on system change ──────────────────────────────────────────
   useEffect(() => {
     const resolved = applyTheme(theme);
@@ -95,29 +114,44 @@ export function UserPreferencesProvider({ children }: { children: ReactNode }) {
     return () => mq.removeEventListener("change", handler);
   }, [theme]);
 
-  // ── Fetch preferences from Supabase ──────────────────────────────────────
+  // ── Sync DB Preferences (Primary Source of Truth) ─────────────────────────
   useEffect(() => {
     if (!userId) return;
+    
     setBudgetLoading(true);
     supabase
       .from("user_preferences")
-      .select("monthly_budget, currency, date_format")
+      .select("monthly_budget, currency, date_format, language")
       .eq("user_id", userId)
       .maybeSingle()
-      .then(({ data }) => {
+      .then(({ data, error }) => {
+        if (error) {
+          console.error("Error fetching vault preferences:", error);
+          return;
+        }
+
         if (data) {
-          setMonthlyBudgetState(data.monthly_budget ?? 0);
-          // Currency from DB takes precedence over localStorage
+          // 1. Language (Priority: DB > LocalStorage)
+          if (data.language) {
+            setLanguageState(data.language as Language);
+            setLocalStorageItem("pref:language", data.language);
+          }
+
+          // 2. Currency (Priority: DB > LocalStorage)
           if (data.currency) {
             const meta = CURRENCIES.find((c) => c.code === data.currency) ?? CURRENCIES[0];
             setCurrencyState(meta);
-            setLocalStorageItem("pref:currency", data.currency); // keep in sync
+            setLocalStorageItem("pref:currency", data.currency);
           }
-          // Date format from DB takes precedence
+
+          // 3. Date Format (Priority: DB > LocalStorage)
           if (data.date_format) {
             setDateFormatState(data.date_format as DateFormat);
-            setLocalStorageItem("pref:dateFormat", data.date_format); // keep in sync
+            setLocalStorageItem("pref:dateFormat", data.date_format);
           }
+
+          // 4. Monthly Budget
+          setMonthlyBudgetState(data.monthly_budget ?? 0);
         }
         setBudgetLoading(false);
       });
@@ -127,6 +161,11 @@ export function UserPreferencesProvider({ children }: { children: ReactNode }) {
   const setTheme = useCallback((t: Theme) => {
     setThemeState(t);
     setLocalStorageItem("pref:theme", t);
+  }, []);
+
+  const setLanguage = useCallback((l: Language) => {
+    setLanguageState(l);
+    setLocalStorageItem("pref:language", l);
   }, []);
 
   const setCurrency = useCallback((code: Currency) => {
@@ -149,7 +188,7 @@ export function UserPreferencesProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const updateFinancialSettings = useCallback(
-    async (prefs: { monthlyBudget?: number; currency?: Currency; dateFormat?: DateFormat }) => {
+    async (prefs: { monthlyBudget?: number; currency?: Currency; dateFormat?: DateFormat; language?: Language }) => {
       if (!userId) return;
 
       const updates: any = { user_id: userId };
@@ -168,6 +207,11 @@ export function UserPreferencesProvider({ children }: { children: ReactNode }) {
         setLocalStorageItem("pref:dateFormat", prefs.dateFormat);
         updates.date_format = prefs.dateFormat;
       }
+      if (prefs.language !== undefined) {
+        setLanguageState(prefs.language);
+        setLocalStorageItem("pref:language", prefs.language);
+        updates.language = prefs.language;
+      }
 
       const { error } = await supabase.from("user_preferences").upsert(updates, { onConflict: "user_id" });
       if (error) throw error;
@@ -181,6 +225,8 @@ export function UserPreferencesProvider({ children }: { children: ReactNode }) {
         theme,
         setTheme,
         resolvedTheme,
+        language,
+        setLanguage,
         currency,
         setCurrency,
         dateFormat,

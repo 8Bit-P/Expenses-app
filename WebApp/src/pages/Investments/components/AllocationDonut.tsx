@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { AssetWithSnapshots, AssetType } from "../../../types/investments";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
@@ -6,16 +7,18 @@ interface AllocationDonutProps {
   stealthMode: boolean;
 }
 
-const TYPE_CONFIG: Record<AssetType, { label: string; hex: string; bg: string; text: string; icon: string }> = {
-  fund:         { label: "Index Funds",  hex: "#818cf8", bg: "bg-indigo-500/15",   text: "text-indigo-400",  icon: "pie_chart" },
-  crypto:       { label: "Crypto",       hex: "#a78bfa", bg: "bg-violet-500/15",   text: "text-violet-400",  icon: "currency_bitcoin" },
-  stock:        { label: "Stocks",       hex: "#34d399", bg: "bg-emerald-500/15",  text: "text-emerald-400", icon: "trending_up" },
-  real_estate:  { label: "Real Estate",  hex: "#f59e0b", bg: "bg-amber-500/15",    text: "text-amber-400",   icon: "real_estate_agent" },
-  cash:         { label: "Cash",         hex: "#94a3b8", bg: "bg-slate-500/15",    text: "text-slate-400",   icon: "payments" },
-  other:        { label: "Other",        hex: "#6b7280", bg: "bg-zinc-500/15",     text: "text-zinc-400",    icon: "category" },
-};
-
 export default function AllocationDonut({ assets, stealthMode }: AllocationDonutProps) {
+  const { t } = useTranslation();
+
+  const TYPE_CONFIG: Record<AssetType, { label: string; hex: string; bg: string; text: string; icon: string }> = {
+    fund:         { label: t("investments.allocation.types.fund"),  hex: "#818cf8", bg: "bg-indigo-500/15",   text: "text-indigo-400",  icon: "pie_chart" },
+    crypto:       { label: t("investments.allocation.types.crypto"),       hex: "#a78bfa", bg: "bg-violet-500/15",   text: "text-violet-400",  icon: "currency_bitcoin" },
+    stock:        { label: t("investments.allocation.types.stock"),        hex: "#34d399", bg: "bg-emerald-500/15",  text: "text-emerald-400", icon: "trending_up" },
+    real_estate:  { label: t("investments.allocation.types.real_estate"),  hex: "#f59e0b", bg: "bg-amber-500/15",    text: "text-amber-400",   icon: "real_estate_agent" },
+    cash:         { label: t("investments.allocation.types.cash"),         hex: "#94a3b8", bg: "bg-slate-500/15",    text: "text-slate-400",   icon: "payments" },
+    other:        { label: t("investments.allocation.types.other"),        hex: "#6b7280", bg: "bg-zinc-500/15",     text: "text-zinc-400",    icon: "category" },
+  };
+
   const typeValues: Record<string, number> = {};
   let overallTotal = 0;
 
@@ -69,7 +72,7 @@ export default function AllocationDonut({ assets, stealthMode }: AllocationDonut
         <div className="flex items-center gap-2.5">
           <span className="material-symbols-outlined text-[18px] text-primary">donut_large</span>
           <h3 className="text-[11px] font-black uppercase tracking-[0.15em] text-on-surface-variant">
-            Portfolio Allocation
+            {t("investments.allocation.title")}
           </h3>
         </div>
       </div>
@@ -77,7 +80,7 @@ export default function AllocationDonut({ assets, stealthMode }: AllocationDonut
       {allocations.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center gap-3 py-16 text-on-surface-variant/30">
           <span className="material-symbols-outlined text-5xl">donut_large</span>
-          <p className="text-sm font-bold">No allocation data yet</p>
+          <p className="text-sm font-bold">{t("investments.allocation.noData")}</p>
         </div>
       ) : (
         <div className="flex flex-col items-center p-7 gap-8 flex-1">
@@ -114,13 +117,13 @@ export default function AllocationDonut({ assets, stealthMode }: AllocationDonut
             {/* Inner Content overlay perfectly centered */}
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
               <span className="text-[9px] font-black tracking-widest text-on-surface-variant/50 uppercase mb-1 drop-shadow-sm">
-                Diversified
+                {t("investments.allocation.diversified")}
               </span>
               <span className="text-3xl font-black font-headline text-on-surface leading-none drop-shadow-sm">
                 {stealthMode ? "?" : allocations.length}
               </span>
               <span className="text-[9px] font-bold text-on-surface-variant/60 mt-0.5">
-                Asset {allocations.length === 1 ? "Class" : "Classes"}
+                {t("investments.allocation.assetClass", { count: allocations.length })}
               </span>
             </div>
           </div>

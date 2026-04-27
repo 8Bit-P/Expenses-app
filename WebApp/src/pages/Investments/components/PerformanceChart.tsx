@@ -1,8 +1,10 @@
 import { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { formatCurrency, formatCompactCurrency } from "../../../utils/currency";
 import type { TimeRange } from "../../../types/investments";
 import { format, subMonths, subYears, parseISO } from "date-fns";
+import { es, enUS } from "date-fns/locale";
 import { ResponsiveContainer, ComposedChart, Bar, Line, XAxis, YAxis, Tooltip, Cell } from "recharts";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 
@@ -70,10 +72,13 @@ interface PerformanceChartProps {
 }
 
 export default function PerformanceChart({ assets, stealthMode }: PerformanceChartProps) {
+  const { t, i18n } = useTranslation();
   const aggregatedData = usePerformanceChartData(assets);
   const { currency } = useUserPreferences();
   const [timeRange, setTimeRange] = useState<TimeRange>("1Y");
   const isMobile = useIsMobile(1024);
+
+  const dateLocale = i18n.language === "es" ? es : enUS;
 
   // Filter data based on selected time range
   const filteredData = useMemo(() => {
@@ -87,9 +92,9 @@ export default function PerformanceChart({ assets, stealthMode }: PerformanceCha
   const formatXAxis = (dateStr: string) => {
     const date = parseISO(dateStr);
     if (isMobile) {
-      return format(date, "MMM");
+      return format(date, "MMM", { locale: dateLocale });
     }
-    return timeRange === "6M" ? format(date, "MMM d") : format(date, "MMM yyyy");
+    return timeRange === "6M" ? format(date, "MMM d", { locale: dateLocale }) : format(date, "MMM yyyy", { locale: dateLocale });
   };
 
   // Y-Axis formatter
@@ -108,13 +113,13 @@ export default function PerformanceChart({ assets, stealthMode }: PerformanceCha
       return (
         <div className="bg-surface-container-lowest p-4 rounded-xl shadow-2xl border border-outline-variant/20 animate-in fade-in zoom-in duration-200 z-[100]">
           <p className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest mb-3 border-b border-outline-variant/10 pb-2">
-            {format(parseISO(label), "MMMM d, yyyy")}
+            {format(parseISO(label), "MMMM d, yyyy", { locale: dateLocale })}
           </p>
           <div className="space-y-2.5">
             <div className="flex items-center justify-between gap-8">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-primary"></div>
-                <span className="text-xs font-bold text-on-surface-variant">Portfolio Value</span>
+                <span className="text-xs font-bold text-on-surface-variant">{t("investments.performance.portfolioValue")}</span>
               </div>
               <span className="text-sm font-black text-on-surface">
                 {stealthMode ? "****" : formatCurrency(data.totalValue, currency.code)}
@@ -123,14 +128,14 @@ export default function PerformanceChart({ assets, stealthMode }: PerformanceCha
             <div className="flex items-center justify-between gap-8">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-outline-variant"></div>
-                <span className="text-xs font-bold text-on-surface-variant">Net Invested</span>
+                <span className="text-xs font-bold text-on-surface-variant">{t("investments.performance.netInvested")}</span>
               </div>
               <span className="text-sm font-black text-on-surface">
                 {stealthMode ? "****" : formatCurrency(data.invested, currency.code)}
               </span>
             </div>
             <div className="flex items-center justify-between gap-8 pt-2 border-t border-outline-variant/10">
-              <span className="text-xs font-bold text-on-surface-variant">Total Gain</span>
+              <span className="text-xs font-bold text-on-surface-variant">{t("investments.performance.totalGain")}</span>
               <span className={`text-sm font-black ${profit >= 0 ? "text-emerald-500" : "text-error"}`}>
                 {stealthMode
                   ? "****"
@@ -157,10 +162,10 @@ export default function PerformanceChart({ assets, stealthMode }: PerformanceCha
             className={`${isMobile ? "text-lg" : "text-xl"} font-headline font-black text-on-surface flex items-center gap-2`}
           >
             <span className="material-symbols-outlined text-primary text-[22px]">insights</span>
-            Performance History
+            {t("investments.performance.title")}
           </h3>
           <p className="text-[10px] sm:text-xs font-bold text-on-surface-variant mt-1">
-            Value vs. Cost Basis over time
+            {t("investments.performance.subtitle")}
           </p>
         </div>
         <div className="flex gap-1 p-1 bg-surface-container-low rounded-xl self-end sm:self-auto">
@@ -170,7 +175,7 @@ export default function PerformanceChart({ assets, stealthMode }: PerformanceCha
               onClick={() => setTimeRange(range)}
               className={`px-3 sm:px-4 py-1.5 rounded-lg text-[10px] sm:text-xs font-black tracking-wider transition-all duration-300 ${timeRange === range ? "bg-primary text-on-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface"}`}
             >
-              {range}
+              {range === "ALL" ? t("common.all") : range}
             </button>
           ))}
         </div>
@@ -179,7 +184,7 @@ export default function PerformanceChart({ assets, stealthMode }: PerformanceCha
       {filteredData.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center text-on-surface-variant/40 gap-3 border-2 border-dashed border-outline-variant/20 rounded-2xl bg-surface-container-low/50">
           <span className="material-symbols-outlined text-4xl">monitoring</span>
-          <p className="text-sm font-bold">Log snapshots to visualize your timeline.</p>
+          <p className="text-sm font-bold">{t("investments.performance.noData")}</p>
         </div>
       ) : (
         <div className={`flex-1 ${isMobile ? "-ml-4 -mr-2" : "-ml-6 -mr-6"} -mb-6 relative`}>

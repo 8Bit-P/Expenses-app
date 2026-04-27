@@ -2,42 +2,46 @@ import { motion } from "framer-motion";
 import { Check, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const free = {
-  name: "Starter",
-  price: "€0",
-  period: "forever",
-  desc: "For anyone starting their financial journey.",
-  cta: "Start for free",
-  ctaLink: "/auth?mode=signup",
-  features: [
-    "Up to 100 transactions/month",
-    "Basic expense tracking",
-    "Manual entry only",
-    "3 custom categories",
-    "Single currency support",
-  ],
-};
-
-const pro = {
-  name: "Vault Pro",
-  price: "€49",
-  period: "/ year",
-  badge: "Most Popular",
-  desc: "Pay once a year, use forever.",
-  cta: "Get Vault Pro",
-  ctaLink: "/auth?mode=signup",
-  features: [
-    "Unlimited transactions",
-    "Predictive forecasting",
-    "Custom categories & tags",
-    "Multi-currency support",
-    "Asset & investment tracking",
-    "Action center & alerts",
-    "Priority support",
-  ],
-};
+import { useTranslation } from "react-i18next";
 
 export default function PricingSection() {
+  const { t } = useTranslation();
+
+  const free = {
+    name: t("landing.pricing.starter.name"),
+    price: t("landing.pricing.starter.price"),
+    period: t("landing.pricing.starter.period"),
+    desc: t("landing.pricing.starter.desc"),
+    cta: t("landing.pricing.starter.cta"),
+    ctaLink: "/auth?mode=signup",
+    features: [
+      t("landing.pricing.starter.f1"),
+      t("landing.pricing.starter.f2"),
+      t("landing.pricing.starter.f3"),
+      t("landing.pricing.starter.f4"),
+      t("landing.pricing.starter.f5"),
+    ],
+  };
+
+  const pro = {
+    name: t("landing.pricing.pro.name"),
+    price: t("landing.pricing.pro.price"),
+    period: t("landing.pricing.pro.period"),
+    badge: t("landing.pricing.pro.badge"),
+    desc: t("landing.pricing.pro.desc"),
+    cta: t("landing.pricing.pro.cta"),
+    ctaLink: "/auth?mode=signup",
+    features: [
+      t("landing.pricing.pro.f1"),
+      t("landing.pricing.pro.f2"),
+      t("landing.pricing.pro.f3"),
+      t("landing.pricing.pro.f4"),
+      t("landing.pricing.pro.f5"),
+      t("landing.pricing.pro.f6"),
+      t("landing.pricing.pro.f7"),
+    ],
+  };
+
   return (
     <section id="pricing" className="py-32 px-6">
       <div className="max-w-5xl mx-auto">
@@ -50,10 +54,10 @@ export default function PricingSection() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-black tracking-tighter text-white mb-4">
-            Simple, honest pricing.
+            {t("landing.pricing.title")}
           </h2>
           <p className="text-slate-400 text-lg max-w-lg mx-auto">
-            No subscriptions. No tricks. Pay once a year and own your data.
+            {t("landing.pricing.subtitle")}
           </p>
         </motion.div>
 
@@ -110,7 +114,7 @@ export default function PricingSection() {
               <span className="text-slate-400 mb-2 text-lg font-semibold">{pro.period}</span>
             </div>
             <p className="text-violet-300/70 text-sm mb-2 font-medium">{pro.desc}</p>
-            <p className="text-slate-400 text-sm mb-8">Everything in Starter, plus:</p>
+            <p className="text-slate-400 text-sm mb-8">{t("landing.pricing.plus")}</p>
             <ul className="space-y-3 mb-8 flex-1">
               {pro.features.map((f) => (
                 <li key={f} className="flex items-center gap-2.5 text-slate-300 text-sm">

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { NumberStepper } from "../../../components/ui/NumberStepper";
 
@@ -37,6 +38,7 @@ interface NotifRowProps {
 }
 
 function NotifRow({ icon, title, subtitle, checked, onToggle, children, disabled = false }: NotifRowProps) {
+  const { t } = useTranslation();
   return (
     <div className={`space-y-2 ${disabled ? "opacity-60" : ""}`}>
       <div className="flex items-start justify-between gap-4">
@@ -49,7 +51,7 @@ function NotifRow({ icon, title, subtitle, checked, onToggle, children, disabled
               <p className="font-bold text-on-surface text-sm">{title}</p>
               {disabled && (
                 <span className="text-[8px] font-black uppercase tracking-widest bg-surface-container px-1.5 py-0.5 rounded-md text-on-surface-variant/70 border border-outline-variant/10">
-                  Soon
+                  {t("settings.notifications.soon")}
                 </span>
               )}
             </div>
@@ -68,13 +70,14 @@ function NotifRow({ icon, title, subtitle, checked, onToggle, children, disabled
 }
 
 export default function NotificationsSection() {
+  const { t } = useTranslation();
   const { notifications, setNotifications, currency } = useUserPreferences();
 
   return (
     <section className="col-span-12 lg:col-span-4 space-y-4">
       <h4 className="text-lg font-bold font-headline px-2 flex items-center gap-2 text-on-surface">
         <span className="material-symbols-outlined text-on-surface-variant">notifications_active</span>
-        Notifications
+        {t("settings.notifications.title")}
       </h4>
 
       <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/10 divide-y divide-outline-variant/10">
@@ -82,14 +85,14 @@ export default function NotificationsSection() {
         <div className="p-5">
           <NotifRow
             icon="savings"
-            title="Budget Threshold Alerts"
-            subtitle="Warn me when I approach my monthly budget"
+            title={t("settings.notifications.budgetAlerts.title")}
+            subtitle={t("settings.notifications.budgetAlerts.desc")}
             checked={notifications.budgetThresholdAlerts}
             onToggle={() => setNotifications({ budgetThresholdAlerts: !notifications.budgetThresholdAlerts })}
             disabled
           >
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-xs text-on-surface-variant font-medium">Warn at</span>
+              <span className="text-xs text-on-surface-variant font-medium">{t("settings.notifications.budgetAlerts.warnAt")}</span>
               <NumberStepper
                 value={notifications.budgetThresholdPct}
                 onChange={(v) => setNotifications({ budgetThresholdPct: v })}
@@ -98,7 +101,7 @@ export default function NotificationsSection() {
                 step={5}
                 suffix="%"
               />
-              <span className="text-xs text-on-surface-variant font-medium">of budget</span>
+              <span className="text-xs text-on-surface-variant font-medium">{t("settings.notifications.budgetAlerts.ofBudget")}</span>
             </div>
           </NotifRow>
         </div>
@@ -107,14 +110,14 @@ export default function NotificationsSection() {
         <div className="p-5">
           <NotifRow
             icon="radar"
-            title="Large Transaction Radar"
-            subtitle="Alert me for any single expense over a threshold"
+            title={t("settings.notifications.largeTransaction.title")}
+            subtitle={t("settings.notifications.largeTransaction.desc")}
             checked={notifications.largeTransactionRadar}
             onToggle={() => setNotifications({ largeTransactionRadar: !notifications.largeTransactionRadar })}
             disabled
           >
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-xs text-on-surface-variant font-medium">Alert above</span>
+              <span className="text-xs text-on-surface-variant font-medium">{t("settings.notifications.largeTransaction.alertAbove")}</span>
               <NumberStepper
                 value={notifications.largeTransactionAmount}
                 onChange={(v) => setNotifications({ largeTransactionAmount: v })}
@@ -130,8 +133,8 @@ export default function NotificationsSection() {
         <div className="p-5">
           <NotifRow
             icon="calendar_month"
-            title="Weekly Financial Digest"
-            subtitle="A quick spending summary every Sunday"
+            title={t("settings.notifications.weeklyDigest.title")}
+            subtitle={t("settings.notifications.weeklyDigest.desc")}
             checked={notifications.weeklyDigest}
             onToggle={() => setNotifications({ weeklyDigest: !notifications.weeklyDigest })}
             disabled
@@ -142,8 +145,8 @@ export default function NotificationsSection() {
         <div className="p-5">
           <NotifRow
             icon="edit_notifications"
-            title="Tracking Reminder"
-            subtitle="Remind me to log expenses if inactive for 3 days"
+            title={t("settings.notifications.trackingReminder.title")}
+            subtitle={t("settings.notifications.trackingReminder.desc")}
             checked={notifications.trackingReminder}
             onToggle={() => setNotifications({ trackingReminder: !notifications.trackingReminder })}
             disabled
@@ -154,8 +157,8 @@ export default function NotificationsSection() {
         <div className="p-5">
           <NotifRow
             icon="autorenew"
-            title="Subscription Renewals"
-            subtitle="Remind me 3 days before a recurring charge"
+            title={t("settings.notifications.subscriptionRenewals.title")}
+            subtitle={t("settings.notifications.subscriptionRenewals.desc")}
             checked={notifications.subscriptionRenewals}
             onToggle={() => setNotifications({ subscriptionRenewals: !notifications.subscriptionRenewals })}
             disabled

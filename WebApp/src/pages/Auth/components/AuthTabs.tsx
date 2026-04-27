@@ -1,9 +1,13 @@
+import { useTranslation } from "react-i18next";
+
 interface AuthTabsProps {
   isSignUp: boolean;
   setIsSignUp: (value: boolean) => void;
 }
 
 export default function AuthTabs({ isSignUp, setIsSignUp }: AuthTabsProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex w-full bg-surface-container-low p-1 rounded-xl mb-6 gap-1">
       <button
@@ -15,7 +19,7 @@ export default function AuthTabs({ isSignUp, setIsSignUp }: AuthTabsProps) {
             : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
         }`}
       >
-        Sign In
+        {t("auth.signIn")}
       </button>
       <button
         type="button"
@@ -26,7 +30,7 @@ export default function AuthTabs({ isSignUp, setIsSignUp }: AuthTabsProps) {
             : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
         }`}
       >
-        Create Account
+        {t("auth.createAccount")}
       </button>
     </div>
   );

@@ -12,7 +12,10 @@ function VaultLogoSVG() {
   );
 }
 
+import { useTranslation } from "react-i18next";
+
 export default function Navbar() {
+  const { t } = useTranslation();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -44,13 +47,13 @@ export default function Navbar() {
             to="/auth?mode=signin"
             className="px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white rounded-full hover:bg-white/5 transition-all duration-200"
           >
-            Sign In
+            {t("landing.navbar.signIn")}
           </Link>
           <Link
             to="/auth?mode=signup"
             className="px-5 py-2 text-sm font-bold text-white bg-violet-600 hover:bg-violet-500 rounded-full transition-all duration-200 shadow-lg shadow-violet-900/50"
           >
-            Get Started
+            {t("landing.navbar.getStarted")}
           </Link>
         </div>
       </div>

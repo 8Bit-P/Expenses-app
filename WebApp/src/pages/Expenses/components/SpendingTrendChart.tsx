@@ -8,7 +8,10 @@ import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { formatDateLabel } from "../../../utils/dateFormatters";
 import { formatCurrency } from "../../../utils/currency";
 
+import { useTranslation } from "react-i18next";
+
 export default function SpendingTrendChart() {
+  const { t } = useTranslation();
   const { filters } = useExpenses();
   const { monthlyBudget, currency } = useUserPreferences();
   const now = new Date();
@@ -102,7 +105,7 @@ export default function SpendingTrendChart() {
     return (
       <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 h-95 flex items-center justify-center animate-pulse">
         <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/40">
-          Calculating Trends…
+          {t("expenses.charts.spendingTrend.calculating")}
         </span>
       </div>
     );
@@ -158,7 +161,7 @@ export default function SpendingTrendChart() {
               strokeLinecap="round"
             />
           </svg>
-          <span className="text-on-surface-variant">Budget</span>
+          <span className="text-on-surface-variant">{t("expenses.charts.spendingTrend.budget")}</span>
         </div>
       )}
       <div className="flex items-center gap-1.5">
@@ -170,7 +173,7 @@ export default function SpendingTrendChart() {
           <svg width="18" height="4" viewBox="0 0 18 4">
              <line x1="0" y1="2" x2="18" y2="2" stroke={safeColor} strokeWidth="2" strokeDasharray="3 3" opacity={0.6} />
           </svg>
-          <span className="text-on-surface-variant">Predicted</span>
+          <span className="text-on-surface-variant">{t("expenses.charts.spendingTrend.predicted")}</span>
         </div>
       )}
       <div className="flex items-center gap-1.5">
@@ -185,9 +188,11 @@ export default function SpendingTrendChart() {
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h4 className="text-lg font-bold font-headline text-on-surface">Spending Trend</h4>
+          <h4 className="text-lg font-bold font-headline text-on-surface">
+            {t("expenses.charts.spendingTrend.title")}
+          </h4>
           <p className="text-xs font-medium text-on-surface-variant mt-0.5">
-            Cumulative spend — current vs previous period
+            {t("expenses.charts.spendingTrend.subtitle")}
           </p>
         </div>
 
@@ -276,7 +281,7 @@ export default function SpendingTrendChart() {
                 const formatted = formatCurrency(value as number, currency.code);
                 if (name === "current") return [formatted, currentLabel];
                 if (name === "previous") return [formatted, previousLabel];
-                if (name === "prediction") return [formatted, "Predicted (Run Rate)"];
+                if (name === "prediction") return [formatted, t("expenses.charts.spendingTrend.predictionTooltip")];
                 return [formatted, name];
               }}
             />

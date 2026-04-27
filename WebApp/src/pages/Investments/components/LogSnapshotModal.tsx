@@ -1,15 +1,20 @@
 import { useState, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { useInvestments } from "../../../hooks/useInvestments";
 import type { AssetWithSnapshots, AssetType } from "../../../types/investments";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
+import { es, enUS } from "date-fns/locale";
 
 // ==========================================
 // 1. THE CUSTOM HOOK (Logic Separation)
 // ==========================================
 function useSnapshotForm(assets: AssetWithSnapshots[], onClose: () => void) {
+  const { t, i18n } = useTranslation();
   const { createAsset, createSnapshot } = useInvestments();
+
+  const dateLocale = i18n.language === "es" ? es : enUS;
 
   // Tabs & Modes
   const [activeTab, setActiveTab] = useState<"snapshot" | "new_asset">("snapshot");
@@ -69,13 +74,15 @@ function useSnapshotForm(assets: AssetWithSnapshots[], onClose: () => void) {
         type: newAssetType,
         initialValue: Number(initialValue) || 0,
       });
-      toast.success("Asset Secured", { description: `${newAssetName} added to vault.` });
+      toast.success(t("investments.logModal.newAsset.toast.success"), { 
+        description: t("investments.logModal.newAsset.toast.successDesc", { name: newAssetName }) 
+      });
       setNewAssetName("");
       setInitialValue("");
       setSelectedAssetId(created.id);
       setActiveTab("snapshot");
     } catch (error: any) {
-      toast.error("Failed to create", { description: error.message });
+      toast.error(t("investments.logModal.newAsset.toast.error"), { description: error.message });
     } finally {
       setIsSubmitting(false);
     }
@@ -96,14 +103,16 @@ function useSnapshotForm(assets: AssetWithSnapshots[], onClose: () => void) {
         contribution: netContribution,
       });
 
-      toast.success("Snapshot Logged", { description: "Portfolio timeline updated." });
+      toast.success(t("investments.logModal.snapshot.toast.success"), { 
+        description: t("investments.logModal.snapshot.toast.successDesc") 
+      });
       // Reset form on success
       setTotalValue("");
       setMovementType("none");
       setMovementAmount("");
       onClose();
     } catch (error: any) {
-      toast.error("Failed to log", { description: error.message });
+      toast.error(t("investments.logModal.snapshot.toast.error"), { description: error.message });
     } finally {
       setIsSubmitting(false);
     }
@@ -149,8 +158,11 @@ interface LogSnapshotModalProps {
 }
 
 export default function LogSnapshotModal({ isOpen, onClose, assets }: LogSnapshotModalProps) {
+  const { t, i18n } = useTranslation();
   const { currency } = useUserPreferences();
   const form = useSnapshotForm(assets, onClose);
+
+  const dateLocale = i18n.language === "es" ? es : enUS;
 
   if (!isOpen) return null;
 
@@ -169,7 +181,7 @@ export default function LogSnapshotModal({ isOpen, onClose, assets }: LogSnapsho
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-black font-headline text-on-surface tracking-tight flex items-center gap-2">
               <span className="material-symbols-outlined text-primary">add_chart</span>
-              Update Ledger
+              {t("investments.logModal.title")}
             </h2>
             <button
               onClick={onClose}
@@ -186,13 +198,13 @@ export default function LogSnapshotModal({ isOpen, onClose, assets }: LogSnapsho
               disabled={assets.length === 0}
               className={`flex-1 py-2.5 text-sm font-bold rounded-lg transition-all duration-300 ${form.activeTab === "snapshot" ? "bg-surface-container-lowest text-on-surface shadow-sm ring-1 ring-outline-variant/10" : "text-on-surface-variant hover:text-on-surface disabled:opacity-30"}`}
             >
-              Log Snapshot
+              {t("investments.logModal.tabs.log")}
             </button>
             <button
               onClick={() => form.setActiveTab("new_asset")}
               className={`flex-1 py-2.5 text-sm font-bold rounded-lg transition-all duration-300 ${form.activeTab === "new_asset" ? "bg-surface-container-lowest text-on-surface shadow-sm ring-1 ring-outline-variant/10" : "text-on-surface-variant hover:text-on-surface"}`}
             >
-              Add New Asset
+              {t("investments.logModal.tabs.new")}
             </button>
           </div>
         </div>
@@ -204,11 +216,11 @@ export default function LogSnapshotModal({ isOpen, onClose, assets }: LogSnapsho
             <form onSubmit={form.newAsset.submit} className="space-y-6 animate-in fade-in slide-in-from-right-4">
               <div className="space-y-2">
                 <label className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                  Asset Name
+                  {t("investments.logModal.newAsset.nameLabel")}
                 </label>
                 <input
                   autoFocus
-                  placeholder="e.g., Vanguard S&P 500"
+                  placeholder={t("investments.logModal.newAsset.namePlaceholder")}
                   className="w-full bg-surface-container-low border-none rounded-2xl px-5 py-4 text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/50 transition-all outline-none"
                   value={form.newAsset.name}
                   onChange={(e) => form.newAsset.setName(e.target.value)}
@@ -217,13 +229,13 @@ export default function LogSnapshotModal({ isOpen, onClose, assets }: LogSnapsho
 
               <div className="space-y-2">
                 <label className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                  Initial Balance (Optional)
+                  {t("investments.logModal.newAsset.initialLabel")}
                 </label>
                 <div className="relative flex items-center bg-primary/5 rounded-2xl border border-primary/20 focus-within:border-primary/50 transition-all p-1">
                   <span className="absolute left-4 text-xl font-black text-primary">{currency.symbol}</span>
                   <input
                     className="w-full bg-transparent border-none py-3.5 pl-10 pr-4 text-xl font-black text-on-surface placeholder:text-on-surface-variant/30 outline-none focus:ring-0"
-                    placeholder="0.00"
+                    placeholder={t("investments.logModal.newAsset.initialPlaceholder")}
                     type="number"
                     step="0.01"
                     min="0"
@@ -232,22 +244,22 @@ export default function LogSnapshotModal({ isOpen, onClose, assets }: LogSnapsho
                   />
                 </div>
                 <p className="text-[10px] font-semibold text-on-surface-variant/60 ml-2 mt-1">
-                  This will be recorded as your starting snapshot.
+                  {t("investments.logModal.newAsset.initialDesc")}
                 </p>
               </div>
 
               <div className="space-y-2">
                 <label className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                  Asset Class
+                  {t("investments.logModal.newAsset.classLabel")}
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   {[
-                    { id: "fund", icon: "pie_chart", label: "Fund" },
-                    { id: "stock", icon: "trending_up", label: "Stock" },
-                    { id: "crypto", icon: "currency_bitcoin", label: "Crypto" },
-                    { id: "real_estate", icon: "real_estate_agent", label: "Real Estate" },
-                    { id: "cash", icon: "payments", label: "Cash" },
-                    { id: "other", icon: "category", label: "Other" },
+                    { id: "fund", icon: "pie_chart", label: t("investments.logModal.newAsset.types.fund") },
+                    { id: "stock", icon: "trending_up", label: t("investments.logModal.newAsset.types.stock") },
+                    { id: "crypto", icon: "currency_bitcoin", label: t("investments.logModal.newAsset.types.crypto") },
+                    { id: "real_estate", icon: "real_estate_agent", label: t("investments.logModal.newAsset.types.real_estate") },
+                    { id: "cash", icon: "payments", label: t("investments.logModal.newAsset.types.cash") },
+                    { id: "other", icon: "category", label: t("investments.logModal.newAsset.types.other") },
                   ].map((type) => (
                     <button
                       key={type.id}
@@ -267,7 +279,7 @@ export default function LogSnapshotModal({ isOpen, onClose, assets }: LogSnapsho
                 disabled={form.isSubmitting || !form.newAsset.name}
                 className="w-full py-4 rounded-2xl font-black text-sm text-on-primary bg-primary hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 disabled:opacity-50 mt-4"
               >
-                {form.isSubmitting ? "Creating..." : "Create Asset"}
+                {form.isSubmitting ? t("investments.logModal.newAsset.creating") : t("investments.logModal.newAsset.createButton")}
               </button>
             </form>
           ) : (
@@ -275,32 +287,35 @@ export default function LogSnapshotModal({ isOpen, onClose, assets }: LogSnapsho
             <form onSubmit={form.snapshot.submit} className="space-y-6 animate-in fade-in slide-in-from-left-4">
               <div className="space-y-2">
                 <label className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                  Target Asset
+                  {t("investments.logModal.snapshot.targetLabel")}
                 </label>
-                <select
-                  className="w-full bg-surface-container-low border-none rounded-2xl px-5 py-4 text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/50 outline-none appearance-none cursor-pointer"
-                  value={form.snapshot.assetId}
-                  onChange={(e) => form.snapshot.setAssetId(e.target.value)}
-                >
-                  {assets.map((a) => (
-                    <option key={a.id} value={a.id}>
-                      {a.name}
-                    </option>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {assets.map((asset) => (
+                    <button
+                      key={asset.id}
+                      type="button"
+                      onClick={() => form.snapshot.setAssetId(asset.id)}
+                      className={`p-3 rounded-xl border text-xs font-bold transition-all text-center flex flex-col items-center gap-1.5 ${form.snapshot.assetId === asset.id ? "border-primary bg-primary/5 text-primary shadow-sm" : "border-outline-variant/20 text-on-surface-variant hover:bg-surface-container"}`}
+                    >
+                      <span className="material-symbols-outlined text-[18px]">
+                        {asset.type === "crypto" ? "currency_bitcoin" : asset.type === "stock" ? "trending_up" : "pie_chart"}
+                      </span>
+                      <span className="truncate w-full">{asset.name}</span>
+                    </button>
                   ))}
-                </select>
+                </div>
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-end justify-between ml-1 mb-1">
                   <label className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant">
-                    Current Total Value
+                    {t("investments.logModal.snapshot.valueLabel")}
                   </label>
                   {form.preview.prevValue > 0 && (
                     <span className="text-[10px] font-bold text-on-surface-variant/60">
-                      Previous: {currency.symbol}
-                      {form.preview.prevValue.toLocaleString()}
+                      {t("investments.logModal.snapshot.previousValue", { symbol: currency.symbol, value: form.preview.prevValue.toLocaleString() })}
                       {form.preview.lastDate &&
-                        ` (${formatDistanceToNow(new Date(form.preview.lastDate), { addSuffix: true })})`}
+                        ` (${formatDistanceToNow(new Date(form.preview.lastDate), { addSuffix: true, locale: dateLocale })})`}
                     </span>
                   )}
                 </div>
@@ -308,7 +323,7 @@ export default function LogSnapshotModal({ isOpen, onClose, assets }: LogSnapsho
                   <span className="absolute left-5 text-2xl font-black text-primary">{currency.symbol}</span>
                   <input
                     className="w-full bg-transparent border-none py-5 pl-12 pr-5 text-3xl font-black text-on-surface placeholder:text-on-surface-variant/30 outline-none focus:ring-0"
-                    placeholder="0.00"
+                    placeholder={t("investments.logModal.snapshot.valuePlaceholder")}
                     type="number"
                     step="0.01"
                     min="0"
@@ -320,7 +335,7 @@ export default function LogSnapshotModal({ isOpen, onClose, assets }: LogSnapsho
 
               <div className="p-5 rounded-2xl bg-surface-container-low space-y-4">
                 <label className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant">
-                  Did cash move in or out?
+                  {t("investments.logModal.snapshot.movementLabel")}
                 </label>
 
                 <div className="flex bg-surface-container p-1 rounded-xl">
@@ -329,21 +344,21 @@ export default function LogSnapshotModal({ isOpen, onClose, assets }: LogSnapsho
                     onClick={() => form.snapshot.setMoveType("none")}
                     className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${form.snapshot.moveType === "none" ? "bg-surface-container-lowest text-on-surface shadow-sm" : "text-on-surface-variant"}`}
                   >
-                    No
+                    {t("investments.logModal.snapshot.moveNone")}
                   </button>
                   <button
                     type="button"
                     onClick={() => form.snapshot.setMoveType("in")}
                     className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${form.snapshot.moveType === "in" ? "bg-emerald-500 text-white shadow-sm" : "text-on-surface-variant"}`}
                   >
-                    + Deposit
+                    {t("investments.logModal.snapshot.moveDeposit")}
                   </button>
                   <button
                     type="button"
                     onClick={() => form.snapshot.setMoveType("out")}
                     className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${form.snapshot.moveType === "out" ? "bg-error text-white shadow-sm" : "text-on-surface-variant"}`}
                   >
-                    - Withdraw
+                    {t("investments.logModal.snapshot.moveWithdraw")}
                   </button>
                 </div>
 
@@ -356,7 +371,7 @@ export default function LogSnapshotModal({ isOpen, onClose, assets }: LogSnapsho
                     </span>
                     <input
                       className="w-full bg-surface-container-lowest border-none rounded-xl py-3 pl-10 pr-4 text-sm font-bold text-on-surface outline-none focus:ring-2 focus:ring-primary/50"
-                      placeholder="Amount moved..."
+                      placeholder={t("investments.logModal.snapshot.movePlaceholder")}
                       type="number"
                       step="0.01"
                       min="0"
@@ -378,7 +393,9 @@ export default function LogSnapshotModal({ isOpen, onClose, assets }: LogSnapsho
                     >
                       {form.preview.isPositive ? "trending_up" : "trending_down"}
                     </span>
-                    <span className="text-xs font-bold text-on-surface">Calculated Market Growth</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">
+                      {t("investments.logModal.snapshot.growthLabel")}
+                    </span>
                   </div>
                   <span
                     className={`font-black tracking-tight ${form.preview.isPositive ? "text-emerald-500" : "text-error"}`}
@@ -399,7 +416,7 @@ export default function LogSnapshotModal({ isOpen, onClose, assets }: LogSnapsho
                   disabled={form.isSubmitting || !form.snapshot.assetId || !form.snapshot.value}
                   className="w-full py-4 rounded-2xl font-black text-sm text-on-primary bg-primary hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
                 >
-                  {form.isSubmitting ? "Encrypting Data..." : "Confirm Snapshot"}
+                  {form.isSubmitting ? t("investments.logModal.snapshot.confirming") : t("investments.logModal.snapshot.confirmButton")}
                 </button>
               </div>
             </form>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useExpenses } from "../../../context/ExpensesContext";
 import { useCategories } from "../../../hooks/useCategories";
 import type { TransactionType } from "../../../types/expenses";
@@ -6,6 +7,7 @@ import { PRESETS, buildPreset, type PresetKey } from "../../../utils/filterPrese
 import { CustomSelect } from "../../../components/ui/CustomSelect";
 
 export default function FilterPanel() {
+  const { t } = useTranslation();
   const { filters, setFilters } = useExpenses();
   const { categories } = useCategories();
 
@@ -38,7 +40,9 @@ export default function FilterPanel() {
         <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/10 bg-surface-container-low/40 rounded-t-2xl">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-primary text-[18px]">tune</span>
-            <h4 className="text-sm font-black uppercase tracking-[0.15em] text-on-surface">Filter Narrative</h4>
+            <h4 className="text-sm font-black uppercase tracking-[0.15em] text-on-surface">
+              {t("expenses.filter.narrative")}
+            </h4>
           </div>
           {isDirty && (
             <button
@@ -46,7 +50,7 @@ export default function FilterPanel() {
               className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1"
             >
               <span className="material-symbols-outlined text-[13px]">refresh</span>
-              Reset
+              {t("expenses.filter.reset")}
             </button>
           )}
         </div>
@@ -55,20 +59,20 @@ export default function FilterPanel() {
           {/* Flow Type */}
           <div className="space-y-2.5">
             <label className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant block">
-              Flow Type
+              {t("expenses.filter.type")}
             </label>
             <div className="grid grid-cols-3 gap-1.5 p-1 bg-surface-container rounded-xl">
-              {(["all", "income", "expense"] as const).map((t) => {
-                const active = t === "all" ? !filters.type : filters.type === t;
+              {(["all", "income", "expense"] as const).map((tKey) => {
+                const active = tKey === "all" ? !filters.type : filters.type === tKey;
                 return (
                   <button
-                    key={t}
-                    onClick={() => handleTypeChange(t === "all" ? undefined : t)}
+                    key={tKey}
+                    onClick={() => handleTypeChange(tKey === "all" ? undefined : tKey)}
                     className={`py-2 rounded-lg text-xs font-bold transition-all ${
                       active ? "bg-primary text-white shadow-sm" : "text-on-surface hover:bg-surface-container-lowest"
                     }`}
                   >
-                    {t.charAt(0).toUpperCase() + t.slice(1)}
+                    {t(`expenses.filter.types.${tKey}`)}
                   </button>
                 );
               })}
@@ -78,12 +82,12 @@ export default function FilterPanel() {
           {/* Category */}
           <div className="space-y-2.5">
             <label className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant block">
-              Category
+              {t("expenses.filter.category")}
             </label>
             <CustomSelect
               value={filters.categoryId || "all"}
               options={[
-                { value: "all", label: "All Categories" },
+                { value: "all", label: t("expenses.filter.allCategories") },
                 ...categories.map((cat) => ({ value: cat.id, label: `${cat.emoji ?? ""} ${cat.name}` })),
               ]}
               onChange={(v) => handleCategoryChange(v)}
@@ -94,7 +98,7 @@ export default function FilterPanel() {
           {/* Date Range */}
           <div className="space-y-2.5">
             <label className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant block">
-              Date Range
+              {t("expenses.filter.dateRange")}
             </label>
 
             {/* Preset chips */}
@@ -112,7 +116,7 @@ export default function FilterPanel() {
                         : "bg-surface-container text-on-surface hover:bg-surface-container-low border border-outline-variant/20"
                     }`}
                   >
-                    {p.label}
+                    {t(`expenses.presets.${p.key}`)}
                   </button>
                 );
               })}

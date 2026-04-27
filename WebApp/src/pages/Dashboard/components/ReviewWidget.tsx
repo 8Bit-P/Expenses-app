@@ -8,7 +8,10 @@ import { Check, Inbox, Loader2, Tag, ChevronDown, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
+import { useTranslation } from "react-i18next";
+
 export default function ReviewWidget() {
+  const { t } = useTranslation();
   const { transactions, loading, updateTransaction, deleteTransaction } = usePendingTransactions();
   const { categories } = useCategories();
   const { currency } = useUserPreferences();
@@ -27,7 +30,7 @@ export default function ReviewWidget() {
     const description = editedDescriptions[id] ?? tx?.description;
     
     if (!categoryId) {
-      toast.error("Please select a category first");
+      toast.error(t("dashboard.reviewWidget.toast.selectCategory"));
       return;
     }
 
@@ -41,9 +44,9 @@ export default function ReviewWidget() {
           needs_review: false
         }
       });
-      toast.success("Transaction approved");
+      toast.success(t("dashboard.reviewWidget.toast.approved"));
     } catch (err) {
-      toast.error("Failed to approve transaction");
+      toast.error(t("dashboard.reviewWidget.toast.approvedError"));
     } finally {
       setApprovingIds(prev => {
         const next = new Set(prev);
@@ -57,9 +60,9 @@ export default function ReviewWidget() {
     setDiscardingIds(prev => new Set(prev).add(id));
     try {
       await deleteTransaction(id);
-      toast.success("Transaction discarded");
+      toast.success(t("dashboard.reviewWidget.toast.discarded"));
     } catch (err) {
-      toast.error("Failed to discard transaction");
+      toast.error(t("dashboard.reviewWidget.toast.discardedError"));
     } finally {
       setDiscardingIds(prev => {
         const next = new Set(prev);
@@ -85,10 +88,10 @@ export default function ReviewWidget() {
           </div>
           <div>
             <h2 className="text-sm font-black font-headline text-on-surface">
-              {transactions.length} Transactions need review
+              {t("dashboard.reviewWidget.title", { count: transactions.length })}
             </h2>
             <p className="text-[10px] font-bold text-on-surface-variant/70 uppercase tracking-widest">
-              Action Center Inbox
+              {t("dashboard.reviewWidget.subtitle")}
             </p>
           </div>
         </div>
@@ -121,12 +124,12 @@ export default function ReviewWidget() {
                   <input
                     type="text"
                     value={editedDescriptions[tx.id] ?? tx.description ?? ""}
-                    placeholder="Unlabeled Transaction"
+                    placeholder={t("dashboard.reviewWidget.placeholder")}
                     onChange={(e) => setEditedDescriptions(prev => ({ ...prev, [tx.id]: e.target.value }))}
                     className="w-full bg-transparent border-none p-0 text-sm font-bold text-on-surface placeholder:text-on-surface-variant/30 focus:ring-0 focus:outline-none hover:bg-surface-container-low/80 rounded px-1 -ml-1 transition-colors"
                   />
                   <p className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/50 mt-1">
-                    Pending Verification
+                    {t("dashboard.reviewWidget.pendingVerification")}
                   </p>
                 </div>
               </div>
@@ -145,7 +148,7 @@ export default function ReviewWidget() {
                       onChange={(e) => setSelectedCategories(prev => ({ ...prev, [tx.id]: e.target.value }))}
                       className="appearance-none w-full bg-surface-container-low border border-outline-variant/30 rounded-xl pl-8 pr-8 py-2 text-[11px] font-bold text-on-surface-variant focus:outline-none focus:border-primary/50 cursor-pointer transition-all hover:border-outline-variant"
                     >
-                      <option value="" disabled>Select Category</option>
+                      <option value="" disabled>{t("dashboard.reviewWidget.selectCategory")}</option>
                       {categories.map(cat => (
                         <option key={cat.id} value={cat.id}>
                           {cat.emoji} {cat.name}
@@ -160,7 +163,7 @@ export default function ReviewWidget() {
                     <button
                       onClick={() => handleDiscard(tx.id)}
                       disabled={discardingIds.has(tx.id) || approvingIds.has(tx.id)}
-                      title="Discard Transaction"
+                      title={t("dashboard.reviewWidget.discard")}
                       className="w-9 h-9 rounded-xl text-on-surface-variant/40 hover:text-error hover:bg-error/10 flex items-center justify-center transition-all active:scale-95 disabled:opacity-30"
                     >
                       {discardingIds.has(tx.id) ? (
@@ -173,6 +176,7 @@ export default function ReviewWidget() {
                     <button
                       onClick={() => handleApprove(tx.id)}
                       disabled={approvingIds.has(tx.id) || discardingIds.has(tx.id)}
+                      title={t("dashboard.reviewWidget.approve")}
                       className="w-9 h-9 rounded-xl bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:scale-100 transition-all"
                     >
                       {approvingIds.has(tx.id) ? (

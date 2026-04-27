@@ -12,7 +12,10 @@ interface CreateReserveModalProps {
   onClose: () => void;
 }
 
+import { useTranslation } from "react-i18next";
+
 export default function CreateReserveModal({ isOpen, onClose }: CreateReserveModalProps) {
+  const { t } = useTranslation();
   const { categories } = useCategories();
   const { createReserve } = useReserves();
   const { currency } = useUserPreferences();
@@ -39,7 +42,9 @@ export default function CreateReserveModal({ isOpen, onClose }: CreateReserveMod
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !targetAmount || !categoryId) {
-      toast.error("Missing fields", { description: "Please fill in all required fields." });
+      toast.error(t("dashboard.reserves.toast.missingFields"), { 
+        description: t("dashboard.reserves.toast.missingFieldsDesc") 
+      });
       return;
     }
 
@@ -65,7 +70,9 @@ export default function CreateReserveModal({ isOpen, onClose }: CreateReserveMod
         <div className="px-6 py-6 border-b border-outline-variant/5 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Shield className="w-5 h-5 text-primary" />
-            <h2 className="text-xl font-black text-on-surface tracking-tight font-headline">New Saving Reserve</h2>
+            <h2 className="text-xl font-black text-on-surface tracking-tight font-headline">
+              {t("dashboard.reserves.newReserve")}
+            </h2>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-surface-container rounded-full transition-colors text-on-surface-variant">
             <X className="w-5 h-5" />
@@ -74,11 +81,13 @@ export default function CreateReserveModal({ isOpen, onClose }: CreateReserveMod
 
         <form onSubmit={handleCreate} className="p-6 space-y-5">
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Reserve Name</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
+              {t("dashboard.reserves.reserveName")}
+            </label>
             <input
               autoFocus
               className="w-full bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-3 px-4 text-sm font-semibold text-on-surface outline-none"
-              placeholder="e.g. New Car, Travel Fund"
+              placeholder={t("dashboard.reserves.reserveNamePlaceholder")}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -86,7 +95,9 @@ export default function CreateReserveModal({ isOpen, onClose }: CreateReserveMod
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Target Amount ({currency.symbol})</label>
+              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
+                {t("dashboard.reserves.targetAmount")} ({currency.symbol})
+              </label>
               <input
                 type="number"
                 className="w-full bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-3 px-4 text-sm font-semibold text-on-surface outline-none"
@@ -96,7 +107,9 @@ export default function CreateReserveModal({ isOpen, onClose }: CreateReserveMod
               />
             </div>
             <div className="space-y-2 text-center relative">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Icon</label>
+              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">
+                {t("dashboard.reserves.icon")}
+              </label>
               <button
                 type="button"
                 onClick={() => setShowEmojiPicker(!showEmojiPicker)}
@@ -124,7 +137,9 @@ export default function CreateReserveModal({ isOpen, onClose }: CreateReserveMod
           </div>
 
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Funding Category</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
+              {t("dashboard.reserves.fundingCategory")}
+            </label>
             <CustomSelect
               value={categoryId}
               options={categories.map(cat => ({ value: cat.id, label: `${cat.emoji} ${cat.name}` }))}
@@ -132,7 +147,7 @@ export default function CreateReserveModal({ isOpen, onClose }: CreateReserveMod
               className="w-full bg-surface-container border-none rounded-xl py-1 text-sm font-semibold"
             />
             <p className="text-[9px] text-on-surface-variant/60 font-medium px-1 italic">
-              Funding transactions will be tagged with this category.
+              {t("dashboard.reserves.fundingDesc")}
             </p>
           </div>
 
@@ -142,14 +157,14 @@ export default function CreateReserveModal({ isOpen, onClose }: CreateReserveMod
               onClick={onClose}
               className="flex-1 py-3.5 px-4 rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container-high transition-all"
             >
-              Cancel
+              {t("dashboard.reserves.cancel")}
             </button>
             <button
               type="submit"
               disabled={isSubmitting || !name || !targetAmount}
               className="flex-[2] py-3.5 px-4 rounded-xl font-bold text-sm text-on-primary bg-primary hover:opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
             >
-              {isSubmitting ? "Creating..." : "Initialize Goal"}
+              {isSubmitting ? t("dashboard.reserves.creating") : t("dashboard.reserves.initializeGoal")}
             </button>
           </div>
         </form>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSubscriptions } from "../../hooks/useSubscriptions";
 import SubscriptionMetrics from "./components/SubscriptionMetrics";
 import SubscriptionCard from "./components/SubscriptionCard";
@@ -8,6 +9,7 @@ import type { Subscription } from "../../types/expenses";
 import { useIsMobile } from "../../hooks/useIsMobile";
 
 export default function Subscriptions() {
+  const { t } = useTranslation();
   const { subscriptions, loading } = useSubscriptions();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,13 +33,15 @@ export default function Subscriptions() {
   };
 
   return (
-    <div className="space-y-10 animate-in fade-in duration-500 max-w-7xl mx-auto w-full px-2 md:px-0 pb-24">
+    <div className="space-y-10 animate-in fade-in duration-500 max-w-7xl mx-auto w-full px-2 md:px-0 pb-32">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mt-6">
         <div className="space-y-1">
-          <h1 className="text-4xl font-black tracking-tight text-on-surface font-headline">Subscriptions</h1>
+          <h1 className="text-4xl font-black tracking-tight text-on-surface font-headline">
+            {t("subscriptions.title")}
+          </h1>
           <p className="text-on-surface-variant font-medium text-sm">
-            Active recurring payments
+            {t("subscriptions.subtitle")}
           </p>
         </div>
 
@@ -50,8 +54,8 @@ export default function Subscriptions() {
           <span className="material-symbols-outlined text-[20px] group-hover:rotate-90 transition-transform duration-300">
             add
           </span>
-          <span className="hidden md:inline">New Subscription</span>
-          <span className="md:hidden">Add</span>
+          <span className="hidden md:inline">{t("subscriptions.newButton")}</span>
+          <span className="md:hidden">{t("subscriptions.addButton")}</span>
         </button>
       </div>
 
@@ -62,7 +66,9 @@ export default function Subscriptions() {
         {/* Main Grid Area */}
         <div className="flex-1 w-full lg:min-w-0">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-black tracking-tight font-headline">Your Subscriptions</h2>
+            <h2 className="text-2xl font-black tracking-tight font-headline">
+              {t("subscriptions.listTitle")}
+            </h2>
 
             {/* View Toggle - Hidden on mobile */}
             <div className="hidden md:flex items-center gap-1.5 bg-surface-container-lowest rounded-full p-1.5 border border-outline-variant/10 shadow-sm">
@@ -100,11 +106,10 @@ export default function Subscriptions() {
 
               <div className="relative z-10 space-y-2">
                 <p className="text-xl font-black text-on-surface font-headline tracking-tight">
-                  No subscriptions tracked yet
+                  {t("subscriptions.empty.title")}
                 </p>
                 <p className="text-sm font-medium text-on-surface-variant/80 max-w-sm mx-auto">
-                  Connect your recurring digital services to keep your private vault accurate and prevent stealthy price
-                  hikes.
+                  {t("subscriptions.empty.subtitle")}
                 </p>
               </div>
 
@@ -112,7 +117,7 @@ export default function Subscriptions() {
                 onClick={handleOpenNew}
                 className="relative z-10 bg-primary/10 text-primary hover:bg-primary/20 px-8 py-3.5 rounded-xl font-black text-xs uppercase tracking-widest transition-all active:scale-95 border border-primary/10"
               >
-                Add your first service
+                {t("subscriptions.empty.button")}
               </button>
             </div>
           ) : (

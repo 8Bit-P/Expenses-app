@@ -3,7 +3,10 @@ import { formatCurrency } from "../../../utils/currency";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { Link } from "react-router-dom";
 
+import { useTranslation } from "react-i18next";
+
 export default function RecentActivity() {
+  const { t } = useTranslation();
   const { activity, loading } = useRecentActivity(6);
   const { currency } = useUserPreferences();
 
@@ -12,13 +15,13 @@ export default function RecentActivity() {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-lg font-black font-headline flex items-center gap-2">
           <span className="material-symbols-outlined text-primary text-[20px]">history</span>
-          Recent Activity
+          {t("dashboard.recentActivity.title")}
         </h2>
         <Link 
           to="/search" 
           className="text-primary text-[10px] font-bold uppercase tracking-widest hover:underline transition-all"
         >
-          View All
+          {t("dashboard.recentActivity.viewAll")}
         </Link>
       </div>
 
@@ -30,7 +33,9 @@ export default function RecentActivity() {
             ))}
           </div>
         ) : activity.length === 0 ? (
-          <p className="text-center py-8 text-xs font-medium text-on-surface-variant italic">No recent activity.</p>
+          <p className="text-center py-8 text-xs font-medium text-on-surface-variant italic">
+            {t("dashboard.recentActivity.noActivity")}
+          </p>
         ) : (
           activity.map((item) => {
             if (item.type === "transaction") {
@@ -47,7 +52,7 @@ export default function RecentActivity() {
                     <div className="min-w-0">
                       <h4 className="font-bold text-xs text-on-surface truncate pr-2">{tx.description}</h4>
                       <p className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/70 mt-0.5">
-                        {tx.category?.name || "Uncategorized"}
+                        {tx.category?.name || t("dashboard.recentActivity.uncategorized")}
                       </p>
                     </div>
                   </div>
@@ -73,7 +78,7 @@ export default function RecentActivity() {
                   <div className="min-w-0">
                     <h4 className="font-bold text-xs text-on-surface truncate pr-2">{snap.assetName}</h4>
                     <p className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/70 mt-0.5">
-                      Investment Snapshot
+                      {t("dashboard.recentActivity.investmentSnapshot")}
                     </p>
                   </div>
                 </div>

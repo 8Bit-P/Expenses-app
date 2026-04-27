@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { formatCurrency } from "../../../utils/currency";
 import type { AssetWithSnapshots } from "../../../types/investments";
 import { formatDistanceToNow, differenceInDays } from "date-fns";
+import { es, enUS } from "date-fns/locale";
 import { useInvestments } from "../../../hooks/useInvestments";
 import DeleteConfirmationModal from "../../../components/ui/DeleteConfirmationModal";
 
@@ -22,9 +24,12 @@ const TYPE_ICONS: Record<string, string> = {
 };
 
 export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: VaultAssetsListProps) {
+  const { t, i18n } = useTranslation();
   const { currency } = useUserPreferences();
   const { deleteAsset } = useInvestments();
   const [currentPage, setCurrentPage] = useState(1);
+
+  const dateLocale = i18n.language === "es" ? es : enUS;
 
   // Delete modal state
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; id: string; name: string }>({
@@ -66,16 +71,16 @@ export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: 
     <div className="bg-surface-container-lowest p-6 sm:p-8 rounded-2xl shadow-sm border border-outline-variant/10 h-full flex flex-col">
       <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4 sm:gap-0 mb-6 sm:mb-8">
         <div>
-          <h3 className="text-xl font-headline font-black text-on-surface">Your Vault Assets</h3>
+          <h3 className="text-xl font-headline font-black text-on-surface">{t("investments.assetList.title")}</h3>
           <p className="text-xs font-bold text-on-surface-variant mt-1">
-            Keep your ledger accurate for precision tracking.
+            {t("investments.assetList.subtitle")}
           </p>
         </div>
         <button
           onClick={() => onLogSnapshot()}
           className="text-primary text-xs font-black uppercase tracking-widest hover:opacity-80 transition-opacity bg-primary/10 px-4 py-2 rounded-xl"
         >
-          Add New Asset
+          {t("investments.assetList.addNew")}
         </button>
       </div>
 
@@ -83,7 +88,7 @@ export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: 
         {assets.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-on-surface-variant/40">
             <span className="material-symbols-outlined text-5xl mb-2">account_balance</span>
-            <p className="text-sm font-bold">No assets found in your vault.</p>
+            <p className="text-sm font-bold">{t("investments.assetList.noAssets")}</p>
           </div>
         ) : (
           paginatedAssets.map((asset) => {
@@ -92,11 +97,11 @@ export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: 
 
             // Stale Data Calculation
             let isStale = false;
-            let lastUpdatedStr = "Never";
+            let lastUpdatedStr = t("investments.assetList.neverUpdated");
             if (latestSnapshot) {
               const diff = differenceInDays(new Date(), new Date(latestSnapshot.date));
               if (diff > 30) isStale = true;
-              lastUpdatedStr = formatDistanceToNow(new Date(latestSnapshot.date), { addSuffix: true });
+              lastUpdatedStr = formatDistanceToNow(new Date(latestSnapshot.date), { addSuffix: true, locale: dateLocale });
             } else {
               // If it literally has no snapshots yet, consider it stale so they update it
               isStale = true;
@@ -120,12 +125,12 @@ export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: 
                       {isStale && (
                         <span className="flex items-center text-[9px] font-black uppercase tracking-widest bg-error-container text-error px-1.5 py-0.5 rounded-md">
                           <div className="w-1.5 h-1.5 bg-error rounded-full mr-1 animate-pulse"></div>
-                          Needs Update
+                          {t("investments.assetList.needsUpdate")}
                         </span>
                       )}
                     </h4>
                     <p className="text-xs text-on-surface-variant font-medium capitalize mt-0.5">
-                      {asset.type.replace("_", " ")} • Last updated: {lastUpdatedStr}
+                      {t(`investments.allocation.types.${asset.type}`)} • {t("investments.assetList.lastUpdated", { date: lastUpdatedStr })}
                     </p>
                   </div>
                 </div>
@@ -133,7 +138,7 @@ export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: 
                 <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto mt-2 sm:mt-0 pt-2 sm:pt-0 border-t border-outline-variant/10 sm:border-t-0">
                   <div className="text-right">
                     <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant block mb-0.5">
-                      Value
+                      {t("investments.assetList.value")}
                     </span>
                     <span className="text-lg font-black text-on-surface font-headline">
                       {internalFormatCurrency(currentValue)}
@@ -143,7 +148,7 @@ export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: 
                     <button
                       onClick={(e) => handleDelete(e, asset.id, asset.name)}
                       className="w-9 h-9 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-error/10 hover:text-error transition-all"
-                      title="Delete Asset"
+                      title={t("investments.assetList.deleteTitle")}
                     >
                       <span className="material-symbols-outlined text-[20px]">delete</span>
                     </button>
@@ -161,7 +166,7 @@ export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: 
       {assets.length > ITEMS_PER_PAGE && (
         <div className="mt-6 sm:mt-8 pt-6 border-t border-outline-variant/10 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0">
           <p className="text-xs font-bold text-on-surface-variant">
-            Page {currentPage} of {totalPages}
+            {t("investments.assetList.pagination", { current: currentPage, total: totalPages })}
           </p>
           <div className="flex gap-2">
             <button
@@ -186,8 +191,8 @@ export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: 
         isOpen={deleteModal.isOpen}
         onClose={() => setDeleteModal({ ...deleteModal, isOpen: false })}
         onConfirm={handleConfirmDelete}
-        title="Purge Asset?"
-        description="This action is irreversible. All historical snapshots, performance metrics, and contribution data for this asset will be permanently erased from your ledger."
+        title={t("investments.assetList.deleteConfirm.title")}
+        description={t("investments.assetList.deleteConfirm.description")}
         itemName={deleteModal.name}
         isDeleting={deleteAsset.isPending}
       />

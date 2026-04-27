@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   BarChart2,
   TrendingUp,
@@ -103,21 +104,22 @@ export function SummaryTrends({
   currencyCode,
   chartData,
 }: SummaryTrendsProps) {
+  const { t } = useTranslation();
   const [view, setView] = useState<ChartView>("bar");
 
   const isEmpty = chartData.length === 0;
 
   // Donut data
   const donutData = [
-    { name: "Income", value: totalIncome, color: COLOR_INCOME },
-    { name: "Transactions", value: totalSpent, color: COLOR_EXPENSE },
-    { name: "Assets", value: chartData.reduce((s, d) => s + d.assets, 0), color: COLOR_ASSET },
+    { name: t("search.chartLegend.income"), value: totalIncome, color: COLOR_INCOME },
+    { name: t("search.chartLegend.expenses"), value: totalSpent, color: COLOR_EXPENSE },
+    { name: t("search.chartLegend.assets"), value: chartData.reduce((s, d) => s + d.assets, 0), color: COLOR_ASSET },
   ].filter((d) => d.value > 0);
 
   const viewButtons: { key: ChartView; icon: React.ReactNode; label: string }[] = [
-    { key: "bar", icon: <BarChart2 size={14} />, label: "Bar" },
-    { key: "line", icon: <TrendingUp size={14} />, label: "Line" },
-    { key: "donut", icon: <PieChart size={14} />, label: "Donut" },
+    { key: "bar", icon: <BarChart2 size={14} />, label: t("search.views.bar") },
+    { key: "line", icon: <TrendingUp size={14} />, label: t("search.views.line") },
+    { key: "donut", icon: <PieChart size={14} />, label: t("search.views.donut") },
   ];
 
   return (
@@ -125,21 +127,21 @@ export function SummaryTrends({
       {/* ── KPI Cards Row ──────────────────────────────────────────────────── */}
       <div className="flex gap-4">
         <KpiCard
-          label="Total Income"
+          label={t("search.totalIncome")}
           value={totalIncome}
           color={COLOR_INCOME}
           icon={<ArrowUpRight size={16} />}
           currencyCode={currencyCode}
         />
         <KpiCard
-          label="Total Spent"
+          label={t("search.totalSpent")}
           value={totalSpent}
           color={COLOR_EXPENSE}
           icon={<ArrowDownRight size={16} />}
           currencyCode={currencyCode}
         />
         <KpiCard
-          label="Net Flow"
+          label={t("search.netFlow")}
           value={netFlow}
           color={netFlow >= 0 ? COLOR_INCOME : COLOR_EXPENSE}
           icon={<Minus size={16} />}
@@ -153,7 +155,7 @@ export function SummaryTrends({
         <div className="flex items-center justify-between mb-4 shrink-0">
           <div className="flex items-center gap-2 text-on-surface font-bold">
             <BarChart3 size={16} className="text-secondary" />
-            <h3 className="text-sm">Summary Trends</h3>
+            <h3 className="text-sm">{t("search.summaryTrends")}</h3>
           </div>
 
           {/* Segmented toggle */}
@@ -181,7 +183,7 @@ export function SummaryTrends({
           {isEmpty ? (
             <div className="h-full flex flex-col items-center justify-center text-on-surface-variant/50">
               <BarChart3 size={32} className="mb-1 opacity-40" />
-              <p className="text-xs font-semibold">No data to display</p>
+              <p className="text-xs font-semibold">{t("search.noData")}</p>
             </div>
           ) : view === "bar" ? (
             <ResponsiveContainer width="100%" height="100%">
@@ -202,9 +204,9 @@ export function SummaryTrends({
                   iconSize={8}
                   wrapperStyle={{ fontSize: 10, paddingTop: 4 }}
                 />
-                <Bar dataKey="income" name="Income" fill={COLOR_INCOME} radius={[3, 3, 0, 0]} />
-                <Bar dataKey="expenses" name="Spent" fill={COLOR_EXPENSE} radius={[3, 3, 0, 0]} />
-                <Bar dataKey="assets" name="Assets" fill={COLOR_ASSET} radius={[3, 3, 0, 0]} />
+                <Bar dataKey="income" name={t("search.chartLegend.income")} fill={COLOR_INCOME} radius={[3, 3, 0, 0]} />
+                <Bar dataKey="expenses" name={t("search.chartLegend.expenses")} fill={COLOR_EXPENSE} radius={[3, 3, 0, 0]} />
+                <Bar dataKey="assets" name={t("search.chartLegend.assets")} fill={COLOR_ASSET} radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : view === "line" ? (
@@ -228,7 +230,7 @@ export function SummaryTrends({
                 <Line
                   type="monotone"
                   dataKey="income"
-                  name="Income"
+                  name={t("search.chartLegend.income")}
                   stroke={COLOR_INCOME}
                   strokeWidth={2}
                   dot={false}
@@ -237,7 +239,7 @@ export function SummaryTrends({
                 <Line
                   type="monotone"
                   dataKey="expenses"
-                  name="Spent"
+                  name={t("search.chartLegend.expenses")}
                   stroke={COLOR_EXPENSE}
                   strokeWidth={2}
                   dot={false}
@@ -246,7 +248,7 @@ export function SummaryTrends({
                 <Line
                   type="monotone"
                   dataKey="assets"
-                  name="Assets"
+                  name={t("search.chartLegend.assets")}
                   stroke={COLOR_ASSET}
                   strokeWidth={2}
                   dot={false}

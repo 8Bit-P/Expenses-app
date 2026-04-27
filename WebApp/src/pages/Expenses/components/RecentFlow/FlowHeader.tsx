@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 interface FlowHeaderProps {
   totalCount: number;
   loading: boolean;
@@ -5,13 +7,17 @@ interface FlowHeaderProps {
 }
 
 export default function FlowHeader({ totalCount, loading, onAddNew }: FlowHeaderProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex items-center justify-between px-6 py-5 md:py-4 border-b border-outline-variant/10">
       <div className="">
-        <h4 className="text-lg font-bold font-headline text-on-surface">Recent Flow</h4>
+        <h4 className="text-lg font-bold font-headline text-on-surface">
+          {t("expenses.recentFlow.title")}
+        </h4>
         {!loading && totalCount > 0 && (
           <p className="text-xs font-medium text-on-surface-variant mt-1">
-            {totalCount.toLocaleString()} movement{totalCount !== 1 ? "s" : ""}
+            {t("expenses.recentFlow.movements", { count: totalCount })}
           </p>
         )}
       </div>
@@ -25,7 +31,7 @@ export default function FlowHeader({ totalCount, loading, onAddNew }: FlowHeader
           <span className="material-symbols-outlined text-primary text-[14px]">add</span>
         </span>
         <span className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant group-hover:text-primary transition-colors">
-          Entry
+          {t("expenses.recentFlow.entry")}
         </span>
       </button>
     </div>

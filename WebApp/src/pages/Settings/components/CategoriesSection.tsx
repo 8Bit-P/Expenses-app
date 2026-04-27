@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useCategories } from "../../../hooks/useCategories";
 import EmojiPicker, { EmojiStyle } from "emoji-picker-react";
@@ -6,6 +7,7 @@ import DeleteConfirmModal from "../../../components/ui/DeleteConfirmModal";
 import type { Category } from "../../../types/expenses";
 
 export default function CategoriesSection() {
+  const { t } = useTranslation();
   const { categories, addCategory, deleteCategory, loading } = useCategories();
 
   const [isAdding, setIsAdding] = useState(false);
@@ -39,13 +41,15 @@ export default function CategoriesSection() {
     setIsSubmitting(true);
     try {
       await addCategory({ name: newCategoryName, emoji: newCategoryEmoji });
-      toast.success("Category added", { description: `${newCategoryEmoji} ${newCategoryName} is now available.` });
+      toast.success(t("settings.categories.toasts.added"), { 
+        description: t("settings.categories.toasts.addedDesc", { emoji: newCategoryEmoji, name: newCategoryName }) 
+      });
       setNewCategoryName("");
       setNewCategoryEmoji("📦");
       setShowEmojiPicker(false);
       setIsAdding(false);
     } catch (error: any) {
-      toast.error("Failed to add category", { description: error.message });
+      toast.error(t("settings.categories.toasts.addFailed"), { description: error.message });
     } finally {
       setIsSubmitting(false);
     }
@@ -56,9 +60,13 @@ export default function CategoriesSection() {
     setIsDeleting(true);
     try {
       await deleteCategory(categoryToDelete.id);
-      toast.success("Category deleted", { description: "The category has been permanently removed." });
+      toast.success(t("settings.categories.toasts.deleted"), { 
+        description: t("settings.categories.toasts.deletedDesc") 
+      });
     } catch (error: any) {
-      toast.error("Delete failed", { description: error.message || "Failed to remove category." });
+      toast.error(t("settings.categories.toasts.deleteFailed"), { 
+        description: error.message || t("settings.categories.toasts.deleteError") 
+      });
     } finally {
       setIsDeleting(false);
       setCategoryToDelete(null);
@@ -74,10 +82,10 @@ export default function CategoriesSection() {
         <div>
           <h3 className="text-xl font-headline font-black text-on-surface flex items-center gap-2">
             <span className="material-symbols-outlined text-secondary">category</span>
-            Categories
+            {t("settings.categories.title")}
           </h3>
           <p className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant mt-1">
-            Organize your ledger
+            {t("settings.categories.subtitle")}
           </p>
         </div>
         {!isAdding && (
@@ -95,7 +103,7 @@ export default function CategoriesSection() {
         {loading ? (
           <div className="text-center py-6 text-on-surface-variant/50 animate-pulse">
             <div className="w-8 h-8 rounded-full border-2 border-outline-variant/30 border-t-primary animate-spin mx-auto mb-2" />
-            <p className="text-xs font-bold">Loading categories...</p>
+            <p className="text-xs font-bold">{t("settings.categories.loading")}</p>
           </div>
         ) : (
           categories.map((cat: Category) => (
@@ -110,7 +118,7 @@ export default function CategoriesSection() {
               <button 
                 onClick={() => setCategoryToDelete({ id: cat.id, name: cat.name })}
                 className="opacity-0 group-hover:opacity-100 transition-opacity text-on-surface-variant hover:text-error p-1"
-                title="Delete Category"
+                title={t("settings.categories.deleteTitle")}
               >
                 <span className="material-symbols-outlined text-[16px]">delete</span>
               </button>
@@ -121,7 +129,7 @@ export default function CategoriesSection() {
         {!loading && categories.length === 0 && !isAdding && (
           <div className="text-center py-6 text-on-surface-variant/50">
             <span className="material-symbols-outlined text-3xl mb-2">inventory_2</span>
-            <p className="text-xs font-bold">No categories yet.</p>
+            <p className="text-xs font-bold">{t("settings.categories.noCategories")}</p>
           </div>
         )}
       </div>
@@ -160,7 +168,7 @@ export default function CategoriesSection() {
             <input
               autoFocus
               type="text"
-              placeholder="Category Name..."
+              placeholder={t("settings.categories.addPlaceholder")}
               value={newCategoryName}
               onChange={(e) => setNewCategoryName(e.target.value)}
               className="flex-1 bg-surface-container border-none rounded-xl px-4 text-sm font-bold text-on-surface placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-secondary/50 outline-none"
@@ -178,7 +186,7 @@ export default function CategoriesSection() {
               disabled={isSubmitting}
               className="flex-1 py-2 rounded-xl text-xs font-bold text-on-surface-variant hover:bg-surface-container transition-colors disabled:opacity-50"
             >
-              Cancel
+              {t("common.cancel")}
             </button>
             <button
               type="submit"
@@ -186,7 +194,7 @@ export default function CategoriesSection() {
               className="flex-1 py-2 rounded-xl text-xs font-black bg-secondary text-white shadow-md shadow-secondary/20 hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isSubmitting && <span className="material-symbols-outlined text-[14px] animate-spin">autorenew</span>}
-              Save
+              {t("common.save")}
             </button>
           </div>
         </form>
@@ -197,8 +205,8 @@ export default function CategoriesSection() {
         isOpen={!!categoryToDelete}
         onClose={() => setCategoryToDelete(null)}
         onConfirm={confirmDelete}
-        title="Delete Category"
-        message="Are you sure you want to delete this category? All transactions using this category will become uncategorized. This action cannot be undone."
+        title={t("settings.categories.deleteTitle")}
+        message={t("settings.categories.deleteConfirm")}
         itemName={categoryToDelete?.name}
         isExecuting={isDeleting}
       />

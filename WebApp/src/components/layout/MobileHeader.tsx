@@ -1,10 +1,12 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useUserPreferences } from "../../context/UserPreferencesContext";
 import { useAuth } from "../../context/AuthContext";
 import { useProfile } from "../../hooks/useProfile";
 import NotificationDropdown from "./NotificationDropdown";
 
 export default function MobileHeader() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { session } = useAuth();
   const { profile } = useProfile();
@@ -15,11 +17,11 @@ export default function MobileHeader() {
   const fallbackAvatar = `https://api.dicebear.com/9.x/thumbs/svg?seed=${userEmail}&backgroundColor=transparent`;
   const avatarSrc = profile?.avatar_url || fallbackAvatar;
 
-  const firstName = profile?.full_name?.split(" ")[0] || "User";
+  const firstName = profile?.full_name?.split(" ")[0] || t("layout.user");
   const hour = new Date().getHours();
-  let greeting = "Good morning";
-  if (hour >= 12 && hour < 18) greeting = "Good afternoon";
-  if (hour >= 18) greeting = "Good evening";
+  let greeting = t("layout.greetings.morning");
+  if (hour >= 12 && hour < 18) greeting = t("layout.greetings.afternoon");
+  if (hour >= 18) greeting = t("layout.greetings.evening");
 
   return (
     <header className="fixed top-0 w-full z-40 bg-background/80 backdrop-blur-md border-b border-outline-variant/10 flex justify-between items-center px-4 py-3 desk:hidden transition-colors duration-300">

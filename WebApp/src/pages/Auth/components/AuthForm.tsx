@@ -2,7 +2,10 @@ import { useState } from "react";
 import { supabase } from "../../../lib/supabase";
 import { useNavigate } from "react-router-dom";
 
+import { useTranslation } from "react-i18next";
+
 export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
+  const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -22,11 +25,11 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
 
     if (isSignUp) {
       if (!fullName.trim()) {
-        setError("Please enter your full name.");
+        setError(t("auth.errorName"));
         return;
       }
       if (password !== confirmPassword) {
-        setError("Passwords do not match. Please try again.");
+        setError(t("auth.errorMismatch"));
         return;
       }
     }
@@ -46,7 +49,7 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
           },
         });
         if (signUpError) throw signUpError;
-        setMessage("Success! Check your email for the confirmation link.");
+        setMessage(t("auth.successSignUp"));
       } else {
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
@@ -57,7 +60,7 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
         navigate("/home");
       }
     } catch (err: any) {
-      setError(err.message || "An error occurred during authentication.");
+      setError(err.message || t("auth.errorGeneric"));
     } finally {
       setLoading(false);
     }
@@ -85,7 +88,7 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="Full Name"
+              placeholder={t("auth.fullName")}
               className="w-full bg-surface-container-low border border-outline-variant/30 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-3.5 text-sm font-medium text-on-surface placeholder:text-on-surface-variant/40 outline-none transition-all"
               required={isSignUp}
             />
@@ -96,7 +99,7 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
+          placeholder={t("auth.email")}
           className="w-full bg-surface-container-low border border-outline-variant/30 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-3.5 text-sm font-medium text-on-surface placeholder:text-on-surface-variant/40 outline-none transition-all"
           required
         />
@@ -106,7 +109,7 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
+            placeholder={t("auth.password")}
             className="w-full bg-surface-container-low border border-outline-variant/30 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl pl-4 pr-12 py-3.5 text-sm font-medium text-on-surface placeholder:text-on-surface-variant/40 outline-none transition-all"
             required
           />
@@ -125,7 +128,7 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
               type={showPassword ? "text" : "password"}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Confirm Password"
+              placeholder={t("auth.confirmPassword")}
               className="w-full bg-surface-container-low border border-outline-variant/30 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl pl-4 pr-12 py-3.5 text-sm font-medium text-on-surface placeholder:text-on-surface-variant/40 outline-none transition-all"
               required={isSignUp}
             />
@@ -141,7 +144,7 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
           type="button"
           className="text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-colors"
         >
-          Forgot Password?
+          {t("auth.forgotPassword")}
         </button>
       </div>
 
@@ -153,7 +156,7 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
         {loading ? (
           <div className="w-5 h-5 border-2 border-surface border-t-transparent rounded-full animate-spin"></div>
         ) : (
-          "Continue"
+          t("auth.continue")
         )}
       </button>
     </form>

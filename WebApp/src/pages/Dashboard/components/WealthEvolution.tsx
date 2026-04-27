@@ -5,13 +5,14 @@ import { useTransactions } from "../../../hooks/useTransactions";
 import { useMemo } from "react";
 import { subMonths, endOfMonth, format, parseISO, isAfter } from "date-fns";
 import { formatCurrency } from "../../../utils/currency";
+import { useTranslation } from "react-i18next";
 
-const CustomTooltip = ({ active, payload, label, currencyCode }: any) => {
+const CustomTooltip = ({ active, payload, label, currencyCode, t }: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-surface-container-lowest/95 backdrop-blur-xl p-4 rounded-2xl shadow-xl border border-outline-variant/20 font-body min-w-[180px] animate-in fade-in zoom-in duration-200">
         <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-3 border-b border-outline-variant/10 pb-2">
-          {label} Snapshot
+          {label} {t("dashboard.wealthEvolution.snapshot")}
         </p>
         {payload.map((entry: any, index: number) => (
           <div key={index} className="flex justify-between items-center gap-4 mb-1.5">
@@ -26,7 +27,9 @@ const CustomTooltip = ({ active, payload, label, currencyCode }: any) => {
                     : entry.fill,
                 }}
               ></div>
-              <span className="text-[11px] font-bold text-on-surface-variant capitalize">{entry.name}</span>
+              <span className="text-[11px] font-bold text-on-surface-variant capitalize">
+                {t(`dashboard.wealthEvolution.${entry.name.toLowerCase()}`)}
+              </span>
             </div>
             <span className="text-xs font-black text-on-surface">{formatCurrency(entry.value, currencyCode)}</span>
           </div>
@@ -38,6 +41,7 @@ const CustomTooltip = ({ active, payload, label, currencyCode }: any) => {
 };
 
 export default function WealthEvolution() {
+  const { t } = useTranslation();
   const { resolvedTheme, currency } = useUserPreferences();
   const { assets, isLoading: invLoading } = useInvestments();
   const { transactions, loading: txLoading } = useTransactions({ pageSize: 1000 });
@@ -80,7 +84,7 @@ export default function WealthEvolution() {
     return (
       <div className="w-full h-[380px] flex items-center justify-center bg-surface-container-lowest rounded-2xl animate-pulse border border-outline-variant/10">
         <div className="text-on-surface-variant text-[10px] font-black uppercase tracking-widest">
-          Synchronizing Vault...
+          {t("dashboard.syncing")}
         </div>
       </div>
     );
@@ -92,20 +96,24 @@ export default function WealthEvolution() {
         <div>
           <h2 className="text-lg font-black font-headline text-on-surface flex items-center gap-2">
             <span className="material-symbols-outlined text-primary">bar_chart</span>
-            Wealth Evolution
+            {t("dashboard.wealthEvolution.title")}
           </h2>
           <p className="text-[10px] font-bold text-on-surface-variant mt-1">
-            Portfolio growth segmented by asset class
+            {t("dashboard.wealthEvolution.subtitle")}
           </p>
         </div>
         <div className="flex gap-4 p-1.5 bg-surface-container-low rounded-xl">
           <div className="flex items-center gap-2 px-2">
             <div className="w-2 h-2 rounded-full bg-primary"></div>
-            <span className="text-[10px] font-black uppercase tracking-wider text-on-surface-variant">Investments</span>
+            <span className="text-[10px] font-black uppercase tracking-wider text-on-surface-variant">
+              {t("dashboard.wealthEvolution.investments")}
+            </span>
           </div>
           <div className="flex items-center gap-2 px-2">
             <div className="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
-            <span className="text-[10px] font-black uppercase tracking-wider text-on-surface-variant">Liquidity</span>
+            <span className="text-[10px] font-black uppercase tracking-wider text-on-surface-variant">
+              {t("dashboard.wealthEvolution.liquidity")}
+            </span>
           </div>
         </div>
       </div>
@@ -142,7 +150,7 @@ export default function WealthEvolution() {
               tickFormatter={(val) => `€${val / 1000}k`}
             />
             <Tooltip
-              content={<CustomTooltip currencyCode={currency.code} />}
+              content={<CustomTooltip currencyCode={currency.code} t={t} />}
               cursor={{ fill: resolvedTheme === "dark" ? "rgba(255, 255, 255, 0.02)" : "rgba(0, 0, 0, 0.02)" }}
             />
             <Bar

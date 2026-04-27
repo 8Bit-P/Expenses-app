@@ -11,13 +11,19 @@ function VaultLogoSVG() {
   );
 }
 
+import { useTranslation } from "react-i18next";
+
 export default function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="border-t border-slate-800/60 py-12 px-6">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         {/* Brand */}
         <div className="flex items-center gap-2 text-slate-400">
-          <span className="text-violet-500/70"><VaultLogoSVG /></span>
+          <span className="text-violet-500/70">
+            <VaultLogoSVG />
+          </span>
           <span className="font-black text-base tracking-wider text-slate-300">Vault</span>
           <span className="text-slate-600 text-sm ml-2">© {new Date().getFullYear()}</span>
         </div>
@@ -25,9 +31,9 @@ export default function Footer() {
         {/* Links */}
         <div className="flex items-center gap-6">
           {[
-            { label: "Terms of Service", href: "#" },
-            { label: "Privacy Policy", href: "#" },
-            { label: "Contact", href: "mailto:hello@vault.app" },
+            { label: t("auth.terms"), href: "#" },
+            { label: t("auth.privacy"), href: "#" },
+            { label: t("landing.footer.contact"), href: "mailto:hello@vault.app" },
           ].map(({ label, href }) => (
             <a
               key={label}
@@ -41,7 +47,7 @@ export default function Footer() {
             to="/auth?mode=signin"
             className="text-sm font-bold text-violet-400 hover:text-violet-300 transition-colors"
           >
-            Sign In →
+            {t("landing.navbar.signIn")} →
           </Link>
         </div>
       </div>

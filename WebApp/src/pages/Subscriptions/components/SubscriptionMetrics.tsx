@@ -1,4 +1,6 @@
 import { useRef, useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { es, enUS } from "date-fns/locale";
 import type { Subscription } from "../../../types/expenses";
 import { isSameDay, parseISO, formatDistanceToNowStrict } from "date-fns";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
@@ -10,9 +12,12 @@ interface SubscriptionMetricsProps {
 }
 
 export default function SubscriptionMetrics({ subscriptions, loading }: SubscriptionMetricsProps) {
+  const { t, i18n } = useTranslation();
   const { currency } = useUserPreferences();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  const dateLocale = i18n.language === "es" ? es : enUS;
 
   const handleScroll = () => {
     if (!scrollRef.current) return;
@@ -72,7 +77,7 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
 
           <div className="flex items-center justify-between relative z-10">
             <span className="text-on-surface-variant font-black text-[12px] uppercase tracking-[0.2em]">
-              Monthly Burn Rate
+              {t("subscriptions.metrics.burnRate")}
             </span>
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
               <span className="material-symbols-outlined text-primary text-[18px]">account_balance_wallet</span>
@@ -85,7 +90,7 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
             </span>
             <span className="text-on-surface-variant/60 font-bold text-xs mt-2 flex items-center gap-1">
               <span className="material-symbols-outlined text-[14px]">calculate</span>
-              Normalized across all cycles
+              {t("subscriptions.metrics.normalized")}
             </span>
           </div>
         </div>
@@ -96,7 +101,7 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
 
           <div className="flex items-center justify-between relative z-10">
             <span className="text-on-surface-variant font-black text-[12px] uppercase tracking-[0.2em]">
-              Active Subscriptions
+              {t("subscriptions.metrics.active")}
             </span>
             <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center border border-secondary/20">
               <span className="material-symbols-outlined text-secondary text-[18px]">layers</span>
@@ -109,9 +114,11 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
             </span>
 
             <div className="flex flex-col items-end mb-1">
-              <span className="text-on-surface-variant font-bold text-xs">{subscriptions.length} Total</span>
+              <span className="text-on-surface-variant font-bold text-xs">
+                {t("subscriptions.metrics.total", { count: subscriptions.length })}
+              </span>
               <span className="text-error/80 font-bold text-[10px] uppercase tracking-wider mt-0.5">
-                {subscriptions.length - activeSubs.length} Inactive
+                {t("subscriptions.metrics.inactive", { count: subscriptions.length - activeSubs.length })}
               </span>
             </div>
           </div>
@@ -124,7 +131,7 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
 
           <div className="flex items-center justify-between relative z-10">
             <span className="text-on-surface-variant font-black text-[12px] uppercase tracking-[0.2em]">
-              Next Upcoming Charge
+              {t("subscriptions.metrics.nextCharge")}
             </span>
             <div className="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center border border-outline-variant/20">
               <span className="material-symbols-outlined text-on-surface text-[18px]">event</span>
@@ -143,14 +150,20 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
                 <span className="text-primary font-bold text-sm flex items-center gap-1.5 bg-primary/10 w-fit px-2.5 py-1 rounded-md mt-1">
                   <span className="material-symbols-outlined text-[14px]">schedule</span>
                   {isSameDay(parseISO(nextRenewal.next_billing_date), new Date())
-                    ? "Due Today"
-                    : `Due in ${formatDistanceToNowStrict(parseISO(nextRenewal.next_billing_date))}`}
+                    ? t("subscriptions.metrics.dueToday")
+                    : t("subscriptions.metrics.dueIn", { 
+                        time: formatDistanceToNowStrict(parseISO(nextRenewal.next_billing_date), { locale: dateLocale }) 
+                      })}
                 </span>
               </>
             ) : (
               <div className="flex flex-col mt-2">
-                <span className="text-xl font-black text-on-surface-variant/40">No upcoming</span>
-                <span className="text-sm font-bold text-on-surface-variant/40">Your vault is clear.</span>
+                <span className="text-xl font-black text-on-surface-variant/40">
+                  {t("subscriptions.metrics.noUpcoming")}
+                </span>
+                <span className="text-sm font-bold text-on-surface-variant/40">
+                  {t("subscriptions.metrics.vaultClear")}
+                </span>
               </div>
             )}
           </div>

@@ -15,7 +15,10 @@ interface CategoryDonutProps {
   maxSlices?: number;
 }
 
+import { useTranslation } from "react-i18next";
+
 export default function CategoryDonut({ startDate, endDate, title, maxSlices }: CategoryDonutProps) {
+  const { t } = useTranslation();
   const { currency } = useUserPreferences();
   const [isExpanded, setIsExpanded] = useState(false);
   
@@ -65,13 +68,13 @@ export default function CategoryDonut({ startDate, endDate, title, maxSlices }: 
     
     chartRawData = [
       ...top,
-      { name: "Other", emoji: "📁", value: othersValue }
+      { name: t("expenses.charts.categoryDonut.other"), emoji: "📁", value: othersValue }
     ];
   }
 
   const data = chartRawData.map((item, index) => ({
     ...item,
-    color: item.name === "Other" ? "rgba(119, 117, 135, 0.4)" : CATEGORY_COLORS[index % CATEGORY_COLORS.length],
+    color: item.name === t("expenses.charts.categoryDonut.other") ? "rgba(119, 117, 135, 0.4)" : CATEGORY_COLORS[index % CATEGORY_COLORS.length],
   }));
 
   const total = data.reduce((sum, item) => sum + item.value, 0);
@@ -82,10 +85,16 @@ export default function CategoryDonut({ startDate, endDate, title, maxSlices }: 
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <div>
-          <h4 className="text-lg font-bold font-headline text-on-surface">{title || "Spending by Category"}</h4>
+          <h4 className="text-lg font-bold font-headline text-on-surface">
+            {title || t("expenses.charts.categoryDonut.title")}
+          </h4>
           {data.length > 0 && (
             <p className="text-xs font-medium text-on-surface-variant mt-0.5">
-              {data[0].emoji} <span className="font-bold">{data[0].name}</span> leads at {topPercent}%
+              {t("expenses.charts.categoryDonut.leadsAt", { 
+                emoji: data[0].emoji, 
+                name: data[0].name, 
+                percent: topPercent 
+              })}
             </p>
           )}
         </div>
@@ -94,7 +103,9 @@ export default function CategoryDonut({ startDate, endDate, title, maxSlices }: 
       {data.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center text-on-surface-variant/40 gap-3 min-h-75">
           <span className="material-symbols-outlined text-4xl">pie_chart_outline</span>
-          <span className="text-xs font-bold uppercase tracking-widest">No data to display</span>
+          <span className="text-xs font-bold uppercase tracking-widest">
+            {t("expenses.charts.categoryDonut.noData")}
+          </span>
         </div>
       ) : (
         <>
@@ -127,7 +138,9 @@ export default function CategoryDonut({ startDate, endDate, title, maxSlices }: 
               <span className="text-xl font-black text-on-surface font-headline">
                 {formatCompactCurrency(total, currency.code)}
               </span>
-              <span className="text-[9px] font-bold text-on-surface-variant uppercase tracking-widest">Expenses</span>
+              <span className="text-[9px] font-bold text-on-surface-variant uppercase tracking-widest">
+                {t("expenses.charts.categoryDonut.expenses")}
+              </span>
             </div>
           </div>
 
@@ -178,7 +191,7 @@ export default function CategoryDonut({ startDate, endDate, title, maxSlices }: 
               onClick={() => setIsExpanded(!isExpanded)}
               className="mt-2 w-full py-2 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50 hover:text-primary hover:bg-primary/5 rounded-xl transition-all group"
             >
-              <span>{isExpanded ? "Show Less" : `View All (${data.length})`}</span>
+              <span>{isExpanded ? t("expenses.charts.categoryDonut.showLess") : t("expenses.charts.categoryDonut.viewAll", { count: data.length })}</span>
               <span className={`material-symbols-outlined text-base transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}>
                 expand_more
               </span>

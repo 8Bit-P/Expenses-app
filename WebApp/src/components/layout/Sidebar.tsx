@@ -6,15 +6,18 @@ interface SidebarProps {
   onNewTransaction: () => void;
 }
 
+import { useTranslation } from "react-i18next";
+
 export default function Sidebar({ onNewTransaction }: SidebarProps) {
+  const { t } = useTranslation();
   const location = useLocation();
   const { signOut } = useAuth();
 
   const navItems = [
-    { label: "Home", icon: "grid_view", path: "/home" },
-    { label: "Expenses", icon: "payments", path: "/expenses" },
-    { label: "Assets", icon: "show_chart", path: "/assets" },
-    { label: "Recurring", icon: "sync", path: "/recurring" },
+    { label: t("sidebar.home"), icon: "grid_view", path: "/home" },
+    { label: t("sidebar.expenses"), icon: "payments", path: "/expenses" },
+    { label: t("sidebar.assets"), icon: "show_chart", path: "/assets" },
+    { label: t("sidebar.recurring"), icon: "sync", path: "/recurring" },
   ];
 
   return (
@@ -26,7 +29,9 @@ export default function Sidebar({ onNewTransaction }: SidebarProps) {
         </div>
         <div>
           <h1 className="text-lg font-extrabold text-on-surface tracking-tight">Vault</h1>
-          <p className="text-[9px] uppercase tracking-widest text-on-surface-variant font-bold mt-0.5">Secure Ledger</p>
+          <p className="text-[9px] uppercase tracking-widest text-on-surface-variant font-bold mt-0.5">
+            {t("sidebar.secureLedger")}
+          </p>
         </div>
       </Link>
 
@@ -63,7 +68,7 @@ export default function Sidebar({ onNewTransaction }: SidebarProps) {
           className="w-full py-4 px-4 bg-primary text-on-primary rounded-2xl flex items-center justify-center gap-2 font-black text-sm transition-all active:scale-[0.98] group shadow-xl shadow-primary/25 hover:opacity-90"
         >
           <span className="material-symbols-outlined text-[20px] group-hover:rotate-90 transition-transform">add</span>
-          Add Transaction
+          {t("sidebar.addTransaction")}
         </button>
 
         <div className="bg-surface-container-lowest/50 backdrop-blur-md rounded-2xl p-2 border border-outline-variant/10">
@@ -81,13 +86,13 @@ export default function Sidebar({ onNewTransaction }: SidebarProps) {
             >
               settings
             </span>
-            <span className="text-xs font-bold">Settings</span>
+            <span className="text-xs font-bold">{t("sidebar.settings")}</span>
           </Link>
           <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-all group">
             <span className="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">
               help
             </span>
-            <span className="text-xs font-bold">Help</span>
+            <span className="text-xs font-bold">{t("sidebar.help")}</span>
           </button>
           <button
             onClick={() => signOut()}
@@ -96,7 +101,7 @@ export default function Sidebar({ onNewTransaction }: SidebarProps) {
             <span className="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">
               logout
             </span>
-            <span className="text-xs font-bold">Sign Out</span>
+            <span className="text-xs font-bold">{t("sidebar.signOut")}</span>
           </button>
         </div>
       </div>

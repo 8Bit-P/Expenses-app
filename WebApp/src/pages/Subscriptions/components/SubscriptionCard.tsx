@@ -1,5 +1,7 @@
 import type { Subscription } from "../../../types/expenses";
 import { format, parseISO } from "date-fns";
+import { useTranslation } from "react-i18next";
+import { es, enUS } from "date-fns/locale";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { formatCurrency } from "../../../utils/currency";
 
@@ -10,9 +12,11 @@ interface SubscriptionCardProps {
 }
 
 export default function SubscriptionCard({ subscription, onManage, variant = "list" }: SubscriptionCardProps) {
+  const { t, i18n } = useTranslation();
   const { currency } = useUserPreferences();
   const nextDate = parseISO(subscription.next_billing_date);
 
+  const dateLocale = i18n.language === "es" ? es : enUS;
   const isGrid = variant === "grid";
 
   return (
@@ -56,7 +60,7 @@ export default function SubscriptionCard({ subscription, onManage, variant = "li
           )}
           <span className="text-on-surface-variant/30 text-[10px]">•</span>
           <span className={`${isGrid ? "text-sm" : "text-[11px]"} font-bold text-on-surface-variant/50`}>
-            {format(nextDate, "MMM d")}
+            {format(nextDate, "MMM d", { locale: dateLocale })}
           </span>
         </div>
       </div>
@@ -72,9 +76,9 @@ export default function SubscriptionCard({ subscription, onManage, variant = "li
           }`}
         >
           {subscription.billing_cycle === "monthly"
-            ? "/mo"
+            ? t("subscriptions.card.monthly")
             : subscription.billing_cycle === "yearly"
-              ? "/yr"
+              ? t("subscriptions.card.yearly")
               : `/${subscription.billing_cycle.slice(0, 3)}`}
         </div>
       </div>

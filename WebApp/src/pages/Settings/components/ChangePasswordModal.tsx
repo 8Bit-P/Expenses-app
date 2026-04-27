@@ -1,15 +1,16 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { X, Lock, Eye, EyeOff, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
+import { useSecurity } from "../../../hooks/useSecurity";
 
 interface ChangePasswordModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-import { useSecurity } from "../../../hooks/useSecurity";
-
 export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProps) {
+  const { t } = useTranslation();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -22,22 +23,22 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
     e.preventDefault();
     
     if (newPassword.length < 6) {
-      toast.error("Password too short", {
-        description: "Password must be at least 6 characters long."
+      toast.error(t("settings.passwordModal.errors.tooShort"), {
+        description: t("settings.passwordModal.errors.tooShortDesc")
       });
       return;
     }
 
     if (newPassword === currentPassword) {
-      toast.error("No change detected", {
-        description: "The new password must be different from the current one."
+      toast.error(t("settings.passwordModal.errors.noChange"), {
+        description: t("settings.passwordModal.errors.noChangeDesc")
       });
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      toast.error("Passwords mismatch", {
-        description: "The confirmation password does not match."
+      toast.error(t("settings.passwordModal.errors.mismatch"), {
+        description: t("settings.passwordModal.errors.mismatchDesc")
       });
       return;
     }
@@ -65,7 +66,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
         <div className="px-6 py-6 border-b border-outline-variant/5 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-black text-on-surface tracking-tight font-headline">Change Password</h2>
+            <h2 className="text-lg font-black text-on-surface tracking-tight font-headline">{t("settings.passwordModal.title")}</h2>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-surface-container rounded-full transition-colors text-on-surface-variant">
             <X className="w-5 h-5" />
@@ -74,7 +75,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Current Password</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">{t("settings.passwordModal.currentLabel")}</label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40">
                 <Lock size={18} />
@@ -85,7 +86,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 className="w-full bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-3.5 pl-12 pr-12 text-sm font-semibold text-on-surface placeholder:text-on-surface-variant/30 outline-none transition-all"
-                placeholder="Current Credentials"
+                placeholder={t("settings.passwordModal.currentPlaceholder")}
                 required
               />
               <button
@@ -101,7 +102,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
           <div className="w-full h-px bg-outline-variant/10 my-2" />
 
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">New Password</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">{t("settings.passwordModal.newLabel")}</label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40">
                 <Lock size={18} />
@@ -111,14 +112,14 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 className="w-full bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-3.5 pl-12 pr-12 text-sm font-semibold text-on-surface placeholder:text-on-surface-variant/30 outline-none transition-all"
-                placeholder="New Credentials"
+                placeholder={t("settings.passwordModal.newPlaceholder")}
                 required
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Confirm New Password</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">{t("settings.passwordModal.confirmLabel")}</label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40">
                 <Lock size={18} />
@@ -128,7 +129,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-3.5 pl-12 pr-12 text-sm font-semibold text-on-surface placeholder:text-on-surface-variant/30 outline-none transition-all"
-                placeholder="••••••••"
+                placeholder={t("settings.passwordModal.confirmPlaceholder")}
                 required
               />
             </div>
@@ -143,10 +144,10 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
               {changePassword.isPending ? (
                 <>
                   <div className="w-4 h-4 border-2 border-on-primary/30 border-t-on-primary rounded-full animate-spin" />
-                  Updating...
+                  {t("settings.passwordModal.updating")}
                 </>
               ) : (
-                "Secure Account"
+                t("settings.passwordModal.button")
               )}
             </button>
             <button
@@ -155,7 +156,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
               disabled={changePassword.isPending}
               className="w-full py-3 text-on-surface-variant font-bold text-xs uppercase tracking-widest hover:bg-surface-container transition-all rounded-xl"
             >
-              Cancel
+              {t("common.cancel")}
             </button>
           </div>
         </form>

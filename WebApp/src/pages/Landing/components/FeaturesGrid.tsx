@@ -1,5 +1,6 @@
 import { motion, type Variants } from "framer-motion";
 import { TrendingUp, AlertTriangle, BarChart2, ListOrdered } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 40 },
@@ -11,6 +12,7 @@ const fadeUp: Variants = {
 };
 
 function RunRatesCard() {
+  const { t } = useTranslation();
   const points = [20, 35, 28, 55, 48, 72, 65, 88];
   const max = Math.max(...points);
   const w = 100 / (points.length - 1);
@@ -23,8 +25,8 @@ function RunRatesCard() {
           <TrendingUp size={18} />
         </div>
         <div>
-          <h2 className="font-black text-white text-lg tracking-tight">Predictive Run Rates</h2>
-          <p className="text-slate-400 text-sm mt-0.5">See where your money lands before the month ends.</p>
+          <h2 className="font-black text-white text-lg tracking-tight">{t("landing.features.runRates.title")}</h2>
+          <p className="text-slate-400 text-sm mt-0.5">{t("landing.features.runRates.desc")}</p>
         </div>
       </div>
       <div className="flex-1 relative min-h-[120px]">
@@ -67,7 +69,7 @@ function RunRatesCard() {
       </div>
       <div className="mt-3 flex items-center gap-2">
         <span className="text-xs text-violet-400 font-semibold bg-violet-500/10 px-2 py-1 rounded-full">
-          ↑ 12% pace vs last month
+          {t("landing.features.runRates.pace", { pct: 12 })}
         </span>
       </div>
     </div>
@@ -75,6 +77,7 @@ function RunRatesCard() {
 }
 
 function ActionCenterCard() {
+  const { t } = useTranslation();
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-start gap-3 mb-5">
@@ -82,15 +85,15 @@ function ActionCenterCard() {
           <AlertTriangle size={18} />
         </div>
         <div>
-          <h2 className="font-black text-white text-lg tracking-tight">Action Center</h2>
-          <p className="text-slate-400 text-sm mt-0.5">Priority alerts, surfaced.</p>
+          <h2 className="font-black text-white text-lg tracking-tight">{t("landing.features.actionCenter.title")}</h2>
+          <p className="text-slate-400 text-sm mt-0.5">{t("landing.features.actionCenter.desc")}</p>
         </div>
       </div>
       <div className="space-y-3 flex-1">
         {[
-          { label: "Netflix renews in 3 days", color: "bg-amber-400", pill: "Upcoming" },
-          { label: "Spending 18% over budget", color: "bg-red-400", pill: "Alert" },
-          { label: "New salary credited", color: "bg-emerald-400", pill: "Income" },
+          { label: t("landing.features.actionCenter.netflix"), color: "bg-amber-400", pill: t("landing.features.actionCenter.upcoming") },
+          { label: t("landing.features.actionCenter.budget"), color: "bg-red-400", pill: t("landing.features.actionCenter.alert") },
+          { label: t("landing.features.actionCenter.salary"), color: "bg-emerald-400", pill: t("landing.features.actionCenter.income") },
         ].map(({ label, color, pill }) => (
           <div key={label} className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/60 border border-white/5">
             <span className={`w-2 h-2 rounded-full shrink-0 ${color}`} />
@@ -106,6 +109,7 @@ function ActionCenterCard() {
 }
 
 function AssetTrackingCard() {
+  const { t } = useTranslation();
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-start gap-3 mb-5">
@@ -113,21 +117,21 @@ function AssetTrackingCard() {
           <BarChart2 size={18} />
         </div>
         <div>
-          <h2 className="font-black text-white text-lg tracking-tight">Asset Tracking</h2>
-          <p className="text-slate-400 text-sm mt-0.5">Total invested, live.</p>
+          <h2 className="font-black text-white text-lg tracking-tight">{t("landing.features.assets.title")}</h2>
+          <p className="text-slate-400 text-sm mt-0.5">{t("landing.features.assets.desc")}</p>
         </div>
       </div>
       <div className="flex-1 flex flex-col items-center justify-center text-center">
-        <p className="text-slate-500 text-xs uppercase tracking-widest mb-1">Total Invested</p>
+        <p className="text-slate-500 text-xs uppercase tracking-widest mb-1">{t("landing.features.assets.total")}</p>
         <p className="text-4xl font-black text-white mb-1">€22,140</p>
         <span className="text-sm font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full">
-          ↑ +8.4% all-time
+          {t("landing.features.assets.allTime")}
         </span>
         <div className="w-full mt-5 space-y-2">
           {[
-            { label: "Stocks", pct: 55, color: "bg-violet-500" },
-            { label: "ETFs", pct: 30, color: "bg-indigo-400" },
-            { label: "Crypto", pct: 15, color: "bg-emerald-400" },
+            { label: t("landing.features.assets.stocks"), pct: 55, color: "bg-violet-500" },
+            { label: t("landing.features.assets.etfs"), pct: 30, color: "bg-indigo-400" },
+            { label: t("landing.features.assets.crypto"), pct: 15, color: "bg-emerald-400" },
           ].map(({ label, pct, color }) => (
             <div key={label} className="flex items-center gap-2">
               <span className="text-xs text-slate-500 w-12 text-left">{label}</span>
@@ -144,12 +148,13 @@ function AssetTrackingCard() {
 }
 
 function SecureLedgerCard() {
+  const { t } = useTranslation();
   const txns = [
-    { name: "Spotify Premium", cat: "Entertainment", amt: "-€9.99", color: "text-red-400" },
-    { name: "Salary — April", cat: "Income", amt: "+€3,800", color: "text-emerald-400" },
-    { name: "Whole Foods", cat: "Groceries", amt: "-€67.30", color: "text-red-400" },
-    { name: "AWS Credits", cat: "Utilities", amt: "-€12.50", color: "text-red-400" },
-    { name: "Freelance Project", cat: "Income", amt: "+€900", color: "text-emerald-400" },
+    { name: t("landing.features.ledger.spotify"), cat: t("landing.features.ledger.catEntertainment"), amt: "-€9.99", color: "text-red-400" },
+    { name: t("landing.features.ledger.salary"), cat: t("landing.features.ledger.catIncome"), amt: "+€3,800", color: "text-emerald-400" },
+    { name: t("landing.features.ledger.groceries"), cat: t("landing.features.ledger.catGroceries"), amt: "-€67.30", color: "text-red-400" },
+    { name: t("landing.features.ledger.utilities"), cat: t("landing.features.ledger.catUtilities"), amt: "-€12.50", color: "text-red-400" },
+    { name: t("landing.features.ledger.freelance"), cat: t("landing.features.ledger.catIncome"), amt: "+€900", color: "text-emerald-400" },
   ];
 
   return (
@@ -159,8 +164,8 @@ function SecureLedgerCard() {
           <ListOrdered size={18} />
         </div>
         <div>
-          <h2 className="font-black text-white text-lg tracking-tight">Secure Ledger</h2>
-          <p className="text-slate-400 text-sm mt-0.5">Every transaction, end-to-end encrypted.</p>
+          <h2 className="font-black text-white text-lg tracking-tight">{t("landing.features.ledger.title")}</h2>
+          <p className="text-slate-400 text-sm mt-0.5">{t("landing.features.ledger.desc")}</p>
         </div>
       </div>
       <div className="flex-1 space-y-2 overflow-hidden">
@@ -187,6 +192,7 @@ const boxes = [
 ];
 
 export default function FeaturesGrid() {
+  const { t } = useTranslation();
   return (
     <section className="py-32 px-6">
       <div className="max-w-6xl mx-auto">
@@ -199,13 +205,13 @@ export default function FeaturesGrid() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-black tracking-tighter text-white mb-4">
-            Everything you need.{" "}
+            {t("landing.features.title")}{" "}
             <span className="bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
-              Nothing you don't.
+              {t("landing.features.subtitle_accent", { defaultValue: "Nothing you don't." })}
             </span>
           </h2>
           <p className="text-slate-400 text-lg max-w-xl mx-auto">
-            Built for people who take their finances seriously, not for banks that take your data.
+            {t("landing.features.subtitle")}
           </p>
         </motion.div>
 

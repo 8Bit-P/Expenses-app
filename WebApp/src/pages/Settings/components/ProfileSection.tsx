@@ -1,10 +1,12 @@
 import { useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../../../context/AuthContext";
 import { supabase } from "../../../lib/supabase";
 import { useProfile } from "../../../hooks/useProfile";
 import { toast } from "sonner";
 
 export default function ProfileSection() {
+  const { t } = useTranslation();
   const { session } = useAuth();
   const { profile, updateProfile } = useProfile();
 
@@ -12,7 +14,7 @@ export default function ProfileSection() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const userEmail = session?.user?.email || "";
-  const userName = profile?.full_name || "Unknown User";
+  const userName = profile?.full_name || t("settings.profile.unknownUser");
 
   // The Magic Fallback: Generates a unique avatar based on their email
   const fallbackAvatar = `https://api.dicebear.com/9.x/thumbs/svg?seed=${userEmail}&backgroundColor=transparent`;
@@ -41,12 +43,12 @@ export default function ProfileSection() {
       // 3. Update Profile Database
       await updateProfile.mutateAsync({ avatar_url: publicUrl });
 
-      toast.success("Avatar updated", {
-        description: "Your vault profile has been secured.",
+      toast.success(t("settings.profile.avatarUpdated"), {
+        description: t("settings.profile.avatarSuccess"),
       });
     } catch (error: any) {
-      toast.error("Upload failed", {
-        description: error.message || "Could not update profile picture.",
+      toast.error(t("settings.profile.uploadFailed"), {
+        description: error.message || t("settings.profile.uploadError"),
       });
     } finally {
       setIsUploading(false);
@@ -62,7 +64,7 @@ export default function ProfileSection() {
             <div className="w-20 h-20 rounded-full bg-surface-container overflow-hidden border border-outline-variant/20">
               <img
                 src={avatarSrc}
-                alt="Profile"
+                alt={t("settings.profile.title")}
                 className={`w-full h-full object-cover ${isUploading ? "opacity-50 blur-sm" : ""}`}
               />
             </div>

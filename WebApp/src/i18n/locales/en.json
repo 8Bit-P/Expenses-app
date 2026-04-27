@@ -1,0 +1,922 @@
+{
+  "common": {
+    "save": "Save Changes",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "loading": "Loading...",
+    "confirm": "Confirm",
+    "success": "Success",
+    "error": "Error",
+    "untitled": "Untitled",
+    "subscription": "Subscription",
+    "all": "All",
+    "allTime": "All Time",
+    "from": "From {{date}}",
+    "until": "Until {{date}}",
+    "today": "Today",
+    "yesterday": "Yesterday"
+  },
+  "dashboard": {
+    "title": "Vault Overview",
+    "subtitle": "Your real-time financial command center. Monitor liquidity, track goals, and analyze growth.",
+    "exportReport": "Export Report",
+    "syncing": "Synchronizing Vault...",
+    "spendingBreakdown": "Spending Breakdown",
+    "summary": {
+      "netWorth": "Net Worth",
+      "monthlyIncome": "Monthly Income",
+      "safeToSpend": "Safe to Spend",
+      "totalInvested": "Total Invested",
+      "vsLastMonth": "vs last month",
+      "leftThisMonth": "left this month",
+      "totalReturn": "total return",
+      "roi": "ROI",
+      "day": "day"
+    },
+    "wealthEvolution": {
+      "title": "Wealth Evolution",
+      "subtitle": "Portfolio growth segmented by asset class",
+      "investments": "Investments",
+      "liquidity": "Liquidity",
+      "snapshot": "Snapshot"
+    },
+    "reserves": {
+      "title": "Active Reserves",
+      "create": "Create New Reserve",
+      "allFunded": "All reserves funded!",
+      "fund": "Fund",
+      "manage": "Manage Reserve",
+      "newReserve": "New Saving Reserve",
+      "manageGoal": "Manage Goal",
+      "currentStatus": "Current Status: {{status}}",
+      "active": "Active",
+      "reserveName": "Reserve Name",
+      "reserveNamePlaceholder": "e.g. New Car, Travel Fund",
+      "targetAmount": "Target Amount",
+      "icon": "Icon",
+      "fundingCategory": "Funding Category",
+      "fundingDesc": "Funding transactions will be tagged with this category.",
+      "initializeGoal": "Initialize Goal",
+      "creating": "Creating...",
+      "cancel": "Cancel",
+      "actions": {
+        "markCompleted": {
+          "label": "Mark as Completed",
+          "desc": "Achieve the target and remove from dashboard."
+        },
+        "releaseFunds": {
+          "label": "Release Funds",
+          "desc": "Return funds to main cash and archive goal."
+        },
+        "deleteReserve": {
+          "label": "Delete Reserve",
+          "desc": "Wipe goal and all funding records permanently."
+        }
+      },
+      "confirm": {
+        "delete": {
+          "title": "Hard Delete Reserve?",
+          "desc": "This will wipe this goal and its entire funding history from the vault permanently.",
+          "confirm": "Delete Permanently"
+        },
+        "release": {
+          "title": "Release All Funds?",
+          "desc": "The current balance will be returned to your main cash pool and the goal will be archived.",
+          "confirm": "Release & Archive"
+        },
+        "complete": {
+          "title": "Goal Achieved?",
+          "desc": "Congratulations! This will mark the goal as completed and remove it from your active dashboard.",
+          "confirm": "Mark Completed"
+        }
+      },
+      "toast": {
+        "missingFields": "Missing fields",
+        "missingFieldsDesc": "Please fill in all required fields."
+      }
+    },
+    "recentActivity": {
+      "title": "Recent Activity",
+      "viewAll": "View All",
+      "noActivity": "No recent activity.",
+      "uncategorized": "Uncategorized",
+      "investmentSnapshot": "Investment Snapshot"
+    },
+    "actionCenter": {
+      "priorityCommand": "Priority Command",
+      "budgetWarning": {
+        "title": "Budget Warning",
+        "message": "You've used {{percent}}% of your monthly budget. Consider scaling back."
+      },
+      "negativeCashflow": {
+        "title": "Negative Cashflow",
+        "message": "Your expenses have exceeded your income this month. Monitor your liquidity."
+      },
+      "upcomingCharge": {
+        "title": "Upcoming Charge",
+        "message": "'{{name}}' renews {{timing}} ({{amount}}).",
+        "today": "today",
+        "tomorrow": "tomorrow",
+        "inDays": "in {{days}} days"
+      },
+      "largeExpense": {
+        "title": "Large Expense",
+        "message": "A transaction of {{amount}} at '{{description}}' was detected."
+      }
+    },
+    "upcomingRenewals": {
+      "title": "Upcoming Renewals",
+      "viewAll": "View All",
+      "noRenewals": "No renewals found.",
+      "dueToday": "Due Today",
+      "dueTomorrow": "Due Tomorrow",
+      "dueInDays": "Due in {{days}} days"
+    },
+    "reviewWidget": {
+      "title": "{{count}} Transactions need review",
+      "title_one": "1 Transaction needs review",
+      "subtitle": "Action Center Inbox",
+      "placeholder": "Unlabeled Transaction",
+      "pendingVerification": "Pending Verification",
+      "selectCategory": "Select Category",
+      "discard": "Discard Transaction",
+      "approve": "Approve Transaction",
+      "toast": {
+        "selectCategory": "Please select a category first",
+        "approved": "Transaction approved",
+        "approvedError": "Failed to approve transaction",
+        "discarded": "Transaction discarded",
+        "discardedError": "Failed to discard transaction"
+      }
+    }
+  },
+  "sidebar": {
+    "secureLedger": "Secure Ledger",
+    "home": "Home",
+    "expenses": "Expenses",
+    "assets": "Assets",
+    "recurring": "Recurring",
+    "addTransaction": "Add Transaction",
+    "settings": "Settings",
+    "help": "Help",
+    "signOut": "Sign Out"
+  },
+  "topbar": {
+    "goodMorning": "Good morning",
+    "goodAfternoon": "Good afternoon",
+    "goodEvening": "Good evening",
+    "search": "Search transactions...",
+    "toggleTheme": "Toggle Dark Mode"
+  },
+  "settings": {
+    "title": "Vault Settings",
+    "subtitle": "Manage your ethereal vault and guardian preferences.",
+    "preferences": {
+      "title": "Preferences",
+      "language": "Language",
+      "languageDesc": "Interface display language",
+      "currency": "Primary Currency",
+      "currencyDesc": "Used across all amounts",
+      "theme": "Theme",
+      "themes": {
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+      },
+      "dateFormat": "Date Format",
+      "dateFormatDesc": "How dates are displayed",
+      "monthlyBudget": "Monthly Budget",
+      "budgetDesc": "Global spend limit for the month",
+      "loading": "Loading…",
+      "activeBudget": "Current active budget: {{symbol}}{{amount}}",
+      "syncDescription": "Your financial vault settings are now synchronized."
+    },
+    "security": "Security",
+    "changePassword": "Change Password",
+    "profile": {
+      "title": "Profile",
+      "unknownUser": "Unknown User",
+      "avatarUpdated": "Avatar updated",
+      "avatarSuccess": "Your vault profile has been secured.",
+      "uploadFailed": "Upload failed",
+      "uploadError": "Could not update profile picture."
+    },
+    "securitySection": {
+      "title": "Account & Security",
+      "changePassword": "Change Password",
+      "changePasswordDesc": "Update your vault access credentials",
+      "privacySettings": "Privacy Settings"
+    },
+    "passwordModal": {
+      "title": "Change Password",
+      "currentLabel": "Current Password",
+      "currentPlaceholder": "Current Credentials",
+      "newLabel": "New Password",
+      "newPlaceholder": "New Credentials",
+      "confirmLabel": "Confirm New Password",
+      "confirmPlaceholder": "••••••••",
+      "updating": "Updating...",
+      "button": "Secure Account",
+      "errors": {
+        "tooShort": "Password too short",
+        "tooShortDesc": "Password must be at least 6 characters long.",
+        "noChange": "No change detected",
+        "noChangeDesc": "The new password must be different from the current one.",
+        "mismatch": "Passwords mismatch",
+        "mismatchDesc": "The confirmation password does not match.",
+        "verifySession": "Could not verify active user session.",
+        "incorrectCurrent": "Incorrect current password.",
+        "updateFailed": "Update Failed",
+        "updateError": "Could not update password. Please check your current password."
+      },
+      "success": {
+        "title": "Security Updated",
+        "desc": "Your vault access credentials have been successfully modified."
+      }
+    },
+    "session": {
+      "title": "Session Access",
+      "currentDevice": "Current Device",
+      "activeNow": "Active Now",
+      "signoutDesc": "Ensure your vault remains secure by signing out when you are finished on shared devices.",
+      "signoutButton": "Sign Out"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "soon": "Soon",
+      "budgetAlerts": {
+        "title": "Budget Threshold Alerts",
+        "desc": "Warn me when I approach my monthly budget",
+        "warnAt": "Warn at",
+        "ofBudget": "of budget"
+      },
+      "largeTransaction": {
+        "title": "Large Transaction Radar",
+        "desc": "Alert me for any single expense over a threshold",
+        "alertAbove": "Alert above"
+      },
+      "weeklyDigest": {
+        "title": "Weekly Financial Digest",
+        "desc": "A quick spending summary every Sunday"
+      },
+      "trackingReminder": {
+        "title": "Tracking Reminder",
+        "desc": "Remind me to log expenses if inactive for 3 days"
+      },
+      "subscriptionRenewals": {
+        "title": "Subscription Renewals",
+        "desc": "Remind me 3 days before a recurring charge"
+      }
+    },
+    "categories": {
+      "title": "Categories",
+      "subtitle": "Organize your ledger",
+      "loading": "Loading categories...",
+      "noCategories": "No categories yet.",
+      "addPlaceholder": "Category Name...",
+      "deleteTitle": "Delete Category",
+      "deleteConfirm": "Are you sure you want to delete this category? All transactions using this category will become uncategorized. This action cannot be undone.",
+      "toasts": {
+        "added": "Category added",
+        "addedDesc": "{{emoji}} {{name}} is now available.",
+        "addFailed": "Failed to add category",
+        "deleted": "Category deleted",
+        "deletedDesc": "The category has been permanently removed.",
+        "deleteFailed": "Delete failed",
+        "deleteError": "Failed to remove category."
+      }
+    },
+    "danger": {
+      "exportTitle": "Export Your Data",
+      "exportDesc": "Download a CSV of all your transactions. Your data, always yours.",
+      "exportButton": "Export CSV",
+      "exporting": "Exporting…",
+      "exportSuccess": "Data exported",
+      "exportSuccessDesc": "Your ledger is ready for external review.",
+      "exportFailed": "Export failed",
+      "exportFailedDesc": "Could not generate your vault report.",
+      "zoneTitle": "Danger Zone",
+      "zoneDesc": "Permanently delete your vault and all ethereal data.",
+      "deleteButton": "Delete Account",
+      "modal": {
+        "title": "Delete Vault?",
+        "desc": "This action cannot be undone. All your financial data, transaction history, and settings will be permanently erased.",
+        "confirm": "Yes, Delete Everything",
+        "deleting": "Deleting…"
+      }
+    }
+  },
+  "auth": {
+    "signUpDesc": "Start securing your financial future",
+    "loginDesc": "Welcome back, keep your finances in order",
+    "or": "Or",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "signIn": "Sign In",
+    "createAccount": "Create Account",
+    "fullName": "Full Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot Password?",
+    "continue": "Continue",
+    "errorName": "Please enter your full name.",
+    "errorMismatch": "Passwords do not match. Please try again.",
+    "successSignUp": "Success! Check your email for the confirmation link.",
+    "errorGeneric": "An error occurred during authentication.",
+    "withGoogle": "Continue with Google",
+    "withApple": "Continue with Apple",
+    "soon": "Soon"
+  },
+  "layout": {
+    "greetings": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
+    "user": "User"
+  },
+  "search": {
+    "advancedFilters": "Advanced Filters",
+    "timeframe": "Timeframe",
+    "amountRange": "Amount Range",
+    "domains": "Domains",
+    "category": "Category",
+    "min": "Min",
+    "max": "Max",
+    "from": "From",
+    "to": "To",
+    "clearFilters": "Clear All Filters",
+    "allCategories": "All Categories",
+    "unknown": "Unknown",
+    "resultsFor": "Search Results for",
+    "recordsAcross": "result{{count}} across your financial vault.",
+    "universalLedger": "Universal Ledger",
+    "exploreSubtitle": "Explore and filter all your financial data.",
+    "clearSearch": "Clear search",
+    "totalIncome": "Total Income",
+    "totalSpent": "Total Spent",
+    "netFlow": "Net Flow",
+    "summaryTrends": "Summary Trends",
+    "noData": "No data to display",
+    "views": {
+      "bar": "Bar",
+      "line": "Line",
+      "donut": "Donut"
+    },
+    "chartLegend": {
+      "income": "Income",
+      "expenses": "Spent",
+      "assets": "Assets"
+    },
+    "ledger": {
+      "title": "Ledger Entries",
+      "recordsCount": "{{count}} record{{suffix}}",
+      "noEntries": "No entries found",
+      "noEntriesDesc": "Try adjusting your filters or search terms.",
+      "columns": {
+        "date": "Date",
+        "category": "Category",
+        "description": "Description",
+        "source": "Source",
+        "amount": "Amount"
+      },
+      "pagination": {
+        "loadMore": "Load More",
+        "prev": "Prev",
+        "next": "Next"
+      }
+    },
+    "timeframes": {
+      "this_month": "This Month",
+      "last_month": "Last Month",
+      "last_3m": "Last 3 Months",
+      "ytd": "Year to Date",
+      "all": "All Time",
+      "custom": "Custom Period…"
+    },
+    "domainNames": {
+      "Transactions": "Transactions",
+      "Assets": "Assets",
+      "Subscriptions": "Subscriptions"
+    }
+  },
+  "newTransaction": {
+    "title": "New Transaction",
+    "subtitle": "What type would you like to record?",
+    "expense": {
+      "label": "Expense",
+      "desc": "Record a purchase or payment"
+    },
+    "subscription": {
+      "label": "Subscription",
+      "desc": "Track recurring charges"
+    },
+    "investment": {
+      "label": "Investment",
+      "desc": "Log an asset or portfolio entry"
+    },
+    "soon": "Soon"
+  },
+  "expenses": {
+    "header": {
+      "title": "Overview",
+      "filterTooltip": "Filters"
+    },
+    "presets": {
+      "this_month": "This Month",
+      "last_month": "Last Month",
+      "last_3m": "3 Months",
+      "ytd": "Year to Date",
+      "upcoming": "Upcoming"
+    },
+    "metrics": {
+      "totalSpend": "Total Spend",
+      "periodProgress": "Period progress",
+      "spentOfProjected": "Spent {{ratio}}% of projected total",
+      "projectedSpend": "Projected Spend",
+      "runningHot": "Running hot",
+      "onTrack": "On track",
+      "dailyAvg": "{{amount}} / day avg",
+      "daysElapsed": "{{elapsed}} of {{total}} days",
+      "topCategory": "Top Category",
+      "ofTotal": "of total",
+      "noExpenseData": "No expense data",
+      "monthlyBudget": "Monthly Budget",
+      "overBudget": "Over budget",
+      "left": "{{amount}} left",
+      "spentOfBudget": "Spent {{current}} of {{budget}}"
+    },
+    "charts": {
+      "spendingTrend": {
+        "title": "Spending Trend",
+        "subtitle": "Cumulative spend — current vs previous period",
+        "calculating": "Calculating Trends…",
+        "budget": "Budget",
+        "predicted": "Predicted",
+        "predictionTooltip": "Predicted (Run Rate)"
+      },
+      "categoryDonut": {
+        "title": "Spending by Category",
+        "leadsAt": "{{emoji}} {{name}} leads at {{percent}}%",
+        "noData": "No data to display",
+        "expenses": "Expenses",
+        "showLess": "Show Less",
+        "viewAll": "View All ({{count}})",
+        "other": "Other"
+      },
+      "incomeVsExpense": {
+        "title": "Income vs. Expense",
+        "subtitle": "6-month historical view",
+        "analyzing": "Analyzing History...",
+        "income": "Income",
+        "expense": "Expense"
+      }
+    },
+    "quickInsights": {
+      "title": "Quick Insights",
+      "spendPace": "Spend Pace",
+      "netCashFlow": "Net Cash Flow",
+      "biggestMover": "Biggest Mover",
+      "budgetStatus": "Budget Status",
+      "incomeCovers": "Income Covers",
+      "transactions": "Transactions",
+      "noComparison": "No comparison data",
+      "negativeFlow": "Negative period flow",
+      "savedThisPeriod": "{{percent}}% saved this period",
+      "overBy": "Over by {{amount}}",
+      "left": "{{amount}} left",
+      "usedOfBudget": "{{percent}}% of {{amount}} budget used",
+      "days": "{{count}} days",
+      "burnRate": "at current {{amount}}/day burn rate",
+      "categories": "{{count}} categories",
+      "vsPrevious": "{{direction}} {{percent}}% vs previous period",
+      "runningHot": "Running Hot",
+      "onTrack": "On track"
+    },
+    "recentFlow": {
+      "title": "Recent Flow",
+      "movements": "{{count}} movement",
+      "movements_one": "1 movement",
+      "movements_other": "{{count}} movements",
+      "entry": "Entry",
+      "noMovements": "No movements found",
+      "loadMore": "Load More Movements",
+      "columns": {
+        "description": "Description",
+        "category": "Category",
+        "amount": "Amount"
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "cancel": "Cancel",
+        "confirmDelete": "Delete"
+      },
+      "toast": {
+        "removed": "Transaction removed",
+        "removedDesc": "The ledger entry has been purged from your vault.",
+        "deleteFailed": "Delete failed",
+        "deleteFailedDesc": "Could not remove the entry."
+      }
+    },
+    "filter": {
+      "title": "Filters",
+      "apply": "Apply & Close",
+      "narrative": "Filter Narrative",
+      "reset": "Reset",
+      "type": "Flow Type",
+      "category": "Category",
+      "dateRange": "Date Range",
+      "allCategories": "All Categories",
+      "types": {
+        "all": "All",
+        "income": "Income",
+        "expense": "Expense"
+      }
+    },
+    "transactionModal": {
+      "titles": {
+        "edit": "Modify Transaction",
+        "new": "New Transaction"
+      },
+      "descriptions": {
+        "edit": "Update the details of your ledger entry.",
+        "new": "Record your financial movements with precision."
+      },
+      "types": {
+        "expense": "Expense",
+        "transfer": "Transfer",
+        "income": "Income"
+      },
+      "labels": {
+        "amount": "Amount",
+        "category": "Category",
+        "destination": "Destination Reserve",
+        "date": "Date",
+        "description": "Description"
+      },
+      "placeholders": {
+        "amount": "0.00",
+        "description": "e.g. Grocery Run",
+        "category": "Select Category",
+        "reserve": "Select Reserve"
+      },
+      "createCategory": {
+        "title": "Create new category",
+        "placeholder": "Name this category...",
+        "error": {
+          "nameRequired": "Name required"
+        },
+        "toast": {
+          "success": "Category created",
+          "successDesc": "{{emoji}} {{name}} is now available.",
+          "error": "Category failed",
+          "errorDefault": "Error creating category"
+        }
+      },
+      "review": {
+        "label": "Mark for Review",
+        "desc": "Place in your dashboard inbox"
+      },
+      "actions": {
+        "save": "Save Changes",
+        "confirm": "Confirm Entry",
+        "saving": "Saving Entry...",
+        "delete": "Delete Transaction"
+      },
+      "deleteConfirm": {
+        "title": "Delete Transaction?",
+        "description": "This will permanently remove this entry from your vault and reverse any linked reserve updates.",
+        "confirm": "Purge Entry",
+        "cancel": "Keep Entry"
+      },
+      "toasts": {
+        "deleted": "Transaction deleted",
+        "deleteFailed": "Deletion failed",
+        "deleteFailedDefault": "Something went wrong."
+      }
+    }
+  },
+  "investments": {
+    "loading": "Decrypting Vault...",
+    "error": "Error connecting to vault. Please try again.",
+    "header": {
+      "title": "Net Worth",
+      "subtitle": "Monitor your overarching wealth, track contributions, and securely record your portfolio's growth.",
+      "activeAssets": "{{count}} Active Asset",
+      "activeAssets_other": "{{count}} Active Assets",
+      "logSnapshot": "Log Snapshot"
+    },
+    "metrics": {
+      "netWorth": "Vault Net Worth",
+      "stealthConcealed": "Concealed",
+      "stealthVisible": "Visible",
+      "stealthToggle": "Toggle Stealth Mode",
+      "totalInvested": "Total Invested",
+      "allTimeROI": "All-Time ROI",
+      "totalGain": "Total Gain",
+      "totalLoss": "Total Loss"
+    },
+    "allocation": {
+      "title": "Portfolio Allocation",
+      "noData": "No allocation data yet",
+      "diversified": "Diversified",
+      "assetClass": "Asset Class",
+      "assetClass_other": "Asset Classes",
+      "types": {
+        "fund": "Index Funds",
+        "crypto": "Crypto",
+        "stock": "Stocks",
+        "real_estate": "Real Estate",
+        "cash": "Cash",
+        "other": "Other"
+      }
+    },
+    "performance": {
+      "title": "Performance History",
+      "subtitle": "Value vs. Cost Basis over time",
+      "noData": "Log snapshots to visualize your timeline.",
+      "portfolioValue": "Portfolio Value",
+      "netInvested": "Net Invested",
+      "totalGain": "Total Gain"
+    },
+    "assetList": {
+      "title": "Your Vault Assets",
+      "subtitle": "Keep your ledger accurate for precision tracking.",
+      "addNew": "Add New Asset",
+      "noAssets": "No assets found in your vault.",
+      "neverUpdated": "Never",
+      "needsUpdate": "Needs Update",
+      "lastUpdated": "Last updated: {{date}}",
+      "value": "Value",
+      "deleteTitle": "Delete Asset",
+      "pagination": "Page {{current}} of {{total}}",
+      "deleteConfirm": {
+        "title": "Purge Asset?",
+        "description": "This action is irreversible. All historical snapshots, performance metrics, and contribution data for this asset will be permanently erased from your ledger."
+      }
+    },
+    "history": {
+      "title": "Ledger History",
+      "subtitle": "A complete chronological record of all your asset snapshots and cash flows.",
+      "netFlow": "Net Flow",
+      "portfolioValue": "Portfolio Value",
+      "columns": {
+        "date": "Date",
+        "asset": "Asset",
+        "contribution": "Net Contribution",
+        "value": "Total Value",
+        "action": "Action"
+      },
+      "deleteTitle": "Delete Snapshot",
+      "deleteConfirm": {
+        "title": "Delete Timeline Entry",
+        "description": "This will permanently delete this snapshot. Your asset's total value and ROI metrics will recalculate immediately to reflect this change.",
+        "itemName": "{{name}} Snapshot"
+      }
+    },
+    "logModal": {
+      "title": "Update Ledger",
+      "tabs": {
+        "log": "Log Snapshot",
+        "new": "Add New Asset"
+      },
+      "newAsset": {
+        "nameLabel": "Asset Name",
+        "namePlaceholder": "e.g., Vanguard S&P 500",
+        "initialLabel": "Initial Balance (Optional)",
+        "initialPlaceholder": "0.00",
+        "initialDesc": "This will be recorded as your starting snapshot.",
+        "classLabel": "Asset Class",
+        "createButton": "Create Asset",
+        "creating": "Creating...",
+        "types": {
+          "fund": "Fund",
+          "stock": "Stock",
+          "crypto": "Crypto",
+          "real_estate": "Real Estate",
+          "cash": "Cash",
+          "other": "Other"
+        },
+        "toast": {
+          "success": "Asset Secured",
+          "successDesc": "{{name}} added to vault.",
+          "error": "Failed to create"
+        }
+      },
+      "snapshot": {
+        "targetLabel": "Target Asset",
+        "valueLabel": "Current Total Value",
+        "valuePlaceholder": "0.00",
+        "previousValue": "Previous: {{symbol}}{{value}}",
+        "movementLabel": "Did cash move in or out?",
+        "moveNone": "No",
+        "moveDeposit": "+ Deposit",
+        "moveWithdraw": "- Withdraw",
+        "movePlaceholder": "Amount moved...",
+        "growthLabel": "Calculated Market Growth",
+        "confirmButton": "Confirm Snapshot",
+        "confirming": "Encrypting Data...",
+        "toast": {
+          "success": "Snapshot Logged",
+          "successDesc": "Portfolio timeline updated.",
+          "error": "Failed to log"
+        }
+      }
+    }
+  },
+  "landing": {
+    "navbar": {
+      "signIn": "Sign In",
+      "getStarted": "Get Started"
+    },
+    "hero": {
+      "badge": "Privacy-First Financial Intelligence",
+      "headlinePrefix": "Command your",
+      "headlineSuffix": "wealth.",
+      "subheadline": "The secure, privacy-first ledger to track expenses, forecast budgets, and monitor assets — all in one place.",
+      "startFree": "Start for free",
+      "viewPricing": "View pricing",
+      "statEncryption": "256-bit encrypted",
+      "statAnalytics": "Predictive analytics",
+      "statAds": "Zero ads, ever"
+    },
+    "mockup": {
+      "home": "Home",
+      "expenses": "Expenses",
+      "assets": "Assets",
+      "recurring": "Recurring",
+      "netWorth": "Net Worth",
+      "monthlyIncome": "Monthly Income",
+      "safeToSpend": "Safe-to-Spend",
+      "investments": "Investments",
+      "wealthEvolution": "Wealth Evolution",
+      "recentActivity": "Recent Activity"
+    },
+    "trust": {
+      "noAds": "Zero ads. Zero data selling.",
+      "encryption": "Bank-level 256-bit encryption.",
+      "dataOwnership": "Your data stays yours, always."
+    },
+    "features": {
+      "title": "Everything you need.",
+      "subtitle_accent": "Nothing you don't.",
+      "subtitle": "Built for people who take their finances seriously, not for banks that take your data.",
+      "runRates": {
+        "title": "Predictive Run Rates",
+        "desc": "See where your money lands before the month ends.",
+        "pace": "↑ {{pct}}% pace vs last month"
+      },
+      "actionCenter": {
+        "title": "Action Center",
+        "desc": "Priority alerts, surfaced.",
+        "netflix": "Netflix renews in 3 days",
+        "budget": "Spending 18% over budget",
+        "salary": "New salary credited",
+        "upcoming": "Upcoming",
+        "alert": "Alert",
+        "income": "Income"
+      },
+      "assets": {
+        "title": "Asset Tracking",
+        "desc": "Total invested, live.",
+        "total": "Total Invested",
+        "allTime": "↑ +8.4% all-time",
+        "stocks": "Stocks",
+        "etfs": "ETFs",
+        "crypto": "Crypto"
+      },
+      "ledger": {
+        "title": "Secure Ledger",
+        "desc": "Every transaction, end-to-end encrypted.",
+        "spotify": "Spotify Premium",
+        "salary": "Salary — April",
+        "groceries": "Whole Foods",
+        "utilities": "AWS Credits",
+        "freelance": "Freelance Project",
+        "catEntertainment": "Entertainment",
+        "catIncome": "Income",
+        "catGroceries": "Groceries",
+        "catUtilities": "Utilities"
+      }
+    },
+    "pricing": {
+      "title": "Simple, honest pricing.",
+      "subtitle": "No subscriptions. No tricks. Pay once a year and own your data.",
+      "plus": "Everything in Starter, plus:",
+      "starter": {
+        "name": "Starter",
+        "price": "€0",
+        "period": "forever",
+        "desc": "For anyone starting their financial journey.",
+        "cta": "Start for free",
+        "f1": "Up to 100 transactions/month",
+        "f2": "Basic expense tracking",
+        "f3": "Manual entry only",
+        "f4": "3 custom categories",
+        "f5": "Single currency support"
+      },
+      "pro": {
+        "name": "Vault Pro",
+        "price": "€49",
+        "period": "/ year",
+        "badge": "Most Popular",
+        "desc": "Pay once a year, use forever.",
+        "cta": "Get Vault Pro",
+        "f1": "Unlimited transactions",
+        "f2": "Predictive forecasting",
+        "f3": "Custom categories & tags",
+        "f4": "Multi-currency support",
+        "f5": "Asset & investment tracking",
+        "f6": "Action center & alerts",
+        "f7": "Priority support"
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about Vault and how we protect you.",
+      "q1": "How to track net worth privately?",
+      "a1": "Vault employs a local-first philosophy combined with optional encrypted sync to ensure your net worth and asset data never leave your control.",
+      "q2": "Is my financial data sold to third parties?",
+      "a2": "Absolutely not. Vault is a premium, privacy-first tool. We do not sell data, serve ads, or engage with data brokers.",
+      "q3": "How does the predictive forecasting work?",
+      "a3": "Our algorithms analyze your past recurring expenses and income streams locally to accurately predict your run rates without sharing data externally."
+    },
+    "footer": {
+      "contact": "Contact"
+    }
+  },
+  "subscriptions": {
+    "title": "Subscriptions",
+    "subtitle": "Active recurring payments",
+    "newButton": "New Subscription",
+    "addButton": "Add",
+    "listTitle": "Your Subscriptions",
+    "empty": {
+      "title": "No subscriptions tracked yet",
+      "subtitle": "Connect your recurring digital services to keep your private vault accurate and prevent stealthy price hikes.",
+      "button": "Add your first service"
+    },
+    "metrics": {
+      "burnRate": "Monthly Burn Rate",
+      "normalized": "Normalized across all cycles",
+      "active": "Active Subscriptions",
+      "total": "{{count}} Total",
+      "inactive": "{{count}} Inactive",
+      "nextCharge": "Next Upcoming Charge",
+      "dueToday": "Due Today",
+      "dueIn": "Due in {{time}}",
+      "noUpcoming": "No upcoming",
+      "vaultClear": "Your vault is clear."
+    },
+    "upcoming": {
+      "title": "Upcoming Renewals",
+      "noRenewals": "No upcoming renewals detected.",
+      "totalThisWeek": "Total this week",
+      "today": "Today",
+      "tomorrow": "Tomorrow"
+    },
+    "modal": {
+      "titleManage": "Manage Service",
+      "titleNew": "New Subscription",
+      "descManage": "Update your recurring vault entry.",
+      "descNew": "Track a new automated expense.",
+      "nameLabel": "Service Name",
+      "namePlaceholder": "e.g., Netflix",
+      "categoryLabel": "Category",
+      "categoryPlaceholder": "Select category",
+      "amountLabel": "Amount",
+      "cycleLabel": "Billing Cycle",
+      "cycles": {
+        "monthly": "Monthly",
+        "yearly": "Yearly"
+      },
+      "dateLabel": "Next Payment Date",
+      "deleteButton": "Permanently Delete Service",
+      "confirmDelete": "Are you sure you want to delete {{name}}?",
+      "toasts": {
+        "updated": "Service updated",
+        "added": "Service added",
+        "syncSuccess": "{{name}} has been synchronized with your vault.",
+        "processFailed": "Process failed",
+        "saveError": "Could not save your service.",
+        "genericError": "Something went wrong.",
+        "removed": "Service removed",
+        "removedDesc": "{{name}} has been purged from your vault.",
+        "deleteFailed": "Deletion failed",
+        "deleteError": "Could not remove the service.",
+        "missingFields": "Please fill in all required fields."
+      },
+      "actions": {
+        "processing": "Processing...",
+        "save": "Save Changes",
+        "confirm": "Confirm Entry"
+      }
+    },
+    "card": {
+      "monthly": "/mo",
+      "yearly": "/yr"
+    }
+  }
+}

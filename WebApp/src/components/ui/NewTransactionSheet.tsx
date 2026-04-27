@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import TransactionModal from "../../pages/Expenses/components/TransactionModal";
 import SubscriptionModal from "../../pages/Subscriptions/components/SubscriptionModal";
 import LogSnapshotModal from "../../pages/Investments/components/LogSnapshotModal";
@@ -11,6 +12,7 @@ interface NewTransactionSheetProps {
 }
 
 export default function NewTransactionSheet({ isOpen, onClose }: NewTransactionSheetProps) {
+  const { t } = useTranslation();
   const [expenseOpen, setExpenseOpen] = useState(false);
   const [subOpen, setSubOpen] = useState(false);
   const [snapshotOpen, setSnapshotOpen] = useState(false);
@@ -67,9 +69,9 @@ export default function NewTransactionSheet({ isOpen, onClose }: NewTransactionS
             {/* Header */}
             <div className="flex items-center justify-between px-6 pt-5 pb-4">
               <div>
-                <h2 className="text-xl font-extrabold text-on-surface tracking-tight font-headline">New Transaction</h2>
+                <h2 className="text-xl font-extrabold text-on-surface tracking-tight font-headline">{t("newTransaction.title")}</h2>
                 <p className="text-xs text-on-surface-variant font-medium mt-0.5">
-                  What type would you like to record?
+                  {t("newTransaction.subtitle")}
                 </p>
               </div>
               <button
@@ -82,7 +84,7 @@ export default function NewTransactionSheet({ isOpen, onClose }: NewTransactionS
 
             {/* Kind options */}
             <div className="px-4 pb-6 space-y-2.5">
-              {TRANSACTION_KINDS.map(({ kind, icon, label, description, available, gradient, iconBg, iconColor }) => (
+              {TRANSACTION_KINDS.map(({ kind, icon, available, gradient, iconBg, iconColor }) => (
                 <button
                   key={kind}
                   onClick={() => handleKindSelect(kind)}
@@ -101,14 +103,14 @@ export default function NewTransactionSheet({ isOpen, onClose }: NewTransactionS
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-sm text-on-surface flex items-center gap-2">
-                      {label}
+                      {t(`newTransaction.${kind}.label`)}
                       {!available && (
                         <span className="text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-surface-container text-on-surface-variant border border-outline-variant/20">
-                          Soon
+                          {t("newTransaction.soon")}
                         </span>
                       )}
                     </p>
-                    <p className="text-xs text-on-surface-variant font-medium mt-0.5">{description}</p>
+                    <p className="text-xs text-on-surface-variant font-medium mt-0.5">{t(`newTransaction.${kind}.desc`)}</p>
                   </div>
                   {available && (
                     <span className="material-symbols-outlined text-on-surface-variant/40 text-[18px] shrink-0 transition-all duration-200 group-hover:text-on-surface-variant group-hover:translate-x-0.5">

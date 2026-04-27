@@ -1,5 +1,7 @@
 import { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { format, parseISO } from "date-fns";
+import { es, enUS } from "date-fns/locale";
 import type { AssetWithSnapshots, AssetSnapshot } from "../../../types/investments";
 import { useInvestments } from "../../../hooks/useInvestments";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
@@ -13,9 +15,12 @@ interface SnapshotHistoryTableProps {
 }
 
 export default function SnapshotHistoryTable({ assets, stealthMode }: SnapshotHistoryTableProps) {
+  const { t, i18n } = useTranslation();
   const { deleteSnapshot } = useInvestments();
   const { currency } = useUserPreferences();
   const isMobile = useIsMobile(768);
+
+  const dateLocale = i18n.language === "es" ? es : enUS;
 
   // Combine and sort all snapshots from all assets globally
   const allHistory = useMemo(() => {
@@ -74,9 +79,9 @@ export default function SnapshotHistoryTable({ assets, stealthMode }: SnapshotHi
             </span>
           </div>
           <div>
-            <h2 className="text-xl font-black font-headline text-on-surface tracking-tight">Ledger History</h2>
+            <h2 className="text-xl font-black font-headline text-on-surface tracking-tight">{t("investments.history.title")}</h2>
             <p className="text-xs font-bold text-on-surface-variant/70 mt-1">
-              A complete chronological record of all your asset snapshots and cash flows.
+              {t("investments.history.subtitle")}
             </p>
           </div>
         </div>
@@ -93,11 +98,11 @@ export default function SnapshotHistoryTable({ assets, stealthMode }: SnapshotHi
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-xs font-black uppercase tracking-widest text-on-surface-variant/50">
-                      {format(parseISO(snap.date), "MMM d, yyyy")}
+                      {format(parseISO(snap.date), "MMM d, yyyy", { locale: dateLocale })}
                     </p>
                     <h4 className="text-sm font-black text-on-surface mt-1">{snap.assetName}</h4>
                     <p className="text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-wider mt-0.5">
-                      {snap.assetType.replace("_", " ")}
+                      {t(`investments.allocation.types.${snap.assetType}`)}
                     </p>
                   </div>
                   <button
@@ -112,7 +117,7 @@ export default function SnapshotHistoryTable({ assets, stealthMode }: SnapshotHi
                 <div className="flex items-center justify-between pt-3 border-t border-outline-variant/5">
                   <div>
                     <span className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/40 block mb-0.5">
-                      Net Flow
+                      {t("investments.history.netFlow")}
                     </span>
                     <span
                       className={`text-sm font-black ${isPositiveFlow ? "text-emerald-500" : isNegativeFlow ? "text-red-500" : "text-on-surface-variant"}`}
@@ -127,7 +132,7 @@ export default function SnapshotHistoryTable({ assets, stealthMode }: SnapshotHi
                   </div>
                   <div className="text-right">
                     <span className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/40 block mb-0.5">
-                      Portfolio Value
+                      {t("investments.history.portfolioValue")}
                     </span>
                     <span className="text-sm font-black text-on-surface font-headline">
                       {internalFormatCurrency(Number(snap.total_value))}
@@ -144,19 +149,19 @@ export default function SnapshotHistoryTable({ assets, stealthMode }: SnapshotHi
             <thead>
               <tr className="bg-surface-container-low/50">
                 <th className="px-6 sm:px-8 py-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70 whitespace-nowrap">
-                  Date
+                  {t("investments.history.columns.date")}
                 </th>
                 <th className="px-6 sm:px-8 py-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70">
-                  Asset
+                  {t("investments.history.columns.asset")}
                 </th>
                 <th className="px-6 sm:px-8 py-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70 whitespace-nowrap text-right">
-                  Net Contribution
+                  {t("investments.history.columns.contribution")}
                 </th>
                 <th className="px-6 sm:px-8 py-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70 whitespace-nowrap text-right">
-                  Total Value
+                  {t("investments.history.columns.value")}
                 </th>
                 <th className="px-6 sm:px-8 py-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70 whitespace-nowrap text-center">
-                  Action
+                  {t("investments.history.columns.action")}
                 </th>
               </tr>
             </thead>
@@ -168,15 +173,15 @@ export default function SnapshotHistoryTable({ assets, stealthMode }: SnapshotHi
                 return (
                   <tr key={snap.id} className="hover:bg-surface-container-low/30 transition-colors group">
                     <td className="px-6 sm:px-8 py-4 whitespace-nowrap">
-                      <p className="text-sm font-bold text-on-surface">{format(parseISO(snap.date), "MMM d, yyyy")}</p>
+                      <p className="text-sm font-bold text-on-surface">{format(parseISO(snap.date), "MMM d, yyyy", { locale: dateLocale })}</p>
                       <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/50 mt-1">
-                        {format(new Date(snap.created_at), "h:mm a")}
+                        {format(new Date(snap.created_at), "h:mm a", { locale: dateLocale })}
                       </p>
                     </td>
                     <td className="px-6 sm:px-8 py-4">
                       <p className="text-sm font-bold text-on-surface">{snap.assetName}</p>
                       <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/50 mt-1 uppercase">
-                        {snap.assetType.replace("_", " ")}
+                        {t(`investments.allocation.types.${snap.assetType}`)}
                       </p>
                     </td>
                     <td className="px-6 sm:px-8 py-4 whitespace-nowrap text-right">
@@ -201,7 +206,7 @@ export default function SnapshotHistoryTable({ assets, stealthMode }: SnapshotHi
                         onClick={() => setSnapshotToDelete({ id: snap.id, name: snap.assetName })}
                         disabled={isDeleting}
                         className="w-8 h-8 inline-flex items-center justify-center rounded-lg text-on-surface-variant/40 hover:text-error hover:bg-error/10 transition-all opacity-0 group-hover:opacity-100 disabled:opacity-50"
-                        title="Delete Snapshot"
+                        title={t("investments.history.deleteTitle")}
                       >
                         <span className="material-symbols-outlined text-[18px]">delete</span>
                       </button>
@@ -218,9 +223,9 @@ export default function SnapshotHistoryTable({ assets, stealthMode }: SnapshotHi
         isOpen={!!snapshotToDelete}
         onClose={() => setSnapshotToDelete(null)}
         onConfirm={confirmDelete}
-        title="Delete Timeline Entry"
-        message="This will permanently delete this snapshot. Your asset's total value and ROI metrics will recalculate immediately to reflect this change."
-        itemName={snapshotToDelete ? `${snapshotToDelete.name} Snapshot` : undefined}
+        title={t("investments.history.deleteConfirm.title")}
+        message={t("investments.history.deleteConfirm.description")}
+        itemName={snapshotToDelete ? t("investments.history.deleteConfirm.itemName", { name: snapshotToDelete.name }) : undefined}
         isExecuting={isDeleting}
       />
     </div>

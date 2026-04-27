@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { CardWrapper } from "./CardWrapper";
 
 export function BudgetCard({
@@ -13,6 +14,7 @@ export function BudgetCard({
   formattedRemaining: string;
   formattedCurrentSpend: string;
 }) {
+  const { t } = useTranslation();
   const budgetPct = Math.min(100, (currentSpend / budget) * 100);
   const over = currentSpend > budget;
 
@@ -24,14 +26,16 @@ export function BudgetCard({
         >
           <span className="material-symbols-outlined text-[18px]">account_balance</span>
         </div>
-        <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Monthly Budget</span>
+        <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">
+          {t("expenses.metrics.monthlyBudget")}
+        </span>
       </div>
       <h2 className={`text-3xl font-black font-headline tracking-tight ${over ? "text-error" : "text-on-surface"}`}>
         {formattedBudget}
       </h2>
       <div className="mt-3 space-y-1">
         <div className="flex justify-between text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-wider">
-          <span>{over ? "Over budget" : `${formattedRemaining} left`}</span>
+          <span>{over ? t("expenses.metrics.overBudget") : t("expenses.metrics.left", { amount: formattedRemaining })}</span>
           <span>{budgetPct.toFixed(0)}%</span>
         </div>
         <div className="h-1.5 rounded-full bg-surface-container overflow-hidden">
@@ -41,7 +45,7 @@ export function BudgetCard({
           />
         </div>
         <p className="text-[10px] text-on-surface-variant/50 font-medium">
-          Spent {formattedCurrentSpend} of {formattedBudget}
+          {t("expenses.metrics.spentOfBudget", { current: formattedCurrentSpend, budget: formattedBudget })}
         </p>
       </div>
     </CardWrapper>

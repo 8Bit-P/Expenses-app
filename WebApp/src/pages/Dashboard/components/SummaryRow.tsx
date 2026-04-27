@@ -5,7 +5,10 @@ import { formatCurrency } from "../../../utils/currency";
 import { startOfMonth, endOfMonth, differenceInDays, subMonths, format, getDate, isAfter, parseISO } from "date-fns";
 import { useInvestments } from "../../../hooks/useInvestments";
 
+import { useTranslation } from "react-i18next";
+
 export default function SummaryRow() {
+  const { t } = useTranslation();
   const { monthlyBudget, currency } = useUserPreferences();
   const { metrics: invMetrics, assets } = useInvestments();
 
@@ -90,9 +93,9 @@ export default function SummaryRow() {
 
   const metrics = [
     {
-      title: "Net Worth",
+      title: t("dashboard.summary.netWorth"),
       amount: formatCurrency(invMetrics.totalValue, currency.code),
-      subtext: `${investmentDiff >= 0 ? "+" : ""}${formatCurrency(investmentDiff, currency.code)} vs last month`,
+      subtext: `${investmentDiff >= 0 ? "+" : ""}${formatCurrency(investmentDiff, currency.code)} ${t("dashboard.summary.vsLastMonth")}`,
       change: `${investmentTrend >= 0 ? "+" : ""}${investmentTrend.toFixed(1)}%`,
       changeType: investmentTrend >= 0 ? "positive" : "negative",
       icon: "account_balance_wallet",
@@ -100,9 +103,9 @@ export default function SummaryRow() {
       text: "text-primary",
     },
     {
-      title: "Monthly Income",
+      title: t("dashboard.summary.monthlyIncome"),
       amount: formatCurrency(currentMonthIncome, currency.code),
-      subtext: `${incomeDiff >= 0 ? "+" : ""}${formatCurrency(incomeDiff, currency.code)} vs last month`,
+      subtext: `${incomeDiff >= 0 ? "+" : ""}${formatCurrency(incomeDiff, currency.code)} ${t("dashboard.summary.vsLastMonth")}`,
       change: `${incomeTrend >= 0 ? "+" : ""}${incomeTrend.toFixed(1)}%`,
       changeType: incomeTrend >= 0 ? "positive" : "negative",
       icon: "trending_up",
@@ -110,19 +113,19 @@ export default function SummaryRow() {
       text: "text-emerald-500",
     },
     {
-      title: "Safe to Spend",
-      amount: `${formatCurrency(safeToSpend, currency.code)} / day`,
-      subtext: `${formatCurrency(budgetRemaining, currency.code)} left this month`,
+      title: t("dashboard.summary.safeToSpend"),
+      amount: `${formatCurrency(safeToSpend, currency.code)} / ${t("dashboard.summary.day")}`,
+      subtext: `${formatCurrency(budgetRemaining, currency.code)} ${t("dashboard.summary.leftThisMonth")}`,
       icon: "payments",
       bg: "bg-orange-500/10",
       text: "text-orange-500",
       isBudget: true,
     },
     {
-      title: "Total Invested",
+      title: t("dashboard.summary.totalInvested"),
       amount: formatCurrency(invMetrics.totalInvested, currency.code),
-      subtext: `${totalReturn >= 0 ? "+" : ""}${formatCurrency(totalReturn, currency.code)} total return`,
-      change: invMetrics.roi >= 0 ? `+${invMetrics.roi.toFixed(1)}% ROI` : `${invMetrics.roi.toFixed(1)}% ROI`,
+      subtext: `${totalReturn >= 0 ? "+" : ""}${formatCurrency(totalReturn, currency.code)} ${t("dashboard.summary.totalReturn")}`,
+      change: invMetrics.roi >= 0 ? `+${invMetrics.roi.toFixed(1)}% ${t("dashboard.summary.roi")}` : `${invMetrics.roi.toFixed(1)}% ${t("dashboard.summary.roi")}`,
       changeType: invMetrics.roi >= 0 ? "positive" : "negative",
       icon: "auto_graph",
       bg: "bg-blue-500/10",

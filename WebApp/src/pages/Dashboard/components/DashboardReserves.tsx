@@ -8,7 +8,10 @@ import { formatCurrency } from "../../../utils/currency";
 import CreateReserveModal from "./CreateReserveModal";
 import ManageReserveModal from "./ManageReserveModal";
 
+import { useTranslation } from "react-i18next";
+
 export default function DashboardReserves() {
+  const { t } = useTranslation();
   const { reserves, isLoading, fundReserve } = useReserves();
   const { currency } = useUserPreferences();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -22,12 +25,12 @@ export default function DashboardReserves() {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-lg font-black font-headline flex items-center gap-2 text-on-surface">
           <Shield className="w-5 h-5 text-primary" />
-          Active Reserves
+          {t("dashboard.reserves.title")}
         </h2>
         <button
           onClick={() => setIsCreateModalOpen(true)}
           className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 transition-all active:scale-95"
-          title="Create New Reserve"
+          title={t("dashboard.reserves.create")}
         >
           <Plus className="w-5 h-5" />
         </button>
@@ -56,7 +59,7 @@ export default function DashboardReserves() {
             <div className="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center mb-3">
               <Target className="w-6 h-6 text-on-surface-variant/20" />
             </div>
-            <p className="text-xs font-bold text-on-surface-variant">All reserves funded!</p>
+            <p className="text-xs font-bold text-on-surface-variant">{t("dashboard.reserves.allFunded")}</p>
           </div>
         ) : (
           activeReserves.map((reserve) => (
@@ -71,6 +74,7 @@ export default function DashboardReserves() {
                 amount 
               })}
               onManage={() => setManagingReserve(reserve)}
+              t={t}
             />
           ))
         )}
@@ -83,12 +87,14 @@ function ReserveItem({
   reserve, 
   currencyCode, 
   onFund,
-  onManage
+  onManage,
+  t
 }: { 
   reserve: Reserve; 
   currencyCode: string;
   onFund: (amount: number) => void;
   onManage: () => void;
+  t: any;
 }) {
   const [isFunding, setIsFunding] = useState(false);
   const [fundAmount, setFundAmount] = useState("");
@@ -135,16 +141,16 @@ function ReserveItem({
                 <button
                   onClick={() => setIsFunding(true)}
                   className="text-[10px] font-black uppercase tracking-widest text-primary hover:bg-primary/10 px-2 py-1.5 rounded-lg transition-colors flex items-center gap-1"
-                  title="Fund Goal"
+                  title={t("dashboard.reserves.fund")}
                 >
                   <Plus className="w-3 h-3" />
-                  Fund
+                  {t("dashboard.reserves.fund")}
                 </button>
                 
                 <button
                   onClick={onManage}
                   className="p-1.5 text-on-surface-variant/30 hover:text-on-surface hover:bg-surface-container rounded-lg opacity-0 group-hover:opacity-100 transition-all ml-1"
-                  title="Manage Reserve"
+                  title={t("dashboard.reserves.manage")}
                 >
                   <Settings className="w-3.5 h-3.5" />
                 </button>

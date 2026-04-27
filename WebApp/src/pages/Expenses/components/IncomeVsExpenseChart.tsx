@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { formatCurrency } from "../../../utils/currency";
+import { useTranslation } from "react-i18next";
 
 const CustomTooltip = ({ active, payload, label, currency }: any) => {
   if (active && payload && payload.length) {
@@ -31,6 +32,7 @@ const CustomTooltip = ({ active, payload, label, currency }: any) => {
 };
 
 export default function IncomeVsExpenseChart() {
+  const { t } = useTranslation();
   const { currency } = useUserPreferences();
   const now = new Date();
   const startDate = startOfMonth(subMonths(now, 5)); // 6 months ago
@@ -64,13 +66,13 @@ export default function IncomeVsExpenseChart() {
         expense,
       };
     });
-  }, [transactions, loading]);
+  }, [transactions, loading, startDate, now]);
 
   if (loading) {
     return (
       <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 h-100 flex items-center justify-center animate-pulse">
         <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/40">
-          Analyzing History...
+          {t("expenses.charts.incomeVsExpense.analyzing")}
         </span>
       </div>
     );
@@ -81,19 +83,27 @@ export default function IncomeVsExpenseChart() {
       {/* Header section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h4 className="text-lg font-bold font-headline text-on-surface">Income vs. Expense</h4>
-          <p className="text-xs font-medium text-on-surface-variant mt-0.5">6-month historical view</p>
+          <h4 className="text-lg font-bold font-headline text-on-surface">
+            {t("expenses.charts.incomeVsExpense.title")}
+          </h4>
+          <p className="text-xs font-medium text-on-surface-variant mt-0.5">
+            {t("expenses.charts.incomeVsExpense.subtitle")}
+          </p>
         </div>
 
         {/* Legend */}
         <div className="flex items-center gap-4 text-xs font-bold">
           <div className="flex items-center gap-1.5">
             <div className="w-2.5 h-2.5 rounded-sm bg-secondary"></div>
-            <span className="text-on-surface">Income</span>
+            <span className="text-on-surface">
+              {t("expenses.charts.incomeVsExpense.income")}
+            </span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-2.5 h-2.5 rounded-sm bg-primary"></div>
-            <span className="text-on-surface-variant">Expense</span>
+            <span className="text-on-surface-variant">
+              {t("expenses.charts.incomeVsExpense.expense")}
+            </span>
           </div>
         </div>
       </div>
@@ -137,11 +147,12 @@ export default function IncomeVsExpenseChart() {
               content={<CustomTooltip currency={currency} />}
             />
 
-            <Bar dataKey="income" name="Income" fill="var(--secondary)" radius={[2, 2, 0, 0]} barSize={isMobile ? 10 : 24} />
-            <Bar dataKey="expense" name="Expense" fill="var(--primary)" radius={[2, 2, 0, 0]} barSize={isMobile ? 10 : 24} />
+            <Bar dataKey="income" name={t("expenses.charts.incomeVsExpense.income")} fill="var(--secondary)" radius={[2, 2, 0, 0]} barSize={isMobile ? 10 : 24} />
+            <Bar dataKey="expense" name={t("expenses.charts.incomeVsExpense.expense")} fill="var(--primary)" radius={[2, 2, 0, 0]} barSize={isMobile ? 10 : 24} />
           </BarChart>
         </ResponsiveContainer>
       </div>
     </div>
   );
 }
+

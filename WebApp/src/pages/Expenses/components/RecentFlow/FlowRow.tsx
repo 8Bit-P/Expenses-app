@@ -1,6 +1,7 @@
 import { useUserPreferences } from "../../../../context/UserPreferencesContext";
 import { formatCurrency } from "../../../../utils/currency";
 import { CATEGORY_COLORS } from "../../../../constants/chartColors";
+import { useTranslation } from "react-i18next";
 
 // Helper to get a stable color for a category name
 const getCategoryColor = (name: string) => {
@@ -29,6 +30,8 @@ interface FlowRowActionsProps {
 }
 
 function FlowRowActions({ isConfirming, onEdit, onDeleteClick, onDeleteConfirm, onCancelDelete }: FlowRowActionsProps) {
+  const { t } = useTranslation();
+
   if (isConfirming) {
     return (
       <>
@@ -40,7 +43,7 @@ function FlowRowActions({ isConfirming, onEdit, onDeleteClick, onDeleteConfirm, 
           }}
           className="text-[10px] font-black text-on-surface-variant hover:text-on-surface uppercase tracking-wider px-2 py-1 rounded-lg transition-colors"
         >
-          Cancel
+          {t("expenses.recentFlow.actions.cancel")}
         </button>
         <button
           onClick={(e) => {
@@ -50,7 +53,7 @@ function FlowRowActions({ isConfirming, onEdit, onDeleteClick, onDeleteConfirm, 
           }}
           className="text-[10px] font-black text-error hover:bg-error/10 uppercase tracking-wider px-2 py-1 rounded-lg transition-colors"
         >
-          Delete
+          {t("expenses.recentFlow.actions.confirmDelete")}
         </button>
       </>
     );
@@ -64,14 +67,14 @@ function FlowRowActions({ isConfirming, onEdit, onDeleteClick, onDeleteConfirm, 
           onEdit();
         }}
         className="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface-variant/30 hover:text-on-surface hover:bg-surface-container opacity-0 group-hover:opacity-100 transition-all"
-        title="Edit"
+        title={t("expenses.recentFlow.actions.edit")}
       >
         <span className="material-symbols-outlined text-[17px]">edit</span>
       </button>
       <button
         onClick={onDeleteClick}
         className="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface-variant/30 hover:text-error hover:bg-error/10 opacity-0 group-hover:opacity-100 transition-all"
-        title="Delete"
+        title={t("expenses.recentFlow.actions.delete")}
       >
         <span className="material-symbols-outlined text-[17px]">delete</span>
       </button>
@@ -98,6 +101,7 @@ export default function FlowRow({
   onDeleteConfirm,
   onCancelDelete,
 }: FlowRowProps) {
+  const { t } = useTranslation();
   const { currency } = useUserPreferences();
 
   return (
@@ -118,10 +122,10 @@ export default function FlowRow({
         <div className="min-w-0">
           <h4 className="font-bold text-sm text-on-surface flex items-center gap-1 leading-none">
             <span className="truncate">
-              {tx.description?.replace(/\(Auto-renew\)/gi, "").trim() || tx.category?.name || "Untitled"}
+              {tx.description?.replace(/\(Auto-renew\)/gi, "").trim() || tx.category?.name || t("common.untitled")}
             </span>
             {tx.description?.toLowerCase().includes("(auto-renew)") && (
-              <span className="material-symbols-outlined text-[10px] text-tertiary/50 shrink-0" title="Subscription">
+              <span className="material-symbols-outlined text-[10px] text-tertiary/50 shrink-0" title={t("common.subscription")}>
                 sync
               </span>
             )}

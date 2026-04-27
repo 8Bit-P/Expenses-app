@@ -6,7 +6,10 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import VaultIcon from "../../components/ui/VaultIcon";
 
+import { useTranslation } from "react-i18next";
+
 export default function Auth() {
+  const { t } = useTranslation();
   const { session, loading } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -42,7 +45,7 @@ export default function Auth() {
           </div>
           <h1 className="text-3xl font-headline font-extrabold text-on-surface tracking-tight">Vault</h1>
           <p className="text-sm text-on-surface-variant font-medium mt-1.5">
-            {isSignUp ? "Start securing your financial future" : "Welcome back, keep your finances in order"}
+            {isSignUp ? t("auth.signUpDesc") : t("auth.loginDesc")}
           </p>
         </div>
 
@@ -59,7 +62,9 @@ export default function Auth() {
           {/* Divider */}
           <div className="w-full flex items-center gap-3 my-7">
             <div className="flex-1 h-px bg-outline-variant/15" />
-            <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest opacity-40">Or</span>
+            <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest opacity-40">
+              {t("auth.or")}
+            </span>
             <div className="flex-1 h-px bg-outline-variant/15" />
           </div>
 
@@ -69,11 +74,11 @@ export default function Auth() {
         {/* Footer */}
         <div className="mt-8 flex items-center gap-3 text-[11px] font-semibold text-on-surface-variant/50">
           <a href="#" className="hover:text-on-surface transition-colors">
-            Terms of Service
+            {t("auth.terms")}
           </a>
           <span className="text-on-surface-variant/20">•</span>
           <a href="#" className="hover:text-on-surface transition-colors">
-            Privacy Policy
+            {t("auth.privacy")}
           </a>
         </div>
       </div>

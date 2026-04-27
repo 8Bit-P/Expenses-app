@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import type { BillingCycle, Subscription } from "../../../types/expenses";
 import { useSubscriptions } from "../../../hooks/useSubscriptions";
 import { useCategories } from "../../../hooks/useCategories";
@@ -13,6 +14,7 @@ interface SubscriptionModalProps {
 }
 
 export default function SubscriptionModal({ isOpen, onClose, subscription }: SubscriptionModalProps) {
+  const { t } = useTranslation();
   const { addSubscription, updateSubscription, deleteSubscription } = useSubscriptions();
   const { categories } = useCategories();
   const { currency } = useUserPreferences();
@@ -50,7 +52,7 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name || !amount || !nextDate || !categoryId) {
-      setErrorMsg("Please fill in all required fields.");
+      setErrorMsg(t("subscriptions.modal.toasts.missingFields"));
       return;
     }
 
@@ -80,36 +82,36 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
         });
       }
 
-      toast.success(isEditing ? "Service updated" : "Service added", {
-        description: `${name} has been synchronized with your vault.`,
+      toast.success(isEditing ? t("subscriptions.modal.toasts.updated") : t("subscriptions.modal.toasts.added"), {
+        description: t("subscriptions.modal.toasts.syncSuccess", { name }),
       });
 
       onClose();
     } catch (err: any) {
-      toast.error("Process failed", {
-        description: err.message || "Could not save your service.",
+      toast.error(t("subscriptions.modal.toasts.processFailed"), {
+        description: err.message || t("subscriptions.modal.toasts.saveError"),
       });
-      setErrorMsg(err.message || "Something went wrong.");
+      setErrorMsg(err.message || t("subscriptions.modal.toasts.genericError"));
     } finally {
       setIsSubmitting(false);
     }
   }
 
   async function handleDelete() {
-    if (!subscription || !window.confirm(`Are you sure you want to delete ${subscription.name}?`)) return;
+    if (!subscription || !window.confirm(t("subscriptions.modal.confirmDelete", { name: subscription.name }))) return;
 
     setIsSubmitting(true);
     try {
       await deleteSubscription.mutateAsync(subscription.id);
-      toast.success("Service removed", {
-        description: `${subscription.name} has been purged from your vault.`,
+      toast.success(t("subscriptions.modal.toasts.removed"), {
+        description: t("subscriptions.modal.toasts.removedDesc", { name: subscription.name }),
       });
       onClose();
     } catch (err: any) {
-      toast.error("Deletion failed", {
-        description: err.message || "Could not remove the service.",
+      toast.error(t("subscriptions.modal.toasts.deleteFailed"), {
+        description: err.message || t("subscriptions.modal.toasts.deleteError"),
       });
-      setErrorMsg(err.message || "Failed to delete subscription.");
+      setErrorMsg(err.message || t("subscriptions.modal.toasts.genericError"));
     } finally {
       setIsSubmitting(false);
     }
@@ -138,10 +140,10 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
             </div>
             <div>
               <h2 className="text-2xl font-extrabold font-headline text-on-surface tracking-tight">
-                {isEditing ? "Manage Service" : "New Subscription"}
+                {isEditing ? t("subscriptions.modal.titleManage") : t("subscriptions.modal.titleNew")}
               </h2>
               <p className="text-on-surface-variant text-sm font-medium">
-                {isEditing ? "Update your recurring vault entry." : "Track a new automated expense."}
+                {isEditing ? t("subscriptions.modal.descManage") : t("subscriptions.modal.descNew")}
               </p>
             </div>
           </div>
@@ -157,13 +159,13 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                  Service Name
+                  {t("subscriptions.modal.nameLabel")}
                 </label>
                 <div className="relative">
                   <input
                     autoFocus
                     className="w-full bg-surface-container border-none rounded-xl px-4 py-3.5 text-sm font-semibold text-on-surface focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-on-surface-variant/50 outline-none"
-                    placeholder="e.g., Netflix"
+                    placeholder={t("subscriptions.modal.namePlaceholder")}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     type="text"
@@ -173,12 +175,12 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
 
               <div className="space-y-2">
                 <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                  Category
+                  {t("subscriptions.modal.categoryLabel")}
                 </label>
                 <CustomSelect
                   value={categoryId}
                   options={[
-                    ...(categoryId === "" ? [{ value: "", label: "Select category" }] : []),
+                    ...(categoryId === "" ? [{ value: "", label: t("subscriptions.modal.categoryPlaceholder") }] : []),
                     ...categories.map((cat) => ({ value: cat.id, label: `${cat.emoji} ${cat.name}` })),
                   ]}
                   onChange={setCategoryId}
@@ -191,7 +193,7 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
             <div className="grid grid-cols-2 gap-4 items-end">
               <div className="space-y-2">
                 <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                  Amount
+                  {t("subscriptions.modal.amountLabel")}
                 </label>
                 <div className="relative flex items-center">
                   <span className="absolute left-4 text-lg font-bold text-on-surface-variant">{currency.symbol}</span>
@@ -208,7 +210,7 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
 
               <div className="space-y-2">
                 <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                  Billing Cycle
+                  {t("subscriptions.modal.cycleLabel")}
                 </label>
                 <div className="flex bg-surface-container-low p-1 rounded-xl">
                   <button
@@ -216,14 +218,14 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
                     onClick={() => setBillingCycle("monthly")}
                     className={`flex-1 py-2 text-[10px] font-black uppercase tracking-wider rounded-lg transition-all duration-300 ${billingCycle === "monthly" ? "bg-primary text-on-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface"}`}
                   >
-                    Monthly
+                    {t("subscriptions.modal.cycles.monthly")}
                   </button>
                   <button
                     type="button"
                     onClick={() => setBillingCycle("yearly")}
                     className={`flex-1 py-2 text-[10px] font-black uppercase tracking-wider rounded-lg transition-all duration-300 ${billingCycle === "yearly" ? "bg-primary text-on-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface"}`}
                   >
-                    Yearly
+                    {t("subscriptions.modal.cycles.yearly")}
                   </button>
                 </div>
               </div>
@@ -232,7 +234,7 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
             {/* Payment Date */}
             <div className="space-y-2">
               <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                Next Payment Date
+                {t("subscriptions.modal.dateLabel")}
               </label>
               <div className="relative">
                 <input
@@ -252,14 +254,18 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
                 className="flex-1 py-3 px-4 rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container transition-all"
                 disabled={isSubmitting}
               >
-                Cancel
+                {t("common.cancel")}
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting || !name || !amount || !categoryId}
                 className="flex-2 py-3 px-4 rounded-xl font-bold text-sm text-on-primary bg-primary hover:opacity-90 active:scale-[0.98] transition-all shadow-sm disabled:opacity-50"
               >
-                {isSubmitting ? "Processing..." : isEditing ? "Save Changes" : "Confirm Entry"}
+                {isSubmitting 
+                  ? t("subscriptions.modal.actions.processing") 
+                  : isEditing 
+                    ? t("subscriptions.modal.actions.save") 
+                    : t("subscriptions.modal.actions.confirm")}
               </button>
             </div>
 
@@ -272,7 +278,7 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
                 className="w-full py-2 mt-2 text-error font-bold hover:text-error/80 text-[10px] uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5"
               >
                 <span className="material-symbols-outlined text-[16px]">delete</span>
-                Permanently Delete Service
+                {t("subscriptions.modal.deleteButton")}
               </button>
             )}
           </form>

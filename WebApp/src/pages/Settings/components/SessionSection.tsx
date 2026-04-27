@@ -1,13 +1,15 @@
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../../../context/AuthContext";
 
 export default function SessionSection() {
+  const { t } = useTranslation();
   const { signOut } = useAuth();
 
   return (
     <section className="col-span-12 lg:col-span-4 space-y-4">
       <h4 className="text-lg font-bold font-headline px-2 flex items-center gap-2 text-on-surface">
         <span className="material-symbols-outlined text-on-surface-variant">devices</span>
-        Session Access
+        {t("settings.session.title")}
       </h4>
 
       <div className="bg-surface-container-low rounded-xl p-6 border border-outline-variant/10 h-[calc(100%-2.5rem)] flex flex-col">
@@ -16,13 +18,13 @@ export default function SessionSection() {
             <span className="material-symbols-outlined text-[20px]">smartphone</span>
           </div>
           <div>
-            <p className="font-bold text-on-surface text-sm">Current Device</p>
-            <p className="text-xs text-secondary font-bold">Active Now</p>
+            <p className="font-bold text-on-surface text-sm">{t("settings.session.currentDevice")}</p>
+            <p className="text-xs text-secondary font-bold">{t("settings.session.activeNow")}</p>
           </div>
         </div>
 
         <p className="text-xs text-on-surface-variant mb-6 leading-relaxed">
-          Ensure your vault remains secure by signing out when you are finished on shared devices.
+          {t("settings.session.signoutDesc")}
         </p>
 
         <button
@@ -32,7 +34,7 @@ export default function SessionSection() {
           <span className="material-symbols-outlined text-[18px] group-hover:-translate-x-1 transition-transform">
             logout
           </span>
-          Sign Out
+          {t("settings.session.signoutButton")}
         </button>
       </div>
     </section>

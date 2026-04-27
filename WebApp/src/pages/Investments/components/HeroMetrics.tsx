@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { formatCurrency } from "../../../utils/currency";
 
@@ -12,6 +13,7 @@ interface HeroMetricsProps {
 }
 
 export default function HeroMetrics({ metrics, stealthMode, onToggleStealth }: HeroMetricsProps) {
+  const { t } = useTranslation();
   const { currency } = useUserPreferences();
 
   const internalFormatCurrency = (val: number) => {
@@ -51,18 +53,18 @@ export default function HeroMetrics({ metrics, stealthMode, onToggleStealth }: H
               </span>
             </div>
             <span className="text-[11px] font-black uppercase tracking-[0.2em] text-on-surface-variant dark:text-white/50 transition-colors">
-              Vault Net Worth
+              {t("investments.metrics.netWorth")}
             </span>
           </div>
           <button
             onClick={onToggleStealth}
             className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-high dark:bg-white/5 hover:bg-surface-container-highest dark:hover:bg-white/10 border border-outline-variant/10 dark:border-white/10 transition-all text-on-surface-variant dark:text-white/50 hover:text-on-surface dark:hover:text-white/80 text-xs font-bold"
-            title="Toggle Stealth Mode"
+            title={t("investments.metrics.stealthToggle")}
           >
             <span className="material-symbols-outlined text-[15px]">
               {stealthMode ? "visibility_off" : "visibility"}
             </span>
-            {stealthMode ? "Concealed" : "Visible"}
+            {stealthMode ? t("investments.metrics.stealthConcealed") : t("investments.metrics.stealthVisible")}
           </button>
         </div>
 
@@ -88,7 +90,7 @@ export default function HeroMetrics({ metrics, stealthMode, onToggleStealth }: H
             <span className="material-symbols-outlined text-[16px] text-on-surface-variant dark:text-white/40">savings</span>
             <div>
               <p className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/70 dark:text-white/30 leading-none mb-0.5">
-                Total Invested
+                {t("investments.metrics.totalInvested")}
               </p>
               <p className="text-sm font-black text-on-surface dark:text-white/80 font-headline transition-colors">
                 {stealthMode ? "••••" : formatCurrency(metrics.totalInvested, currency.code)}
@@ -107,7 +109,7 @@ export default function HeroMetrics({ metrics, stealthMode, onToggleStealth }: H
             </span>
             <div>
               <p className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/70 dark:text-white/30 leading-none mb-0.5 transition-colors">
-                All-Time ROI
+                {t("investments.metrics.allTimeROI")}
               </p>
               <p className={`text-sm font-black font-headline ${isPositiveROI ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}`}>
                 {stealthMode ? "••••" : `${isPositiveROI ? "+" : ""}${metrics.roi.toFixed(1)}%`}
@@ -122,7 +124,7 @@ export default function HeroMetrics({ metrics, stealthMode, onToggleStealth }: H
             }`}>
               <div>
                 <p className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/70 dark:text-white/30 leading-none mb-0.5 transition-colors">
-                  {isPositiveROI ? "Total Gain" : "Total Loss"}
+                  {isPositiveROI ? t("investments.metrics.totalGain") : t("investments.metrics.totalLoss")}
                 </p>
                 <p className={`text-sm font-black font-headline transition-colors ${isPositiveROI ? "text-on-surface-variant dark:text-white/70" : "text-red-600 dark:text-red-400"}`}>
                   {isPositiveROI ? "+" : ""}

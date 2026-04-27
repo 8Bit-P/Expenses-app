@@ -16,7 +16,7 @@ export default function AppLayout() {
         <Sidebar onNewTransaction={() => setIsNewTxOpen(true)} />
       </div>
 
-      <div className="flex-1 flex flex-col desk:ml-64 pb-24 desk:pb-0">
+      <div className="flex-1 flex flex-col desk:ml-64 pb-32 desk:pb-0">
         {/* Mobile Header (Hidden on desktop) */}
         <MobileHeader />
 

@@ -9,7 +9,10 @@ interface ManageReserveModalProps {
   reserve: Reserve | null;
 }
 
+import { useTranslation } from "react-i18next";
+
 export default function ManageReserveModal({ isOpen, onClose, reserve }: ManageReserveModalProps) {
+  const { t } = useTranslation();
   const { completeReserve, releaseFunds, deleteReserve } = useReserves();
   const [isActionLoading, setIsActionLoading] = useState(false);
   const [confirmAction, setConfirmAction] = useState<"complete" | "release" | "delete" | null>(null);
@@ -40,23 +43,23 @@ export default function ManageReserveModal({ isOpen, onClose, reserve }: ManageR
     switch (confirmAction) {
       case "delete":
         return {
-          title: "Hard Delete Reserve?",
-          description: "This will wipe this goal and its entire funding history from the vault permanently.",
-          confirmLabel: "Delete Permanently",
+          title: t("dashboard.reserves.confirm.delete.title"),
+          description: t("dashboard.reserves.confirm.delete.desc"),
+          confirmLabel: t("dashboard.reserves.confirm.delete.confirm"),
           variant: "danger" as const,
         };
       case "release":
         return {
-          title: "Release All Funds?",
-          description: "The current balance will be returned to your main cash pool and the goal will be archived.",
-          confirmLabel: "Release & Archive",
+          title: t("dashboard.reserves.confirm.release.title"),
+          description: t("dashboard.reserves.confirm.release.desc"),
+          confirmLabel: t("dashboard.reserves.confirm.release.confirm"),
           variant: "warning" as const,
         };
       case "complete":
         return {
-          title: "Goal Achieved?",
-          description: "Congratulations! This will mark the goal as completed and remove it from your active dashboard.",
-          confirmLabel: "Mark Completed",
+          title: t("dashboard.reserves.confirm.complete.title"),
+          description: t("dashboard.reserves.confirm.complete.desc"),
+          confirmLabel: t("dashboard.reserves.confirm.complete.confirm"),
           variant: "success" as const,
         };
       default:
@@ -72,7 +75,9 @@ export default function ManageReserveModal({ isOpen, onClose, reserve }: ManageR
         <div className="px-6 py-6 border-b border-outline-variant/5 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Shield className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-black text-on-surface tracking-tight font-headline">Manage Goal</h2>
+            <h2 className="text-lg font-black text-on-surface tracking-tight font-headline">
+              {t("dashboard.reserves.manageGoal")}
+            </h2>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-surface-container rounded-full transition-colors text-on-surface-variant">
             <X className="w-5 h-5" />
@@ -84,7 +89,9 @@ export default function ManageReserveModal({ isOpen, onClose, reserve }: ManageR
             <div className="text-2xl">{reserve.icon}</div>
             <div>
               <p className="text-sm font-black text-on-surface leading-none mb-1">{reserve.name}</p>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50">Current Status: Active</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50">
+                {t("dashboard.reserves.currentStatus", { status: t("dashboard.reserves.active") })}
+              </p>
             </div>
           </div>
 
@@ -97,8 +104,12 @@ export default function ManageReserveModal({ isOpen, onClose, reserve }: ManageR
               <Trophy className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-sm font-black text-emerald-400 leading-none mb-1">Mark as Completed</p>
-              <p className="text-[10px] font-medium text-emerald-400/60 leading-tight">Achieve the target and remove from dashboard.</p>
+              <p className="text-sm font-black text-emerald-400 leading-none mb-1">
+                {t("dashboard.reserves.actions.markCompleted.label")}
+              </p>
+              <p className="text-[10px] font-medium text-emerald-400/60 leading-tight">
+                {t("dashboard.reserves.actions.markCompleted.desc")}
+              </p>
             </div>
           </button>
 
@@ -111,8 +122,12 @@ export default function ManageReserveModal({ isOpen, onClose, reserve }: ManageR
               <Unlock className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-sm font-black text-amber-400 leading-none mb-1">Release Funds</p>
-              <p className="text-[10px] font-medium text-amber-400/60 leading-tight">Return funds to main cash and archive goal.</p>
+              <p className="text-sm font-black text-amber-400 leading-none mb-1">
+                {t("dashboard.reserves.actions.releaseFunds.label")}
+              </p>
+              <p className="text-[10px] font-medium text-amber-400/60 leading-tight">
+                {t("dashboard.reserves.actions.releaseFunds.desc")}
+              </p>
             </div>
           </button>
 
@@ -125,8 +140,12 @@ export default function ManageReserveModal({ isOpen, onClose, reserve }: ManageR
               <Trash2 className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-sm font-black text-error leading-none mb-1">Delete Reserve</p>
-              <p className="text-[10px] font-medium text-error/60 leading-tight">Wipe goal and all funding records permanently.</p>
+              <p className="text-sm font-black text-error leading-none mb-1">
+                {t("dashboard.reserves.actions.deleteReserve.label")}
+              </p>
+              <p className="text-[10px] font-medium text-error/60 leading-tight">
+                {t("dashboard.reserves.actions.deleteReserve.desc")}
+              </p>
             </div>
           </button>
         </div>
@@ -136,7 +155,7 @@ export default function ManageReserveModal({ isOpen, onClose, reserve }: ManageR
             onClick={onClose}
             className="w-full py-3 rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container-high transition-all"
           >
-            Cancel
+            {t("dashboard.reserves.cancel")}
           </button>
         </div>
       </div>

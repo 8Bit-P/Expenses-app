@@ -32,14 +32,25 @@ function ThemeButton({
   );
 }
 
+import { useTranslation } from "react-i18next";
+
 export default function PreferencesSection() {
-  const { theme, setTheme, currency, dateFormat, monthlyBudget, updateFinancialSettings, budgetLoading } =
-    useUserPreferences();
+  const { t } = useTranslation();
+  const { 
+    theme, 
+    setTheme, 
+    language,
+    currency, 
+    dateFormat, 
+    monthlyBudget, 
+    updateFinancialSettings, 
+    budgetLoading 
+  } = useUserPreferences();
 
   const [budgetInput, setBudgetInput] = useState(monthlyBudget > 0 ? monthlyBudget.toString() : "");
   const [localCurrency, setLocalCurrency] = useState<Currency>(currency.code);
   const [localDateFormat, setLocalDateFormat] = useState<DateFormat>(dateFormat);
-  const [localLanguage, setLocalLanguage] = useState("en");
+  const [localLanguage, setLocalLanguage] = useState(language);
 
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -48,14 +59,15 @@ export default function PreferencesSection() {
     budgetInput !== (monthlyBudget > 0 ? monthlyBudget.toString() : "") ||
     localCurrency !== currency.code ||
     localDateFormat !== dateFormat ||
-    localLanguage !== "en";
+    localLanguage !== language;
 
-  // Sync local state when budget/currency/date changes from DB loading
+  // Sync local state when budget/currency/date/language changes from DB loading
   useEffect(() => {
     setBudgetInput(monthlyBudget > 0 ? monthlyBudget.toString() : "");
     setLocalCurrency(currency.code);
     setLocalDateFormat(dateFormat);
-  }, [monthlyBudget, currency.code, dateFormat]);
+    setLocalLanguage(language);
+  }, [monthlyBudget, currency.code, dateFormat, language]);
 
   const handleSave = async () => {
     const parsed = parseFloat(budgetInput);
@@ -67,15 +79,16 @@ export default function PreferencesSection() {
         monthlyBudget: amount,
         currency: localCurrency,
         dateFormat: localDateFormat,
+        language: localLanguage as any,
       });
-      toast.success("Preferences updated", {
-        description: "Your financial vault settings are now synchronized.",
+      toast.success(t("common.success"), {
+        description: t("settings.preferences.syncDescription"),
       });
       setIsSaved(true);
       setTimeout(() => setIsSaved(false), 2000);
     } catch (error: any) {
-      toast.error("Save failed", {
-        description: error.message || "Could not update your preferences.",
+      toast.error(t("common.error"), {
+        description: error.message || t("settings.preferences.uploadError"),
       });
     } finally {
       setIsSaving(false);
@@ -86,22 +99,21 @@ export default function PreferencesSection() {
     <section className="bg-surface-container-lowest border border-outline-variant/10 rounded-3xl p-6 lg:p-8 space-y-6 shadow-sm">
       <h4 className="text-lg font-bold font-headline flex items-center gap-2 text-on-surface">
         <span className="material-symbols-outlined text-primary">tune</span>
-        General &amp; Financial
+        {t("settings.preferences.title")}
       </h4>
 
       <div className="space-y-4">
         {/* Language */}
         <div className="flex items-center justify-between p-4 bg-surface-container-low/50 rounded-xl border border-outline-variant/5">
           <div>
-            <span className="font-semibold text-on-surface text-sm">Language</span>
-            <p className="text-xs text-on-surface-variant mt-0.5">Interface display language</p>
+            <span className="font-semibold text-on-surface text-sm">{t("settings.preferences.language")}</span>
+            <p className="text-xs text-on-surface-variant mt-0.5">{t("settings.preferences.languageDesc")}</p>
           </div>
           <CustomSelect
             value={localLanguage}
             options={[
               { value: "en", label: "English (US)" },
               { value: "es", label: "Español" },
-              { value: "fr", label: "Français" },
             ]}
             onChange={(l) => setLocalLanguage(l as string)}
           />
@@ -109,20 +121,20 @@ export default function PreferencesSection() {
 
         {/* Visual Theme */}
         <div className="p-4 bg-surface-container-lowest rounded-xl shadow-sm space-y-3">
-          <span className="font-semibold text-on-surface text-sm">Visual Theme</span>
+          <span className="font-semibold text-on-surface text-sm">{t("settings.preferences.theme")}</span>
           <div className="flex bg-surface-container rounded-lg mt-2 p-1 gap-1">
             <ThemeButton
               value="light"
               current={theme}
-              label="Light"
+              label={t("settings.preferences.themes.light")}
               icon="light_mode"
               onClick={() => setTheme("light")}
             />
-            <ThemeButton value="dark" current={theme} label="Dark" icon="dark_mode" onClick={() => setTheme("dark")} />
+            <ThemeButton value="dark" current={theme} label={t("settings.preferences.themes.dark")} icon="dark_mode" onClick={() => setTheme("dark")} />
             <ThemeButton
               value="system"
               current={theme}
-              label="System"
+              label={t("settings.preferences.themes.system")}
               icon="contrast"
               onClick={() => setTheme("system")}
             />
@@ -132,8 +144,8 @@ export default function PreferencesSection() {
         {/* Currency */}
         <div className="flex items-center justify-between p-4 bg-surface-container-low/50 rounded-xl border border-outline-variant/5">
           <div>
-            <span className="font-semibold text-on-surface text-sm">Currency</span>
-            <p className="text-xs text-on-surface-variant mt-0.5">Used across all amounts</p>
+            <span className="font-semibold text-on-surface text-sm">{t("settings.preferences.currency")}</span>
+            <p className="text-xs text-on-surface-variant mt-0.5">{t("settings.preferences.currencyDesc")}</p>
           </div>
           <CustomSelect
             value={localCurrency}
@@ -145,8 +157,8 @@ export default function PreferencesSection() {
         {/* Date Format */}
         <div className="flex items-center justify-between p-4 bg-surface-container-low/50 rounded-xl border border-outline-variant/5">
           <div>
-            <span className="font-semibold text-on-surface text-sm">Date Format</span>
-            <p className="text-xs text-on-surface-variant mt-0.5">How dates are displayed</p>
+            <span className="font-semibold text-on-surface text-sm">{t("settings.preferences.dateFormat")}</span>
+            <p className="text-xs text-on-surface-variant mt-0.5">{t("settings.preferences.dateFormatDesc")}</p>
           </div>
           <CustomSelect
             value={localDateFormat}
@@ -159,10 +171,10 @@ export default function PreferencesSection() {
         <div className="p-4 bg-surface-container-low/50 rounded-xl border border-outline-variant/5 space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <span className="font-semibold text-on-surface text-sm">Monthly Budget</span>
-              <p className="text-xs text-on-surface-variant mt-0.5">Global spend limit for the month</p>
+              <span className="font-semibold text-on-surface text-sm">{t("settings.preferences.monthlyBudget")}</span>
+              <p className="text-xs text-on-surface-variant mt-0.5">{t("settings.preferences.budgetDesc")}</p>
             </div>
-            {budgetLoading && <span className="text-xs text-on-surface-variant/50 font-medium">Loading…</span>}
+            {budgetLoading && <span className="text-xs text-on-surface-variant/50 font-medium">{t("settings.preferences.loading")}</span>}
           </div>
           <div className="flex items-center gap-2">
             <div className="relative flex-1">
@@ -182,34 +194,52 @@ export default function PreferencesSection() {
           </div>
           {monthlyBudget > 0 && (
             <p className="text-[10px] text-on-surface-variant/40 font-bold uppercase tracking-widest mt-2 ml-1">
-              Current active budget: {currency.symbol}
-              {monthlyBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              {t("settings.preferences.activeBudget", { symbol: currency.symbol, amount: monthlyBudget.toLocaleString(undefined, { minimumFractionDigits: 2 }) })}
             </p>
           )}
         </div>
       </div>
 
       {/* Sticky Save FAB on Mobile */}
-      <div className="fixed bottom-[84px] left-0 w-full px-4 md:static md:bottom-auto md:px-0 z-40 md:flex md:justify-end">
-        <button
-          onClick={handleSave}
-          disabled={!isDirty || isSaving}
-          className={`w-full md:w-auto px-8 py-4 md:py-3 rounded-2xl md:rounded-xl text-sm md:text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-2xl md:shadow-xl ${
-            isSaving
-              ? "bg-primary/50 text-on-primary/50 cursor-wait"
-              : isSaved
-              ? "bg-secondary text-on-secondary shadow-secondary/20"
-              : isDirty
-              ? "bg-primary text-on-primary shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-              : "bg-surface-container text-on-surface-variant/50 cursor-not-allowed opacity-80"
-          }`}
-        >
-          <span className="material-symbols-outlined text-[20px] md:text-[18px]">
-            {isSaving ? "sync" : isSaved ? "check_circle" : isDirty ? "save_as" : "check"}
-          </span>
-          {isSaving ? "Syncing..." : isSaved ? "Updated" : isDirty ? "Save All Changes" : "No Changes"}
-        </button>
-      </div>
+      <div className="fixed bottom-[84px] left-0 w-full px-4 md:static md:bottom-auto md:px-0 z-40 md:flex md:items-center md:justify-end gap-3">
+          <button
+            onClick={() => {
+              setBudgetInput(monthlyBudget > 0 ? monthlyBudget.toString() : "");
+              setLocalCurrency(currency.code);
+              setLocalDateFormat(dateFormat);
+              setLocalLanguage(language);
+            }}
+            className={`flex-1 md:flex-none px-6 py-4 md:py-3 rounded-2xl md:rounded-xl text-sm md:text-xs font-bold text-on-surface-variant hover:bg-surface-container-high transition-all ${!isDirty ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+            disabled={!isDirty || isSaving}
+          >
+            {t("common.reset")}
+          </button>
+          
+          <button
+            onClick={handleSave}
+            disabled={!isDirty || isSaving}
+            className={`flex-[2] md:flex-none px-8 py-4 md:py-3 rounded-2xl md:rounded-xl text-sm md:text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-2xl md:shadow-xl ${
+              isSaving
+                ? "bg-primary/50 text-on-primary/50 cursor-wait"
+                : isSaved
+                ? "bg-secondary text-on-secondary shadow-secondary/20"
+                : isDirty
+                ? "bg-primary text-on-primary shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                : "bg-surface-container text-on-surface-variant/50 cursor-not-allowed opacity-80"
+            }`}
+          >
+            <span className="material-symbols-outlined text-[20px] md:text-[18px]">
+              {isSaving ? "sync" : isSaved ? "check_circle" : isDirty ? "save_as" : "check"}
+            </span>
+            {isSaving 
+              ? t("common.syncing") 
+              : isSaved 
+              ? t("common.updated") 
+              : isDirty 
+              ? t("common.save") 
+              : t("common.noChanges")}
+          </button>
+        </div>
     </section>
   );
 }

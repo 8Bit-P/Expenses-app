@@ -1,7 +1,9 @@
 import { useQuickInsights } from "../hooks/useQuickInsights";
 import { formatDateLabel } from "../../../utils/dateFormatters";
+import { useTranslation } from "react-i18next";
 
 export default function QuickInsights() {
+  const { t } = useTranslation();
   const { insights, loading, filters } = useQuickInsights();
 
   if (loading) {
@@ -26,7 +28,7 @@ export default function QuickInsights() {
       <div className="px-5 py-4 border-b border-outline-variant/10 bg-surface-container-low/40">
         <h4 className="text-sm font-black uppercase tracking-[0.15em] text-on-surface flex items-center gap-2 font-headline">
           <span className="material-symbols-outlined text-primary text-[18px] font-headline">bolt</span>
-          Quick Insights
+          {t("expenses.quickInsights.title")}
         </h4>
         <p className="text-[11px] text-on-surface-variant font-medium mt-0.5">
           {formatDateLabel(filters.startDate, filters.endDate)}

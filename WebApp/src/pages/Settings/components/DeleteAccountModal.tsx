@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useDeleteAccount } from "../../../hooks/useDeleteAccount";
 
 interface DeleteAccountModalProps {
@@ -6,6 +7,7 @@ interface DeleteAccountModalProps {
 }
 
 export default function DeleteAccountModal({ isOpen, onClose }: DeleteAccountModalProps) {
+  const { t } = useTranslation();
   const { mutate: deleteAccount, isPending } = useDeleteAccount();
 
   if (!isOpen) return null;
@@ -21,10 +23,9 @@ export default function DeleteAccountModal({ isOpen, onClose }: DeleteAccountMod
           <div className="w-16 h-16 bg-error-container text-error rounded-full flex items-center justify-center mx-auto mb-2">
             <span className="material-symbols-outlined text-3xl">warning</span>
           </div>
-          <h3 className="text-2xl font-extrabold text-on-surface font-headline tracking-tight">Delete Vault?</h3>
+          <h3 className="text-2xl font-extrabold text-on-surface font-headline tracking-tight">{t("settings.danger.modal.title")}</h3>
           <p className="text-on-surface-variant text-sm font-medium">
-            This action cannot be undone. All your financial data, transaction history, and settings will be permanently
-            erased.
+            {t("settings.danger.modal.desc")}
           </p>
         </div>
 
@@ -34,7 +35,7 @@ export default function DeleteAccountModal({ isOpen, onClose }: DeleteAccountMod
             disabled={isPending}
             className="flex-1 py-3 px-4 rounded-xl font-bold text-sm text-on-surface hover:bg-surface-container-highest transition-colors disabled:opacity-50"
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           <button
             onClick={handleDelete}
@@ -44,10 +45,10 @@ export default function DeleteAccountModal({ isOpen, onClose }: DeleteAccountMod
             {isPending ? (
               <>
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Deleting…
+                {t("settings.danger.modal.deleting")}
               </>
             ) : (
-              "Yes, Delete Everything"
+              t("settings.danger.modal.confirm")
             )}
           </button>
         </div>
