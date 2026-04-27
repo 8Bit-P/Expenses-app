@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { X, Lock, Eye, EyeOff, ShieldCheck } from "lucide-react";
-import { supabase } from "../../../lib/supabase";
 import { toast } from "sonner";
-import { useAuth } from "../../../context/AuthContext";
 
 interface ChangePasswordModalProps {
   isOpen: boolean;

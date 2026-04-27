@@ -4,7 +4,7 @@ import { useReserves } from "../../../hooks/useReserves";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { CustomSelect } from "../../../components/ui/CustomSelect";
 import { toast } from "sonner";
-import { X, Target, Shield } from "lucide-react";
+import { X, Shield } from "lucide-react";
 import EmojiPicker, { EmojiStyle } from "emoji-picker-react";
 
 interface CreateReserveModalProps {

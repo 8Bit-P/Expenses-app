@@ -29,7 +29,7 @@ export interface Subscription {
 export interface Transaction {
   id: string;
   user_id: string;
-  category_id: string;
+  category_id: string | null;
   subscription_id?: string;
   reserve_id?: string;
   type: TransactionType;

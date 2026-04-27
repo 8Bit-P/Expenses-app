@@ -1,6 +1,5 @@
-import { X, CheckCircle2, Unlock, Trash2, Trophy, Shield } from "lucide-react";
+import { X, Unlock, Trash2, Trophy, Shield } from "lucide-react";
 import { useReserves, type Reserve } from "../../../hooks/useReserves";
-import { toast } from "sonner";
 import { useState } from "react";
 import VaultConfirmationModal from "../../../components/ui/VaultConfirmationModal";
 

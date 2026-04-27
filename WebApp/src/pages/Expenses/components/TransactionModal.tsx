@@ -121,9 +121,9 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
               .eq("id", reserveId);
           }
         }
-        await updateTransaction({ id: transaction.id, updates: data });
+        await updateTransaction({ id: transaction.id, updates: data as any });
       } else {
-        await addTransaction(data);
+        await addTransaction(data as any);
       }
 
       toast.success(isEditing ? "Transaction updated" : "Transaction recorded", {
