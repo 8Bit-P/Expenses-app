@@ -14,7 +14,9 @@
     "from": "Desde {{date}}",
     "until": "Hasta {{date}}",
     "today": "Hoy",
-    "yesterday": "Ayer"
+    "yesterday": "Ayer",
+    "reset": "Restablecer",
+    "updated": "Actualizado"
   },
   "dashboard": {
     "title": "Resumen de tu Vault",
@@ -334,9 +336,23 @@
       "afternoon": "Buenas tardes",
       "evening": "Buenas noches"
     },
+    "notifications": {
+      "title": "Notificaciones",
+      "emptyTitle": "Tu Vault está en silencio",
+      "emptyDesc": "Te notificaremos aquí sobre próximas suscripciones, alertas de presupuesto y grandes movimientos.",
+      "clearAll": "Limpiar todas las notificaciones"
+    },
+    "nav": {
+      "home": "Inicio",
+      "expenses": "Gastos",
+      "assets": "Activos",
+      "recurring": "Recurrentes"
+    },
+    "toggleTheme": "Cambiar Tema",
     "user": "Usuario"
   },
   "search": {
+    "placeholder": "Buscar transacciones...",
     "advancedFilters": "Filtros Avanzados",
     "timeframe": "Rango de Tiempo",
     "amountRange": "Rango de precio",

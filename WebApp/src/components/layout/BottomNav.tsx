@@ -1,13 +1,15 @@
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function BottomNav() {
+  const { t } = useTranslation();
   const location = useLocation();
 
   const navItems = [
-    { label: "Home", icon: "grid_view", path: "/home" },
-    { label: "Expenses", icon: "payments", path: "/expenses" },
-    { label: "Assets", icon: "show_chart", path: "/assets" },
-    { label: "Recurring", icon: "sync", path: "/recurring" },
+    { label: t("layout.nav.home"), icon: "grid_view", path: "/home" },
+    { label: t("layout.nav.expenses"), icon: "payments", path: "/expenses" },
+    { label: t("layout.nav.assets"), icon: "show_chart", path: "/assets" },
+    { label: t("layout.nav.recurring"), icon: "sync", path: "/recurring" },
   ];
 
   return (

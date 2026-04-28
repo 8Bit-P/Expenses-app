@@ -1,14 +1,30 @@
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../../../context/AuthContext";
+import { toast } from "sonner";
 
 export default function SocialLogins() {
   const { t } = useTranslation();
+  const { signInWithGoogle } = useAuth();
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      console.error("Google Sign-In Error:", error);
+      toast.error(t("auth.errorGeneric"));
+    }
+  };
+
   const buttonClass =
+    "relative w-full flex items-center justify-center gap-2.5 py-3 bg-surface-container border border-outline-variant/20 rounded-xl text-sm font-semibold transition-all hover:bg-surface-container-high active:scale-[0.98]";
+
+  const disabledClass =
     "relative w-full flex items-center justify-center gap-2.5 py-3 bg-surface-container border border-outline-variant/20 rounded-xl text-sm font-semibold text-on-surface/40 cursor-not-allowed transition-all";
 
   return (
     <div className="w-full space-y-3">
-      <button disabled className={buttonClass}>
-        <svg className="w-4 h-4 opacity-50" viewBox="0 0 24 24">
+      <button onClick={handleGoogleSignIn} className={buttonClass}>
+        <svg className="w-4 h-4" viewBox="0 0 24 24">
           <path
             fill="#4285F4"
             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -26,13 +42,10 @@ export default function SocialLogins() {
             d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
           />
         </svg>
-        {t("auth.withGoogle")}
-        <span className="absolute right-3 text-[9px] font-bold text-on-surface-variant/30 uppercase tracking-wider">
-          {t("auth.soon")}
-        </span>
+        <span className="text-on-surface">{t("auth.withGoogle")}</span>
       </button>
 
-      <button disabled className={buttonClass}>
+      <button disabled className={disabledClass}>
         <svg className="w-4 h-4 opacity-50" viewBox="0 0 24 24" fill="currentColor">
           <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.04 2.26-.74 3.58-.79 1.58-.06 2.94.48 3.86 1.43-3.2 1.65-2.62 5.76.62 6.84-1.02 2.37-2.15 3.75-3.14 4.69zM12.03 7.25C11.97 4.14 14.54 1.4 17.5 1c.21 3.25-2.8 5.92-5.47 6.25z" />
         </svg>

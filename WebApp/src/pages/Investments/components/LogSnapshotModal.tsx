@@ -11,10 +11,8 @@ import { es, enUS } from "date-fns/locale";
 // 1. THE CUSTOM HOOK (Logic Separation)
 // ==========================================
 function useSnapshotForm(assets: AssetWithSnapshots[], onClose: () => void) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { createAsset, createSnapshot } = useInvestments();
-
-  const dateLocale = i18n.language === "es" ? es : enUS;
 
   // Tabs & Modes
   const [activeTab, setActiveTab] = useState<"snapshot" | "new_asset">("snapshot");

@@ -14,7 +14,9 @@
     "from": "From {{date}}",
     "until": "Until {{date}}",
     "today": "Today",
-    "yesterday": "Yesterday"
+    "yesterday": "Yesterday",
+    "reset": "Reset",
+    "updated": "Updated"
   },
   "dashboard": {
     "title": "Vault Overview",
@@ -334,9 +336,23 @@
       "afternoon": "Good afternoon",
       "evening": "Good evening"
     },
+    "notifications": {
+      "title": "Notifications",
+      "emptyTitle": "Your vault is quiet",
+      "emptyDesc": "We'll notify you here about upcoming subscriptions, budget alerts, and large movements.",
+      "clearAll": "Clear All Notifications"
+    },
+    "nav": {
+      "home": "Home",
+      "expenses": "Expenses",
+      "assets": "Assets",
+      "recurring": "Recurring"
+    },
+    "toggleTheme": "Toggle Theme",
     "user": "User"
   },
   "search": {
+    "placeholder": "Search everything...",
     "advancedFilters": "Advanced Filters",
     "timeframe": "Timeframe",
     "amountRange": "Amount Range",

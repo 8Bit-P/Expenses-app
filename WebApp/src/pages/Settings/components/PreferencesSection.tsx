@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { CustomSelect } from "../../../components/ui/CustomSelect";
 import { CURRENCIES, DATE_FORMATS } from "../../../constants/preferences";
-import type { Theme, Currency, DateFormat } from "../../../types/preferences";
+import type { Theme, Currency, DateFormat, Language } from "../../../types/preferences";
 import { toast } from "sonner";
 
 function ThemeButton({
@@ -115,7 +115,7 @@ export default function PreferencesSection() {
               { value: "en", label: "English (US)" },
               { value: "es", label: "Español" },
             ]}
-            onChange={(l) => setLocalLanguage(l as string)}
+            onChange={(l) => setLocalLanguage(l as Language)}
           />
         </div>
 

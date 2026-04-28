@@ -22,9 +22,9 @@ export default function TopBar() {
 
   // Greeting based on time of day
   const hour = new Date().getHours();
-  let greetingKey = "topbar.goodMorning";
-  if (hour >= 12 && hour < 18) greetingKey = "topbar.goodAfternoon";
-  if (hour >= 18) greetingKey = "topbar.goodEvening";
+  let greetingKey = "layout.greetings.morning";
+  if (hour >= 12 && hour < 18) greetingKey = "layout.greetings.afternoon";
+  if (hour >= 18) greetingKey = "layout.greetings.evening";
 
   return (
     <header className="flex justify-between items-center w-full px-8 py-3 bg-background/80 backdrop-blur-md sticky top-0 z-50 border-b border-surface-container-low/50">
@@ -54,7 +54,7 @@ export default function TopBar() {
         <button
           onClick={() => setTheme(isDark ? "light" : "dark")}
           className="relative w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-high transition-colors overflow-hidden text-on-surface-variant hover:text-on-surface cursor-pointer"
-          aria-label={t("topbar.toggleTheme")}
+          aria-label={t("layout.toggleTheme")}
         >
           {/* Sun Icon */}
           <span

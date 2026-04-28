@@ -106,7 +106,7 @@ export default function HeroSection() {
                 { label: t("landing.mockup.expenses"), active: false },
                 { label: t("landing.mockup.assets"), active: false },
                 { label: t("landing.mockup.recurring"), active: false },
-              ].map((item, i) => (
+              ].map((item) => (
                 <div
                   key={item.label}
                   className={`h-7 rounded-lg flex items-center gap-2 px-2 ${item.active ? "bg-violet-500/20" : ""}`}

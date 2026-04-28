@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 export default function NotificationDropdown() {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -47,7 +49,7 @@ export default function NotificationDropdown() {
           >
             {/* Header */}
             <div className="px-6 py-5 border-b border-outline-variant/10 flex items-center justify-between bg-surface-container-low/30">
-              <h3 className="text-sm font-black uppercase tracking-[0.15em] text-on-surface">Notifications</h3>
+              <h3 className="text-sm font-black uppercase tracking-[0.15em] text-on-surface">{t("layout.notifications.title")}</h3>
               <span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary text-[10px] font-black uppercase">
                 Beta
               </span>
@@ -61,9 +63,9 @@ export default function NotificationDropdown() {
                     notifications_off
                   </span>
                 </div>
-                <h4 className="text-sm font-bold text-on-surface mb-1">Your vault is quiet</h4>
+                <h4 className="text-sm font-bold text-on-surface mb-1">{t("layout.notifications.emptyTitle")}</h4>
                 <p className="text-xs text-on-surface-variant leading-relaxed">
-                  We'll notify you here about upcoming subscriptions, budget alerts, and large movements.
+                  {t("layout.notifications.emptyDesc")}
                 </p>
               </div>
             </div>
@@ -74,7 +76,7 @@ export default function NotificationDropdown() {
                 disabled
                 className="w-full py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest text-on-surface-variant/40 cursor-not-allowed"
               >
-                Clear All Notifications
+                {t("layout.notifications.clearAll")}
               </button>
             </div>
           </motion.div>

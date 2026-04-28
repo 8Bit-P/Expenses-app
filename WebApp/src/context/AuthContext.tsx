@@ -7,9 +7,15 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   signOut: () => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType>({ session: null, loading: true, signOut: async () => {} });
+const AuthContext = createContext<AuthContextType>({
+  session: null,
+  loading: true,
+  signOut: async () => {},
+  signInWithGoogle: async () => {},
+});
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
@@ -38,7 +44,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     navigate("/auth");
   };
 
-  return <AuthContext.Provider value={{ session, loading, signOut }}>{children}</AuthContext.Provider>;
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/home`,
+      },
+    });
+    if (error) throw error;
+  };
+
+  return <AuthContext.Provider value={{ session, loading, signOut, signInWithGoogle }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => useContext(AuthContext);

@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function GlobalSearchBar() {
+  const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -36,7 +38,7 @@ export default function GlobalSearchBar() {
       <input
         ref={inputRef}
         type="text"
-        placeholder="Search everything..."
+        placeholder={t("search.placeholder")}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={handleSearch}
