@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function VaultLogoSVG() {
   return (
@@ -11,44 +12,100 @@ function VaultLogoSVG() {
   );
 }
 
-import { useTranslation } from "react-i18next";
+const footerLinks = [
+  {
+    group: "Product",
+    links: [
+      { label: "Dashboard", href: "#" },
+      { label: "Expenses", href: "#" },
+      { label: "Assets", href: "#" },
+      { label: "Subscriptions", href: "#" },
+    ],
+  },
+  {
+    group: "Security",
+    links: [
+      { label: "Privacy Policy", href: "#" },
+      { label: "Terms of Service", href: "#" },
+      { label: "Data Ownership", href: "#" },
+      { label: "Encryption", href: "#" },
+    ],
+  },
+  {
+    group: "Company",
+    links: [
+      { label: "Contact", href: "mailto:hello@vault.app" },
+      { label: "Open Source", href: "#" },
+    ],
+  },
+];
 
 export default function Footer() {
   const { t } = useTranslation();
 
   return (
-    <footer className="border-t border-slate-800/60 py-12 px-6">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-        {/* Brand */}
-        <div className="flex items-center gap-2 text-slate-400">
-          <span className="text-violet-500/70">
-            <VaultLogoSVG />
-          </span>
-          <span className="font-black text-base tracking-wider text-slate-300">Vault</span>
-          <span className="text-slate-600 text-sm ml-2">© {new Date().getFullYear()}</span>
+    <footer className="border-t border-slate-800/60 pt-16 pb-10 px-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+          {/* Brand column */}
+          <div className="md:col-span-1">
+            <Link to="/" className="flex items-center gap-2 text-white mb-4">
+              <span className="text-violet-400">
+                <VaultLogoSVG />
+              </span>
+              <span className="font-black text-lg tracking-wider">Vault</span>
+            </Link>
+            <p className="text-slate-500 text-sm leading-relaxed max-w-xs">
+              The privacy-first financial command center. Your wealth, your data, always yours.
+            </p>
+            <div className="mt-6 flex items-center gap-2">
+              <div className="h-6 px-3 rounded-full border border-violet-500/30 bg-violet-500/10 flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
+                <span className="text-[10px] font-bold text-violet-300 uppercase tracking-widest">Live</span>
+              </div>
+              <span className="text-[10px] text-slate-600 font-medium">No data sold, ever.</span>
+            </div>
+          </div>
+
+          {/* Link groups */}
+          {footerLinks.map(({ group, links }) => (
+            <div key={group}>
+              <h3 className="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">{group}</h3>
+              <ul className="space-y-3">
+                {links.map(({ label, href }) => (
+                  <li key={label}>
+                    <a
+                      href={href}
+                      className="text-sm text-slate-500 hover:text-slate-200 transition-colors font-medium"
+                    >
+                      {label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
-        {/* Links */}
-        <div className="flex items-center gap-6">
-          {[
-            { label: t("auth.terms"), href: "#" },
-            { label: t("auth.privacy"), href: "#" },
-            { label: t("landing.footer.contact"), href: "mailto:hello@vault.app" },
-          ].map(({ label, href }) => (
-            <a
-              key={label}
-              href={href}
-              className="text-sm text-slate-500 hover:text-slate-300 transition-colors font-medium"
+        {/* Bottom bar */}
+        <div className="border-t border-slate-800/60 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-slate-600 text-xs font-medium">
+            © {new Date().getFullYear()} Vault. Built with privacy at its core.
+          </p>
+          <div className="flex items-center gap-6">
+            <Link
+              to="/auth?mode=signin"
+              className="text-sm font-bold text-violet-400 hover:text-violet-300 transition-colors"
             >
-              {label}
-            </a>
-          ))}
-          <Link
-            to="/auth?mode=signin"
-            className="text-sm font-bold text-violet-400 hover:text-violet-300 transition-colors"
-          >
-            {t("landing.navbar.signIn")} →
-          </Link>
+              {t("landing.navbar.signIn")} →
+            </Link>
+            <Link
+              to="/auth?mode=signup"
+              className="px-4 py-1.5 text-sm font-bold text-white bg-violet-600 hover:bg-violet-500 rounded-full transition-all duration-200"
+            >
+              {t("landing.navbar.getStarted")}
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

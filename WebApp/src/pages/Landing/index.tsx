@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import TrustBanner from "./components/TrustBanner";
 import FeaturesGrid from "./components/FeaturesGrid";
+import HowItWorksSection from "./components/HowItWorksSection";
 import PricingSection from "./components/PricingSection";
 import FAQSection from "./components/FAQSection";
 import Footer from "./components/Footer";
@@ -25,6 +26,7 @@ export default function Landing() {
       <HeroSection />
       <TrustBanner />
       <FeaturesGrid />
+      <HowItWorksSection />
       <PricingSection />
       <FAQSection />
       <Footer />
