@@ -138,7 +138,7 @@ export default function HeroSection() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.1 }}
-        className="text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter text-center max-w-4xl leading-[0.9] mb-8"
+        className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter text-center max-w-4xl leading-[0.9] mb-8"
       >
         <span className="bg-gradient-to-br from-white via-slate-200 to-slate-500 bg-clip-text text-transparent">
           {t("landing.hero.headlinePrefix")}
@@ -193,26 +193,26 @@ export default function HeroSection() {
         {/* Glow behind card */}
         <div className="absolute inset-x-0 -bottom-10 h-40 bg-violet-600/20 blur-[60px] rounded-full mx-auto w-3/4 pointer-events-none" />
 
-        <div className="relative rounded-2xl border border-white/10 bg-[#0c1324] overflow-hidden shadow-2xl shadow-black/60">
+        <div className="relative rounded-2xl border border-white/10 bg-[#0c1324] overflow-hidden shadow-2xl shadow-black/60 mb-10 sm:mb-0">
           {/* Fake top bar */}
           <div className="h-10 bg-[#0f1929]/80 border-b border-white/5 flex items-center gap-2 px-4">
             <span className="w-3 h-3 rounded-full bg-red-500/60" />
             <span className="w-3 h-3 rounded-full bg-yellow-500/60" />
             <span className="w-3 h-3 rounded-full bg-green-500/60" />
-            <span className="ml-4 text-xs text-slate-500 font-mono">vault.app/home</span>
+            <div className="ml-4 text-[10px] text-slate-500 font-mono truncate max-w-[100px] sm:max-w-none">vault.app/home</div>
             <div className="ml-auto flex items-center gap-2">
-              <div className="h-5 w-32 rounded-md bg-slate-800/70 border border-white/5 flex items-center px-2 gap-1.5">
+              <div className="hidden sm:flex h-5 w-32 rounded-md bg-slate-800/70 border border-white/5 items-center px-2 gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-violet-500/40" />
                 <div className="h-1.5 flex-1 rounded-full bg-slate-700/60" />
               </div>
-              <div className="w-7 h-7 rounded-full bg-slate-800 border border-white/5" />
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-slate-800 border border-white/5" />
             </div>
           </div>
 
           {/* Mock dashboard UI */}
-          <div className="flex" style={{ height: "480px" }}>
+          <div className="flex flex-col md:flex-row h-auto md:h-[480px]">
             {/* Sidebar */}
-            <div className="w-40 bg-[#0d1628]/80 border-r border-white/5 p-3 flex flex-col gap-1 shrink-0">
+            <div className="hidden md:flex w-40 bg-[#0d1628]/80 border-r border-white/5 p-3 flex-col gap-1 shrink-0">
               <div className="flex items-center gap-2 mb-4 px-2 pt-1">
                 <div className="w-5 h-5 rounded-md bg-violet-500/20 border border-violet-400/30 flex items-center justify-center">
                   <div className="w-2 h-2 rounded-full border border-violet-400/60" />
@@ -242,9 +242,9 @@ export default function HeroSection() {
             </div>
 
             {/* Main area */}
-            <div className="flex-1 p-4 flex flex-col gap-3 overflow-hidden min-w-0">
+            <div className="flex-1 p-3 sm:p-4 flex flex-col gap-3 overflow-hidden min-w-0">
               {/* Page title */}
-              <div className="flex items-center justify-between">
+              <div className="hidden sm:flex items-center justify-between">
                 <div>
                   <h2 className="text-sm font-black text-white">Vault Overview</h2>
                   <p className="text-[9px] text-slate-600">Real-time financial command center</p>
@@ -257,7 +257,7 @@ export default function HeroSection() {
               </div>
 
               {/* KPI row */}
-              <div className="grid grid-cols-4 gap-2 shrink-0">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 shrink-0">
                 <MockKpiCard label={t("landing.mockup.netWorth")} value="€ 48,320" change="+2.1%" changePos icon="account_balance_wallet" iconBg="bg-violet-500/10" iconColor="text-violet-400" />
                 <MockKpiCard label={t("landing.mockup.monthlyIncome")} value="€ 5,200" change="+8.3%" changePos icon="trending_up" iconBg="bg-emerald-500/10" iconColor="text-emerald-400" />
                 <MockKpiCard label={t("landing.mockup.safeToSpend")} value="€ 61 / day" icon="payments" iconBg="bg-orange-500/10" iconColor="text-orange-400" />
@@ -265,7 +265,7 @@ export default function HeroSection() {
               </div>
 
               {/* Charts + Activity row */}
-              <div className="grid grid-cols-3 gap-2 flex-1 min-h-0">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2 flex-1 min-h-0">
                 {/* Wealth Evolution chart */}
                 <div className="col-span-2 bg-[#151b2d] rounded-xl border border-white/5 p-3 flex flex-col overflow-hidden">
                   <div className="flex items-center justify-between mb-2 shrink-0">

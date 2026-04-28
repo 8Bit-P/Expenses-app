@@ -13,6 +13,8 @@ const Subscriptions = lazy(() => import("../pages/Subscriptions"));
 const Settings = lazy(() => import("../pages/Settings"));
 const Investments = lazy(() => import("../pages/Investments"));
 const SearchResults = lazy(() => import("../pages/Search"));
+const Privacy = lazy(() => import("../pages/Legal/Privacy"));
+const Terms = lazy(() => import("../pages/Legal/Terms"));
 
 // A clean, premium loading spinner that fits the Vault aesthetic
 const PageLoader = () => (
@@ -28,6 +30,8 @@ export default function AppRouter() {
         {/* 1. Public Routes */}
         <Route path="/" element={<Landing />} />
         <Route path="/auth" element={<Auth />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
 
         {/* 2. Protected Routes */}
         <Route element={<ProtectedRoute />}>

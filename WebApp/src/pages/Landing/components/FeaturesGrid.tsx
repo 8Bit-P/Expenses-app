@@ -32,7 +32,7 @@ function UniversalLedgerCard() {
         </div>
       </div>
       {/* Table header */}
-      <div className="grid grid-cols-[1fr_auto_auto] gap-2 px-2 mb-1.5">
+      <div className="hidden sm:grid grid-cols-[1fr_auto_auto] gap-2 px-2 mb-1.5">
         <span className="text-[9px] font-black uppercase tracking-widest text-slate-600">Description</span>
         <span className="text-[9px] font-black uppercase tracking-widest text-slate-600">Category</span>
         <span className="text-[9px] font-black uppercase tracking-widest text-slate-600">Amount</span>
@@ -87,9 +87,9 @@ function CategoryDonutCard() {
           <p className="text-slate-400 text-sm mt-0.5">🛒 Groceries leads at 34%</p>
         </div>
       </div>
-      <div className="flex items-center gap-6 flex-1">
+      <div className="flex flex-col sm:flex-row items-center gap-6 flex-1">
         {/* SVG Donut */}
-        <div className="relative shrink-0">
+        <div className="relative shrink-0 flex justify-center w-full sm:w-auto">
           <svg width="100" height="100" viewBox="0 0 100 100">
             {cats.map((cat) => {
               const segPct = cat.pct - gap;
@@ -126,7 +126,7 @@ function CategoryDonutCard() {
               <span className="text-base leading-none">{cat.emoji}</span>
               <span className="text-xs font-semibold text-slate-400 flex-1 group-hover:text-slate-200 transition-colors">{cat.name}</span>
               <span className="text-[10px] font-bold text-slate-600 tabular-nums">{cat.pct}%</span>
-              <span className="text-xs font-bold text-slate-300 tabular-nums">{cat.amt}</span>
+              <span className="text-xs font-bold text-slate-300 tabular-nums shrink-0">{cat.amt}</span>
             </div>
           ))}
         </div>
@@ -254,7 +254,7 @@ function SpendingTrendCard() {
         </div>
       </div>
       {/* KPI row */}
-      <div className="grid grid-cols-3 gap-3 mb-4 shrink-0">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 shrink-0">
         {[
           { label: "Total Income", val: "€5,200", color: "text-emerald-400" },
           { label: "Total Spent", val: "€3,840", color: "text-slate-300" },

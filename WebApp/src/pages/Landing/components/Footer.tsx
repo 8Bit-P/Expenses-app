@@ -12,100 +12,54 @@ function VaultLogoSVG() {
   );
 }
 
-const footerLinks = [
-  {
-    group: "Product",
-    links: [
-      { label: "Dashboard", href: "#" },
-      { label: "Expenses", href: "#" },
-      { label: "Assets", href: "#" },
-      { label: "Subscriptions", href: "#" },
-    ],
-  },
-  {
-    group: "Security",
-    links: [
-      { label: "Privacy Policy", href: "#" },
-      { label: "Terms of Service", href: "#" },
-      { label: "Data Ownership", href: "#" },
-      { label: "Encryption", href: "#" },
-    ],
-  },
-  {
-    group: "Company",
-    links: [
-      { label: "Contact", href: "mailto:hello@vault.app" },
-      { label: "Open Source", href: "#" },
-    ],
-  },
-];
-
 export default function Footer() {
   const { t } = useTranslation();
 
   return (
-    <footer className="border-t border-slate-800/60 pt-16 pb-10 px-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-          {/* Brand column */}
-          <div className="md:col-span-1">
-            <Link to="/" className="flex items-center gap-2 text-white mb-4">
-              <span className="text-violet-400">
-                <VaultLogoSVG />
-              </span>
-              <span className="font-black text-lg tracking-wider">Vault</span>
-            </Link>
-            <p className="text-slate-500 text-sm leading-relaxed max-w-xs">
-              The privacy-first financial command center. Your wealth, your data, always yours.
-            </p>
-            <div className="mt-6 flex items-center gap-2">
-              <div className="h-6 px-3 rounded-full border border-violet-500/30 bg-violet-500/10 flex items-center gap-1.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
-                <span className="text-[10px] font-bold text-violet-300 uppercase tracking-widest">Live</span>
-              </div>
-              <span className="text-[10px] text-slate-600 font-medium">No data sold, ever.</span>
-            </div>
-          </div>
-
-          {/* Link groups */}
-          {footerLinks.map(({ group, links }) => (
-            <div key={group}>
-              <h3 className="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">{group}</h3>
-              <ul className="space-y-3">
-                {links.map(({ label, href }) => (
-                  <li key={label}>
-                    <a
-                      href={href}
-                      className="text-sm text-slate-500 hover:text-slate-200 transition-colors font-medium"
-                    >
-                      {label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+    <footer className="border-t border-slate-800/60 pt-16 pb-12 px-6 bg-[#0c1324]/50">
+      <div className="max-w-6xl mx-auto flex flex-col items-center text-center gap-10">
+        {/* Brand Section */}
+        <div className="flex flex-col items-center gap-4 max-w-sm">
+          <Link to="/" className="flex items-center gap-2 text-white">
+            <span className="text-violet-400">
+              <VaultLogoSVG />
+            </span>
+            <span className="font-black text-2xl tracking-tight">Vault</span>
+          </Link>
+          <p className="text-slate-500 text-sm leading-relaxed">
+            The privacy-first financial command center. Track your wealth, forecast your future, and own your data.
+          </p>
         </div>
 
-        {/* Bottom bar */}
-        <div className="border-t border-slate-800/60 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-slate-600 text-xs font-medium">
-            © {new Date().getFullYear()} Vault. Built with privacy at its core.
-          </p>
-          <div className="flex items-center gap-6">
-            <Link
-              to="/auth?mode=signin"
-              className="text-sm font-bold text-violet-400 hover:text-violet-300 transition-colors"
-            >
-              {t("landing.navbar.signIn")} →
-            </Link>
-            <Link
-              to="/auth?mode=signup"
-              className="px-4 py-1.5 text-sm font-bold text-white bg-violet-600 hover:bg-violet-500 rounded-full transition-all duration-200"
-            >
-              {t("landing.navbar.getStarted")}
-            </Link>
+        {/* Minimal Links */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-x-12 gap-y-6">
+          <Link to="/privacy" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-violet-400 transition-colors">
+            {t("legal.privacy.title")}
+          </Link>
+          <Link to="/terms" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-violet-400 transition-colors">
+            {t("legal.terms.title")}
+          </Link>
+          <a href="mailto:hello@vault.app" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-violet-400 transition-colors">
+            {t("landing.footer.contact")}
+          </a>
+        </div>
+
+        {/* Status Badge */}
+        <div className="flex items-center gap-2">
+          <div className="h-5 px-2.5 rounded-full border border-violet-500/20 bg-violet-500/5 flex items-center gap-1.5">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Network Secure</span>
           </div>
+        </div>
+
+        {/* Copyright Bar */}
+        <div className="w-full border-t border-white/5 pt-10 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-slate-600 text-[9px] font-black uppercase tracking-widest">
+            © {new Date().getFullYear()} Vault App. All rights reserved.
+          </p>
+          <p className="text-slate-700 text-[9px] font-black uppercase tracking-widest">
+            Local-First • Encrypted • Private
+          </p>
         </div>
       </div>
     </footer>

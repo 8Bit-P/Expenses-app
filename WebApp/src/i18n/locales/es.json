@@ -934,5 +934,21 @@
       "monthly": "/mes",
       "yearly": "/año"
     }
+  },
+  "legal": {
+    "privacy": {
+      "title": "Política de Privacidad",
+      "subtitle": "Última actualización: Abril 2026",
+      "p1": "En Vault, su privacidad es nuestra misión principal. No vendemos, intercambiamos ni transferimos de otro modo su información personal a terceros.",
+      "p2": "Todos los datos financieros que ingrese se almacenan localmente en su dispositivo o en su bóveda privada y cifrada. Utilizamos cifrado de 256 bits estándar de la industria para proteger sus datos durante la sincronización.",
+      "p3": "Solo recopilamos los datos técnicos mínimos necesarios para proporcionar y mejorar nuestro servicio, como informes de fallos y métricas de uso básicas, que siempre son anónimas."
+    },
+    "terms": {
+      "title": "Términos de Servicio",
+      "subtitle": "Vigente a partir de Abril 2026",
+      "p1": "Al usar Vault, usted acepta estos términos. Vault se proporciona 'tal cual' sin ninguna garantía, expresa o implícita.",
+      "p2": "Usted es responsable de mantener la confidencialidad de sus credenciales de cuenta. Vault no puede y no será responsable de ninguna pérdida o daño resultante de su incumplimiento de esta obligación de seguridad.",
+      "p3": "Nos reservamos el derecho de modificar o terminar el servicio por cualquier motivo, sin previo aviso en cualquier momento. También nos reservamos el derecho de actualizar estos términos según sea necesario."
+    }
   }
 }

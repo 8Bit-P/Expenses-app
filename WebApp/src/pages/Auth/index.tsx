@@ -3,7 +3,7 @@ import AuthTabs from "./components/AuthTabs";
 import AuthForm from "./components/AuthForm";
 import SocialLogins from "./components/SocialLogin";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import VaultIcon from "../../components/ui/VaultIcon";
 
 import { useTranslation } from "react-i18next";
@@ -73,13 +73,13 @@ export default function Auth() {
 
         {/* Footer */}
         <div className="mt-8 flex items-center gap-3 text-[11px] font-semibold text-on-surface-variant/50">
-          <a href="#" className="hover:text-on-surface transition-colors">
+          <Link to="/terms" className="hover:text-on-surface transition-colors">
             {t("auth.terms")}
-          </a>
+          </Link>
           <span className="text-on-surface-variant/20">•</span>
-          <a href="#" className="hover:text-on-surface transition-colors">
+          <Link to="/privacy" className="hover:text-on-surface transition-colors">
             {t("auth.privacy")}
-          </a>
+          </Link>
         </div>
       </div>
     </div>
