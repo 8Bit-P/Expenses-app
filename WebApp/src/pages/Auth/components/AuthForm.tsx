@@ -136,18 +136,6 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
         )}
       </div>
 
-      {/* Forgot Password Link */}
-      <div
-        className={`flex justify-end transition-all overflow-hidden ${isSignUp ? "h-0 opacity-0" : "h-6 opacity-100"}`}
-      >
-        <button
-          type="button"
-          className="text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-colors"
-        >
-          {t("auth.forgotPassword")}
-        </button>
-      </div>
-
       <button
         type="submit"
         disabled={loading}
