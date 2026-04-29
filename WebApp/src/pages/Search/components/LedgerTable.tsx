@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { List, Loader2, Search, TrendingUp, ChevronLeft, ChevronRight, ChevronDown, ArrowRightLeft } from "lucide-react";
+import { List, Loader2, Search, TrendingUp, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, ArrowRightLeft, ArrowUpRight, ArrowDownRight, ArrowRight } from "lucide-react";
 import { formatTransactionDate } from "../../../utils/dateFormatters";
 import { formatCurrency } from "../../../utils/currency";
 import type { LedgerRow } from "../types";
@@ -12,6 +12,10 @@ interface LedgerTableProps {
   rows: LedgerRow[];
   loading: boolean;
   currencyCode: string;
+  sortColumn: "date" | "amount";
+  setSortColumn: (col: "date" | "amount") => void;
+  sortDirection: "asc" | "desc";
+  setSortDirection: (dir: "asc" | "desc") => void;
 }
 
 // ── Source badge config ───────────────────────────────────────────────────────
@@ -41,7 +45,15 @@ function SourceBadge({ row }: { row: LedgerRow }) {
 
 const PAGE_SIZE = 20;
 
-export function LedgerTable({ rows, loading, currencyCode }: LedgerTableProps) {
+export function LedgerTable({ 
+  rows, 
+  loading, 
+  currencyCode,
+  sortColumn,
+  setSortColumn,
+  sortDirection,
+  setSortDirection
+}: LedgerTableProps) {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
   const [page, setPage] = useState(1);
@@ -61,6 +73,15 @@ export function LedgerTable({ rows, loading, currencyCode }: LedgerTableProps) {
     : rows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const pageRange = buildPageRange(page, totalPages);
+
+  const toggleSort = (col: "date" | "amount") => {
+    if (sortColumn === col) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortColumn(col);
+      setSortDirection("desc"); // Default to desc when switching
+    }
+  };
 
   return (
     <div className="bg-surface-container-low border border-outline-variant/20 rounded-2xl shadow-sm flex-1 overflow-hidden flex flex-col min-h-0">
@@ -89,10 +110,19 @@ export function LedgerTable({ rows, loading, currencyCode }: LedgerTableProps) {
           <table className="w-full text-left border-collapse">
             <thead className="bg-surface-container-lowest/80 text-[10px] uppercase tracking-widest text-on-surface-variant font-black sticky top-0 backdrop-blur-md">
               <tr>
-                <th className="px-5 py-3 font-semibold border-b border-outline-variant/10 w-24">
-                  {t("search.ledger.columns.date")}
+                <th 
+                  className="px-5 py-3 font-semibold border-b border-outline-variant/10 w-24 cursor-pointer hover:bg-surface-container-low transition-colors group"
+                  onClick={() => toggleSort("date")}
+                >
+                  <div className="flex items-center gap-1">
+                    {t("search.ledger.columns.date")}
+                    <span className="text-on-surface-variant/50 group-hover:text-on-surface transition-colors">
+                      {sortColumn === "date" ? (sortDirection === "asc" ? <ChevronUp size={12} /> : <ChevronDown size={12} />) : <ChevronDown size={12} className="opacity-0 group-hover:opacity-50" />}
+                    </span>
+                  </div>
                 </th>
                 <th className="px-5 py-3 font-semibold border-b border-outline-variant/10 w-36">
+
                   {t("search.ledger.columns.category")}
                 </th>
                 <th className="px-5 py-3 font-semibold border-b border-outline-variant/10">
@@ -101,8 +131,16 @@ export function LedgerTable({ rows, loading, currencyCode }: LedgerTableProps) {
                 <th className="px-5 py-3 font-semibold border-b border-outline-variant/10 w-20 text-center">
                   {t("search.ledger.columns.source")}
                 </th>
-                <th className="px-5 py-3 font-semibold border-b border-outline-variant/10 text-right w-36">
-                  {t("search.ledger.columns.amount")}
+                <th 
+                  className="px-5 py-3 font-semibold border-b border-outline-variant/10 text-right w-36 cursor-pointer hover:bg-surface-container-low transition-colors group"
+                  onClick={() => toggleSort("amount")}
+                >
+                  <div className="flex items-center justify-end gap-1">
+                    {t("search.ledger.columns.amount")}
+                    <span className="text-on-surface-variant/50 group-hover:text-on-surface transition-colors">
+                      {sortColumn === "amount" ? (sortDirection === "asc" ? <ChevronUp size={12} /> : <ChevronDown size={12} />) : <ChevronDown size={12} className="opacity-0 group-hover:opacity-50" />}
+                    </span>
+                  </div>
                 </th>
               </tr>
             </thead>
@@ -143,11 +181,24 @@ export function LedgerTable({ rows, loading, currencyCode }: LedgerTableProps) {
                         ? "text-primary"
                         : row.amount >= 0
                         ? "text-emerald-400"
-                        : "text-on-surface"
+                        : "text-red-400"
                     }`}
                   >
-                    {row.raw?.type === "transfer" ? (row.amount >= 0 ? "→" : "←") : row.amount >= 0 ? "+" : "−"}
-                    {formatCurrency(Math.abs(row.amount), currencyCode)}
+                    <div className="flex items-center justify-end gap-1.5">
+                      <span className="opacity-70">
+                        {row.raw?.type === "transfer" ? (
+                          <ArrowRight size={14} />
+                        ) : row.amount >= 0 ? (
+                          <ArrowUpRight size={14} />
+                        ) : (
+                          <ArrowDownRight size={14} />
+                        )}
+                      </span>
+                      <span>
+                        {row.amount >= 0 ? "+" : "−"}
+                        {formatCurrency(Math.abs(row.amount), currencyCode)}
+                      </span>
+                    </div>
                   </td>
                 </tr>
               ))}

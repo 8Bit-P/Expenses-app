@@ -358,6 +358,13 @@
     "amountRange": "Amount Range",
     "domains": "Domains",
     "category": "Category",
+    "selectedCount": "{{count}} Selected",
+    "transactionType": "Transaction Type",
+    "transactionTypes": {
+      "income": "Income",
+      "expense": "Expenses",
+      "transfer": "Transfers"
+    },
     "min": "Min",
     "max": "Max",
     "from": "From",

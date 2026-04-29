@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import MobileHeader from "./MobileHeader";
 import BottomNav from "./BottomNav";
 import Sidebar from "./Sidebar";
@@ -8,6 +8,45 @@ import NewTransactionSheet from "../ui/NewTransactionSheet";
 
 export default function AppLayout() {
   const [isNewTxOpen, setIsNewTxOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if user is typing in an input, textarea, or contenteditable
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable
+      ) {
+        return;
+      }
+
+      // Ignore if modifier keys are pressed (except shift for some reason, but let's be strict)
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+      switch (e.key.toLowerCase()) {
+        case "1":
+          navigate("/home");
+          break;
+        case "2":
+          navigate("/expenses");
+          break;
+        case "3":
+          navigate("/assets");
+          break;
+        case "4":
+          navigate("/recurring");
+          break;
+        case "n":
+          setIsNewTxOpen(true);
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [navigate]);
 
   return (
     <div className="min-h-screen bg-background text-on-surface flex">

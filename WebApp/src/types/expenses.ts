@@ -45,10 +45,13 @@ export interface Transaction {
 export interface TransactionFilters {
   startDate?: string;
   endDate?: string;
-  categoryId?: string;
-  type?: TransactionType;
+  categoryId?: string; // legacy single select (keeping for compatibility if needed)
+  categoryIds?: string[];
+  type?: TransactionType; // legacy single select
+  types?: TransactionType[];
   search?: string;
   needsReview?: boolean | null;
   page?: number;
   pageSize?: number;
 }
+

@@ -5,6 +5,7 @@ import { useUserPreferences } from "../../context/UserPreferencesContext";
 import { ALL_DOMAINS } from "./constants";
 import type { TimeframeKey } from "./constants";
 import type { DomainKey } from "./types";
+import type { TransactionType } from "../../types/expenses";
 
 import { SearchHeader } from "./components/SearchHeader";
 import { AdvancedFilters } from "./components/AdvancedFilters";
@@ -22,7 +23,12 @@ export default function SearchResults() {
   const [activeDomains, setActiveDomains] = useState<Set<DomainKey>>(new Set(ALL_DOMAINS));
   const [minAmount, setMinAmount] = useState("");
   const [maxAmount, setMaxAmount] = useState("");
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | "">("");
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
+  const [selectedTypes, setSelectedTypes] = useState<TransactionType[]>([]);
+  
+  // ── Sort state ──────────────────────────────────────────────────────────────
+  const [sortColumn, setSortColumn] = useState<"date" | "amount">("date");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 
   // ── User preferences ────────────────────────────────────────────────────────
   const { currency } = useUserPreferences();
@@ -34,7 +40,10 @@ export default function SearchResults() {
     activeDomains,
     minAmount,
     maxAmount,
-    selectedCategoryId,
+    selectedCategoryIds,
+    selectedTypes,
+    sortColumn,
+    sortDirection,
     customStartDate: customStartDate || undefined,
     customEndDate: customEndDate || undefined,
   });
@@ -66,7 +75,8 @@ export default function SearchResults() {
     setActiveDomains(new Set(ALL_DOMAINS));
     setMinAmount("");
     maxAmount && setMaxAmount("");
-    setSelectedCategoryId("");
+    setSelectedCategoryIds([]);
+    setSelectedTypes([]);
     clearSearch();
   }, [clearSearch, maxAmount]);
 
@@ -78,7 +88,7 @@ export default function SearchResults() {
       {/* 2-Column Grid Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Advanced Filters */}
-        <aside className="lg:col-span-3 lg:sticky lg:top-24 h-fit space-y-6">
+        <aside className="lg:col-span-3 lg:sticky lg:top-24 h-fit max-h-[calc(100vh-6rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-outline-variant/30 scrollbar-track-transparent pr-2 space-y-6">
           <AdvancedFilters
             timeframe={timeframe}
             setTimeframe={setTimeframe}
@@ -92,8 +102,10 @@ export default function SearchResults() {
             setMinAmount={setMinAmount}
             maxAmount={maxAmount}
             setMaxAmount={setMaxAmount}
-            selectedCategoryId={selectedCategoryId}
-            setSelectedCategoryId={setSelectedCategoryId}
+            selectedCategoryIds={selectedCategoryIds}
+            setSelectedCategoryIds={setSelectedCategoryIds}
+            selectedTypes={selectedTypes}
+            setSelectedTypes={setSelectedTypes}
             clearAllFilters={clearAllFilters}
             currencySymbol={currency.symbol}
           />
@@ -111,7 +123,15 @@ export default function SearchResults() {
           />
 
           {/* High-Density Data Table */}
-          <LedgerTable rows={rows} loading={loading} currencyCode={currency.code} />
+          <LedgerTable 
+            rows={rows} 
+            loading={loading} 
+            currencyCode={currency.code}
+            sortColumn={sortColumn}
+            setSortColumn={setSortColumn}
+            sortDirection={sortDirection}
+            setSortDirection={setSortDirection}
+          />
         </section>
       </div>
     </div>

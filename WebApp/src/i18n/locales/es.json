@@ -358,6 +358,13 @@
     "amountRange": "Rango de precio",
     "domains": "Dominios",
     "category": "Categoría",
+    "selectedCount": "{{count}} Seleccionadas",
+    "transactionType": "Tipo de Transacción",
+    "transactionTypes": {
+      "income": "Ingresos",
+      "expense": "Gastos",
+      "transfer": "Transferencias"
+    },
     "min": "Mín",
     "max": "Máx",
     "from": "Desde",

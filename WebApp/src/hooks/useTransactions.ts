@@ -29,7 +29,13 @@ export function useTransactions(filters?: TransactionFilters, isInfinite = false
       if (filters?.startDate) query = query.gte("date", filters.startDate);
       if (filters?.endDate) query = query.lte("date", filters.endDate);
       if (filters?.categoryId) query = query.eq("category_id", filters.categoryId);
+      if (filters?.categoryIds && filters.categoryIds.length > 0) {
+        query = query.in("category_id", filters.categoryIds);
+      }
       if (filters?.type) query = query.eq("type", filters.type);
+      if (filters?.types && filters.types.length > 0) {
+        query = query.in("type", filters.types);
+      }
       if (filters?.search) query = query.ilike("description", `%${filters.search}%`);
       
       // Default to false (only reviewed) if not explicitly provided

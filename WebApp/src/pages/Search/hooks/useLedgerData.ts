@@ -5,7 +5,7 @@ import { useInvestments } from "../../../hooks/useInvestments";
 import type { PresetKey } from "../../../utils/filterPresets";
 import { buildPreset } from "../../../utils/filterPresets";
 import type { LedgerRow, DomainKey } from "../types";
-import type { Transaction, Subscription } from "../../../types/expenses";
+import type { Transaction, Subscription, TransactionType } from "../../../types/expenses";
 import type { AssetWithSnapshots } from "../../../types/investments";
 
 export interface ChartBucket {
@@ -25,7 +25,10 @@ interface UseLedgerDataProps {
   activeDomains: Set<DomainKey>;
   minAmount: string;
   maxAmount: string;
-  selectedCategoryId: string;
+  selectedCategoryIds: string[];
+  selectedTypes: TransactionType[];
+  sortColumn: "date" | "amount";
+  sortDirection: "asc" | "desc";
   customStartDate?: string;
   customEndDate?: string;
 }
@@ -36,7 +39,10 @@ export function useLedgerData({
   activeDomains,
   minAmount,
   maxAmount,
-  selectedCategoryId,
+  selectedCategoryIds,
+  selectedTypes,
+  sortColumn,
+  sortDirection,
   customStartDate,
   customEndDate,
 }: UseLedgerDataProps) {
@@ -52,7 +58,8 @@ export function useLedgerData({
     {
       startDate: dateRange.startDate,
       endDate: dateRange.endDate,
-      categoryId: selectedCategoryId || undefined,
+      categoryIds: selectedCategoryIds.length > 0 ? selectedCategoryIds : undefined,
+      types: selectedTypes.length > 0 ? selectedTypes : undefined,
       search: query || undefined,
       pageSize: 200,
     },
@@ -88,7 +95,9 @@ export function useLedgerData({
     if (activeDomains.has("Subscriptions")) {
       subscriptions.forEach((sub: Subscription) => {
         if (query && !sub.name.toLowerCase().includes(query.toLowerCase())) return;
-        if (selectedCategoryId && sub.category_id !== selectedCategoryId) return;
+        if (selectedCategoryIds.length > 0 && !selectedCategoryIds.includes(sub.category_id)) return;
+        // Subscriptions are generally expenses
+        if (selectedTypes.length > 0 && !selectedTypes.includes("expense")) return;
         if (dateRange.startDate && sub.next_billing_date < dateRange.startDate) return;
         if (dateRange.endDate && sub.next_billing_date > dateRange.endDate) return;
 
@@ -109,6 +118,16 @@ export function useLedgerData({
     if (activeDomains.has("Assets")) {
       assets.forEach((asset: AssetWithSnapshots) => {
         if (query && !asset.name.toLowerCase().includes(query.toLowerCase())) return;
+        
+        // Assets are effectively "income"/wealth growth conceptually, but standard filter might ignore them.
+        // If types are filtered and "income" or "transfer" aren't selected, maybe we skip them?
+        // Let's just exclude them if the user specifically filters ONLY expenses.
+        if (selectedTypes.length > 0 && !selectedTypes.includes("income") && !selectedTypes.includes("transfer")) return;
+        
+        // Category filtering: Assets don't have categories in the same way, 
+        // but if the user explicitly selects categories, they probably want ONLY those transactions.
+        if (selectedCategoryIds.length > 0) return;
+
 
         const latest = asset.asset_snapshots[0];
         if (!latest) return;
@@ -140,7 +159,16 @@ export function useLedgerData({
       return true;
     });
 
-    filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    filtered.sort((a, b) => {
+      let comparison = 0;
+      if (sortColumn === "date") {
+        comparison = new Date(a.date).getTime() - new Date(b.date).getTime();
+      } else {
+        comparison = Math.abs(a.amount) - Math.abs(b.amount);
+      }
+      return sortDirection === "asc" ? comparison : -comparison;
+    });
+    
     return filtered;
   }, [
     transactions,
@@ -148,7 +176,10 @@ export function useLedgerData({
     assets,
     activeDomains,
     query,
-    selectedCategoryId,
+    selectedCategoryIds,
+    selectedTypes,
+    sortColumn,
+    sortDirection,
     dateRange,
     minAmount,
     maxAmount,
