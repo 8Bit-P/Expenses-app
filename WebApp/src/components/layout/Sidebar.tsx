@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import VaultIcon from "../ui/VaultIcon";
@@ -7,11 +8,13 @@ interface SidebarProps {
 }
 
 import { useTranslation } from "react-i18next";
+import HelpDrawer from "./HelpDrawer";
 
 export default function Sidebar({ onNewTransaction }: SidebarProps) {
   const { t } = useTranslation();
   const location = useLocation();
   const { signOut } = useAuth();
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   const navItems = [
     { label: t("sidebar.home"), icon: "grid_view", path: "/home" },
@@ -88,7 +91,10 @@ export default function Sidebar({ onNewTransaction }: SidebarProps) {
             </span>
             <span className="text-xs font-bold">{t("sidebar.settings")}</span>
           </Link>
-          <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-all group">
+          <button 
+            onClick={() => setIsHelpOpen(true)}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-all group"
+          >
             <span className="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">
               help
             </span>
@@ -105,6 +111,8 @@ export default function Sidebar({ onNewTransaction }: SidebarProps) {
           </button>
         </div>
       </div>
+
+      <HelpDrawer isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
     </aside>
   );
 }

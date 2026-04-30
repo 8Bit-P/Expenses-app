@@ -16,7 +16,8 @@
     "today": "Hoy",
     "yesterday": "Ayer",
     "reset": "Restablecer",
-    "updated": "Actualizado"
+    "updated": "Actualizado",
+    "noChanges": "No se detectaron cambios"
   },
   "dashboard": {
     "title": "Resumen de tu Vault",
@@ -957,5 +958,16 @@
       "p2": "Usted es responsable de mantener la confidencialidad de sus credenciales de cuenta. Vault no puede y no será responsable de ninguna pérdida o daño resultante de su incumplimiento de esta obligación de seguridad.",
       "p3": "Nos reservamos el derecho de modificar o terminar el servicio por cualquier motivo, sin previo aviso en cualquier momento. También nos reservamos el derecho de actualizar estos términos según sea necesario."
     }
+  },
+  "helpDrawer": {
+    "title": "Guía de Comandos de Vault",
+    "shortcutsTitle": "Atajos",
+    "globalSearch": "Búsqueda Global",
+    "newTransaction": "Nueva Transacción",
+    "conceptsTitle": "Conceptos Clave",
+    "reservesTitle": "Cómo Funcionan las Reservas",
+    "reservesDesc": "Las reservas son fondos asignados que se excluyen del cálculo de 'Seguro para Gastar', lo que le permite reservar dinero para impuestos, compras grandes o emergencias.",
+    "reviewTitle": "Bandeja de Necesita Revisión",
+    "reviewDesc": "Las transacciones importadas de fuentes externas o generadas automáticamente pueden ser marcadas para revisión para garantizar que se categoricen correctamente antes de afectar sus métricas."
   }
 }
