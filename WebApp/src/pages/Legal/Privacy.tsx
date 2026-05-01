@@ -19,14 +19,16 @@ export default function Privacy() {
         <p>{t("legal.privacy.p3")}</p>
 
         <section className="mt-12 pt-12 border-t border-white/5">
-          <h2 className="text-xl font-bold text-white mb-4 uppercase tracking-widest text-sm">Contact Us</h2>
+          <h2 className="text-xl font-bold text-white mb-4 uppercase tracking-widest text-sm">
+            {t("legal.privacy.contactTitle")}
+          </h2>
           <p className="text-sm">
-            If you have any questions about this Privacy Policy, please contact us at{" "}
+            {t("legal.privacy.contactDesc")}{" "}
             <a href="mailto:privacy@vault.app" className="text-violet-400 hover:underline">
               privacy@vault.app
             </a>
           </p>
-        </section> section 
+        </section>
       </div>
     </LegalLayout>
   );

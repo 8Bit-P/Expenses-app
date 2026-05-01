@@ -842,7 +842,8 @@
       "contact": "Contact",
       "slogan": "The privacy-first financial command center. Track your wealth, forecast your future, and own your data.",
       "networkSecure": "Network Secure",
-      "badges": "Local-First • Encrypted • Private"
+      "badges": "Local-First • Encrypted • Private",
+      "privacyBadge": "Privacy First"
     },
     "features_grid": {
       "ledger": {
@@ -1036,19 +1037,24 @@
     }
   },
   "legal": {
+    "backToHome": "Back to Home",
     "privacy": {
       "title": "Privacy Policy",
-      "subtitle": "Last updated: April 2026",
-      "p1": "At Vault, your privacy is our primary mission. We do not sell, trade, or otherwise transfer your personal information to third parties.",
-      "p2": "All financial data you input is stored either locally on your device or in your private, encrypted vault. We use industry-standard 256-bit encryption to protect your data during synchronization.",
-      "p3": "We only collect minimal technical data necessary to provide and improve our service, such as crash reports and basic usage metrics, which are always anonymized."
+      "subtitle": "Last updated: May 2026",
+      "p1": "Vault is built with a local-first philosophy. Your financial data is encrypted and stored on your device. We use Supabase as a backend for secure synchronization, but we do not have the keys to decrypt your private information.",
+      "p2": "We do not sell your data, we do not track your behavior for advertising, and we never share your financial records with third-party brokers.",
+      "p3": "By using Vault, you are choosing a tool that respects your digital sovereignty. Your data belongs to you, and you alone.",
+      "contactTitle": "Contact Us",
+      "contactDesc": "If you have any questions about this Privacy Policy, please contact us at"
     },
     "terms": {
       "title": "Terms of Service",
-      "subtitle": "Effective as of April 2026",
-      "p1": "By using Vault, you agree to these terms. Vault is provided 'as is' without any warranties, express or implied.",
-      "p2": "You are responsible for maintaining the confidentiality of your account credentials. Vault cannot and will not be liable for any loss or damage from your failure to comply with this security obligation.",
-      "p3": "We reserve the right to modify or terminate the service for any reason, without notice at any time. We also reserve the right to update these terms as needed."
+      "subtitle": "Clear, honest, and simple.",
+      "p1": "Vault is provided as-is. While we strive for 100% accuracy in our calculations and 100% security in our encryption, you are responsible for your own financial decisions.",
+      "p2": "The 'Digital Private Vault' is a community-supported project. We don't run ads or sell data; we rely on contributions from users like you to keep the servers running.",
+      "p3": "You own your data. You can export it or delete it at any time. We don't lock you in.",
+      "agreementTitle": "Agreement",
+      "agreementDesc": "By accessing or using Vault, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service."
     }
   },
   "helpDrawer": {

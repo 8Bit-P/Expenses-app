@@ -44,11 +44,15 @@ export default function Footer() {
           </a>
         </div>
 
-        {/* Status Badge */}
-        <div className="flex items-center gap-2">
+        {/* Status Badges */}
+        <div className="flex items-center gap-3">
           <div className="h-5 px-2.5 rounded-full border border-violet-500/20 bg-violet-500/5 flex items-center gap-1.5">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{t("landing.footer.networkSecure")}</span>
+          </div>
+          <div className="h-5 px-2.5 rounded-full border border-emerald-500/20 bg-emerald-500/5 flex items-center gap-1.5">
+            <span className="material-symbols-outlined text-[10px] text-emerald-500">verified_user</span>
+            <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{t("landing.footer.privacyBadge")}</span>
           </div>
         </div>
 

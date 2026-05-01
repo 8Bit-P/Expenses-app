@@ -884,7 +884,8 @@
       "contact": "Contacto",
       "slogan": "El centro de comando financiero centrado en la privacidad. Rastrea tu riqueza, prevé tu futuro y sé dueño de tus datos.",
       "networkSecure": "Red Segura",
-      "badges": "Local-First • Cifrado • Privado"
+      "badges": "Local-First • Cifrado • Privado",
+      "privacyBadge": "Privacidad Primero"
     },
     "features_grid": {
       "ledger": {
@@ -1036,19 +1037,24 @@
     }
   },
   "legal": {
+    "backToHome": "Volver al Inicio",
     "privacy": {
       "title": "Política de Privacidad",
-      "subtitle": "Última actualización: Abril 2026",
-      "p1": "En Vault, su privacidad es nuestra misión principal. No vendemos, intercambiamos ni transferimos de otro modo su información personal a terceros.",
-      "p2": "Todos los datos financieros que ingrese se almacenan localmente en su dispositivo o en su bóveda privada y cifrada. Utilizamos cifrado de 256 bits estándar de la industria para proteger sus datos durante la sincronización.",
-      "p3": "Solo recopilamos los datos técnicos mínimos necesarios para proporcionar y mejorar nuestro servicio, como informes de fallos y métricas de uso básicas, que siempre son anónimas."
+      "subtitle": "Última actualización: Mayo 2026",
+      "p1": "Vault está construido con una filosofía local-first. Tus datos financieros están cifrados y se almacenan en tu dispositivo. Usamos Supabase como backend para sincronización segura, pero no tenemos las llaves para descifrar tu información privada.",
+      "p2": "No vendemos tus datos, no rastreamos tu comportamiento para publicidad y nunca compartimos tus registros financieros con terceros.",
+      "p3": "Al usar Vault, eliges una herramienta que respeta tu soberanía digital. Tus datos te pertenecen a ti, y solo a ti.",
+      "contactTitle": "Contáctanos",
+      "contactDesc": "Si tienes alguna pregunta sobre esta Política de Privacidad, por favor contáctanos en"
     },
     "terms": {
       "title": "Términos de Servicio",
-      "subtitle": "Vigente a partir de Abril 2026",
-      "p1": "Al usar Vault, usted acepta estos términos. Vault se proporciona 'tal cual' sin ninguna garantía, expresa o implícita.",
-      "p2": "Usted es responsable de mantener la confidencialidad de sus credenciales de cuenta. Vault no puede y no será responsable de ninguna pérdida o daño resultante de su incumplimiento de esta obligación de seguridad.",
-      "p3": "Nos reservamos el derecho de modificar o terminar el servicio por cualquier motivo, sin previo aviso en cualquier momento. También nos reservamos el derecho de actualizar estos términos según sea necesario."
+      "subtitle": "Claro, honesto y simple.",
+      "p1": "Vault se proporciona 'tal cual'. Aunque nos esforzamos por lograr el 100% de precisión en nuestros cálculos y el 100% de seguridad en nuestro cifrado, tú eres responsable de tus propias decisiones financieras.",
+      "p2": "El 'Digital Private Vault' es un proyecto apoyado por la comunidad. No mostramos anuncios ni vendemos datos; dependemos de las contribuciones de usuarios como tú para mantener los servidores funcionando.",
+      "p3": "Eres dueño de tus datos. Puedes exportarlos o eliminarlos en cualquier momento. No te obligamos a quedarte.",
+      "agreementTitle": "Acuerdo",
+      "agreementDesc": "Al acceder o usar Vault, reconoces que has leído, entendido y aceptas estar sujeto a estos Términos de Servicio."
     }
   },
   "helpDrawer": {

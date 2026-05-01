@@ -19,9 +19,11 @@ export default function Terms() {
         <p>{t("legal.terms.p3")}</p>
 
         <section className="mt-12 pt-12 border-t border-white/5">
-          <h2 className="text-xl font-bold text-white mb-4 uppercase tracking-widest text-sm">Agreement</h2>
+          <h2 className="text-xl font-bold text-white mb-4 uppercase tracking-widest text-sm">
+            {t("legal.terms.agreementTitle")}
+          </h2>
           <p className="text-sm">
-            By accessing or using Vault, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.
+            {t("legal.terms.agreementDesc")}
           </p>
         </section>
       </div>
