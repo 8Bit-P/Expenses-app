@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { es, enUS } from "date-fns/locale";
 import type { Subscription } from "../../../types/expenses";
@@ -19,20 +19,20 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
 
   const dateLocale = i18n.language === "es" ? es : enUS;
 
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     if (!scrollRef.current) return;
     const { scrollLeft, scrollWidth } = scrollRef.current;
     const cardWidth = scrollWidth / 3;
     const index = Math.round(scrollLeft / cardWidth);
     setActiveIndex(index);
-  };
+  }, []);
 
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
     el.addEventListener("scroll", handleScroll);
     return () => el.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [loading, handleScroll]);
 
   if (loading) {
     return (

@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { useExpenses } from "../../../../context/ExpensesContext";
 import { usePeriodMetrics } from "../../hooks/usePeriodMetrics";
 import { useUserPreferences } from "../../../../context/UserPreferencesContext";
@@ -21,21 +21,35 @@ export default function MetricsRow() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const handleScroll = () => {
+  const pacePct = m.pacePercent;
+  const actualVsProjected = m.projectedSpend > 0 ? (m.currentSpend / m.projectedSpend) * 100 : 0;
+  const spendRatio = m.totalPeriodDays > 0 ? ((m.currentSpend / (m.projectedSpend || 1)) * 100).toFixed(0) : "—";
+
+  const now = new Date();
+  const thisMonthStart = format(startOfMonth(now), "yyyy-MM-dd");
+  const thisMonthEnd = format(endOfMonth(now), "yyyy-MM-dd");
+  const isThisMonth =
+    (filters.startDate ?? thisMonthStart) === thisMonthStart && (filters.endDate ?? thisMonthEnd) === thisMonthEnd;
+
+  const showBudget = isThisMonth && monthlyBudget > 0;
+
+  const handleScroll = useCallback(() => {
     if (!scrollRef.current) return;
     const { scrollLeft, scrollWidth } = scrollRef.current;
     const length = showBudget ? 4 : 3;
     const cardWidth = scrollWidth / length;
     const index = Math.round(scrollLeft / cardWidth);
+
     setActiveIndex(index);
-  };
+  }, [showBudget]);
 
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
+
     el.addEventListener("scroll", handleScroll);
     return () => el.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [m.loading, handleScroll]);
 
   if (m.loading) {
     return (
@@ -49,18 +63,6 @@ export default function MetricsRow() {
       </div>
     );
   }
-
-  const pacePct = m.pacePercent;
-  const actualVsProjected = m.projectedSpend > 0 ? (m.currentSpend / m.projectedSpend) * 100 : 0;
-  const spendRatio = m.totalPeriodDays > 0 ? ((m.currentSpend / (m.projectedSpend || 1)) * 100).toFixed(0) : "—";
-
-  const now = new Date();
-  const thisMonthStart = format(startOfMonth(now), "yyyy-MM-dd");
-  const thisMonthEnd = format(endOfMonth(now), "yyyy-MM-dd");
-  const isThisMonth =
-    (filters.startDate ?? thisMonthStart) === thisMonthStart && (filters.endDate ?? thisMonthEnd) === thisMonthEnd;
-
-  const showBudget = isThisMonth && monthlyBudget > 0;
 
   return (
     <div className="grid grid-cols-1 w-full min-w-0">

@@ -92,7 +92,7 @@ export default function WealthEvolution() {
 
   return (
     <div className="w-full flex flex-col">
-      <div className="flex justify-between items-end mb-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-8">
         <div>
           <h2 className="text-lg font-black font-headline text-on-surface flex items-center gap-2">
             <span className="material-symbols-outlined text-primary">bar_chart</span>
@@ -102,7 +102,7 @@ export default function WealthEvolution() {
             {t("dashboard.wealthEvolution.subtitle")}
           </p>
         </div>
-        <div className="flex gap-4 p-1.5 bg-surface-container-low rounded-xl">
+        <div className="flex gap-4 p-1.5 bg-surface-container-low rounded-xl w-fit">
           <div className="flex items-center gap-2 px-2">
             <div className="w-2 h-2 rounded-full bg-primary"></div>
             <span className="text-[10px] font-black uppercase tracking-wider text-on-surface-variant">
@@ -120,7 +120,7 @@ export default function WealthEvolution() {
 
       <div className="w-full h-[300px]">
         <ResponsiveContainer width="100%" height={300} minWidth={0} minHeight={0} debounce={50}>
-          <BarChart data={chartData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }} barGap={0}>
+          <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} barCategoryGap="25%">
             <defs>
               <linearGradient id="barInv" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#4f46e5" stopOpacity={1} />
@@ -160,7 +160,6 @@ export default function WealthEvolution() {
               radius={[0, 0, 6, 6]}
               stroke={gapColor}
               strokeWidth={2}
-              barSize={48}
             />
             <Bar
               dataKey="liquidity"
@@ -169,7 +168,6 @@ export default function WealthEvolution() {
               radius={[6, 6, 0, 0]}
               stroke={gapColor}
               strokeWidth={2}
-              barSize={48}
             />
           </BarChart>
         </ResponsiveContainer>

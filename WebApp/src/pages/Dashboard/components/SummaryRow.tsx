@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { useTransactions } from "../../../hooks/useTransactions";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { formatCurrency } from "../../../utils/currency";
@@ -15,21 +15,6 @@ export default function SummaryRow() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const handleScroll = () => {
-    if (!scrollRef.current) return;
-    const { scrollLeft, scrollWidth } = scrollRef.current;
-    const cardWidth = scrollWidth / 4;
-    const index = Math.round(scrollLeft / cardWidth);
-    setActiveIndex(index);
-  };
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    el.addEventListener("scroll", handleScroll);
-    return () => el.removeEventListener("scroll", handleScroll);
-  }, []);
-
   const now = new Date();
   const currentDayOfMonth = getDate(now);
 
@@ -45,6 +30,21 @@ export default function SummaryRow() {
     endDate: format(currentEnd, "yyyy-MM-dd"),
     pageSize: 1000,
   });
+
+  const handleScroll = useCallback(() => {
+    if (!scrollRef.current) return;
+    const { scrollLeft, scrollWidth } = scrollRef.current;
+    const cardWidth = scrollWidth / 4;
+    const index = Math.round(scrollLeft / cardWidth);
+    setActiveIndex(index);
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", handleScroll);
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, [loadingCurrent, handleScroll]);
 
   // Previous Month Data (to calculate trend)
   const { transactions: prevTx } = useTransactions({
