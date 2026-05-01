@@ -8,6 +8,7 @@ import AccountDeletion, { ExportData } from "./components/DangerZone";
 import DeleteAccountModal from "./components/DeleteAccountModal";
 import NotificationsSection from "./components/NotificationsSection";
 import SecuritySection from "./components/SecuritySection";
+import SupportSection from "./components/SupportSection";
 
 export default function Settings() {
   const { t } = useTranslation();
@@ -40,12 +41,13 @@ export default function Settings() {
         {/* Data & Organization Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column: Ledger Organization */}
-          <div className="h-full">
+          <div className="">
             <CategoriesSection />
           </div>
 
           {/* Right Column: Data Utility & Privacy */}
           <div className="flex flex-col gap-6 sm:gap-8">
+            <SupportSection />
             <ExportData />
             <AccountDeletion onDeleteClick={() => setIsDeleteModalOpen(true)} />
           </div>

@@ -8,13 +8,16 @@ interface SidebarProps {
 }
 
 import { useTranslation } from "react-i18next";
+import { Heart } from "lucide-react";
 import HelpDrawer from "./HelpDrawer";
+import SupportModal from "./SupportModal";
 
 export default function Sidebar({ onNewTransaction }: SidebarProps) {
   const { t } = useTranslation();
   const location = useLocation();
   const { signOut } = useAuth();
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [isSupportOpen, setIsSupportOpen] = useState(false);
 
   const navItems = [
     { label: t("sidebar.home"), icon: "grid_view", path: "/home" },
@@ -24,7 +27,8 @@ export default function Sidebar({ onNewTransaction }: SidebarProps) {
   ];
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 p-6 bg-background/80 backdrop-blur-xl border-r border-outline-variant/20 font-headline tracking-tight z-50 flex flex-col transition-colors duration-300">
+    <>
+      <aside className="fixed left-0 top-0 h-screen w-64 p-6 bg-background/80 backdrop-blur-xl border-r border-outline-variant/20 font-headline tracking-tight z-50 flex flex-col transition-colors duration-300">
       {/* Friendly Logo & Title Section */}
       <Link to="/home" className="mb-10 flex items-center gap-3 cursor-pointer group">
         <div className="w-10 h-10 rounded-xl bg-primary-container/30 text-primary flex items-center justify-center border border-primary/20 shadow-sm group-hover:scale-105 transition-transform">
@@ -100,6 +104,13 @@ export default function Sidebar({ onNewTransaction }: SidebarProps) {
             </span>
             <span className="text-xs font-bold">{t("sidebar.help")}</span>
           </button>
+          <button 
+            onClick={() => setIsSupportOpen(true)}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-all group"
+          >
+            <Heart className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            <span className="text-xs font-bold">{t("sidebar.support")}</span>
+          </button>
           <button
             onClick={() => signOut()}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:text-error hover:bg-error/5 transition-all group"
@@ -112,7 +123,9 @@ export default function Sidebar({ onNewTransaction }: SidebarProps) {
         </div>
       </div>
 
+      </aside>
       <HelpDrawer isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
-    </aside>
+      <SupportModal isOpen={isSupportOpen} onClose={() => setIsSupportOpen(false)} />
+    </>
   );
 }

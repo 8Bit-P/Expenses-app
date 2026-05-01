@@ -12,13 +12,14 @@ const fadeUp: Variants = {
 
 // --- 1. Universal Ledger Card ---
 function UniversalLedgerCard() {
+  const { t } = useTranslation();
   const rows = [
-    { emoji: "💰", name: "Salary — May", cat: "Income", amt: "+€3,800", type: "income" },
-    { emoji: "🎵", name: "Spotify Premium", cat: "Media", amt: "-€9.99", type: "expense" },
-    { emoji: "🛒", name: "Whole Foods", cat: "Groceries", amt: "-€67.30", type: "expense" },
-    { emoji: "🔁", name: "Investment Deposit", cat: "Transfer", amt: "↔ €500", type: "transfer" },
-    { emoji: "💡", name: "AWS Credits", cat: "Utilities", amt: "-€12.50", type: "expense" },
-    { emoji: "🏠", name: "Freelance Project", cat: "Income", amt: "+€900", type: "income" },
+    { emoji: "💰", name: t("landing.features_grid.ledger.row1", { defaultValue: "Salary — May" }), cat: t("landing.features_grid.ledger.catIncome", { defaultValue: "Income" }), amt: "+€3,800", type: "income" },
+    { emoji: "🎵", name: t("landing.features_grid.ledger.row2", { defaultValue: "Spotify Premium" }), cat: t("landing.features_grid.ledger.catMedia", { defaultValue: "Media" }), amt: "-€9.99", type: "expense" },
+    { emoji: "🛒", name: t("landing.features_grid.ledger.row3", { defaultValue: "Whole Foods" }), cat: t("landing.features_grid.ledger.catGroceries", { defaultValue: "Groceries" }), amt: "-€67.30", type: "expense" },
+    { emoji: "🔁", name: t("landing.features_grid.ledger.row4", { defaultValue: "Investment Deposit" }), cat: t("landing.features_grid.ledger.catTransfer", { defaultValue: "Transfer" }), amt: "↔ €500", type: "transfer" },
+    { emoji: "💡", name: t("landing.features_grid.ledger.row5", { defaultValue: "AWS Credits" }), cat: t("landing.features_grid.ledger.catUtilities", { defaultValue: "Utilities" }), amt: "-€12.50", type: "expense" },
+    { emoji: "🏠", name: t("landing.features_grid.ledger.row6", { defaultValue: "Freelance Project" }), cat: t("landing.features_grid.ledger.catIncome", { defaultValue: "Income" }), amt: "+€900", type: "income" },
   ];
   return (
     <div className="h-full flex flex-col">
@@ -27,15 +28,15 @@ function UniversalLedgerCard() {
           <span className="material-symbols-outlined text-[18px]">table_rows</span>
         </div>
         <div>
-          <h2 className="font-black text-white text-lg tracking-tight">Universal Ledger</h2>
-          <p className="text-slate-400 text-sm mt-0.5">Every transaction, perfectly organized.</p>
+          <h2 className="font-black text-white text-lg tracking-tight">{t("landing.features_grid.ledger.title")}</h2>
+          <p className="text-slate-400 text-sm mt-0.5">{t("landing.features_grid.ledger.subtitle")}</p>
         </div>
       </div>
       {/* Table header */}
       <div className="hidden sm:grid grid-cols-[1fr_auto_auto] gap-2 px-2 mb-1.5">
-        <span className="text-[9px] font-black uppercase tracking-widest text-slate-600">Description</span>
-        <span className="text-[9px] font-black uppercase tracking-widest text-slate-600">Category</span>
-        <span className="text-[9px] font-black uppercase tracking-widest text-slate-600">Amount</span>
+        <span className="text-[9px] font-black uppercase tracking-widest text-slate-600">{t("landing.features_grid.ledger.desc")}</span>
+        <span className="text-[9px] font-black uppercase tracking-widest text-slate-600">{t("landing.features_grid.ledger.cat")}</span>
+        <span className="text-[9px] font-black uppercase tracking-widest text-slate-600">{t("landing.features_grid.ledger.amt")}</span>
       </div>
       <div className="flex-1 space-y-0 overflow-hidden divide-y divide-slate-800/60">
         {rows.map((tx) => (
@@ -61,12 +62,13 @@ function UniversalLedgerCard() {
 
 // --- 2. Spending by Category Donut Card ---
 function CategoryDonutCard() {
+  const { t } = useTranslation();
   const cats = [
-    { emoji: "🛒", name: "Groceries", pct: 34, color: "#6366f1", amt: "€342" },
-    { emoji: "🎵", name: "Entertainment", pct: 22, color: "#818cf8", amt: "€221" },
-    { emoji: "🍽️", name: "Dining", pct: 18, color: "#a78bfa", amt: "€181" },
-    { emoji: "💡", name: "Utilities", pct: 14, color: "#c4b5fd", amt: "€140" },
-    { emoji: "📦", name: "Other", pct: 12, color: "#334155", amt: "€120" },
+    { emoji: "🛒", name: t("landing.features_grid.donut.cat1", { defaultValue: "Groceries" }), pct: 34, color: "#6366f1", amt: "€342" },
+    { emoji: "🎵", name: t("landing.features_grid.donut.cat2", { defaultValue: "Entertainment" }), pct: 22, color: "#818cf8", amt: "€221" },
+    { emoji: "🍽️", name: t("landing.features_grid.donut.cat3", { defaultValue: "Dining" }), pct: 18, color: "#a78bfa", amt: "€181" },
+    { emoji: "💡", name: t("landing.features_grid.donut.cat4", { defaultValue: "Utilities" }), pct: 14, color: "#c4b5fd", amt: "€140" },
+    { emoji: "📦", name: t("landing.features_grid.donut.cat5", { defaultValue: "Other" }), pct: 12, color: "#334155", amt: "€120" },
   ];
   // Build SVG donut
   const radius = 36;
@@ -83,8 +85,8 @@ function CategoryDonutCard() {
           <span className="material-symbols-outlined text-[18px]">donut_large</span>
         </div>
         <div>
-          <h2 className="font-black text-white text-lg tracking-tight">Spending by Category</h2>
-          <p className="text-slate-400 text-sm mt-0.5">🛒 Groceries leads at 34%</p>
+          <h2 className="font-black text-white text-lg tracking-tight">{t("landing.features_grid.donut.title")}</h2>
+          <p className="text-slate-400 text-sm mt-0.5">{t("landing.features_grid.donut.subtitle")}</p>
         </div>
       </div>
       <div className="flex flex-col sm:flex-row items-center gap-6 flex-1">
@@ -115,7 +117,7 @@ function CategoryDonutCard() {
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
             <span className="text-sm font-black text-white">€1,004</span>
-            <span className="text-[7px] font-bold uppercase tracking-widest text-slate-600">Expenses</span>
+            <span className="text-[7px] font-bold uppercase tracking-widest text-slate-600">{t("landing.features_grid.donut.expenses")}</span>
           </div>
         </div>
         {/* Legend */}
@@ -137,6 +139,7 @@ function CategoryDonutCard() {
 
 // --- 3. Action Center Inbox Card ---
 function ActionCenterCard() {
+  const { t } = useTranslation();
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-start gap-3 mb-5">
@@ -144,8 +147,8 @@ function ActionCenterCard() {
           <span className="material-symbols-outlined text-[18px]">inbox</span>
         </div>
         <div>
-          <h2 className="font-black text-white text-lg tracking-tight">Action Center</h2>
-          <p className="text-slate-400 text-sm mt-0.5">Priority alerts, surfaced automatically.</p>
+          <h2 className="font-black text-white text-lg tracking-tight">{t("landing.features_grid.actionCenter.title")}</h2>
+          <p className="text-slate-400 text-sm mt-0.5">{t("landing.features_grid.actionCenter.subtitle")}</p>
         </div>
       </div>
       <div className="flex-1 space-y-3">
@@ -154,24 +157,24 @@ function ActionCenterCard() {
           <div className="flex items-center gap-2 mb-2.5">
             <div className="w-8 h-8 rounded-xl bg-slate-700 flex items-center justify-center text-base">❓</div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-slate-200">Unlabeled Transaction</p>
-              <p className="text-[9px] font-bold text-amber-400 uppercase tracking-wider">Pending Verification</p>
+              <p className="text-sm font-bold text-slate-200">{t("landing.features_grid.actionCenter.unlabeled")}</p>
+              <p className="text-[9px] font-bold text-amber-400 uppercase tracking-wider">{t("landing.features_grid.actionCenter.pending")}</p>
             </div>
             <span className="text-sm font-black text-slate-300">-€42.00</span>
           </div>
           <div className="flex gap-2">
             <div className="flex-1 py-1.5 rounded-lg bg-slate-700/60 flex items-center justify-center">
-              <span className="text-[9px] font-bold text-slate-400">Select category</span>
+              <span className="text-[9px] font-bold text-slate-400">{t("landing.features_grid.actionCenter.selectCategory")}</span>
             </div>
-            <button className="px-3 py-1.5 rounded-lg bg-violet-600 text-[9px] font-bold text-white">Approve</button>
-            <button className="px-2 py-1.5 rounded-lg bg-slate-700/60 text-[9px] font-bold text-slate-500">Discard</button>
+            <button className="px-3 py-1.5 rounded-lg bg-violet-600 text-[9px] font-bold text-white">{t("landing.features_grid.actionCenter.approve")}</button>
+            <button className="px-2 py-1.5 rounded-lg bg-slate-700/60 text-[9px] font-bold text-slate-500">{t("landing.features_grid.actionCenter.discard")}</button>
           </div>
         </div>
         {/* Alerts */}
         {[
-          { dot: "bg-amber-400", label: "Netflix renews in 3 days (€15.99)", pill: "Upcoming", pillCls: "text-amber-400 bg-amber-500/10" },
-          { dot: "bg-red-400", label: "Spending 18% over monthly budget", pill: "Alert", pillCls: "text-red-400 bg-red-500/10" },
-          { dot: "bg-emerald-400", label: "New salary credited: +€3,800", pill: "Income", pillCls: "text-emerald-400 bg-emerald-500/10" },
+          { dot: "bg-amber-400", label: t("landing.features_grid.actionCenter.netflix"), pill: t("landing.features_grid.actionCenter.upcoming"), pillCls: "text-amber-400 bg-amber-500/10" },
+          { dot: "bg-red-400", label: t("landing.features_grid.actionCenter.budgetOver"), pill: t("landing.features_grid.actionCenter.alert"), pillCls: "text-red-400 bg-red-500/10" },
+          { dot: "bg-emerald-400", label: t("landing.features_grid.actionCenter.salaryCredit"), pill: t("landing.features_grid.actionCenter.income"), pillCls: "text-emerald-400 bg-emerald-500/10" },
         ].map(({ dot, label, pill, pillCls }) => (
           <div key={label} className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/60 border border-white/5">
             <span className={`w-2 h-2 rounded-full shrink-0 ${dot}`} />
@@ -186,10 +189,11 @@ function ActionCenterCard() {
 
 // --- 4. Capital Reserves Card ---
 function ReservesCard() {
+  const { t } = useTranslation();
   const reserves = [
-    { emoji: "✈️", name: "Travel Fund", current: 1200, target: 3000, color: "bg-violet-500" },
-    { emoji: "🚗", name: "New Car", current: 4500, target: 8000, color: "bg-indigo-400" },
-    { emoji: "🏠", name: "Emergency Fund", current: 9800, target: 10000, color: "bg-emerald-400" },
+    { emoji: "✈️", name: t("landing.features_grid.reserves.r1", { defaultValue: "Travel Fund" }), current: 1200, target: 3000, color: "bg-violet-500" },
+    { emoji: "🚗", name: t("landing.features_grid.reserves.r2", { defaultValue: "New Car" }), current: 4500, target: 8000, color: "bg-indigo-400" },
+    { emoji: "🏠", name: t("landing.features_grid.reserves.r3", { defaultValue: "Emergency Fund" }), current: 9800, target: 10000, color: "bg-emerald-400" },
   ];
   return (
     <div className="h-full flex flex-col">
@@ -198,8 +202,8 @@ function ReservesCard() {
           <span className="material-symbols-outlined text-[18px]">savings</span>
         </div>
         <div>
-          <h2 className="font-black text-white text-lg tracking-tight">Capital Reserves</h2>
-          <p className="text-slate-400 text-sm mt-0.5">Virtual savings goals, always on track.</p>
+          <h2 className="font-black text-white text-lg tracking-tight">{t("landing.features_grid.reserves.title")}</h2>
+          <p className="text-slate-400 text-sm mt-0.5">{t("landing.features_grid.reserves.subtitle")}</p>
         </div>
       </div>
       <div className="flex-1 space-y-5">
@@ -224,8 +228,8 @@ function ReservesCard() {
                 />
               </div>
               <div className="flex justify-between mt-1">
-                <span className="text-[10px] text-slate-600 font-semibold">{pct}% funded</span>
-                <button className="text-[10px] font-bold text-violet-400 hover:text-violet-300 transition-colors">Quick Fund →</button>
+                <span className="text-[10px] text-slate-600 font-semibold">{pct}% {t("landing.features_grid.reserves.funded")}</span>
+                <button className="text-[10px] font-bold text-violet-400 hover:text-violet-300 transition-colors">{t("landing.features_grid.reserves.quickFund")} →</button>
               </div>
             </div>
           );
@@ -237,6 +241,7 @@ function ReservesCard() {
 
 // --- 5. Spending Trend Card ---
 function SpendingTrendCard() {
+  const { t } = useTranslation();
   const points = [20, 35, 28, 55, 48, 72, 65, 88];
   const max = Math.max(...points);
   const w = 100 / (points.length - 1);
@@ -249,16 +254,16 @@ function SpendingTrendCard() {
           <span className="material-symbols-outlined text-[18px]">trending_up</span>
         </div>
         <div>
-          <h2 className="font-black text-white text-lg tracking-tight">Predictive Run Rates</h2>
-          <p className="text-slate-400 text-sm mt-0.5">See where your money lands before the month ends.</p>
+          <h2 className="font-black text-white text-lg tracking-tight">{t("landing.features_grid.trends.title")}</h2>
+          <p className="text-slate-400 text-sm mt-0.5">{t("landing.features_grid.trends.subtitle")}</p>
         </div>
       </div>
       {/* KPI row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 shrink-0">
         {[
-          { label: "Total Income", val: "€5,200", color: "text-emerald-400" },
-          { label: "Total Spent", val: "€3,840", color: "text-slate-300" },
-          { label: "Net Flow", val: "+€1,360", color: "text-violet-400" },
+          { label: t("landing.features_grid.trends.income"), val: "€5,200", color: "text-emerald-400" },
+          { label: t("landing.features_grid.trends.spent"), val: "€3,840", color: "text-slate-300" },
+          { label: t("landing.features_grid.trends.flow"), val: "+€1,360", color: "text-violet-400" },
         ].map(({ label, val, color }) => (
           <div key={label} className="bg-slate-800/40 rounded-xl p-3 border border-white/5 text-center">
             <p className="text-[8px] font-black uppercase tracking-widest text-slate-600 mb-1">{label}</p>
@@ -304,10 +309,10 @@ function SpendingTrendCard() {
       </div>
       <div className="mt-3 flex items-center gap-2 shrink-0">
         <span className="text-xs text-violet-400 font-semibold bg-violet-500/10 px-2 py-1 rounded-full">
-          ↑ 12% pace vs last month
+          {t("landing.features_grid.trends.pace", { pct: 12 })}
         </span>
         <span className="text-xs text-slate-600 font-semibold bg-slate-800/40 px-2 py-1 rounded-full">
-          Predicted end: €4,800
+          {t("landing.features_grid.trends.predicted", { amount: "€4,800" })}
         </span>
       </div>
     </div>

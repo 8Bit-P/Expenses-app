@@ -1,45 +1,48 @@
 import { motion } from "framer-motion";
-
-const steps = [
-  {
-    step: "01",
-    icon: "receipt_long",
-    title: "Log Every Movement",
-    desc: "Record income, expenses, and internal transfers. Mark uncertain entries for the Action Center review inbox.",
-    color: "text-violet-400",
-    bg: "bg-violet-500/10",
-    border: "border-violet-500/20",
-  },
-  {
-    step: "02",
-    icon: "donut_large",
-    title: "Analyze & Categorize",
-    desc: "Instantly see spending by category with our donut chart. Use smart filters to drill into any timeframe or domain.",
-    color: "text-indigo-400",
-    bg: "bg-indigo-500/10",
-    border: "border-indigo-500/20",
-  },
-  {
-    step: "03",
-    icon: "savings",
-    title: "Fund Your Goals",
-    desc: "Create Capital Reserves for any saving goal. Use Quick Fund to allocate money while keeping your ledger accurate.",
-    color: "text-emerald-400",
-    bg: "bg-emerald-500/10",
-    border: "border-emerald-500/20",
-  },
-  {
-    step: "04",
-    icon: "auto_graph",
-    title: "Track Your Wealth",
-    desc: "Log investment snapshots and watch your Net Worth evolve over time. Every asset class, in one private view.",
-    color: "text-blue-400",
-    bg: "bg-blue-500/10",
-    border: "border-blue-500/20",
-  },
-];
+import { useTranslation } from "react-i18next";
 
 export default function HowItWorksSection() {
+  const { t } = useTranslation();
+
+  const steps = [
+    {
+      step: "01",
+      icon: "receipt_long",
+      title: t("landing.howItWorks.steps.s1.title"),
+      desc: t("landing.howItWorks.steps.s1.desc"),
+      color: "text-violet-400",
+      bg: "bg-violet-500/10",
+      border: "border-violet-500/20",
+    },
+    {
+      step: "02",
+      icon: "donut_large",
+      title: t("landing.howItWorks.steps.s2.title"),
+      desc: t("landing.howItWorks.steps.s2.desc"),
+      color: "text-indigo-400",
+      bg: "bg-indigo-500/10",
+      border: "border-indigo-500/20",
+    },
+    {
+      step: "03",
+      icon: "savings",
+      title: t("landing.howItWorks.steps.s3.title"),
+      desc: t("landing.howItWorks.steps.s3.desc"),
+      color: "text-emerald-400",
+      bg: "bg-emerald-500/10",
+      border: "border-emerald-500/20",
+    },
+    {
+      step: "04",
+      icon: "auto_graph",
+      title: t("landing.howItWorks.steps.s4.title"),
+      desc: t("landing.howItWorks.steps.s4.desc"),
+      color: "text-blue-400",
+      bg: "bg-blue-500/10",
+      border: "border-blue-500/20",
+    },
+  ];
+
   return (
     <section className="py-28 px-6 border-t border-slate-800/60">
       <div className="max-w-5xl mx-auto">
@@ -50,15 +53,17 @@ export default function HowItWorksSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <p className="text-violet-400 text-xs font-black uppercase tracking-widest mb-3">How It Works</p>
+          <p className="text-violet-400 text-xs font-black uppercase tracking-widest mb-3">
+            {t("landing.howItWorks.badge")}
+          </p>
           <h2 className="text-4xl md:text-5xl font-black tracking-tighter text-white mb-4">
-            Your finances.{" "}
+            {t("landing.howItWorks.title")}{" "}
             <span className="bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
-              Finally under control.
+              {t("landing.howItWorks.title_accent")}
             </span>
           </h2>
           <p className="text-slate-400 text-lg max-w-lg mx-auto">
-            Four simple steps from chaos to clarity. No banks required.
+            {t("landing.howItWorks.subtitle")}
           </p>
         </motion.div>
 

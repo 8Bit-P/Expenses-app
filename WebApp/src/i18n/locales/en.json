@@ -17,7 +17,9 @@
     "yesterday": "Yesterday",
     "reset": "Reset",
     "updated": "Updated",
-    "noChanges": "No changes detected"
+    "syncing": "Syncing...",
+    "noChanges": "No changes detected",
+    "allRightsReserved": "All rights reserved."
   },
   "dashboard": {
     "title": "Vault Overview",
@@ -162,6 +164,7 @@
     "addTransaction": "Add Transaction",
     "settings": "Settings",
     "help": "Help",
+    "support": "Support Vault",
     "signOut": "Sign Out"
   },
   "topbar": {
@@ -761,10 +764,49 @@
       "headlineSuffix": "wealth.",
       "subheadline": "The secure, privacy-first ledger to track expenses, forecast budgets, and monitor assets — all in one place.",
       "startFree": "Start for free",
-      "viewPricing": "View pricing",
+      "supportMe": "Support Vault",
       "statEncryption": "256-bit encrypted",
       "statAnalytics": "Predictive analytics",
-      "statAds": "Zero ads, ever"
+      "statAds": "Zero ads, ever",
+      "mockup": {
+        "url": "vault.app/home",
+        "settings": "Settings",
+        "overview": "Vault Overview",
+        "overviewSubtitle": "Real-time financial command center",
+        "new": "+ New",
+        "wealthSubtitle": "Portfolio growth by asset class",
+        "invested": "Invested",
+        "liquidity": "Liquidity",
+        "actionCenter": "Action Center",
+        "netflix": "Netflix renews in 3 days",
+        "budgetAlert": "Budget 18% over target",
+        "upcoming": "Upcoming",
+        "alert": "Alert"
+      }
+    },
+    "howItWorks": {
+      "badge": "How It Works",
+      "title": "Your finances.",
+      "title_accent": "Finally under control.",
+      "subtitle": "Four simple steps from chaos to clarity. No banks required.",
+      "steps": {
+        "s1": {
+          "title": "Log Every Movement",
+          "desc": "Record income, expenses, and internal transfers. Mark uncertain entries for the Action Center review inbox."
+        },
+        "s2": {
+          "title": "Analyze & Categorize",
+          "desc": "Instantly see spending by category with our donut chart. Use smart filters to drill into any timeframe or domain."
+        },
+        "s3": {
+          "title": "Fund Your Goals",
+          "desc": "Create Capital Reserves for any saving goal. Use Quick Fund to allocate money while keeping your ledger accurate."
+        },
+        "s4": {
+          "title": "Track Your Wealth",
+          "desc": "Log investment snapshots and watch your Net Worth evolve over time. Every asset class, in one private view."
+        }
+      }
     },
     "mockup": {
       "home": "Home",
@@ -781,9 +823,72 @@
     "trust": {
       "noAds": "Zero ads. Zero data selling.",
       "encryption": "Bank-level 256-bit encryption.",
-      "dataOwnership": "Your data stays yours, always."
+      "dataOwnership": "Your data stays yours, always.",
+      "forecasting": "Predictive forecasting built-in"
     },
-    "features": {
+    "faq": {
+      "title": "Questions? Answered.",
+      "subtitle": "Everything you need to know about Vault and your privacy.",
+      "q1": "Is my data truly private?",
+      "a1": "Yes. Vault is built on a local-first architecture. Your data is encrypted with 256-bit AES before ever leaving your device. We don't sell your data because we can't see it.",
+      "q2": "Do I need to connect my bank?",
+      "a2": "No. Vault is a privacy-first ledger designed for manual entry or secure imports. We believe the most accurate financial data is the one you control, not the one a bank API serves you.",
+      "q3": "What types of transactions does Vault support?",
+      "a3": "Vault supports three transaction types: Income (salary, freelance), Expense (purchases, bills), and Transfer (internal movements to savings reserves). Transfers are excluded from spending analytics to keep your reports accurate.",
+      "q4": "How do Capital Reserves work?",
+      "a4": "Capital Reserves are virtual savings goals decoupled from your bank accounts. You can set a target, fund it via a linked category, and track progress with our two-step Quick Fund feature that simultaneously updates the reserve and logs a transfer in your ledger."
+    },
+    "footer": {
+      "contact": "Contact",
+      "slogan": "The privacy-first financial command center. Track your wealth, forecast your future, and own your data.",
+      "networkSecure": "Network Secure",
+      "badges": "Local-First • Encrypted • Private"
+    },
+    "features_grid": {
+      "ledger": {
+        "title": "Universal Ledger",
+        "subtitle": "Every transaction, perfectly organized.",
+        "desc": "Description",
+        "cat": "Category",
+        "amt": "Amount"
+      },
+      "donut": {
+        "title": "Spending by Category",
+        "subtitle": "🛒 Groceries leads at 34%",
+        "expenses": "Expenses"
+      },
+      "actionCenter": {
+        "title": "Action Center",
+        "subtitle": "Priority alerts, surfaced automatically.",
+        "unlabeled": "Unlabeled Transaction",
+        "pending": "Pending Verification",
+        "selectCategory": "Select category",
+        "approve": "Approve",
+        "discard": "Discard",
+        "upcoming": "Upcoming",
+        "alert": "Alert",
+        "income": "Income",
+        "netflix": "Netflix renews in 3 days (€15.99)",
+        "budgetOver": "Spending 18% over monthly budget",
+        "salaryCredit": "New salary credited: +€3,800"
+      },
+      "reserves": {
+        "title": "Capital Reserves",
+        "subtitle": "Virtual savings goals, always on track.",
+        "funded": "funded",
+        "quickFund": "Quick Fund"
+      },
+      "trends": {
+        "title": "Predictive Run Rates",
+        "subtitle": "See where your money lands before the month ends.",
+        "income": "Total Income",
+        "spent": "Total Spent",
+        "flow": "Net Flow",
+        "pace": "↑ {{pct}}% pace vs last month",
+        "predicted": "Predicted end: {{amount}}"
+      }
+    },
+    "pricing": {
       "title": "Everything you need.",
       "subtitle_accent": "Nothing you don't.",
       "subtitle": "Built for people who take their finances seriously, not for banks that take your data.",
@@ -856,19 +961,6 @@
         "f6": "Action center & alerts",
         "f7": "Priority support"
       }
-    },
-    "faq": {
-      "title": "Frequently Asked Questions",
-      "subtitle": "Everything you need to know about Vault and how we protect you.",
-      "q1": "How to track net worth privately?",
-      "a1": "Vault employs a local-first philosophy combined with optional encrypted sync to ensure your net worth and asset data never leave your control.",
-      "q2": "Is my financial data sold to third parties?",
-      "a2": "Absolutely not. Vault is a premium, privacy-first tool. We do not sell data, serve ads, or engage with data brokers.",
-      "q3": "How does the predictive forecasting work?",
-      "a3": "Our algorithms analyze your past recurring expenses and income streams locally to accurately predict your run rates without sharing data externally."
-    },
-    "footer": {
-      "contact": "Contact"
     }
   },
   "subscriptions": {
@@ -969,5 +1061,12 @@
     "reservesDesc": "Reserves are allocated funds that are excluded from your 'Safe-to-Spend' calculation, allowing you to set aside money for taxes, large purchases, or emergencies.",
     "reviewTitle": "The Needs Review Inbox",
     "reviewDesc": "Transactions imported from external sources or generated automatically may be flagged for review to ensure they are categorized correctly before affecting your metrics."
+  },
+  "support": {
+    "title": "A note from the developer",
+    "subtitle": "Help keep Vault running",
+    "p1": "Vault is built by one independent developer in Spain. I don't sell your data, and I will never run ads.",
+    "p2": "Right now, every feature is 100% free. My only goal today is to keep the database running. If Vault helps you take control of your wealth, consider chipping in to help cover the server maintenance.",
+    "cta": "Contribute via Stripe"
   }
 }

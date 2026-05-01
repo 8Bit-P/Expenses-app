@@ -64,7 +64,7 @@ export default function HelpDrawer({ isOpen, onClose }: HelpDrawerProps) {
       >
         {/* Drawer panel */}
         <div
-          className="w-full sm:w-[400px] bg-surface-container-lowest h-full shadow-2xl flex flex-col"
+          className="w-full sm:w-[540px] bg-surface-container-lowest h-full shadow-2xl flex flex-col"
           style={{
             animation: "slideInRight 0.32s cubic-bezier(0.16, 1, 0.3, 1) both",
             borderLeft: "1px solid rgba(var(--color-outline-variant), 0.15)",

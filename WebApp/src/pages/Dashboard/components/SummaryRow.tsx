@@ -87,7 +87,9 @@ export default function SummaryRow() {
     value30DaysAgo += Number(snap30?.total_value || 0);
   });
 
-  const investmentTrend = value30DaysAgo > 0 ? ((invMetrics.totalValue - value30DaysAgo) / value30DaysAgo) * 100 : 0;
+  const investmentTrend = value30DaysAgo > 0 
+    ? ((invMetrics.totalValue - value30DaysAgo) / value30DaysAgo) * 100 
+    : (invMetrics.totalValue > 0 ? 100 : 0);
   const investmentDiff = invMetrics.totalValue - value30DaysAgo;
   const totalReturn = invMetrics.totalValue - invMetrics.totalInvested;
 

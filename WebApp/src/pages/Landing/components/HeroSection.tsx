@@ -174,10 +174,10 @@ export default function HeroSection() {
           <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
         </Link>
         <a
-          href="#pricing"
+          href="#support"
           className="px-8 py-3.5 border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-white font-semibold text-base rounded-full transition-all duration-200 hover:-translate-y-0.5"
         >
-          {t("landing.hero.viewPricing")}
+          {t("landing.hero.supportMe")}
         </a>
       </motion.div>
 
@@ -199,7 +199,7 @@ export default function HeroSection() {
             <span className="w-3 h-3 rounded-full bg-red-500/60" />
             <span className="w-3 h-3 rounded-full bg-yellow-500/60" />
             <span className="w-3 h-3 rounded-full bg-green-500/60" />
-            <div className="ml-4 text-[10px] text-slate-500 font-mono truncate max-w-[100px] sm:max-w-none">vault.app/home</div>
+            <div className="ml-4 text-[10px] text-slate-500 font-mono truncate max-w-[100px] sm:max-w-none">{t("landing.hero.mockup.url")}</div>
             <div className="ml-auto flex items-center gap-2">
               <div className="hidden sm:flex h-5 w-32 rounded-md bg-slate-800/70 border border-white/5 items-center px-2 gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-violet-500/40" />
@@ -236,7 +236,7 @@ export default function HeroSection() {
               <div className="mt-auto border-t border-white/5 pt-3 space-y-1">
                 <div className="h-8 rounded-lg flex items-center gap-2 px-2">
                   <span className="material-symbols-outlined text-[14px] text-slate-700">settings</span>
-                  <span className="text-[10px] font-semibold text-slate-700">Settings</span>
+                  <span className="text-[10px] font-semibold text-slate-700">{t("landing.hero.mockup.settings")}</span>
                 </div>
               </div>
             </div>
@@ -246,12 +246,12 @@ export default function HeroSection() {
               {/* Page title */}
               <div className="hidden sm:flex items-center justify-between">
                 <div>
-                  <h2 className="text-sm font-black text-white">Vault Overview</h2>
-                  <p className="text-[9px] text-slate-600">Real-time financial command center</p>
+                  <h2 className="text-sm font-black text-white">{t("landing.hero.mockup.overview")}</h2>
+                  <p className="text-[9px] text-slate-600">{t("landing.hero.mockup.overviewSubtitle")}</p>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <div className="h-6 px-3 rounded-full bg-violet-600 flex items-center">
-                    <span className="text-[9px] font-bold text-white">+ New</span>
+                    <span className="text-[9px] font-bold text-white">{t("landing.hero.mockup.new")}</span>
                   </div>
                 </div>
               </div>
@@ -271,11 +271,11 @@ export default function HeroSection() {
                   <div className="flex items-center justify-between mb-2 shrink-0">
                     <div>
                       <p className="text-[9px] text-slate-500 uppercase tracking-wider font-bold">{t("landing.mockup.wealthEvolution")}</p>
-                      <p className="text-[8px] text-slate-700">Portfolio growth by asset class</p>
+                      <p className="text-[8px] text-slate-700">{t("landing.hero.mockup.wealthSubtitle")}</p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm bg-violet-500/70" /><span className="text-[8px] text-slate-600">Invested</span></div>
-                      <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm bg-indigo-400/40" /><span className="text-[8px] text-slate-600">Liquidity</span></div>
+                      <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm bg-violet-500/70" /><span className="text-[8px] text-slate-600">{t("landing.hero.mockup.invested")}</span></div>
+                      <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm bg-indigo-400/40" /><span className="text-[8px] text-slate-600">{t("landing.hero.mockup.liquidity")}</span></div>
                     </div>
                   </div>
                   <div className="flex-1 min-h-0">
@@ -297,10 +297,10 @@ export default function HeroSection() {
 
                   {/* Action Center */}
                   <div className="bg-[#151b2d] rounded-xl border border-white/5 p-2.5 shrink-0">
-                    <p className="text-[9px] text-slate-500 uppercase tracking-wider font-bold mb-2">Action Center</p>
+                    <p className="text-[9px] text-slate-500 uppercase tracking-wider font-bold mb-2">{t("landing.hero.mockup.actionCenter")}</p>
                     <div className="space-y-1.5">
-                      <MockActionRow label="Netflix renews in 3 days" pill="Upcoming" pillColor="text-amber-400 bg-amber-500/10" dot="bg-amber-400" />
-                      <MockActionRow label="Budget 18% over target" pill="Alert" pillColor="text-red-400 bg-red-500/10" dot="bg-red-400" />
+                      <MockActionRow label={t("landing.hero.mockup.netflix")} pill={t("landing.hero.mockup.upcoming")} pillColor="text-amber-400 bg-amber-500/10" dot="bg-amber-400" />
+                      <MockActionRow label={t("landing.hero.mockup.budgetAlert")} pill={t("landing.hero.mockup.alert")} pillColor="text-red-400 bg-red-500/10" dot="bg-red-400" />
                     </div>
                   </div>
                 </div>

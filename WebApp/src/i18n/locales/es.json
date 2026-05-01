@@ -17,7 +17,9 @@
     "yesterday": "Ayer",
     "reset": "Restablecer",
     "updated": "Actualizado",
-    "noChanges": "No se detectaron cambios"
+    "syncing": "Sincronizando...",
+    "noChanges": "No se detectaron cambios",
+    "allRightsReserved": "Todos los derechos reservados."
   },
   "dashboard": {
     "title": "Resumen de tu Vault",
@@ -162,6 +164,7 @@
     "addTransaction": "Nueva Transacción",
     "settings": "Ajustes",
     "help": "Ayuda",
+    "support": "Apoyar el Proyecto",
     "signOut": "Cerrar Sesión"
   },
   "topbar": {
@@ -761,10 +764,49 @@
       "headlineSuffix": "riqueza.",
       "subheadline": "El libro de cuentas seguro y privado para rastrear gastos, prever presupuestos y monitorizar activos, todo en un solo lugar.",
       "startFree": "Empieza gratis",
-      "viewPricing": "Ver precios",
+      "supportMe": "Apoyar Vault",
       "statEncryption": "Cifrado de 256 bits",
       "statAnalytics": "Análisis predictivo",
-      "statAds": "Sin anuncios, nunca"
+      "statAds": "Sin anuncios, nunca",
+      "mockup": {
+        "url": "vault.app/inicio",
+        "settings": "Ajustes",
+        "overview": "Resumen de Vault",
+        "overviewSubtitle": "Centro de comando financiero",
+        "new": "+ Nuevo",
+        "wealthSubtitle": "Crecimiento por tipo de activo",
+        "invested": "Invertido",
+        "liquidity": "Liquidez",
+        "actionCenter": "Centro de Acción",
+        "netflix": "Netflix se renueva en 3 días",
+        "budgetAlert": "Presupuesto 18% excedido",
+        "upcoming": "Próximamente",
+        "alert": "Alerta"
+      }
+    },
+    "howItWorks": {
+      "badge": "Cómo Funciona",
+      "title": "Tus finanzas.",
+      "title_accent": "Por fin bajo control.",
+      "subtitle": "Cuatro simples pasos del caos a la claridad. Sin bancos.",
+      "steps": {
+        "s1": {
+          "title": "Registra Cada Movimiento",
+          "desc": "Registra ingresos, gastos y transferencias internas. Marca entradas dudosas para revisar en el Centro de Acción."
+        },
+        "s2": {
+          "title": "Analiza y Categoriza",
+          "desc": "Mira instantáneamente tus gastos por categoría. Usa filtros inteligentes para profundizar en cualquier periodo o dominio."
+        },
+        "s3": {
+          "title": "Fondea tus Objetivos",
+          "desc": "Crea Reservas de Capital para cualquier objetivo de ahorro. Usa el Fondeo Rápido para asignar dinero manteniendo la precisión de tus cuentas."
+        },
+        "s4": {
+          "title": "Sigue tu Patrimonio",
+          "desc": "Registra resúmenes de inversión y observa cómo evoluciona tu Patrimonio Neto. Cada tipo de activo, en una única vista privada."
+        }
+      }
     },
     "mockup": {
       "home": "Inicio",
@@ -823,7 +865,70 @@
     "trust": {
       "noAds": "Sin anuncios. Sin venta de datos.",
       "encryption": "Cifrado de nivel bancario (256 bits).",
-      "dataOwnership": "Tus datos son tuyos, siempre."
+      "dataOwnership": "Tus datos son tuyos, siempre.",
+      "forecasting": "Previsiones predictivas integradas"
+    },
+    "faq": {
+      "title": "¿Preguntas? Respondidas.",
+      "subtitle": "Todo lo que necesitas saber sobre Vault y tu privacidad.",
+      "q1": "¿Son mis datos realmente privados?",
+      "a1": "Sí. Vault está construido sobre una arquitectura local-first. Tus datos se cifran con AES de 256 bits antes de salir de tu dispositivo. No vendemos tus datos porque no podemos verlos.",
+      "q2": "¿Necesito conectar mi banco?",
+      "a2": "No. Vault es un libro de cuentas centrado en la privacidad diseñado para entrada manual o importaciones seguras. Creemos que los datos más precisos son los que tú controlas.",
+      "q3": "¿Qué tipos de transacciones admite Vault?",
+      "a3": "Vault admite tres tipos: Ingresos (salario, freelance), Gastos (compras, facturas) y Transferencias (movimientos internos a reservas). Las transferencias se excluyen del análisis de gastos para mantener la precisión.",
+      "q4": "¿Cómo funcionan las Reservas de Capital?",
+      "a4": "Son objetivos de ahorro virtuales independientes de tus cuentas bancarias. Puedes establecer una meta, fondearla mediante una categoría vinculada y seguir el progreso con nuestra función de Fondeo Rápido."
+    },
+    "footer": {
+      "contact": "Contacto",
+      "slogan": "El centro de comando financiero centrado en la privacidad. Rastrea tu riqueza, prevé tu futuro y sé dueño de tus datos.",
+      "networkSecure": "Red Segura",
+      "badges": "Local-First • Cifrado • Privado"
+    },
+    "features_grid": {
+      "ledger": {
+        "title": "Libro de Cuentas Universal",
+        "subtitle": "Cada transacción, perfectamente organizada.",
+        "desc": "Descripción",
+        "cat": "Categoría",
+        "amt": "Cantidad"
+      },
+      "donut": {
+        "title": "Gastos por Categoría",
+        "subtitle": "🛒 Alimentación lidera con un 34%",
+        "expenses": "Gastos"
+      },
+      "actionCenter": {
+        "title": "Centro de Acción",
+        "subtitle": "Alertas prioritarias, automáticas.",
+        "unlabeled": "Transacción sin Etiqueta",
+        "pending": "Pendiente de Verificación",
+        "selectCategory": "Seleccionar categoría",
+        "approve": "Aprobar",
+        "discard": "Descartar",
+        "upcoming": "Próximamente",
+        "alert": "Alerta",
+        "income": "Ingreso",
+        "netflix": "Netflix se renueva en 3 días (15,99€)",
+        "budgetOver": "Gastando un 18% sobre el presupuesto",
+        "salaryCredit": "Nuevo salario abonado: +3.800€"
+      },
+      "reserves": {
+        "title": "Reservas de Capital",
+        "subtitle": "Objetivos de ahorro virtuales.",
+        "funded": "completado",
+        "quickFund": "Fondeo Rápido"
+      },
+      "trends": {
+        "title": "Previsiones Predictivas",
+        "subtitle": "Mira dónde termina tu dinero antes de fin de mes.",
+        "income": "Ingresos Totales",
+        "spent": "Gastos Totales",
+        "flow": "Flujo Neto",
+        "pace": "↑ {{pct}}% de ritmo vs mes pasado",
+        "predicted": "Fin previsto: {{amount}}"
+      }
     },
     "pricing": {
       "title": "Precios simples y honestos.",
@@ -856,19 +961,6 @@
         "f6": "Centro de acción y alertas",
         "f7": "Soporte prioritario"
       }
-    },
-    "faq": {
-      "title": "Preguntas Frecuentes",
-      "subtitle": "Todo lo que necesitas saber sobre Vault y cómo te protegemos.",
-      "q1": "¿Cómo rastrear el patrimonio de forma privada?",
-      "a1": "Vault emplea una filosofía de 'local-first' combinada con sincronización cifrada opcional para asegurar que tus datos nunca salgan de tu control.",
-      "q2": "¿Se venden mis datos a terceros?",
-      "a2": "Absolutamente no. Vault es una herramienta premium y privada. No vendemos datos ni mostramos anuncios.",
-      "q3": "¿Cómo funcionan las previsiones predictivas?",
-      "a3": "Nuestros algoritmos analizan tus gastos recurrentes e ingresos de forma local para predecir tus flujos de caja sin compartir datos externamente."
-    },
-    "footer": {
-      "contact": "Contacto"
     }
   },
   "subscriptions": {
@@ -969,5 +1061,12 @@
     "reservesDesc": "Las reservas son fondos asignados que se excluyen del cálculo de 'Seguro para Gastar', lo que le permite reservar dinero para impuestos, compras grandes o emergencias.",
     "reviewTitle": "Bandeja de Necesita Revisión",
     "reviewDesc": "Las transacciones importadas de fuentes externas o generadas automáticamente pueden ser marcadas para revisión para garantizar que se categoricen correctamente antes de afectar sus métricas."
+  },
+  "support": {
+    "title": "Una nota del desarrollador",
+    "subtitle": "Ayuda a mantener Vault en marcha",
+    "p1": "Vault está construido por un desarrollador independiente en España. No vendo tus datos y nunca pondré anuncios.",
+    "p2": "Todas las funciones son 100% gratuitas. Mi único objetivo hoy es mantener la base de datos funcionando. Si Vault te ayuda a gestionar tus gastos, considera colaborar para ayudar a cubrir el mantenimiento del servidor.",
+    "cta": "Contribuir con Stripe"
   }
 }

@@ -7,7 +7,7 @@ export default function TrustBanner() {
     { icon: <ShieldCheck size={14} />, text: t("landing.trust.noAds") },
     { icon: <Lock size={14} />, text: t("landing.trust.encryption") },
     { icon: <Database size={14} />, text: t("landing.trust.dataOwnership") },
-    { icon: <BarChart2 size={14} />, text: "Predictive forecasting built-in" },
+    { icon: <BarChart2 size={14} />, text: t("landing.trust.forecasting") },
   ];
   return (
     <div className="w-full border-y border-slate-800/60 bg-slate-900/30 py-4 overflow-hidden">

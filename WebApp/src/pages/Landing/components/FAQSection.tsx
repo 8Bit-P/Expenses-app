@@ -11,16 +11,7 @@ export default function FAQSection() {
     { question: t("landing.faq.q1"), answer: t("landing.faq.a1") },
     { question: t("landing.faq.q2"), answer: t("landing.faq.a2") },
     { question: t("landing.faq.q3"), answer: t("landing.faq.a3") },
-    {
-      question: "What types of transactions does Vault support?",
-      answer:
-        "Vault supports three transaction types: Income (salary, freelance), Expense (purchases, bills), and Transfer (internal movements to savings reserves). Transfers are excluded from spending analytics to keep your reports accurate.",
-    },
-    {
-      question: "How do Capital Reserves work?",
-      answer:
-        "Capital Reserves are virtual savings goals decoupled from your bank accounts. You can set a target, fund it via a linked category, and track progress with our two-step Quick Fund feature that simultaneously updates the reserve and logs a transfer in your ledger.",
-    },
+    { question: t("landing.faq.q4"), answer: t("landing.faq.a4") },
   ];
 
   return (

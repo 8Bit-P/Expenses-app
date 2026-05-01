@@ -27,7 +27,7 @@ export default function Footer() {
             <span className="font-black text-2xl tracking-tight">Vault</span>
           </Link>
           <p className="text-slate-500 text-sm leading-relaxed">
-            The privacy-first financial command center. Track your wealth, forecast your future, and own your data.
+            {t("landing.footer.slogan")}
           </p>
         </div>
 
@@ -48,17 +48,17 @@ export default function Footer() {
         <div className="flex items-center gap-2">
           <div className="h-5 px-2.5 rounded-full border border-violet-500/20 bg-violet-500/5 flex items-center gap-1.5">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Network Secure</span>
+            <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{t("landing.footer.networkSecure")}</span>
           </div>
         </div>
 
         {/* Copyright Bar */}
         <div className="w-full border-t border-white/5 pt-10 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-slate-600 text-[9px] font-black uppercase tracking-widest">
-            © {new Date().getFullYear()} Vault App. All rights reserved.
+            © {new Date().getFullYear()} Vault App. {t("common.allRightsReserved", { defaultValue: "All rights reserved." })}
           </p>
           <p className="text-slate-700 text-[9px] font-black uppercase tracking-widest">
-            Local-First • Encrypted • Private
+            {t("landing.footer.badges")}
           </p>
         </div>
       </div>

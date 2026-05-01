@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ChangePasswordModal from "./ChangePasswordModal";
 
 export default function SecuritySection() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   return (
@@ -33,7 +35,10 @@ export default function SecuritySection() {
 
 
         {/* Privacy */}
-        <button className="w-full flex items-center justify-between p-5 text-left hover:bg-surface-container-low transition-colors group">
+        <button 
+          onClick={() => navigate("/privacy")}
+          className="w-full flex items-center justify-between p-5 text-left hover:bg-surface-container-low transition-colors group"
+        >
           <div className="flex items-center gap-4">
             <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">
               visibility_off
