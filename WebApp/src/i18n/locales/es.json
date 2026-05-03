@@ -23,7 +23,7 @@
   },
   "dashboard": {
     "title": "Resumen de tu Vault",
-    "subtitle": "Tu centro de comando financiero en tiempo real. Monitorea liquidez, rastrea objetivos y analiza el crecimiento.",
+    "subtitle": "Controla tus gastos diarios, planifica tus facturas y vigila cómo suben tus ahorros mes a mes.",
     "exportReport": "Exportar Reporte",
     "syncing": "Sincronizando Vault...",
     "spendingBreakdown": "Desglose de Gastos",
@@ -377,7 +377,7 @@
     "allCategories": "Todas las Categorías",
     "unknown": "Desconocido",
     "resultsFor": "Resultados para",
-    "recordsAcross": "{{count}} resultado{{suffix}} en tu Vault financiera.",
+    "recordsAcross": "{{count}} resultados en tu Vault financiera.",
     "universalLedger": "Libro de Cuentas Universal",
     "exploreSubtitle": "Explora y filtra todos tus datos financieros.",
     "clearSearch": "Limpiar búsqueda",
@@ -462,6 +462,7 @@
       "periodProgress": "Progreso del periodo",
       "spentOfProjected": "Gastado {{ratio}}% del total proyectado",
       "projectedSpend": "Gasto Proyectado",
+      "projectedBaseline": "Media Estimada",
       "runningHot": "Ritmo alto",
       "onTrack": "En ritmo",
       "dailyAvg": "{{amount}} / día prom.",
@@ -629,8 +630,8 @@
     "loading": "Desencriptando Vault...",
     "error": "Error conectando con Vault. Por favor, inténtalo de nuevo.",
     "header": {
-      "title": "Patrimonio",
-      "subtitle": "Monitorea tu riqueza global, rastrea contribuciones y registra de forma segura el crecimiento de tu cartera.",
+      "title": "Inversiones",
+      "subtitle": "Monitorea tus inversiones, rastrea contribuciones y registra de forma segura el crecimiento de tu cartera.",
       "activeAssets": "{{count}} Activo",
       "activeAssets_other": "{{count}} Activos",
       "logSnapshot": "Registrar Instantánea"
@@ -760,11 +761,11 @@
     },
     "hero": {
       "badge": "Inteligencia Financiera Privada",
-      "headlinePrefix": "Domina tu",
-      "headlineSuffix": "riqueza.",
-      "subheadline": "El libro de cuentas seguro y privado para rastrear gastos, prever presupuestos y monitorizar activos, todo en un solo lugar.",
+      "headlinePrefix": "Tus finanzas,",
+      "headlineSuffix": "bajo control.",
+      "subheadline": "Rastrea gastos, automatiza presupuestos y vigila tus inversiones en tiempo real. La herramienta definitiva para quienes se toman en serio sus finanzas.",
       "startFree": "Empieza gratis",
-      "supportMe": "Apoyar Vault",
+      "supportMe": "Apoya Vault",
       "statEncryption": "Cifrado de 256 bits",
       "statAnalytics": "Análisis predictivo",
       "statAds": "Sin anuncios, nunca",
@@ -820,48 +821,6 @@
       "wealthEvolution": "Evolución",
       "recentActivity": "Actividad"
     },
-    "features": {
-      "title": "Todo lo que necesitas.",
-      "subtitle_accent": "Nada de lo que no.",
-      "subtitle": "Construido para personas que se toman sus finanzas en serio, no para bancos que se quedan con tus datos.",
-      "runRates": {
-        "title": "Previsiones Predictivas",
-        "desc": "Mira dónde termina tu dinero antes de que acabe el mes.",
-        "pace": "↑ {{pct}}% de ritmo vs el mes pasado"
-      },
-      "actionCenter": {
-        "title": "Centro de Acción",
-        "desc": "Alertas prioritarias, destacadas.",
-        "netflix": "Netflix se renueva en 3 días",
-        "budget": "Gastando un 18% sobre el presupuesto",
-        "salary": "Nuevo salario abonado",
-        "upcoming": "Próximamente",
-        "alert": "Alerta",
-        "income": "Ingreso"
-      },
-      "assets": {
-        "title": "Seguimiento de Activos",
-        "desc": "Total invertido, en vivo.",
-        "total": "Total Invertido",
-        "allTime": "↑ +8.4% histórico",
-        "stocks": "Acciones",
-        "etfs": "ETFs",
-        "crypto": "Cripto"
-      },
-      "ledger": {
-        "title": "Libro de Cuentas Seguro",
-        "desc": "Cada transacción, cifrada de extremo a extremo.",
-        "spotify": "Spotify Premium",
-        "salary": "Salario — Abril",
-        "groceries": "Supermercado",
-        "utilities": "Servicios (AWS)",
-        "freelance": "Proyecto Freelance",
-        "catEntertainment": "Entretenimiento",
-        "catIncome": "Ingreso",
-        "catGroceries": "Alimentación",
-        "catUtilities": "Suministros"
-      }
-    },
     "trust": {
       "noAds": "Sin anuncios. Sin venta de datos.",
       "encryption": "Cifrado de nivel bancario (256 bits).",
@@ -872,7 +831,7 @@
       "title": "¿Preguntas? Respondidas.",
       "subtitle": "Todo lo que necesitas saber sobre Vault y tu privacidad.",
       "q1": "¿Son mis datos realmente privados?",
-      "a1": "Sí. Vault está construido sobre una arquitectura local-first. Tus datos se cifran con AES de 256 bits antes de salir de tu dispositivo. No vendemos tus datos porque no podemos verlos.",
+      "a1": "Sí. Vault está construido sobre una arquitectura centrada en la privacidad. Tus datos se cifran con AES de 256 bits antes de salir de tu dispositivo. No vendemos tus datos porque no podemos verlos.",
       "q2": "¿Necesito conectar mi banco?",
       "a2": "No. Vault es un libro de cuentas centrado en la privacidad diseñado para entrada manual o importaciones seguras. Creemos que los datos más precisos son los que tú controlas.",
       "q3": "¿Qué tipos de transacciones admite Vault?",
@@ -884,7 +843,7 @@
       "contact": "Contacto",
       "slogan": "El centro de comando financiero centrado en la privacidad. Rastrea tu riqueza, prevé tu futuro y sé dueño de tus datos.",
       "networkSecure": "Red Segura",
-      "badges": "Local-First • Cifrado • Privado",
+      "badges": "Nube Segura • Cifrado • Privado",
       "privacyBadge": "Privacidad Primero"
     },
     "features_grid": {
@@ -930,6 +889,11 @@
         "pace": "↑ {{pct}}% de ritmo vs mes pasado",
         "predicted": "Fin previsto: {{amount}}"
       }
+    },
+    "features": {
+      "title": "Todo lo que necesitas.",
+      "subtitle_accent": "Nada innecesario.",
+      "subtitle": "Construido para quienes se toman sus finanzas en serio, no para bancos que negocian con tus datos."
     },
     "pricing": {
       "title": "Precios simples y honestos.",
@@ -1041,7 +1005,7 @@
     "privacy": {
       "title": "Política de Privacidad",
       "subtitle": "Última actualización: Mayo 2026",
-      "p1": "Vault está construido con una filosofía local-first. Tus datos financieros están cifrados y se almacenan en tu dispositivo. Usamos Supabase como backend para sincronización segura, pero no tenemos las llaves para descifrar tu información privada.",
+      "p1": "Vault está construido con una filosofía centrada en la privacidad. Tus datos financieros están cifrados y se almacenan en tu dispositivo. Usamos Supabase como backend para sincronización segura, pero no tenemos las llaves para descifrar tu información privada.",
       "p2": "No vendemos tus datos, no rastreamos tu comportamiento para publicidad y nunca compartimos tus registros financieros con terceros.",
       "p3": "Al usar Vault, eliges una herramienta que respeta tu soberanía digital. Tus datos te pertenecen a ti, y solo a ti.",
       "contactTitle": "Contáctanos",
@@ -1071,8 +1035,8 @@
   "support": {
     "title": "Una nota del desarrollador",
     "subtitle": "Ayuda a mantener Vault en marcha",
-    "p1": "Vault está construido por un desarrollador independiente en España. No vendo tus datos y nunca pondré anuncios.",
-    "p2": "Todas las funciones son 100% gratuitas. Mi único objetivo hoy es mantener la base de datos funcionando. Si Vault te ayuda a gestionar tus gastos, considera colaborar para ayudar a cubrir el mantenimiento del servidor.",
+    "p1": "Hola! Soy un único desarrollador en España. Tuve la idea de hacer una aplicación que se adaptase a mis necesidades para gestionar mi economía personal y he decidido compartirla con el mundo. No vendo tus datos y nunca pondré anuncios.",
+    "p2": "Todas las funciones son 100% gratuitas. Mi único objetivo hoy es mantener la base de datos funcionando. Si Vault te ayuda a gestionar tus gastos, considera colaborar para ayudar a cubrir el mantenimiento del servidor. Gracias ;)",
     "cta": "Contribuir con Stripe"
   }
 }

@@ -29,6 +29,23 @@ export default function Auth() {
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center bg-background p-4 overflow-hidden animate-in fade-in duration-500">
+      {/* Back to Home — Glassy pill */}
+      <Link
+        to="/"
+        className="absolute top-6 left-6 md:top-10 md:left-10 z-50 group flex items-center gap-2 px-4 py-2 rounded-full
+          bg-surface-container-lowest/60 backdrop-blur-md
+          border border-outline-variant/10 hover:border-primary/30
+          text-[11px] font-bold uppercase tracking-[0.18em]
+          text-on-surface-variant/50 hover:text-primary
+          shadow-sm hover:shadow-primary/10
+          transition-all duration-300 ease-out"
+      >
+        <span className="material-symbols-outlined text-[16px] group-hover:-translate-x-0.5 transition-transform duration-300 leading-none">
+          arrow_back_ios
+        </span>
+        <span className="hidden sm:inline">{t("legal.backToHome")}</span>
+      </Link>
+
       {/* Ambient glow blobs */}
       <div className="pointer-events-none absolute top-[-10%] left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full bg-primary/10 blur-[120px]" />
       <div className="pointer-events-none absolute bottom-[-5%] left-1/4 w-[400px] h-[400px] rounded-full bg-tertiary/8 blur-[100px]" />

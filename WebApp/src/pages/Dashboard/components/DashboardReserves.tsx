@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Target, Check, Shield, Plus, Settings } from "lucide-react";
+import { Target, Check, Shield, Plus, Settings, HelpCircle } from "lucide-react";
 import { useReserves, type Reserve } from "../../../hooks/useReserves";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { formatCurrency } from "../../../utils/currency";
@@ -10,7 +10,7 @@ import ManageReserveModal from "./ManageReserveModal";
 
 import { useTranslation } from "react-i18next";
 
-export default function DashboardReserves() {
+export default function DashboardReserves({ onHelpClick }: { onHelpClick?: () => void }) {
   const { t } = useTranslation();
   const { reserves, isLoading, fundReserve } = useReserves();
   const { currency } = useUserPreferences();
@@ -23,10 +23,21 @@ export default function DashboardReserves() {
   return (
     <div className="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/10 flex flex-col h-full">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-lg font-black font-headline flex items-center gap-2 text-on-surface">
-          <Shield className="w-5 h-5 text-primary" />
-          {t("dashboard.reserves.title")}
-        </h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-lg font-black font-headline flex items-center gap-2 text-on-surface">
+            <Shield className="w-5 h-5 text-primary" />
+            {t("dashboard.reserves.title")}
+          </h2>
+          {onHelpClick && (
+            <button
+              onClick={onHelpClick}
+              className="w-5 h-5 flex items-center justify-center text-on-surface-variant/30 hover:text-primary transition-colors"
+              title="Learn about reserves"
+            >
+              <HelpCircle className="w-4 h-4" />
+            </button>
+          )}
+        </div>
         <button
           onClick={() => setIsCreateModalOpen(true)}
           className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 transition-all active:scale-95"

@@ -60,8 +60,10 @@ export function UserPreferencesProvider({ children }: { children: ReactNode }) {
 
   // Language
   const [language, setLanguageState] = useState<Language>(() => {
-    const saved = getLocalStorageItem<Language>("pref:language", i18n.language as Language);
-    return (saved === "es" || saved === "en" ? saved : "en") as Language;
+    const saved = getLocalStorageItem<string>("pref:language", i18n.language);
+    if (saved?.startsWith("es")) return "es";
+    if (saved?.startsWith("en")) return "en";
+    return "en";
   });
 
   // Theme

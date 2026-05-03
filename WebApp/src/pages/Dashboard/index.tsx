@@ -1,3 +1,4 @@
+import { useState } from "react";
 import SummaryRow from "./components/SummaryRow";
 import WealthEvolution from "./components/WealthEvolution";
 import ActionCenter from "./components/ActionCenter";
@@ -6,11 +7,19 @@ import RecentActivity from "./components/RecentActivity";
 import DashboardReserves from "./components/DashboardReserves";
 import UpcomingRenewals from "./components/UpcomingRenewals";
 import ReviewWidget from "./components/ReviewWidget";
+import HelpDrawer from "../../components/layout/HelpDrawer";
 
 import { useTranslation } from "react-i18next";
 
 export default function Dashboard() {
   const { t } = useTranslation();
+  const [helpSection, setHelpSection] = useState<string | undefined>(undefined);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
+
+  const openHelp = (section?: string) => {
+    setHelpSection(section);
+    setIsHelpOpen(true);
+  };
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-32">
@@ -61,9 +70,16 @@ export default function Dashboard() {
       {/* ROW 4: Details */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <RecentActivity />
-        <DashboardReserves />
+        <DashboardReserves onHelpClick={() => openHelp("reserves")} />
         <UpcomingRenewals />
       </div>
+
+      {/* Help Drawer — context-aware, opened from within cards */}
+      <HelpDrawer
+        isOpen={isHelpOpen}
+        onClose={() => setIsHelpOpen(false)}
+        initialSection={helpSection}
+      />
     </div>
   );
 }

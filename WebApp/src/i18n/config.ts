@@ -14,11 +14,13 @@ i18n
       es: { translation: esTranslations },
     },
     fallbackLng: "en",
+    load: "languageOnly",
     interpolation: {
       escapeValue: false, // React already escapes values
     },
     detection: {
       order: ["localStorage", "navigator"],
+      lookupLocalStorage: "pref:language",
       caches: ["localStorage"],
     },
   });

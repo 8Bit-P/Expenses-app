@@ -200,8 +200,8 @@ export default function PreferencesSection() {
         </div>
       </div>
 
-      {/* Sticky Save FAB on Mobile */}
-      <div className="fixed bottom-[84px] left-0 w-full px-4 md:static md:bottom-auto md:px-0 z-40 md:flex md:items-center md:justify-end gap-3">
+      {/* Sticky Save FAB on Mobile - Elevated to clear the bottom navigation bar */}
+      <div className="fixed bottom-[100px] left-0 w-full px-4 md:static md:bottom-auto md:px-0 z-40 md:flex md:items-center md:justify-end gap-3 transition-all duration-500 ease-out animate-in slide-in-from-bottom-4">
           <button
             onClick={() => {
               setBudgetInput(monthlyBudget > 0 ? monthlyBudget.toString() : "");

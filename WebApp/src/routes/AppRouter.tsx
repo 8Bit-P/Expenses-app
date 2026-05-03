@@ -1,20 +1,21 @@
-import { lazy, Suspense } from "react";
+import { Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "../components/layout/ProtectedRoute";
 import AppLayout from "../components/layout/AppLayout";
+import { lazyWithRetry } from "../utils/lazyWithRetry";
 
 // --- Lazy Load Pages for Production Performance ---
 // These won't be bundled until the user navigates to the specific route
-const Landing = lazy(() => import("../pages/Landing"));
-const Auth = lazy(() => import("../pages/Auth"));
-const Dashboard = lazy(() => import("../pages/Dashboard"));
-const Expenses = lazy(() => import("../pages/Expenses"));
-const Subscriptions = lazy(() => import("../pages/Subscriptions"));
-const Settings = lazy(() => import("../pages/Settings"));
-const Investments = lazy(() => import("../pages/Investments"));
-const SearchResults = lazy(() => import("../pages/Search"));
-const Privacy = lazy(() => import("../pages/Legal/Privacy"));
-const Terms = lazy(() => import("../pages/Legal/Terms"));
+const Landing = lazyWithRetry(() => import("../pages/Landing"));
+const Auth = lazyWithRetry(() => import("../pages/Auth"));
+const Dashboard = lazyWithRetry(() => import("../pages/Dashboard"));
+const Expenses = lazyWithRetry(() => import("../pages/Expenses"));
+const Subscriptions = lazyWithRetry(() => import("../pages/Subscriptions"));
+const Settings = lazyWithRetry(() => import("../pages/Settings"));
+const Investments = lazyWithRetry(() => import("../pages/Investments"));
+const SearchResults = lazyWithRetry(() => import("../pages/Search"));
+const Privacy = lazyWithRetry(() => import("../pages/Legal/Privacy"));
+const Terms = lazyWithRetry(() => import("../pages/Legal/Terms"));
 
 // A clean, premium loading spinner that fits the Vault aesthetic
 const PageLoader = () => (

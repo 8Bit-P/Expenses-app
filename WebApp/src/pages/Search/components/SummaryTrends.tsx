@@ -77,7 +77,7 @@ function KpiCard({
   currencyCode: string;
 }) {
   return (
-    <div className="bg-surface-container-low border border-outline-variant/20 rounded-2xl px-5 py-4 flex flex-col gap-1 shadow-sm flex-1">
+    <div className="bg-surface-container-low border border-outline-variant/20 rounded-2xl px-5 py-4 flex flex-col gap-1 shadow-sm flex-1 min-w-[160px] snap-start">
       <div className="flex items-center justify-between">
         <span className="text-[10px] font-black text-on-surface-variant uppercase tracking-wider">
           {label}
@@ -124,8 +124,8 @@ export function SummaryTrends({
 
   return (
     <div className="flex flex-col gap-4">
-      {/* ── KPI Cards Row ──────────────────────────────────────────────────── */}
-      <div className="flex gap-4">
+      {/* ── KPI Cards Row — scrollable on mobile ───────────────────────────── */}
+      <div className="flex gap-3 overflow-x-auto pb-1 snap-x snap-mandatory scrollbar-none -mx-1 px-1">
         <KpiCard
           label={t("search.totalIncome")}
           value={totalIncome}

@@ -6,6 +6,9 @@ export default function NotificationDropdown() {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  // Logic for showing the notification badge (currently disabled)
+  const hasNotifications = false;
 
   // Close when clicking outside
   useEffect(() => {
@@ -32,10 +35,14 @@ export default function NotificationDropdown() {
         }`}
       >
         <span className="material-symbols-outlined">notifications</span>
-
-        {/* Red dot badge with a subtle ping animation - only show if there are "new" items (hardcoded for now) */}
-        <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-error z-10"></span>
-        <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-error animate-ping opacity-75"></span>
+        
+        {/* Red dot badge with a subtle ping animation - only show if there are active notifications */}
+        {hasNotifications && (
+          <>
+            <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-error z-10"></span>
+            <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-error animate-ping opacity-75"></span>
+          </>
+        )}
       </button>
 
       <AnimatePresence>

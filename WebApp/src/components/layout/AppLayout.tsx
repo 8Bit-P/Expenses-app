@@ -71,7 +71,7 @@ export default function AppLayout() {
 
 
       {/* Mobile Bottom Nav */}
-      <BottomNav />
+      <BottomNav onNewTransaction={() => setIsNewTxOpen(true)} />
 
       {/* Global New Transaction Sheet */}
       <NewTransactionSheet isOpen={isNewTxOpen} onClose={() => setIsNewTxOpen(false)} />

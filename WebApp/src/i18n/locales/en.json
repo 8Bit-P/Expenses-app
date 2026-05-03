@@ -377,7 +377,7 @@
     "allCategories": "All Categories",
     "unknown": "Unknown",
     "resultsFor": "Search Results for",
-    "recordsAcross": "result{{count}} across your financial vault.",
+    "recordsAcross": "{{count}} results across your financial vault.",
     "universalLedger": "Universal Ledger",
     "exploreSubtitle": "Explore and filter all your financial data.",
     "clearSearch": "Clear search",
@@ -462,6 +462,7 @@
       "periodProgress": "Period progress",
       "spentOfProjected": "Spent {{ratio}}% of projected total",
       "projectedSpend": "Projected Spend",
+      "projectedBaseline": "Estimated Baseline",
       "runningHot": "Running hot",
       "onTrack": "On track",
       "dailyAvg": "{{amount}} / day avg",
@@ -830,7 +831,7 @@
       "title": "Questions? Answered.",
       "subtitle": "Everything you need to know about Vault and your privacy.",
       "q1": "Is my data truly private?",
-      "a1": "Yes. Vault is built on a local-first architecture. Your data is encrypted with 256-bit AES before ever leaving your device. We don't sell your data because we can't see it.",
+      "a1": "Yes. Vault is built on a privacy-centric architecture. Your data is encrypted with 256-bit AES before ever leaving your device. We don't sell your data because we can't see it.",
       "q2": "Do I need to connect my bank?",
       "a2": "No. Vault is a privacy-first ledger designed for manual entry or secure imports. We believe the most accurate financial data is the one you control, not the one a bank API serves you.",
       "q3": "What types of transactions does Vault support?",
@@ -842,7 +843,7 @@
       "contact": "Contact",
       "slogan": "The privacy-first financial command center. Track your wealth, forecast your future, and own your data.",
       "networkSecure": "Network Secure",
-      "badges": "Local-First • Encrypted • Private",
+      "badges": "Secure Cloud • Encrypted • Private",
       "privacyBadge": "Privacy First"
     },
     "features_grid": {
@@ -889,47 +890,10 @@
         "predicted": "Predicted end: {{amount}}"
       }
     },
-    "pricing": {
+    "features": {
       "title": "Everything you need.",
       "subtitle_accent": "Nothing you don't.",
-      "subtitle": "Built for people who take their finances seriously, not for banks that take your data.",
-      "runRates": {
-        "title": "Predictive Run Rates",
-        "desc": "See where your money lands before the month ends.",
-        "pace": "↑ {{pct}}% pace vs last month"
-      },
-      "actionCenter": {
-        "title": "Action Center",
-        "desc": "Priority alerts, surfaced.",
-        "netflix": "Netflix renews in 3 days",
-        "budget": "Spending 18% over budget",
-        "salary": "New salary credited",
-        "upcoming": "Upcoming",
-        "alert": "Alert",
-        "income": "Income"
-      },
-      "assets": {
-        "title": "Asset Tracking",
-        "desc": "Total invested, live.",
-        "total": "Total Invested",
-        "allTime": "↑ +8.4% all-time",
-        "stocks": "Stocks",
-        "etfs": "ETFs",
-        "crypto": "Crypto"
-      },
-      "ledger": {
-        "title": "Secure Ledger",
-        "desc": "Every transaction, end-to-end encrypted.",
-        "spotify": "Spotify Premium",
-        "salary": "Salary — April",
-        "groceries": "Whole Foods",
-        "utilities": "AWS Credits",
-        "freelance": "Freelance Project",
-        "catEntertainment": "Entertainment",
-        "catIncome": "Income",
-        "catGroceries": "Groceries",
-        "catUtilities": "Utilities"
-      }
+      "subtitle": "Built for people who take their finances seriously, not for banks that take your data."
     },
     "pricing": {
       "title": "Simple, honest pricing.",
@@ -1041,7 +1005,7 @@
     "privacy": {
       "title": "Privacy Policy",
       "subtitle": "Last updated: May 2026",
-      "p1": "Vault is built with a local-first philosophy. Your financial data is encrypted and stored on your device. We use Supabase as a backend for secure synchronization, but we do not have the keys to decrypt your private information.",
+      "p1": "Vault is built with a privacy-first philosophy. Your financial data is encrypted and stored on your device. We use Supabase as a backend for secure synchronization, but we do not have the keys to decrypt your private information.",
       "p2": "We do not sell your data, we do not track your behavior for advertising, and we never share your financial records with third-party brokers.",
       "p3": "By using Vault, you are choosing a tool that respects your digital sovereignty. Your data belongs to you, and you alone.",
       "contactTitle": "Contact Us",
@@ -1071,8 +1035,8 @@
   "support": {
     "title": "A note from the developer",
     "subtitle": "Help keep Vault running",
-    "p1": "Vault is built by one independent developer in Spain. I don't sell your data, and I will never run ads.",
-    "p2": "Right now, every feature is 100% free. My only goal today is to keep the database running. If Vault helps you take control of your wealth, consider chipping in to help cover the server maintenance.",
+    "p1": "Hi! I'm a solo developer based in Spain. I had the idea to build an app that perfectly fit my personal finance needs and decided to share it with the world. I don't sell your data and I will never run ads.",
+    "p2": "Every feature is 100% free. My only goal today is to keep the database running. If Vault helps you manage your expenses, consider chipping in to help cover the server maintenance. Thanks! ;)",
     "cta": "Contribute via Stripe"
   }
 }

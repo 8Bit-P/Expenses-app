@@ -12,23 +12,36 @@ import {
   Inbox,
   Landmark,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import VaultIcon from "../ui/VaultIcon";
 
 interface HelpDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  initialSection?: string;
 }
 
-export default function HelpDrawer({ isOpen, onClose }: HelpDrawerProps) {
+export default function HelpDrawer({ isOpen, onClose, initialSection }: HelpDrawerProps) {
   const { t } = useTranslation();
-  const [openAccordion, setOpenAccordion] = useState<string | null>(null);
+  const [openAccordion, setOpenAccordion] = useState<string | null>(initialSection ?? null);
+  const focusRef = useRef<HTMLDivElement>(null);
 
-  if (!isOpen) return null;
+  // When the drawer opens with a specific section, scroll to it after animation
+  useEffect(() => {
+    if (initialSection && focusRef.current) {
+      const timer = setTimeout(() => {
+        focusRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 380); // wait for slide-in animation to finish
+      return () => clearTimeout(timer);
+    }
+  }, [initialSection]);
+
 
   const toggleAccordion = (id: string) => {
     setOpenAccordion(openAccordion === id ? null : id);
   };
+
+  if (!isOpen) return null;
 
   const shortcuts = [
     { key: "1", label: t("sidebar.home"), icon: <LayoutGrid size={13} className="text-primary" /> },
@@ -150,7 +163,12 @@ export default function HelpDrawer({ isOpen, onClose }: HelpDrawerProps) {
                 {concepts.map((c) => (
                   <div
                     key={c.id}
-                    className="bg-surface-container-low/70 rounded-xl border border-outline-variant/10 overflow-hidden transition-all hover:border-outline-variant/25"
+                    ref={c.id === initialSection ? focusRef : undefined}
+                    className={`bg-surface-container-low/70 rounded-xl border overflow-hidden transition-all ${
+                      c.id === initialSection
+                        ? "border-primary/30 shadow-sm shadow-primary/10"
+                        : "border-outline-variant/10 hover:border-outline-variant/25"
+                    }`}
                   >
                     <button
                       onClick={() => toggleAccordion(c.id)}
