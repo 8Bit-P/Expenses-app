@@ -29,13 +29,17 @@ export default function DashboardReserves({ onHelpClick }: { onHelpClick?: () =>
             {t("dashboard.reserves.title")}
           </h2>
           {onHelpClick && (
-            <button
-              onClick={onHelpClick}
-              className="w-5 h-5 flex items-center justify-center text-on-surface-variant/30 hover:text-primary transition-colors"
-              title="Learn about reserves"
-            >
-              <HelpCircle className="w-4 h-4" />
-            </button>
+            <div className="group relative flex items-center justify-center">
+              <button
+                onClick={onHelpClick}
+                className="w-5 h-5 flex items-center justify-center text-on-surface-variant/30 hover:text-primary transition-colors cursor-help"
+              >
+                <HelpCircle className="w-4 h-4" />
+              </button>
+              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 bg-surface-container-highest text-on-surface text-[10px] font-medium rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all pointer-events-none z-50 text-center border border-outline-variant/10">
+                {t("dashboard.reserves.tooltip")}
+              </div>
+            </div>
           )}
         </div>
         <button

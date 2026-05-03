@@ -5,6 +5,7 @@ import { useUserPreferences } from "../context/UserPreferencesContext";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabase";
 import type { TransactionType } from "../types/expenses";
+import { useTranslation } from "react-i18next";
 
 interface TransactionFormState {
   type: TransactionType;
@@ -17,6 +18,7 @@ interface TransactionFormState {
 }
 
 export function useTransactionForm(transaction?: any) {
+  const { t } = useTranslation();
   const { getOrCreateUnknownCategory } = useCategories();
   const { addTransaction, updateTransaction } = useTransactions();
   const { currency } = useUserPreferences();
@@ -72,14 +74,18 @@ export function useTransactionForm(transaction?: any) {
         await addTransaction(data as any);
       }
 
-      toast.success(transaction ? "Transaction updated" : "Transaction recorded", {
-        description: `${state.description || (state.type === "expense" ? "Expense" : "Income")} of ${currency.symbol}${state.amount} secured.`,
+      toast.success(transaction ? t("expenses.transactionModal.toasts.updated") : t("expenses.transactionModal.toasts.recorded"), {
+        description: t("expenses.transactionModal.toasts.secured", {
+          description: state.description || (state.type === "expense" ? t("expenses.transactionModal.types.expense") : t("expenses.transactionModal.types.income")),
+          symbol: currency.symbol,
+          amount: state.amount,
+        }),
       });
 
       onClose();
     } catch (err: any) {
-      toast.error("Save failed", {
-        description: err.message || "Something went wrong while saving.",
+      toast.error(t("expenses.transactionModal.toasts.saveFailed"), {
+        description: err.message || t("expenses.transactionModal.toasts.saveFailedDefault"),
       });
     } finally {
       setIsSubmitting(false);

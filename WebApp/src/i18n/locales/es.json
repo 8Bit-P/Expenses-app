@@ -19,13 +19,22 @@
     "updated": "Actualizado",
     "syncing": "Sincronizando...",
     "noChanges": "No se detectaron cambios",
-    "allRightsReserved": "Todos los derechos reservados."
+    "allRightsReserved": "Todos los derechos reservados.",
+    "targetAsset": "Activo Objetivo",
+    "purging": "Purgando de Vault...",
+    "permanentlyDelete": "Eliminar Permanentemente",
+    "keepAsset": "Mantener Activo"
   },
   "dashboard": {
     "title": "Resumen de tu Vault",
     "subtitle": "Controla tus gastos diarios, planifica tus facturas y vigila cómo suben tus ahorros mes a mes.",
     "exportReport": "Exportar Reporte",
     "syncing": "Sincronizando Vault...",
+    "emptyState": {
+      "title": "Bienvenido a tu centro de mando",
+      "subtitle": "Para empezar a ver tus gráficas y controlar tus finanzas, añade tu primer movimiento a tu Vault.",
+      "addManual": "Añadir Manualmente"
+    },
     "spendingBreakdown": "Desglose de Gastos",
     "summary": {
       "netWorth": "Patrimonio",
@@ -98,7 +107,8 @@
       "toast": {
         "missingFields": "Faltan campos",
         "missingFieldsDesc": "Por favor, completa todos los campos requeridos."
-      }
+      },
+      "tooltip": "Reserva fondos excluyéndolos de tu 'Seguro para Gastar' (ideal para impuestos o compras grandes)."
     },
     "recentActivity": {
       "title": "Actividad Reciente",
@@ -143,6 +153,8 @@
       "subtitle": "Bandeja de Entrada",
       "placeholder": "Transacción sin etiqueta",
       "pendingVerification": "Verificación Pendiente",
+      "emptyState": "¡Todo al día! No tienes transacciones pendientes de revisar.",
+      "tooltip": "Transacciones importadas o automáticas que necesitan ser categorizadas antes de afectar tus métricas.",
       "selectCategory": "Seleccionar Categoría",
       "discard": "Descartar Transacción",
       "approve": "Aprobar Transacción",
@@ -152,6 +164,22 @@
         "approvedError": "Error al aprobar la transacción",
         "discarded": "Transacción descartada",
         "discardedError": "Error al descartar la transacción"
+      },
+      "toasts": {
+        "fundingFailed": "Fallo en el fondeo",
+        "reserveFunded": "¡Reserva fondeada!",
+        "reserveFundedDesc": "La cantidad ha sido movida a tu reserva segura.",
+        "reserveCreated": "Reserva creada",
+        "reserveCreatedDesc": "Tu nuevo objetivo de ahorro está listo para ser fondeado.",
+        "createReserveFailed": "Error al crear la reserva",
+        "reserveDeleted": "Reserva eliminada",
+        "deleteReserveFailed": "Fallo al eliminar reserva",
+        "goalCompleted": "¡Objetivo completado!",
+        "goalCompletedDesc": "La reserva ha sido marcada como completada.",
+        "updateGoalFailed": "Error al actualizar objetivo",
+        "fundsReleased": "¡Fondos liberados!",
+        "fundsReleasedDesc": "La cantidad ha sido devuelta a tu fondo principal.",
+        "releaseFailed": "Fallo al liberar fondos"
       }
     }
   },
@@ -205,7 +233,11 @@
       "avatarUpdated": "Avatar actualizado",
       "avatarSuccess": "Tu perfil de Vault ha sido asegurado.",
       "uploadFailed": "Error al subir",
-      "uploadError": "No se pudo actualizar la foto de perfil."
+      "uploadError": "No se pudo actualizar la foto de perfil.",
+      "toasts": {
+        "error": "Error de perfil",
+        "syncError": "Fallo al sincronizar los datos del perfil."
+      }
     },
     "securitySection": {
       "title": "Cuenta y Seguridad",
@@ -620,15 +652,29 @@
         "cancel": "Mantener Entrada"
       },
       "toasts": {
+        "recorded": "Transacción registrada",
+        "updated": "Transacción actualizada",
+        "secured": "{{description}} de {{symbol}}{{amount}} asegurado.",
         "deleted": "Transacción eliminada",
         "deleteFailed": "Fallo al eliminar",
-        "deleteFailedDefault": "Algo salió mal."
+        "deleteFailedDefault": "Algo salió mal.",
+        "saveFailed": "Fallo al guardar",
+        "saveFailedDefault": "Algo salió mal al guardar la transacción."
       }
     }
   },
   "investments": {
     "loading": "Desencriptando Vault...",
     "error": "Error conectando con Vault. Por favor, inténtalo de nuevo.",
+    "toasts": {
+      "updateFailed": "Fallo al actualizar Vault",
+      "snapshotDeleted": "Instantánea eliminada",
+      "snapshotDeletedDesc": "Cronología de cartera actualizada.",
+      "deleteSnapshotFailed": "Fallo al eliminar instantánea",
+      "assetPurged": "Activo purgado",
+      "assetPurgedDesc": "El activo ha sido eliminado de tu vault.",
+      "deleteAssetFailed": "Fallo al eliminar activo"
+    },
     "header": {
       "title": "Inversiones",
       "subtitle": "Monitorea tus inversiones, rastrea contribuciones y registra de forma segura el crecimiento de tu cartera.",

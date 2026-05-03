@@ -22,7 +22,7 @@ export default function SearchResults() {
   const [mobileQuery, setMobileQuery] = useState(query);
 
   // ── Filter state ────────────────────────────────────────────────────────────
-  const [timeframe, setTimeframe] = useState<TimeframeKey>("this_month");
+  const [timeframe, setTimeframe] = useState<TimeframeKey>("all");
   const [customStartDate, setCustomStartDate] = useState("");
   const [customEndDate, setCustomEndDate] = useState("");
   const [activeDomains, setActiveDomains] = useState<Set<DomainKey>>(new Set(ALL_DOMAINS));
@@ -30,7 +30,7 @@ export default function SearchResults() {
   const [maxAmount, setMaxAmount] = useState("");
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<TransactionType[]>([]);
-  
+
   // ── Sort state ──────────────────────────────────────────────────────────────
   const [sortColumn, setSortColumn] = useState<"date" | "amount">("date");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
@@ -74,7 +74,7 @@ export default function SearchResults() {
   }, [searchParams, setSearchParams]);
 
   const clearAllFilters = useCallback(() => {
-    setTimeframe("this_month");
+    setTimeframe("all");
     setCustomStartDate("");
     setCustomEndDate("");
     setActiveDomains(new Set(ALL_DOMAINS));
@@ -85,16 +85,19 @@ export default function SearchResults() {
     clearSearch();
   }, [clearSearch, maxAmount]);
 
-  const handleMobileSearch = useCallback((e: React.FormEvent) => {
-    e.preventDefault();
-    const params = new URLSearchParams(searchParams);
-    if (mobileQuery.trim()) {
-      params.set("q", mobileQuery.trim());
-    } else {
-      params.delete("q");
-    }
-    setSearchParams(params);
-  }, [mobileQuery, searchParams, setSearchParams]);
+  const handleMobileSearch = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      const params = new URLSearchParams(searchParams);
+      if (mobileQuery.trim()) {
+        params.set("q", mobileQuery.trim());
+      } else {
+        params.delete("q");
+      }
+      setSearchParams(params);
+    },
+    [mobileQuery, searchParams, setSearchParams],
+  );
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 w-full">
@@ -104,7 +107,10 @@ export default function SearchResults() {
       {/* ── Mobile-only: search bar ─────────────────────────────────────────── */}
       <form onSubmit={handleMobileSearch} className="flex items-center gap-2 mb-4 lg:hidden">
         <div className="relative flex-1">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 pointer-events-none" />
+          <Search
+            size={16}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 pointer-events-none"
+          />
           <input
             type="search"
             value={mobileQuery}
@@ -115,7 +121,10 @@ export default function SearchResults() {
           {mobileQuery && (
             <button
               type="button"
-              onClick={() => { setMobileQuery(""); clearSearch(); }}
+              onClick={() => {
+                setMobileQuery("");
+                clearSearch();
+              }}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 hover:text-on-surface"
             >
               <X size={14} />
@@ -148,7 +157,9 @@ export default function SearchResults() {
         </button>
 
         {/* Collapsible filter panel */}
-        <div className={`overflow-hidden transition-all duration-300 ${mobileFiltersOpen ? "max-h-[1200px] mt-3" : "max-h-0"}`}>
+        <div
+          className={`overflow-hidden transition-all duration-300 ${mobileFiltersOpen ? "max-h-[1200px] mt-3" : "max-h-0"}`}
+        >
           <div className="bg-surface-container-lowest border border-outline-variant/10 rounded-2xl p-4">
             <AdvancedFilters
               timeframe={timeframe}

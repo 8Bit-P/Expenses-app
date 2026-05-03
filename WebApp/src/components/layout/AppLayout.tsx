@@ -44,8 +44,14 @@ export default function AppLayout() {
       }
     };
 
+    const handleCustomEvent = () => setIsNewTxOpen(true);
+
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener("open-new-transaction", handleCustomEvent);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("open-new-transaction", handleCustomEvent);
+    };
   }, [navigate]);
 
   return (

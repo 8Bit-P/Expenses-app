@@ -4,7 +4,10 @@ import { useAuth } from "../context/AuthContext";
 import type { AssetSnapshot, AssetType, AssetWithSnapshots } from "../types/investments";
 import { toast } from "sonner";
 
+import { useTranslation } from "react-i18next";
+
 export function useInvestments() {
+  const { t } = useTranslation();
   const { session } = useAuth();
   const queryClient = useQueryClient();
   const userId = session?.user?.id;
@@ -128,7 +131,7 @@ export function useInvestments() {
       queryClient.invalidateQueries({ queryKey: ["investments", userId] });
     },
     onError: (error) => {
-      toast.error("Failed to update vault", {
+      toast.error(t("investments.toasts.updateFailed"), {
         description: error.message,
       });
     },
@@ -145,10 +148,10 @@ export function useInvestments() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["investments", userId] });
-      toast.success("Snapshot deleted", { description: "Portfolio timeline updated." });
+      toast.success(t("investments.toasts.snapshotDeleted"), { description: t("investments.toasts.snapshotDeletedDesc") });
     },
     onError: (error) => {
-      toast.error("Failed to delete snapshot", {
+      toast.error(t("investments.toasts.deleteSnapshotFailed"), {
         description: error.message,
       });
     },
@@ -165,10 +168,10 @@ export function useInvestments() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["investments", userId] });
-      toast.success("Asset purged", { description: "The asset has been removed from your vault." });
+      toast.success(t("investments.toasts.assetPurged"), { description: t("investments.toasts.assetPurgedDesc") });
     },
     onError: (error) => {
-      toast.error("Failed to delete asset", {
+      toast.error(t("investments.toasts.deleteAssetFailed"), {
         description: error.message,
       });
     },

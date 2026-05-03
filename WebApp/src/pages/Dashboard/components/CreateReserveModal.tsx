@@ -6,6 +6,7 @@ import { CustomSelect } from "../../../components/ui/CustomSelect";
 import { toast } from "sonner";
 import { X, Shield } from "lucide-react";
 import EmojiPicker, { EmojiStyle } from "emoji-picker-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface CreateReserveModalProps {
   isOpen: boolean;
@@ -37,8 +38,6 @@ export default function CreateReserveModal({ isOpen, onClose }: CreateReserveMod
     }
   }, [isOpen, categories]);
 
-  if (!isOpen) return null;
-
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !targetAmount || !categoryId) {
@@ -65,110 +64,130 @@ export default function CreateReserveModal({ isOpen, onClose }: CreateReserveMod
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/60 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="bg-surface-container-lowest/95 backdrop-blur-xl w-full max-w-md rounded-2xl shadow-2xl border border-outline-variant/20 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300">
-        <div className="px-6 py-6 border-b border-outline-variant/5 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Shield className="w-5 h-5 text-primary" />
-            <h2 className="text-xl font-black text-on-surface tracking-tight font-headline">
-              {t("dashboard.reserves.newReserve")}
-            </h2>
-          </div>
-          <button onClick={onClose} className="p-2 hover:bg-surface-container rounded-full transition-colors text-on-surface-variant">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        <form onSubmit={handleCreate} className="p-6 space-y-5">
-          <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-              {t("dashboard.reserves.reserveName")}
-            </label>
-            <input
-              autoFocus
-              className="w-full bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-3 px-4 text-sm font-semibold text-on-surface outline-none"
-              placeholder={t("dashboard.reserves.reserveNamePlaceholder")}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                {t("dashboard.reserves.targetAmount")} ({currency.symbol})
-              </label>
-              <input
-                type="number"
-                className="w-full bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-3 px-4 text-sm font-semibold text-on-surface outline-none"
-                placeholder="0.00"
-                value={targetAmount}
-                onChange={(e) => setTargetAmount(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2 text-center relative">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">
-                {t("dashboard.reserves.icon")}
-              </label>
-              <button
-                type="button"
-                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                className="w-full bg-surface-container border border-outline-variant/10 hover:border-primary/50 rounded-xl py-2.5 text-center text-2xl outline-none transition-all"
-              >
-                {icon}
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="absolute inset-0 bg-background/60 backdrop-blur-md"
+            onClick={onClose}
+          />
+          
+          <motion.div 
+            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+            transition={{ type: "spring", damping: 25, stiffness: 350 }}
+            className="relative bg-surface-container-lowest/95 backdrop-blur-xl w-full max-w-md rounded-2xl shadow-2xl border border-outline-variant/20 overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="px-6 py-6 border-b border-outline-variant/5 flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <Shield className="w-5 h-5 text-primary" />
+                <h2 className="text-xl font-black text-on-surface tracking-tight font-headline">
+                  {t("dashboard.reserves.newReserve")}
+                </h2>
+              </div>
+              <button onClick={onClose} className="p-2 hover:bg-surface-container rounded-full transition-colors text-on-surface-variant">
+                <X className="w-5 h-5" />
               </button>
+            </div>
 
-              {showEmojiPicker && (
-                <div className="absolute bottom-[110%] right-0 z-[110] shadow-2xl rounded-xl animate-in fade-in zoom-in-95 border border-outline-variant/20">
-                  <EmojiPicker
-                    emojiStyle={EmojiStyle.NATIVE}
-                    onEmojiClick={(e) => {
-                      setIcon(e.emoji);
-                      setShowEmojiPicker(false);
-                    }}
-                    skinTonesDisabled
-                    theme={"dark" as any}
-                    width={300}
-                    height={350}
+            <form onSubmit={handleCreate} className="p-6 space-y-5">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
+                  {t("dashboard.reserves.reserveName")}
+                </label>
+                <input
+                  autoFocus
+                  className="w-full bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-3 px-4 text-sm font-semibold text-on-surface outline-none"
+                  placeholder={t("dashboard.reserves.reserveNamePlaceholder")}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
+                    {t("dashboard.reserves.targetAmount")} ({currency.symbol})
+                  </label>
+                  <input
+                    type="number"
+                    className="w-full bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-3 px-4 text-sm font-semibold text-on-surface outline-none"
+                    placeholder="0.00"
+                    value={targetAmount}
+                    onChange={(e) => setTargetAmount(e.target.value)}
                   />
                 </div>
-              )}
-            </div>
-          </div>
+                <div className="space-y-2 text-center relative">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">
+                    {t("dashboard.reserves.icon")}
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                    className="w-full bg-surface-container border border-outline-variant/10 hover:border-primary/50 rounded-xl py-2.5 text-center text-2xl outline-none transition-all"
+                  >
+                    {icon}
+                  </button>
 
-          <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-              {t("dashboard.reserves.fundingCategory")}
-            </label>
-            <CustomSelect
-              value={categoryId}
-              options={categories.map(cat => ({ value: cat.id, label: `${cat.emoji} ${cat.name}` }))}
-              onChange={setCategoryId}
-              className="w-full bg-surface-container border-none rounded-xl py-1 text-sm font-semibold"
-            />
-            <p className="text-[9px] text-on-surface-variant/60 font-medium px-1 italic">
-              {t("dashboard.reserves.fundingDesc")}
-            </p>
-          </div>
+                  {showEmojiPicker && (
+                    <div className="absolute bottom-[110%] right-0 z-[110] shadow-2xl rounded-xl animate-in fade-in zoom-in-95 border border-outline-variant/20">
+                      <EmojiPicker
+                        emojiStyle={EmojiStyle.NATIVE}
+                        onEmojiClick={(e) => {
+                          setIcon(e.emoji);
+                          setShowEmojiPicker(false);
+                        }}
+                        skinTonesDisabled
+                        theme={"dark" as any}
+                        width={300}
+                        height={350}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
 
-          <div className="pt-4 flex gap-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 py-3.5 px-4 rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container-high transition-all"
-            >
-              {t("dashboard.reserves.cancel")}
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting || !name || !targetAmount}
-              className="flex-[2] py-3.5 px-4 rounded-xl font-bold text-sm text-on-primary bg-primary hover:opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
-            >
-              {isSubmitting ? t("dashboard.reserves.creating") : t("dashboard.reserves.initializeGoal")}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
+                  {t("dashboard.reserves.fundingCategory")}
+                </label>
+                <CustomSelect
+                  value={categoryId}
+                  options={categories.map(cat => ({ value: cat.id, label: `${cat.emoji} ${cat.name}` }))}
+                  onChange={setCategoryId}
+                  className="w-full bg-surface-container border-none rounded-xl py-1 text-sm font-semibold"
+                />
+                <p className="text-[9px] text-on-surface-variant/60 font-medium px-1 italic">
+                  {t("dashboard.reserves.fundingDesc")}
+                </p>
+              </div>
+
+              <div className="pt-4 flex gap-3">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="flex-1 py-3.5 px-4 rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container-high transition-all"
+                >
+                  {t("dashboard.reserves.cancel")}
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting || !name || !targetAmount}
+                  className="flex-[2] py-3.5 px-4 rounded-xl font-bold text-sm text-on-primary bg-primary hover:opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
+                >
+                  {isSubmitting ? t("dashboard.reserves.creating") : t("dashboard.reserves.initializeGoal")}
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 }

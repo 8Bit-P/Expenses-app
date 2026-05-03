@@ -3,8 +3,10 @@ import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
 import type { Profile } from "../types/profile";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 export function useProfile() {
+  const { t } = useTranslation();
   const { session } = useAuth();
   const queryClient = useQueryClient();
   const userId = session?.user?.id;
@@ -44,8 +46,8 @@ export function useProfile() {
       queryClient.invalidateQueries({ queryKey: ["profile", userId] });
     },
     onError: (error: any) => {
-      toast.error("Profile error", {
-        description: error.message || "Failed to synchronize profile data.",
+      toast.error(t("settings.profile.toasts.error"), {
+        description: error.message || t("settings.profile.toasts.syncError"),
       });
     },
   });

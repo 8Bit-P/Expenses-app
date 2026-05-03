@@ -4,7 +4,7 @@ import { useCategories } from "../../../hooks/useCategories";
 import { formatCurrency } from "../../../utils/currency";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { format } from "date-fns";
-import { Check, Inbox, Loader2, Tag, ChevronDown, Trash2 } from "lucide-react";
+import { Check, Inbox, Loader2, Tag, ChevronDown, Trash2, CheckCircle, HelpCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
@@ -22,7 +22,18 @@ export default function ReviewWidget() {
   const [editedDescriptions, setEditedDescriptions] = useState<Record<string, string>>({});
 
   if (loading) return null;
-  if (transactions.length === 0) return null;
+  if (transactions.length === 0) {
+    return (
+      <motion.div 
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 flex items-center justify-center gap-3 text-emerald-600 dark:text-emerald-400 mb-8"
+      >
+        <CheckCircle size={20} />
+        <span className="text-sm font-bold">{t("dashboard.reviewWidget.emptyState")}</span>
+      </motion.div>
+    );
+  }
 
   const handleApprove = async (id: string) => {
     const tx = transactions.find(t => t.id === id);
@@ -87,9 +98,17 @@ export default function ReviewWidget() {
             <Inbox size={20} />
           </div>
           <div>
-            <h2 className="text-sm font-black font-headline text-on-surface">
-              {t("dashboard.reviewWidget.title", { count: transactions.length })}
-            </h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm font-black font-headline text-on-surface">
+                {t("dashboard.reviewWidget.title", { count: transactions.length })}
+              </h2>
+              <div className="group relative flex items-center justify-center">
+                <HelpCircle className="w-4 h-4 text-on-surface-variant/30 hover:text-primary transition-colors cursor-help" />
+                <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 bg-surface-container-highest text-on-surface text-[10px] font-medium rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all pointer-events-none z-50 text-center border border-outline-variant/10">
+                  {t("dashboard.reviewWidget.tooltip")}
+                </div>
+              </div>
+            </div>
             <p className="text-[10px] font-bold text-on-surface-variant/70 uppercase tracking-widest">
               {t("dashboard.reviewWidget.subtitle")}
             </p>

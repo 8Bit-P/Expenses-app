@@ -1,4 +1,5 @@
 import { AlertTriangle, CheckCircle2, Info } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface VaultConfirmationModalProps {
   isOpen: boolean;
@@ -23,8 +24,6 @@ export default function VaultConfirmationModal({
   variant = "danger",
   isLoading = false,
 }: VaultConfirmationModalProps) {
-  if (!isOpen) return null;
-
   const themes = {
     danger: {
       bg: "bg-error/10",
@@ -59,45 +58,63 @@ export default function VaultConfirmationModal({
   const theme = themes[variant];
 
   return (
-    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-background/60 backdrop-blur-md animate-in fade-in duration-200">
-      <div 
-        className="bg-surface-container-lowest/95 backdrop-blur-xl w-full max-w-sm rounded-2xl shadow-2xl border border-outline-variant/20 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="p-8 flex flex-col items-center text-center">
-          <div className={`w-14 h-14 rounded-2xl ${theme.bg} ${theme.text} ${theme.border} border flex items-center justify-center mb-5 shadow-sm`}>
-            {theme.icon}
-          </div>
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="absolute inset-0 bg-background/60 backdrop-blur-md"
+            onClick={onClose}
+          />
           
-          <h2 className="text-xl font-black text-on-surface tracking-tight font-headline mb-2">
-            {title}
-          </h2>
-          
-          <p className="text-sm font-medium text-on-surface-variant/70 leading-relaxed mb-8">
-            {description}
-          </p>
+          <motion.div 
+            initial={{ scale: 0.95, opacity: 0, y: 10 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.95, opacity: 0, y: 10 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="relative bg-surface-container-lowest/95 backdrop-blur-xl w-full max-w-sm rounded-2xl shadow-2xl border border-outline-variant/20 overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-8 flex flex-col items-center text-center">
+              <div className={`w-14 h-14 rounded-2xl ${theme.bg} ${theme.text} ${theme.border} border flex items-center justify-center mb-5 shadow-sm`}>
+                {theme.icon}
+              </div>
+              
+              <h2 className="text-xl font-black text-on-surface tracking-tight font-headline mb-2">
+                {title}
+              </h2>
+              
+              <p className="text-sm font-medium text-on-surface-variant/70 leading-relaxed mb-8">
+                {description}
+              </p>
 
-          <div className="flex flex-col w-full gap-3">
-            <button
-              onClick={onConfirm}
-              disabled={isLoading}
-              className={`w-full py-3.5 rounded-xl font-black text-xs uppercase tracking-widest transition-all active:scale-[0.98] shadow-lg shadow-black/5 flex items-center justify-center gap-2 ${theme.btn} hover:opacity-90 disabled:opacity-50`}
-            >
-              {isLoading && (
-                <div className="w-3 h-3 border-2 border-current/30 border-t-current rounded-full animate-spin" />
-              )}
-              {confirmLabel}
-            </button>
-            <button
-              onClick={onClose}
-              disabled={isLoading}
-              className="w-full py-3 rounded-xl font-bold text-xs uppercase tracking-widest text-on-surface-variant hover:bg-surface-container transition-all"
-            >
-              {cancelLabel}
-            </button>
-          </div>
+              <div className="flex flex-col w-full gap-3">
+                <button
+                  onClick={onConfirm}
+                  disabled={isLoading}
+                  className={`w-full py-3.5 rounded-xl font-black text-xs uppercase tracking-widest transition-all active:scale-[0.98] shadow-lg shadow-black/5 flex items-center justify-center gap-2 ${theme.btn} hover:opacity-90 disabled:opacity-50`}
+                >
+                  {isLoading && (
+                    <div className="w-3 h-3 border-2 border-current/30 border-t-current rounded-full animate-spin" />
+                  )}
+                  {confirmLabel}
+                </button>
+                <button
+                  onClick={onClose}
+                  disabled={isLoading}
+                  className="w-full py-3 rounded-xl font-bold text-xs uppercase tracking-widest text-on-surface-variant hover:bg-surface-container transition-all"
+                >
+                  {cancelLabel}
+                </button>
+              </div>
+            </div>
+          </motion.div>
         </div>
-      </div>
-    </div>
+      )}
+    </AnimatePresence>
   );
 }
+

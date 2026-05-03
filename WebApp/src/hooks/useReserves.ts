@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 export interface Reserve {
   id: string;
@@ -16,6 +17,7 @@ export interface Reserve {
 }
 
 export function useReserves() {
+  const { t } = useTranslation();
   const { session } = useAuth();
   const userId = session?.user?.id;
   const queryClient = useQueryClient();
@@ -107,13 +109,13 @@ export function useReserves() {
       if (context?.previousReserves) {
         queryClient.setQueryData(["reserves", userId], context.previousReserves);
       }
-      toast.error("Funding failed", { description: err.message });
+      toast.error(t("dashboard.reviewWidget.toasts.fundingFailed"), { description: err.message });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["reserves", userId] });
       queryClient.invalidateQueries({ queryKey: ["transactions", userId] });
-      toast.success("Reserve funded!", {
-        description: "The amount has been moved to your secure reserve.",
+      toast.success(t("dashboard.reviewWidget.toasts.reserveFunded"), {
+        description: t("dashboard.reviewWidget.toasts.reserveFundedDesc"),
       });
     },
   });
@@ -138,12 +140,12 @@ export function useReserves() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["reserves", userId] });
-      toast.success("Reserve created", {
-        description: "Your new saving goal is ready to be funded.",
+      toast.success(t("dashboard.reviewWidget.toasts.reserveCreated"), {
+        description: t("dashboard.reviewWidget.toasts.reserveCreatedDesc"),
       });
     },
     onError: (err) => {
-      toast.error("Failed to create reserve", { description: err.message });
+      toast.error(t("dashboard.reviewWidget.toasts.createReserveFailed"), { description: err.message });
     },
   });
 
@@ -154,10 +156,10 @@ export function useReserves() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["reserves", userId] });
-      toast.success("Reserve deleted");
+      toast.success(t("dashboard.reviewWidget.toasts.reserveDeleted"));
     },
     onError: (err) => {
-      toast.error("Delete failed", { description: err.message });
+      toast.error(t("dashboard.reviewWidget.toasts.deleteReserveFailed"), { description: err.message });
     },
   });
 
@@ -171,12 +173,12 @@ export function useReserves() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["reserves", userId] });
-      toast.success("Goal completed!", {
-        description: "The reserve has been marked as completed.",
+      toast.success(t("dashboard.reviewWidget.toasts.goalCompleted"), {
+        description: t("dashboard.reviewWidget.toasts.goalCompletedDesc"),
       });
     },
     onError: (err) => {
-      toast.error("Update failed", { description: err.message });
+      toast.error(t("dashboard.reviewWidget.toasts.updateGoalFailed"), { description: err.message });
     },
   });
 
@@ -222,12 +224,12 @@ export function useReserves() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["reserves", userId] });
       queryClient.invalidateQueries({ queryKey: ["transactions", userId] });
-      toast.success("Funds released!", {
-        description: "The amount has been returned to your main pool.",
+      toast.success(t("dashboard.reviewWidget.toasts.fundsReleased"), {
+        description: t("dashboard.reviewWidget.toasts.fundsReleasedDesc"),
       });
     },
     onError: (err) => {
-      toast.error("Release failed", { description: err.message });
+      toast.error(t("dashboard.reviewWidget.toasts.releaseFailed"), { description: err.message });
     },
   });
 

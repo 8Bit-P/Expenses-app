@@ -19,13 +19,22 @@
     "updated": "Updated",
     "syncing": "Syncing...",
     "noChanges": "No changes detected",
-    "allRightsReserved": "All rights reserved."
+    "allRightsReserved": "All rights reserved.",
+    "targetAsset": "Target Asset",
+    "purging": "Purging from Vault...",
+    "permanentlyDelete": "Permanently Delete",
+    "keepAsset": "Keep Asset"
   },
   "dashboard": {
     "title": "Vault Overview",
     "subtitle": "Your real-time financial command center. Monitor liquidity, track goals, and analyze growth.",
     "exportReport": "Export Report",
     "syncing": "Synchronizing Vault...",
+    "emptyState": {
+      "title": "Welcome to your command center",
+      "subtitle": "To start seeing your charts and controlling your finances, add your first movement to your Vault.",
+      "addManual": "Add Manually"
+    },
     "spendingBreakdown": "Spending Breakdown",
     "summary": {
       "netWorth": "Net Worth",
@@ -98,7 +107,8 @@
       "toast": {
         "missingFields": "Missing fields",
         "missingFieldsDesc": "Please fill in all required fields."
-      }
+      },
+      "tooltip": "Set aside funds by excluding them from your 'Safe to Spend' (ideal for taxes or large purchases)."
     },
     "recentActivity": {
       "title": "Recent Activity",
@@ -143,6 +153,8 @@
       "subtitle": "Action Center Inbox",
       "placeholder": "Unlabeled Transaction",
       "pendingVerification": "Pending Verification",
+      "emptyState": "All caught up! You have no transactions pending review.",
+      "tooltip": "Transactions imported from external sources or generated automatically that need to be categorized before affecting your metrics.",
       "selectCategory": "Select Category",
       "discard": "Discard Transaction",
       "approve": "Approve Transaction",
@@ -152,6 +164,22 @@
         "approvedError": "Failed to approve transaction",
         "discarded": "Transaction discarded",
         "discardedError": "Failed to discard transaction"
+      },
+      "toasts": {
+        "fundingFailed": "Funding failed",
+        "reserveFunded": "Reserve funded!",
+        "reserveFundedDesc": "The amount has been moved to your secure reserve.",
+        "reserveCreated": "Reserve created",
+        "reserveCreatedDesc": "Your new saving goal is ready to be funded.",
+        "createReserveFailed": "Failed to create reserve",
+        "reserveDeleted": "Reserve deleted",
+        "deleteReserveFailed": "Failed to delete reserve",
+        "goalCompleted": "Goal completed!",
+        "goalCompletedDesc": "The reserve has been marked as completed.",
+        "updateGoalFailed": "Failed to update goal",
+        "fundsReleased": "Funds released!",
+        "fundsReleasedDesc": "The amount has been returned to your main pool.",
+        "releaseFailed": "Failed to release funds"
       }
     }
   },
@@ -205,7 +233,11 @@
       "avatarUpdated": "Avatar updated",
       "avatarSuccess": "Your vault profile has been secured.",
       "uploadFailed": "Upload failed",
-      "uploadError": "Could not update profile picture."
+      "uploadError": "Could not update profile picture.",
+      "toasts": {
+        "error": "Profile error",
+        "syncError": "Failed to synchronize profile data."
+      }
     },
     "securitySection": {
       "title": "Account & Security",
@@ -620,15 +652,29 @@
         "cancel": "Keep Entry"
       },
       "toasts": {
+        "recorded": "Transaction recorded",
+        "updated": "Transaction updated",
+        "secured": "{{description}} of {{symbol}}{{amount}} secured.",
         "deleted": "Transaction deleted",
         "deleteFailed": "Deletion failed",
-        "deleteFailedDefault": "Something went wrong."
+        "deleteFailedDefault": "Something went wrong.",
+        "saveFailed": "Save failed",
+        "saveFailedDefault": "Something went wrong while saving."
       }
     }
   },
   "investments": {
     "loading": "Decrypting Vault...",
     "error": "Error connecting to vault. Please try again.",
+    "toasts": {
+      "updateFailed": "Failed to update vault",
+      "snapshotDeleted": "Snapshot deleted",
+      "snapshotDeletedDesc": "Portfolio timeline updated.",
+      "deleteSnapshotFailed": "Failed to delete snapshot",
+      "assetPurged": "Asset purged",
+      "assetPurgedDesc": "The asset has been removed from your vault.",
+      "deleteAssetFailed": "Failed to delete asset"
+    },
     "header": {
       "title": "Net Worth",
       "subtitle": "Monitor your overarching wealth, track contributions, and securely record your portfolio's growth.",
