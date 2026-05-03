@@ -1030,7 +1030,9 @@
     "reservesTitle": "How Reserves Work",
     "reservesDesc": "Reserves are allocated funds that are excluded from your 'Safe-to-Spend' calculation, allowing you to set aside money for taxes, large purchases, or emergencies.",
     "reviewTitle": "The Needs Review Inbox",
-    "reviewDesc": "Transactions imported from external sources or generated automatically may be flagged for review to ensure they are categorized correctly before affecting your metrics."
+    "reviewDesc": "Transactions imported from external sources or generated automatically may be flagged for review to ensure they are categorized correctly before affecting your metrics.",
+    "investmentsTitle": "Logging Investments",
+    "investmentsDesc": "To record the value of your investments, use the 'Log Snapshot' button on the Investments page. This creates a point-in-time record of your portfolio's current value."
   },
   "support": {
     "title": "A note from the developer",

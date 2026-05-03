@@ -1030,7 +1030,9 @@
     "reservesTitle": "Cómo Funcionan las Reservas",
     "reservesDesc": "Las reservas son fondos asignados que se excluyen del cálculo de 'Seguro para Gastar', lo que le permite reservar dinero para impuestos, compras grandes o emergencias.",
     "reviewTitle": "Bandeja de Necesita Revisión",
-    "reviewDesc": "Las transacciones importadas de fuentes externas o generadas automáticamente pueden ser marcadas para revisión para garantizar que se categoricen correctamente antes de afectar sus métricas."
+    "reviewDesc": "Las transacciones importadas de fuentes externas o generadas automáticamente pueden ser marcadas para revisión para garantizar que se categoricen correctamente antes de afectar sus métricas.",
+    "investmentsTitle": "Registro de Inversiones",
+    "investmentsDesc": "Para registrar el valor de tus inversiones, utiliza el botón 'Registrar Instantánea' en la página de Inversiones. Esto creará un punto en el tiempo con el valor actual de tu cartera."
   },
   "support": {
     "title": "Una nota del desarrollador",

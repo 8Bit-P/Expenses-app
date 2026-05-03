@@ -65,6 +65,12 @@ export default function HelpDrawer({ isOpen, onClose, initialSection }: HelpDraw
       desc: t("helpDrawer.reviewDesc"),
       icon: <Inbox size={15} className="text-amber-400 shrink-0" />,
     },
+    {
+      id: "investments",
+      title: t("helpDrawer.investmentsTitle"),
+      desc: t("helpDrawer.investmentsDesc"),
+      icon: <Landmark size={15} className="text-emerald-400 shrink-0" />,
+    },
   ];
 
   return (
