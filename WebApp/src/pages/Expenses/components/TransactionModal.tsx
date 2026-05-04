@@ -57,7 +57,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
         setType("expense");
         setAmount("");
         setDescription("");
-        setCategoryId(categories[0]?.id || "");
+        // We will set categoryId in a separate effect if it is empty
         setReserveId("");
         setDate(new Date().toISOString().split("T")[0]);
         setNeedsReview(false);
@@ -68,7 +68,14 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
       setCategoryError(null);
       setShowEmojiPicker(false);
     }
-  }, [transaction, isOpen, categories]);
+  }, [transaction, isOpen]);
+
+  // Set default category only if it's empty and we have categories available
+  useEffect(() => {
+    if (isOpen && !transaction && !categoryId && categories.length > 0) {
+      setCategoryId(categories[0].id);
+    }
+  }, [isOpen, transaction, categoryId, categories]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -255,44 +262,54 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
                   />
                 ) : isCreatingCategory ? (
                   <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
-                    <div className="flex items-center gap-2">
-                      <div className="flex-1 flex items-center bg-surface-container border border-outline-variant/30 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20 rounded-xl px-1 transition-all">
-                        <div className="relative flex items-center">
-                          <button
-                            type="button"
-                            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                            className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-transparent border-none outline-none text-xl sm:text-2xl hover:bg-surface-container-high rounded-lg transition-colors select-none"
-                          >
-                            {newCategoryEmoji}
-                          </button>
+                    <div className="relative flex items-center bg-surface-container border border-outline-variant/30 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20 rounded-xl px-1 transition-all">
+                      <div className="relative flex items-center">
+                        <button
+                          type="button"
+                          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                          className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-transparent border-none outline-none text-xl sm:text-2xl hover:bg-surface-container-high rounded-lg transition-colors select-none"
+                        >
+                          {newCategoryEmoji}
+                        </button>
 
-                          {showEmojiPicker && (
-                            <div className="absolute top-[110%] left-0 z-[60] shadow-2xl rounded-xl animate-in fade-in zoom-in-95 border border-outline-variant/20">
-                              <EmojiPicker
-                                emojiStyle={EmojiStyle.NATIVE}
-                                onEmojiClick={(e) => {
-                                  setNewCategoryEmoji(e.emoji);
-                                  setShowEmojiPicker(false);
-                                }}
-                                skinTonesDisabled
-                                theme={"dark" as any}
-                                width={window.innerWidth < 400 ? 280 : 320}
-                                height={350}
-                              />
-                            </div>
-                          )}
-                        </div>
-                        <div className="w-px h-6 bg-outline-variant/30 mx-1" />
-                        <input
-                          type="text"
-                          className="flex-1 bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-sm font-semibold text-on-surface placeholder:text-on-surface-variant/40 py-3 sm:py-3.5 px-3"
-                          value={newCategoryName}
-                          onChange={(e) => setNewCategoryName(e.target.value)}
-                          placeholder={t("expenses.transactionModal.createCategory.placeholder")}
-                          autoFocus
-                        />
+                        {showEmojiPicker && (
+                          <div className="absolute top-[110%] left-0 z-[60] shadow-2xl rounded-xl animate-in fade-in zoom-in-95 border border-outline-variant/20">
+                            <EmojiPicker
+                              emojiStyle={EmojiStyle.NATIVE}
+                              onEmojiClick={(e) => {
+                                setNewCategoryEmoji(e.emoji);
+                                setShowEmojiPicker(false);
+                              }}
+                              skinTonesDisabled
+                              theme={"dark" as any}
+                              width={window.innerWidth < 400 ? 280 : 320}
+                              height={350}
+                            />
+                          </div>
+                        )}
                       </div>
-
+                      <div className="w-px h-6 bg-outline-variant/30 mx-1" />
+                      <input
+                        type="text"
+                        className="w-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-sm font-semibold text-on-surface placeholder:text-on-surface-variant/40 py-3 sm:py-3.5 px-3"
+                        value={newCategoryName}
+                        onChange={(e) => setNewCategoryName(e.target.value)}
+                        placeholder={t("expenses.transactionModal.createCategory.placeholder")}
+                        autoFocus
+                      />
+                    </div>
+                    
+                    <div className="flex gap-2 mt-2">
+                      <button
+                        onClick={() => {
+                          setIsCreatingCategory(false);
+                          setNewCategoryName("");
+                          setCategoryError(null);
+                        }}
+                        className="flex-1 py-2 rounded-xl text-xs font-bold text-on-surface-variant bg-surface-container-high hover:bg-surface-container-highest transition-colors outline-none"
+                      >
+                        {t("common.cancel") || "Cancel"}
+                      </button>
                       <button
                         onClick={async () => {
                           if (!newCategoryName) {
@@ -323,19 +340,9 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
                           }
                         }}
                         disabled={isSaving}
-                        className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-xl bg-primary text-on-primary flex items-center justify-center hover:opacity-90 active:scale-95 transition-all outline-none"
+                        className="flex-1 py-2 rounded-xl text-xs font-semibold bg-primary text-white hover:opacity-90 active:scale-[0.98] transition-all outline-none flex items-center justify-center gap-1 shadow-sm shadow-primary/20"
                       >
-                        <span className="material-symbols-outlined text-[20px]">check</span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          setIsCreatingCategory(false);
-                          setNewCategoryName("");
-                          setCategoryError(null);
-                        }}
-                        className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-xl bg-surface-container-high border border-outline-variant/10 text-on-surface-variant flex items-center justify-center hover:bg-surface-container-highest transition-colors outline-none"
-                      >
-                        <span className="material-symbols-outlined text-[20px]">close</span>
+                        <span className="material-symbols-outlined text-[18px] sm:text-[20px]">check</span>
                       </button>
                     </div>
                     {categoryError && (
@@ -445,7 +452,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
               <button
                 onClick={handleSave}
                 disabled={isSaving || isDeleting || !amount}
-                className="flex-[2] py-3 sm:py-3.5 px-3 sm:px-4 rounded-xl font-bold text-xs sm:text-sm text-on-primary bg-primary hover:opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:shadow-none truncate"
+                className="flex-[2] py-3 sm:py-3.5 px-3 sm:px-4 rounded-xl font-semibold text-xs sm:text-sm text-white bg-primary hover:opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:shadow-none truncate"
               >
                 {isSaving
                   ? t("expenses.transactionModal.actions.saving")

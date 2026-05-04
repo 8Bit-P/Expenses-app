@@ -7,6 +7,7 @@ import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { CustomSelect } from "../../../components/ui/CustomSelect";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import EmojiPicker, { EmojiStyle } from "emoji-picker-react";
 
 interface SubscriptionModalProps {
   isOpen: boolean;
@@ -17,7 +18,7 @@ interface SubscriptionModalProps {
 export default function SubscriptionModal({ isOpen, onClose, subscription }: SubscriptionModalProps) {
   const { t } = useTranslation();
   const { addSubscription, updateSubscription, deleteSubscription } = useSubscriptions();
-  const { categories } = useCategories();
+  const { categories, addCategory } = useCategories();
   const { currency } = useUserPreferences();
 
   const [name, setName] = useState("");
@@ -28,25 +29,46 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
+  const [isCreatingCategory, setIsCreatingCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [newCategoryEmoji, setNewCategoryEmoji] = useState("📦");
+  const [categoryError, setCategoryError] = useState<string | null>(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
   const isEditing = !!subscription;
 
   // Sync state when editing subscription changes
   useEffect(() => {
-    if (subscription) {
-      setName(subscription.name);
-      setAmount(subscription.amount.toString());
-      setBillingCycle(subscription.billing_cycle);
-      setNextDate(subscription.next_billing_date);
-      setCategoryId(subscription.category_id || "");
-    } else {
-      // Reset for new subscription
-      setName("");
-      setAmount("");
-      setBillingCycle("monthly");
-      setNextDate(new Date().toISOString().split("T")[0]);
-      setCategoryId("");
+    if (isOpen) {
+      if (subscription) {
+        setName(subscription.name);
+        setAmount(subscription.amount.toString());
+        setBillingCycle(subscription.billing_cycle);
+        setNextDate(subscription.next_billing_date);
+        setCategoryId(subscription.category_id || "");
+      } else {
+        // Reset for new subscription
+        setName("");
+        setAmount("");
+        setBillingCycle("monthly");
+        setNextDate(new Date().toISOString().split("T")[0]);
+        // Category will be set by the other effect if empty
+        setCategoryId("");
+      }
+      setIsCreatingCategory(false);
+      setNewCategoryName("");
+      setNewCategoryEmoji("📦");
+      setCategoryError(null);
+      setShowEmojiPicker(false);
     }
   }, [subscription, isOpen]);
+
+  // Set default category only if it's empty and we have categories available
+  useEffect(() => {
+    if (isOpen && !subscription && !categoryId && categories.length > 0) {
+      setCategoryId(categories[0].id);
+    }
+  }, [isOpen, subscription, categoryId, categories]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -134,7 +156,7 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 350 }}
-            className="relative w-full max-w-lg bg-surface-container-lowest/90 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-outline-variant/20 ring-1 ring-black/5"
+            className="relative w-full max-w-lg bg-surface-container-lowest/90 backdrop-blur-xl rounded-2xl shadow-2xl overflow-visible border border-outline-variant/20 ring-1 ring-black/5"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-8">
@@ -184,15 +206,113 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
                     <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
                       {t("subscriptions.modal.categoryLabel")}
                     </label>
-                    <CustomSelect
-                      value={categoryId}
-                      options={[
-                        ...(categoryId === "" ? [{ value: "", label: t("subscriptions.modal.categoryPlaceholder") }] : []),
-                        ...categories.map((cat) => ({ value: cat.id, label: `${cat.emoji} ${cat.name}` })),
-                      ]}
-                      onChange={setCategoryId}
-                      className="w-full"
-                    />
+                    {isCreatingCategory ? (
+                      <div className="space-y-2 animate-in fade-in slide-in-from-top-2 relative z-50">
+                        <div className="relative flex items-center bg-surface-container border border-outline-variant/30 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20 rounded-xl px-1 transition-all">
+                          <div className="relative flex items-center">
+                            <button
+                              type="button"
+                              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                              className="w-10 h-10 flex items-center justify-center bg-transparent border-none outline-none text-xl hover:bg-surface-container-high rounded-lg transition-colors select-none"
+                            >
+                              {newCategoryEmoji}
+                            </button>
+
+                            {showEmojiPicker && (
+                              <div className="absolute top-[110%] left-0 z-[60] shadow-2xl rounded-xl animate-in fade-in zoom-in-95 border border-outline-variant/20">
+                                <EmojiPicker
+                                  emojiStyle={EmojiStyle.NATIVE}
+                                  onEmojiClick={(e) => {
+                                    setNewCategoryEmoji(e.emoji);
+                                    setShowEmojiPicker(false);
+                                  }}
+                                  skinTonesDisabled
+                                  theme={"dark" as any}
+                                  width={280}
+                                  height={350}
+                                />
+                              </div>
+                            )}
+                          </div>
+                          <div className="w-px h-6 bg-outline-variant/30 mx-1" />
+                          <input
+                            type="text"
+                            className="w-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-sm font-semibold text-on-surface placeholder:text-on-surface-variant/40 py-3.5 px-3"
+                            value={newCategoryName}
+                            onChange={(e) => setNewCategoryName(e.target.value)}
+                            placeholder={t("expenses.transactionModal.createCategory.placeholder")}
+                            autoFocus
+                          />
+                        </div>
+                        
+                        <div className="flex gap-2 mt-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIsCreatingCategory(false);
+                              setNewCategoryName("");
+                              setCategoryError(null);
+                            }}
+                            className="flex-1 py-2 rounded-xl text-xs font-bold text-on-surface-variant bg-surface-container-high hover:bg-surface-container-highest transition-colors outline-none"
+                          >
+                            {t("common.cancel") || "Cancel"}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              if (!newCategoryName) {
+                                setCategoryError(t("expenses.transactionModal.createCategory.error.nameRequired"));
+                                return;
+                              }
+                              setCategoryError(null);
+                              try {
+                                const newCat = await addCategory({ name: newCategoryName, emoji: newCategoryEmoji });
+                                toast.success(t("expenses.transactionModal.createCategory.toast.success"), {
+                                  description: t("expenses.transactionModal.createCategory.toast.successDesc", {
+                                    emoji: newCategoryEmoji,
+                                    name: newCategoryName,
+                                  }),
+                                });
+                                setCategoryId(newCat.id);
+                                setIsCreatingCategory(false);
+                                setNewCategoryName("");
+                                setNewCategoryEmoji("📦");
+                              } catch (e: any) {
+                                toast.error(t("expenses.transactionModal.createCategory.toast.error"), {
+                                  description:
+                                    e.message || t("expenses.transactionModal.createCategory.toast.errorDefault"),
+                                });
+                                setCategoryError(
+                                  e.message || t("expenses.transactionModal.createCategory.toast.errorDefault"),
+                                );
+                              }
+                            }}
+                            disabled={isSubmitting}
+                            className="flex-1 py-2 rounded-xl text-xs font-semibold bg-primary text-white hover:opacity-90 active:scale-[0.98] transition-all outline-none flex items-center justify-center gap-1 shadow-sm shadow-primary/20"
+                          >
+                            <span className="material-symbols-outlined text-[18px]">check</span>
+                          </button>
+                        </div>
+                        {categoryError && (
+                          <p className="text-xs font-bold text-error px-2 flex items-center gap-1">
+                            <span className="material-symbols-outlined text-[14px]">error</span>
+                            {categoryError}
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      <CustomSelect
+                        value={categoryId}
+                        options={[
+                          ...(categoryId === "" ? [{ value: "", label: t("subscriptions.modal.categoryPlaceholder") }] : []),
+                          ...categories.map((cat) => ({ value: cat.id, label: `${cat.emoji} ${cat.name}` })),
+                        ]}
+                        onChange={setCategoryId}
+                        className="w-full relative z-40"
+                        onAddAction={() => setIsCreatingCategory(true)}
+                        addActionLabel={t("expenses.transactionModal.createCategory.title")}
+                      />
+                    )}
                   </div>
                 </div>
 
@@ -266,7 +386,7 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
                   <button
                     type="submit"
                     disabled={isSubmitting || !name || !amount || !categoryId}
-                    className="flex-2 py-3 px-4 rounded-xl font-bold text-sm text-on-primary bg-primary hover:opacity-90 active:scale-[0.98] transition-all shadow-sm disabled:opacity-50"
+                    className="flex-[2] py-3 px-4 rounded-xl font-semibold text-white text-sm bg-primary hover:opacity-90 active:scale-[0.98] transition-all shadow-sm disabled:opacity-50"
                   >
                     {isSubmitting 
                       ? t("subscriptions.modal.actions.processing") 

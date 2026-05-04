@@ -42,6 +42,28 @@ export function useCategories() {
     },
   });
 
+  const { mutateAsync: updateCategory } = useMutation({
+    mutationFn: async ({ id, ...updateData }: Partial<Category> & { id: string }) => {
+      if (!userId) throw new Error("Authentication required to update category");
+
+      const { data, error } = await supabase
+        .from("categories")
+        .update(updateData)
+        .eq("id", id)
+        .eq("user_id", userId)
+        .select()
+        .single();
+
+      if (error) throw new Error(error.message);
+      return data as Category;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["subscriptions"] });
+    },
+  });
+
   const getOrCreateUnknownCategory = async () => {
     if (!userId) throw new Error("Authentication required");
     
@@ -115,5 +137,5 @@ export function useCategories() {
     },
   });
 
-  return { categories, loading: isLoading, error, addCategory, deleteCategory, getOrCreateUnknownCategory };
+  return { categories, loading: isLoading, error, addCategory, updateCategory, deleteCategory, getOrCreateUnknownCategory };
 }
