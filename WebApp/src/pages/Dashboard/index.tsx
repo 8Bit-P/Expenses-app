@@ -46,7 +46,7 @@ export default function Dashboard() {
         </div>
         <button
           disabled
-          className="shrink-0 px-6 py-3.5 bg-on-surface text-surface-container-lowest font-bold rounded-2xl shadow-xl opacity-50 cursor-not-allowed transition-all flex items-center justify-center gap-2"
+          className="hidden md:flex shrink-0 px-6 py-3.5 bg-on-surface text-surface-container-lowest font-bold rounded-2xl shadow-xl opacity-50 cursor-not-allowed transition-all items-center justify-center gap-2"
         >
           <span className="material-symbols-outlined text-[20px]">download</span>
           {t("dashboard.exportReport")}
