@@ -256,23 +256,7 @@ export function CategoryBreakdown({ data, currencyCode, totalSpent }: CategoryBr
               />
             ))}
 
-            {/* Progress bar for each item (desktop only, subtle) */}
-            <div className="hidden sm:block mt-3 space-y-1.5">
-              {chartData.map((slice, i) => (
-                <div key={slice.name} className="flex items-center gap-2">
-                  <div className="flex-1 h-1 bg-surface-container rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-500"
-                      style={{
-                        width: `${slice.percentage}%`,
-                        background: slice.color,
-                        opacity: activeIndex === null || activeIndex === i ? 1 : 0.3,
-                      }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
+
           </div>
         </div>
       )}
