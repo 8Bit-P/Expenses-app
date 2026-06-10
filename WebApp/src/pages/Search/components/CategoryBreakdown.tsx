@@ -203,6 +203,7 @@ export function CategoryBreakdown({ data, currencyCode, totalSpent }: CategoryBr
                   paddingAngle={2}
                   dataKey="value"
                   stroke="none"
+                  // @ts-expect-error - Recharts types are incomplete for activeIndex
                   activeIndex={activeIndex ?? undefined}
                   activeShape={ActiveShape}
                   onMouseEnter={(_, index) => setActiveIndex(index)}
