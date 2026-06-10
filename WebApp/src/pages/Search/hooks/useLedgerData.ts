@@ -8,6 +8,13 @@ import type { LedgerRow, DomainKey } from "../types";
 import type { Transaction, Subscription, TransactionType } from "../../../types/expenses";
 import type { AssetWithSnapshots } from "../../../types/investments";
 
+export interface CategorySlice {
+  name: string;
+  emoji: string | null;
+  value: number;
+  percentage: number;
+}
+
 export interface ChartBucket {
   date: string;
   /** formatted short label e.g. "Apr 3" */
@@ -232,6 +239,29 @@ export function useLedgerData({
     });
   }, [rows]);
 
+  // ── Category breakdown (expenses only) ──────────────────────────────────────
+  const categoryBreakdown: CategorySlice[] = useMemo(() => {
+    const byCategory: Record<string, { name: string; emoji: string | null; value: number }> = {};
+
+    rows.forEach((r) => {
+      if (r.amount >= 0 || r.domain === "Assets") return; // expenses only
+      const key = r.categoryName;
+      if (!byCategory[key]) {
+        byCategory[key] = { name: r.categoryName, emoji: r.emoji, value: 0 };
+      }
+      byCategory[key].value += Math.abs(r.amount);
+    });
+
+    const total = Object.values(byCategory).reduce((sum, c) => sum + c.value, 0);
+
+    return Object.values(byCategory)
+      .sort((a, b) => b.value - a.value)
+      .map((c) => ({
+        ...c,
+        percentage: total > 0 ? Math.round((c.value / total) * 100) : 0,
+      }));
+  }, [rows]);
+
   return {
     rows,
     loading,
@@ -239,5 +269,6 @@ export function useLedgerData({
     totalIncome,
     netFlow,
     chartData,
+    categoryBreakdown,
   };
 }

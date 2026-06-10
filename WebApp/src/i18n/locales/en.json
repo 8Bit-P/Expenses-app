@@ -458,6 +458,11 @@
       "Transactions": "Transactions",
       "Assets": "Assets",
       "Subscriptions": "Subscriptions"
+    },
+    "categoryBreakdown": {
+      "title": "Expense Breakdown by Category",
+      "noData": "No expense data to display",
+      "others": "Others"
     }
   },
   "newTransaction": {

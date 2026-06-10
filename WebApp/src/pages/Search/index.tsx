@@ -13,6 +13,7 @@ import { SearchHeader } from "./components/SearchHeader";
 import { AdvancedFilters } from "./components/AdvancedFilters";
 import { SummaryTrends } from "./components/SummaryTrends";
 import { LedgerTable } from "./components/LedgerTable";
+import { CategoryBreakdown } from "./components/CategoryBreakdown";
 
 export default function SearchResults() {
   const { t } = useTranslation();
@@ -39,7 +40,7 @@ export default function SearchResults() {
   const { currency } = useUserPreferences();
 
   // ── Data hook ───────────────────────────────────────────────────────────────
-  const { rows, loading, totalSpent, totalIncome, netFlow, chartData } = useLedgerData({
+  const { rows, loading, totalSpent, totalIncome, netFlow, chartData, categoryBreakdown } = useLedgerData({
     query,
     timeframe,
     activeDomains,
@@ -220,6 +221,13 @@ export default function SearchResults() {
             netFlow={netFlow}
             currencyCode={currency.code}
             chartData={chartData}
+          />
+
+          {/* Category Breakdown Chart */}
+          <CategoryBreakdown
+            data={categoryBreakdown}
+            currencyCode={currency.code}
+            totalSpent={totalSpent}
           />
 
           {/* High-Density Data Table */}

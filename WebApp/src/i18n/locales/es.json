@@ -458,6 +458,11 @@
       "Transactions": "Transacciones",
       "Assets": "Activos",
       "Subscriptions": "Suscripciones"
+    },
+    "categoryBreakdown": {
+      "title": "Desglose de Gastos por Categoría",
+      "noData": "Sin datos de gastos para mostrar",
+      "others": "Otros"
     }
   },
   "newTransaction": {
