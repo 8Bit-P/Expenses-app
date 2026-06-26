@@ -2,10 +2,12 @@ import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { useInvestments } from "../../../hooks/useInvestments";
 import { useTransactions } from "../../../hooks/useTransactions";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { subMonths, endOfMonth, format, parseISO, isAfter } from "date-fns";
 import { formatCurrency } from "../../../utils/currency";
 import { useTranslation } from "react-i18next";
+import { useAccounts } from "../../../hooks/useAccounts";
+import { CustomSelect } from "../../../components/ui/CustomSelect";
 
 const CustomTooltip = ({ active, payload, label, currencyCode, t }: any) => {
   if (active && payload && payload.length) {
@@ -45,6 +47,19 @@ export default function WealthEvolution() {
   const { resolvedTheme, currency } = useUserPreferences();
   const { assets, isLoading: invLoading } = useInvestments();
   const { transactions, loading: txLoading } = useTransactions({ pageSize: 1000 });
+  const { accounts } = useAccounts();
+  const [selectedAccountId, setSelectedAccountId] = useState<string>("");
+
+  const accountOptions = useMemo(() => {
+    if (!accounts) return [];
+    return [
+      { value: "", label: t("dashboard.wealthEvolution.allAccounts", "Todas las cuentas") },
+      ...accounts.map((acc) => ({
+        value: acc.id,
+        label: `${acc.icon} ${acc.name}`,
+      })),
+    ];
+  }, [accounts, t]);
 
   const chartData = useMemo(() => {
     if (invLoading || txLoading) return [];
@@ -58,15 +73,18 @@ export default function WealthEvolution() {
 
       // Investments: Sum latest snapshot for each asset on or before month end
       let investments = 0;
-      assets.forEach((asset) => {
-        const snap = asset.asset_snapshots.find((s: any) => !isAfter(parseISO(s.date), monthEnd));
-        if (snap) investments += Number(snap.total_value);
-      });
+      if (!selectedAccountId) {
+        assets.forEach((asset) => {
+          const snap = asset.asset_snapshots.find((s: any) => !isAfter(parseISO(s.date), monthEnd));
+          if (snap) investments += Number(snap.total_value);
+        });
+      }
 
       // Liquidity: Cumulative flow (all time up to month end)
       // Since our transactions are order desc, we filter for everything before monthEnd
       const liquidity = transactions
         .filter((tx) => !isAfter(parseISO(tx.date), monthEnd))
+        .filter((tx) => (selectedAccountId ? tx.account_id === selectedAccountId : true))
         .reduce((sum, tx) => sum + (tx.type === "income" ? Number(tx.amount) : -Number(tx.amount)), 0);
 
       return {
@@ -75,7 +93,7 @@ export default function WealthEvolution() {
         liquidity: Math.max(0, liquidity), // Protect against negative chart bars
       };
     });
-  }, [assets, transactions, invLoading, txLoading]);
+  }, [assets, transactions, invLoading, txLoading, selectedAccountId]);
 
   const gapColor = resolvedTheme === "dark" ? "#0d0e11" : "#ffffff";
   const axisColor = resolvedTheme === "dark" ? "rgba(119, 117, 135, 0.4)" : "rgba(100, 116, 139, 0.5)";
@@ -92,23 +110,38 @@ export default function WealthEvolution() {
 
   return (
     <div className="w-full flex flex-col">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-8">
-        <div>
-          <h2 className="text-lg font-black font-headline text-on-surface flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary">bar_chart</span>
-            {t("dashboard.wealthEvolution.title")}
-          </h2>
-          <p className="text-[10px] font-bold text-on-surface-variant mt-1">
-            {t("dashboard.wealthEvolution.subtitle")}
-          </p>
-        </div>
-        <div className="flex gap-4 p-1.5 bg-surface-container-low rounded-xl w-fit">
-          <div className="flex items-center gap-2 px-2">
-            <div className="w-2 h-2 rounded-full bg-primary"></div>
-            <span className="text-[10px] font-black uppercase tracking-wider text-on-surface-variant">
-              {t("dashboard.wealthEvolution.investments")}
-            </span>
+      <div className="flex flex-col gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h2 className="text-lg font-black font-headline text-on-surface flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary">bar_chart</span>
+              {t("dashboard.wealthEvolution.title")}
+            </h2>
+            <p className="text-[10px] font-bold text-on-surface-variant mt-1">
+              {t("dashboard.wealthEvolution.subtitle")}
+            </p>
           </div>
+          {accounts && accounts.length > 0 && (
+            <div className="w-full sm:w-[160px] z-[60]">
+              <CustomSelect
+                value={selectedAccountId}
+                onChange={setSelectedAccountId}
+                options={accountOptions}
+                size="sm"
+              />
+            </div>
+          )}
+        </div>
+        
+        <div className="flex gap-4 p-1.5 bg-surface-container-low rounded-xl w-fit">
+          {!selectedAccountId && (
+            <div className="flex items-center gap-2 px-2">
+              <div className="w-2 h-2 rounded-full bg-primary"></div>
+              <span className="text-[10px] font-black uppercase tracking-wider text-on-surface-variant">
+                {t("dashboard.wealthEvolution.investments")}
+              </span>
+            </div>
+          )}
           <div className="flex items-center gap-2 px-2">
             <div className="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
             <span className="text-[10px] font-black uppercase tracking-wider text-on-surface-variant">

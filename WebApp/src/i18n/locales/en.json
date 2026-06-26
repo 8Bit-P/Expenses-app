@@ -52,7 +52,8 @@
       "subtitle": "Portfolio growth segmented by asset class",
       "investments": "Investments",
       "liquidity": "Liquidity",
-      "snapshot": "Snapshot"
+      "snapshot": "Snapshot",
+      "allAccounts": "All accounts"
     },
     "reserves": {
       "title": "Active Reserves",

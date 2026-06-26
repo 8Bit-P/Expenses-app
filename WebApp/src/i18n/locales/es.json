@@ -52,7 +52,8 @@
       "subtitle": "Crecimiento de cartera segmentado por activos",
       "investments": "Inversiones",
       "liquidity": "Liquidez",
-      "snapshot": "Resumen"
+      "snapshot": "Resumen",
+      "allAccounts": "Todas las cuentas"
     },
     "reserves": {
       "title": "Reservas Activas",

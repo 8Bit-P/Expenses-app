@@ -135,7 +135,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 350 }}
-            className="relative bg-surface-container-lowest/95 backdrop-blur-xl w-full max-w-xl rounded-2xl shadow-2xl border border-outline-variant/20 ring-1 ring-black/5 overflow-visible"
+            className="relative bg-surface-container-lowest/95 backdrop-blur-xl w-full max-w-xl rounded-2xl shadow-2xl border border-outline-variant/20 ring-1 ring-black/5 max-h-[90dvh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -161,10 +161,10 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
             {/* Body */}
             <div className="p-4 sm:p-8 space-y-4 sm:space-y-6">
               {/* Type Toggle */}
-              <div className="flex bg-surface-container-low p-1 rounded-lg sm:rounded-xl gap-1 border border-outline-variant/5">
+              <div className="flex bg-surface-container-low p-1 rounded-xl gap-1 border border-outline-variant/5">
                 <button
                   onClick={() => setType("expense")}
-                  className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2 sm:py-2.5 px-2 sm:px-4 rounded-md sm:rounded-lg font-black text-[9px] sm:text-xs uppercase tracking-widest transition-all duration-300 whitespace-nowrap ${
+                  className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2 sm:py-2.5 px-2 sm:px-4 rounded-lg font-black text-[9px] sm:text-xs uppercase tracking-widest transition-all duration-300 whitespace-nowrap ${
                     type === "expense"
                       ? "bg-error text-on-error shadow-md shadow-error/20 scale-[1.02]"
                       : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
@@ -175,7 +175,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
                 </button>
                 <button
                   onClick={() => setType("income")}
-                  className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2 sm:py-2.5 px-2 sm:px-4 rounded-md sm:rounded-lg font-black text-[9px] sm:text-xs uppercase tracking-widest transition-all duration-300 whitespace-nowrap ${
+                  className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2 sm:py-2.5 px-2 sm:px-4 rounded-lg font-black text-[9px] sm:text-xs uppercase tracking-widest transition-all duration-300 whitespace-nowrap ${
                     type === "income"
                       ? "bg-secondary text-on-secondary shadow-md shadow-secondary/20 scale-[1.02]"
                       : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"

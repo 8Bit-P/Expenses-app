@@ -92,7 +92,7 @@ export default function AccountModal({ isOpen, onClose, account }: AccountModalP
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 350 }}
-              className="relative bg-surface-container-lowest/95 backdrop-blur-xl w-full max-w-md rounded-2xl shadow-2xl border border-outline-variant/20 ring-1 ring-black/5 overflow-hidden"
+              className="relative bg-surface-container-lowest/95 backdrop-blur-xl w-full max-w-md rounded-2xl shadow-2xl border border-outline-variant/20 ring-1 ring-black/5 max-h-[90dvh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Colored top bar */}

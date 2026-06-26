@@ -12,6 +12,7 @@ interface CustomSelectProps<T extends string = string> {
   className?: string;
   onAddAction?: () => void;
   addActionLabel?: string;
+  size?: "sm" | "md";
 }
 
 export function CustomSelect<T extends string = string>({
@@ -21,6 +22,7 @@ export function CustomSelect<T extends string = string>({
   className = "",
   onAddAction,
   addActionLabel,
+  size = "md",
 }: CustomSelectProps<T>) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -54,7 +56,9 @@ export function CustomSelect<T extends string = string>({
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="w-full flex items-center justify-between gap-2 py-2.5 px-4 rounded-xl border border-outline-variant/30 bg-surface-container hover:bg-surface-container-high transition-colors text-sm font-semibold text-on-surface group focus:outline-none focus:ring-2 focus:ring-primary/30"
+        className={`w-full flex items-center justify-between gap-2 border border-outline-variant/30 bg-surface-container hover:bg-surface-container-high transition-colors font-semibold text-on-surface group focus:outline-none focus:ring-2 focus:ring-primary/30 ${
+          size === "sm" ? "py-2 px-3 rounded-lg text-xs" : "py-2.5 px-4 rounded-xl text-sm"
+        }`}
       >
         <span className="truncate">{selected.label}</span>
         <span
@@ -72,8 +76,9 @@ export function CustomSelect<T extends string = string>({
           className={`
             absolute left-0 right-0 mt-2 z-[60]
             bg-surface-container-lowest border border-outline-variant/20
-            rounded-xl shadow-2xl overflow-hidden
+            shadow-2xl overflow-hidden
             animate-in fade-in zoom-in-95 duration-150
+            ${size === "sm" ? "rounded-md" : "rounded-xl"}
           `}
         >
           <div className="overflow-y-auto max-h-64">
@@ -87,9 +92,9 @@ export function CustomSelect<T extends string = string>({
                     onChange(opt.value);
                     setOpen(false);
                   }}
-                  className={`w-full flex items-center justify-between gap-3 px-4 py-3 text-sm font-semibold text-left transition-colors ${
-                    isSelected ? "bg-primary/10 text-primary" : "text-on-surface hover:bg-surface-container-low"
-                  }`}
+                  className={`w-full flex items-center justify-between gap-3 text-left transition-colors font-semibold ${
+                    size === "sm" ? "px-3 py-2 text-xs" : "px-4 py-3 text-sm"
+                  } ${isSelected ? "bg-primary/10 text-primary" : "text-on-surface hover:bg-surface-container-low"}`}
                 >
                   <span>{opt.label}</span>
                   {isSelected && (
@@ -98,7 +103,7 @@ export function CustomSelect<T extends string = string>({
                 </button>
               );
             })}
-            
+
             {onAddAction && (
               <>
                 <div className="h-px bg-outline-variant/10 my-0.5 mx-2" />
