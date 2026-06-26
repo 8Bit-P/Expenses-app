@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { List, Loader2, Search, TrendingUp, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, ArrowRightLeft, ArrowUpRight, ArrowDownRight, ArrowRight } from "lucide-react";
+import { List, Loader2, Search, TrendingUp, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { formatTransactionDate } from "../../../utils/dateFormatters";
 import { formatCurrency } from "../../../utils/currency";
 import type { LedgerRow } from "../types";

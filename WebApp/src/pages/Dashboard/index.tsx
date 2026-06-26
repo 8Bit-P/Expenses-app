@@ -1,4 +1,3 @@
-import { useState } from "react";
 import SummaryRow from "./components/SummaryRow";
 import WealthEvolution from "./components/WealthEvolution";
 import ActionCenter from "./components/ActionCenter";
@@ -8,24 +7,16 @@ import AccountsWidget from "./components/AccountsWidget";
 import UpcomingRenewals from "./components/UpcomingRenewals";
 import ReviewWidget from "./components/ReviewWidget";
 import WelcomeEmptyState from "./components/WelcomeEmptyState";
-import HelpDrawer from "../../components/layout/HelpDrawer";
 import { useTransactions } from "../../hooks/useTransactions";
 import { useInvestments } from "../../hooks/useInvestments";
 import { useTranslation } from "react-i18next";
 
 export default function Dashboard() {
   const { t } = useTranslation();
-  const [helpSection, setHelpSection] = useState<string | undefined>(undefined);
-  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   // We only fetch pageSize: 1 to minimize payload, we just need totalCount
   const { totalCount, loading: txLoading } = useTransactions({ needsReview: null, pageSize: 1 });
   const { assets, isLoading: invLoading } = useInvestments();
-
-  const openHelp = (section?: string) => {
-    setHelpSection(section);
-    setIsHelpOpen(true);
-  };
 
   const handleManualAdd = () => {
     window.dispatchEvent(new CustomEvent("open-new-transaction"));
@@ -87,9 +78,6 @@ export default function Dashboard() {
           </div>
         </>
       )}
-
-      {/* Help Drawer — context-aware, opened from within cards */}
-      <HelpDrawer isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} initialSection={helpSection} />
     </div>
   );
 }
