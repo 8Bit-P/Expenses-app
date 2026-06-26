@@ -1,4 +1,4 @@
-export type TransactionType = "expense" | "income" | "transfer";
+export type TransactionType = "income" | "expense";
 
 export type BillingCycle = "monthly" | "yearly" | "weekly" | "quarterly";
 export type SubscriptionStatus = "active" | "paused" | "cancelled";
@@ -31,7 +31,7 @@ export interface Transaction {
   user_id: string;
   category_id: string | null;
   subscription_id?: string;
-  reserve_id?: string;
+  account_id?: string | null;
   type: TransactionType;
   amount: number;
   date: string;
@@ -53,5 +53,6 @@ export interface TransactionFilters {
   needsReview?: boolean | null;
   page?: number;
   pageSize?: number;
+  accountIds?: string[];
 }
 

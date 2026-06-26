@@ -398,8 +398,7 @@
     "transactionType": "Tipo de Transacción",
     "transactionTypes": {
       "income": "Ingresos",
-      "expense": "Gastos",
-      "transfer": "Transferencias"
+      "expense": "Gastos"
     },
     "min": "Mín",
     "max": "Máx",
@@ -465,7 +464,57 @@
       "others": "Otros"
     }
   },
+  "accounts": {
+    "title": "Cuentas",
+    "subtitle": "Controla tus saldos en todas tus cuentas financieras.",
+    "addAccount": "Añadir Cuenta",
+    "editAccount": "Editar Cuenta",
+    "deleteAccount": "Eliminar Cuenta",
+    "namePlaceholder": "ej. Corriente, Ahorros, Efectivo",
+    "nameLabel": "Nombre de la Cuenta",
+    "iconLabel": "Icono",
+    "colorLabel": "Color",
+    "balance": "Saldo",
+    "emptyState": {
+      "title": "Aún no hay cuentas",
+      "subtitle": "Añade tu primera cuenta para empezar a controlar saldos en distintos lugares.",
+      "cta": "Añadir tu primera cuenta"
+    },
+    "deleteConfirm": {
+      "title": "¿Eliminar Cuenta?",
+      "description": "Las transacciones vinculadas a esta cuenta quedarán sin cuenta asignada. Las transacciones en sí se mantendrán.",
+      "confirm": "Eliminar Cuenta",
+      "cancel": "Mantener Cuenta"
+    },
+    "modal": {
+      "create": {
+        "title": "Nueva Cuenta",
+        "subtitle": "Añade una cuenta bancaria, de efectivo o de crédito.",
+        "save": "Crear Cuenta",
+        "saving": "Creando..."
+      },
+      "edit": {
+        "title": "Editar Cuenta",
+        "subtitle": "Actualiza los detalles de tu cuenta.",
+        "save": "Guardar Cambios",
+        "saving": "Guardando..."
+      }
+    },
+    "transactionField": {
+      "label": "Cuenta",
+      "placeholder": "Sin cuenta (opcional)"
+    },
+    "toasts": {
+      "created": "Cuenta creada",
+      "createFailed": "Error al crear la cuenta",
+      "updated": "Cuenta actualizada",
+      "updateFailed": "Error al actualizar la cuenta",
+      "deleted": "Cuenta eliminada",
+      "deleteFailed": "Error al eliminar la cuenta"
+    }
+  },
   "newTransaction": {
+
     "title": "Nueva Transacción",
     "subtitle": "¿Qué tipo te gustaría registrar?",
     "expense": {
@@ -595,7 +644,6 @@
       "dateRange": "Rango de Fechas",
       "allCategories": "Todas las Categorías",
       "types": {
-        "all": "Todos",
         "income": "Ingresos",
         "expense": "Gastos"
       }
@@ -611,7 +659,6 @@
       },
       "types": {
         "expense": "Gasto",
-        "transfer": "Transferencia",
         "income": "Ingreso"
       },
       "labels": {
@@ -844,7 +891,7 @@
       "steps": {
         "s1": {
           "title": "Registra Cada Movimiento",
-          "desc": "Registra ingresos, gastos y transferencias internas. Marca entradas dudosas para revisar en el Centro de Acción."
+          "desc": "Registra ingresos y gastos. Marca entradas dudosas para revisar en el Centro de Acción."
         },
         "s2": {
           "title": "Analiza y Categoriza",
@@ -886,9 +933,9 @@
       "q2": "¿Necesito conectar mi banco?",
       "a2": "No. Vault es un libro de cuentas centrado en la privacidad diseñado para entrada manual o importaciones seguras. Creemos que los datos más precisos son los que tú controlas.",
       "q3": "¿Qué tipos de transacciones admite Vault?",
-      "a3": "Vault admite tres tipos: Ingresos (salario, freelance), Gastos (compras, facturas) y Transferencias (movimientos internos a reservas). Las transferencias se excluyen del análisis de gastos para mantener la precisión.",
-      "q4": "¿Cómo funcionan las Reservas de Capital?",
-      "a4": "Son objetivos de ahorro virtuales independientes de tus cuentas bancarias. Puedes establecer una meta, fondearla mediante una categoría vinculada y seguir el progreso con nuestra función de Fondeo Rápido."
+      "a3": "Vault admite dos tipos: Ingresos (salario, freelance) y Gastos (compras, facturas).",
+      "q4": "¿Qué es el Centro de Acción?",
+      "a4": "El Centro de Acción es una bandeja de entrada donde las transacciones que necesitan revisión manual aparecen para que puedas categorizarlas correctamente."
     },
     "footer": {
       "contact": "Contacto",
@@ -925,11 +972,12 @@
         "budgetOver": "Gastando un 18% sobre el presupuesto",
         "salaryCredit": "Nuevo salario abonado: +3.800€"
       },
-      "reserves": {
-        "title": "Reservas de Capital",
-        "subtitle": "Objetivos de ahorro virtuales.",
-        "funded": "completado",
-        "quickFund": "Fondeo Rápido"
+      "accounts": {
+        "title": "Múltiples Cuentas",
+        "subtitle": "Controla los saldos en todas tus cuentas.",
+        "a1": "Cuenta Principal",
+        "a2": "Ahorros",
+        "a3": "Tarjeta de Crédito"
       },
       "trends": {
         "title": "Previsiones Predictivas",
@@ -1078,8 +1126,8 @@
     "globalSearch": "Búsqueda Global",
     "newTransaction": "Nueva Transacción",
     "conceptsTitle": "Conceptos Clave",
-    "reservesTitle": "Cómo Funcionan las Reservas",
-    "reservesDesc": "Las reservas son fondos asignados que se excluyen del cálculo de 'Seguro para Gastar', lo que le permite reservar dinero para impuestos, compras grandes o emergencias.",
+    "accountsTitle": "Múltiples Cuentas",
+    "accountsDesc": "Controla los saldos en cuentas corrientes, ahorros, efectivo y tarjetas de crédito. Cada transacción puede estar vinculada a una cuenta para mantener tus saldos del mundo real sincronizados.",
     "reviewTitle": "Bandeja de Necesita Revisión",
     "reviewDesc": "Las transacciones importadas de fuentes externas o generadas automáticamente pueden ser marcadas para revisión para garantizar que se categoricen correctamente antes de afectar sus métricas.",
     "investmentsTitle": "Registro de Inversiones",

@@ -52,7 +52,7 @@ function MockTransactionRow({
   name: string;
   category: string;
   amount: string;
-  type: "income" | "expense" | "transfer";
+  type: "income" | "expense";
 }) {
   return (
     <div className="flex items-center gap-2 py-2 border-b border-white/5 last:border-0 group">
@@ -61,8 +61,8 @@ function MockTransactionRow({
         <p className="text-[11px] font-bold text-slate-200 truncate">{name}</p>
         <span className="text-[9px] font-bold text-slate-600 uppercase tracking-tight px-1.5 py-0.5 bg-slate-800 rounded-md">{category}</span>
       </div>
-      <span className={`text-[11px] font-black tabular-nums ${type === "income" ? "text-emerald-400" : type === "transfer" ? "text-slate-500" : "text-slate-300"}`}>
-        {type === "income" ? "+" : type === "transfer" ? "↔" : "-"}{amount}
+      <span className={`text-[11px] font-black tabular-nums ${type === "income" ? "text-emerald-400" : "text-slate-300"}`}>
+        {type === "income" ? "+" : "-"}{amount}
       </span>
     </div>
   );

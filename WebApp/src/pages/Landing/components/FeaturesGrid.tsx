@@ -17,7 +17,7 @@ function UniversalLedgerCard() {
     { emoji: "💰", name: t("landing.features_grid.ledger.row1", { defaultValue: "Salary — May" }), cat: t("landing.features_grid.ledger.catIncome", { defaultValue: "Income" }), amt: "+€3,800", type: "income" },
     { emoji: "🎵", name: t("landing.features_grid.ledger.row2", { defaultValue: "Spotify Premium" }), cat: t("landing.features_grid.ledger.catMedia", { defaultValue: "Media" }), amt: "-€9.99", type: "expense" },
     { emoji: "🛒", name: t("landing.features_grid.ledger.row3", { defaultValue: "Whole Foods" }), cat: t("landing.features_grid.ledger.catGroceries", { defaultValue: "Groceries" }), amt: "-€67.30", type: "expense" },
-    { emoji: "🔁", name: t("landing.features_grid.ledger.row4", { defaultValue: "Investment Deposit" }), cat: t("landing.features_grid.ledger.catTransfer", { defaultValue: "Transfer" }), amt: "↔ €500", type: "transfer" },
+    { emoji: "🔁", name: t("landing.features_grid.ledger.row4", { defaultValue: "Investment Deposit" }), cat: t("landing.features_grid.ledger.catTransfer", { defaultValue: "Transfer" }), amt: "-€500", type: "expense" },
     { emoji: "💡", name: t("landing.features_grid.ledger.row5", { defaultValue: "AWS Credits" }), cat: t("landing.features_grid.ledger.catUtilities", { defaultValue: "Utilities" }), amt: "-€12.50", type: "expense" },
     { emoji: "🏠", name: t("landing.features_grid.ledger.row6", { defaultValue: "Freelance Project" }), cat: t("landing.features_grid.ledger.catIncome", { defaultValue: "Income" }), amt: "+€900", type: "income" },
   ];
@@ -50,7 +50,7 @@ function UniversalLedgerCard() {
             <span className="text-[9px] font-bold text-slate-500 bg-slate-800/60 px-2 py-0.5 rounded-md uppercase tracking-tight">
               {tx.cat}
             </span>
-            <span className={`text-sm font-black tabular-nums ${tx.type === "income" ? "text-emerald-400" : tx.type === "transfer" ? "text-slate-500" : "text-slate-300"}`}>
+            <span className={`text-sm font-black tabular-nums ${tx.type === "income" ? "text-emerald-400" : "text-slate-300"}`}>
               {tx.amt}
             </span>
           </div>
@@ -187,49 +187,41 @@ function ActionCenterCard() {
   );
 }
 
-// --- 4. Capital Reserves Card ---
-function ReservesCard() {
+// --- 4. Accounts Card ---
+function AccountsCard() {
   const { t } = useTranslation();
-  const reserves = [
-    { emoji: "✈️", name: t("landing.features_grid.reserves.r1", { defaultValue: "Travel Fund" }), current: 1200, target: 3000, color: "bg-violet-500" },
-    { emoji: "🚗", name: t("landing.features_grid.reserves.r2", { defaultValue: "New Car" }), current: 4500, target: 8000, color: "bg-indigo-400" },
-    { emoji: "🏠", name: t("landing.features_grid.reserves.r3", { defaultValue: "Emergency Fund" }), current: 9800, target: 10000, color: "bg-emerald-400" },
+  const accounts = [
+    { emoji: "🏦", name: t("landing.features_grid.accounts.a1", { defaultValue: "Main Checking" }), balance: 4500, color: "bg-violet-500" },
+    { emoji: "💰", name: t("landing.features_grid.accounts.a2", { defaultValue: "Savings" }), balance: 12000, color: "bg-emerald-400" },
+    { emoji: "💳", name: t("landing.features_grid.accounts.a3", { defaultValue: "Credit Card" }), balance: -1200, color: "bg-rose-400" },
   ];
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-start gap-3 mb-5">
         <div className="p-2 rounded-lg bg-emerald-500/15 text-emerald-400">
-          <span className="material-symbols-outlined text-[18px]">savings</span>
+          <span className="material-symbols-outlined text-[18px]">account_balance</span>
         </div>
         <div>
-          <h2 className="font-black text-white text-lg tracking-tight">{t("landing.features_grid.reserves.title")}</h2>
-          <p className="text-slate-400 text-sm mt-0.5">{t("landing.features_grid.reserves.subtitle")}</p>
+          <h2 className="font-black text-white text-lg tracking-tight">{t("landing.features_grid.accounts.title")}</h2>
+          <p className="text-slate-400 text-sm mt-0.5">{t("landing.features_grid.accounts.subtitle")}</p>
         </div>
       </div>
       <div className="flex-1 space-y-5">
-        {reserves.map((r) => {
-          const pct = Math.round((r.current / r.target) * 100);
+        {accounts.map((a) => {
           return (
-            <div key={r.name}>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-xl leading-none">{r.emoji}</span>
-                  <span className="text-sm font-bold text-slate-200">{r.name}</span>
+            <div key={a.name} className="flex items-center justify-between p-3 rounded-xl bg-slate-800/60 border border-white/5">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-inner ${a.color.replace("bg-", "text-").replace("500", "400")}`} style={{ background: "rgba(255,255,255,0.05)", border: `1px solid rgba(255,255,255,0.1)`}}>
+                  {a.emoji}
                 </div>
-                <div className="text-right">
-                  <span className="text-sm font-black text-white tabular-nums">€{r.current.toLocaleString()}</span>
-                  <span className="text-xs text-slate-600 font-medium"> / €{r.target.toLocaleString()}</span>
+                <div>
+                  <span className="text-sm font-bold text-slate-200 block">{a.name}</span>
                 </div>
               </div>
-              <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
-                <div
-                  className={`h-2 rounded-full ${r.color} transition-all duration-700`}
-                  style={{ width: `${pct}%` }}
-                />
-              </div>
-              <div className="flex justify-between mt-1">
-                <span className="text-[10px] text-slate-600 font-semibold">{pct}% {t("landing.features_grid.reserves.funded")}</span>
-                <button className="text-[10px] font-bold text-violet-400 hover:text-violet-300 transition-colors">{t("landing.features_grid.reserves.quickFund")} →</button>
+              <div className="text-right">
+                <span className={`text-sm font-black tabular-nums ${a.balance >= 0 ? "text-white" : "text-rose-400"}`}>
+                  {a.balance >= 0 ? "" : "-"}€{Math.abs(a.balance).toLocaleString()}
+                </span>
               </div>
             </div>
           );
@@ -339,10 +331,10 @@ const boxes = [
     component: <ActionCenterCard />,
   },
   {
-    id: "reserves",
+    id: "accounts",
     span: "md:col-span-1 row-span-1",
     minH: "min-h-[380px]",
-    component: <ReservesCard />,
+    component: <AccountsCard />,
   },
   {
     id: "trends",

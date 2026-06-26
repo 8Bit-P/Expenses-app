@@ -36,6 +36,9 @@ export function useTransactions(filters?: TransactionFilters, isInfinite = false
       if (filters?.types && filters.types.length > 0) {
         query = query.in("type", filters.types);
       }
+      if (filters?.accountIds && filters.accountIds.length > 0) {
+        query = query.in("account_id", filters.accountIds);
+      }
       if (filters?.search) query = query.ilike("description", `%${filters.search}%`);
       
       // Default to false (only reviewed) if not explicitly provided
@@ -97,6 +100,7 @@ export function useTransactionMutations() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["accounts"] });
     },
   });
 
@@ -113,6 +117,7 @@ export function useTransactionMutations() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["accounts"] });
     },
   });
 
@@ -124,6 +129,7 @@ export function useTransactionMutations() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["accounts"] });
     },
   });
 

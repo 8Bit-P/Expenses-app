@@ -34,6 +34,7 @@ interface UseLedgerDataProps {
   maxAmount: string;
   selectedCategoryIds: string[];
   selectedTypes: TransactionType[];
+  selectedAccountIds: string[];
   sortColumn: "date" | "amount";
   sortDirection: "asc" | "desc";
   customStartDate?: string;
@@ -48,6 +49,7 @@ export function useLedgerData({
   maxAmount,
   selectedCategoryIds,
   selectedTypes,
+  selectedAccountIds,
   sortColumn,
   sortDirection,
   customStartDate,
@@ -67,6 +69,7 @@ export function useLedgerData({
       endDate: dateRange.endDate,
       categoryIds: selectedCategoryIds.length > 0 ? selectedCategoryIds : undefined,
       types: selectedTypes.length > 0 ? selectedTypes : undefined,
+      accountIds: selectedAccountIds.length > 0 ? selectedAccountIds : undefined,
       search: query || undefined,
       pageSize: 200,
     },
@@ -127,9 +130,8 @@ export function useLedgerData({
         if (query && !asset.name.toLowerCase().includes(query.toLowerCase())) return;
         
         // Assets are effectively "income"/wealth growth conceptually, but standard filter might ignore them.
-        // If types are filtered and "income" or "transfer" aren't selected, maybe we skip them?
-        // Let's just exclude them if the user specifically filters ONLY expenses.
-        if (selectedTypes.length > 0 && !selectedTypes.includes("income") && !selectedTypes.includes("transfer")) return;
+        // If types are filtered and "income" isn't selected, skip them
+        if (selectedTypes.length > 0 && !selectedTypes.includes("income")) return;
         
         // Category filtering: Assets don't have categories in the same way, 
         // but if the user explicitly selects categories, they probably want ONLY those transactions.

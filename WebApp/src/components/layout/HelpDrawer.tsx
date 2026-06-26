@@ -52,9 +52,9 @@ export default function HelpDrawer({ isOpen, onClose, initialSection }: HelpDraw
 
   const concepts = [
     {
-      id: "reserves",
-      title: t("helpDrawer.reservesTitle"),
-      desc: t("helpDrawer.reservesDesc"),
+      id: "accounts",
+      title: t("helpDrawer.accountsTitle"),
+      desc: t("helpDrawer.accountsDesc"),
       icon: <Vault size={15} className="text-primary shrink-0" />,
     },
     {

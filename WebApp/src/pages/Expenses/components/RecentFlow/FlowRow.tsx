@@ -14,7 +14,7 @@ const getCategoryColor = (name: string) => {
 
 export interface Transaction {
   id: string;
-  type: "income" | "expense" | "transfer";
+  type: "income" | "expense";
   amount: number;
   date: string;
   description?: string;
@@ -150,19 +150,12 @@ export default function FlowRow({
 
       {/* Amount */}
       <div className="flex items-center justify-end md:justify-start gap-1.5">
-        {tx.type === "transfer" && (
-          <span className="material-symbols-outlined text-[14px] text-on-surface-variant/40 shrink-0">
-            arrow_right_alt
-          </span>
-        )}
         <span
-          className={`font-black text-sm tabular-nums tracking-tight ${
+          className={`font-black tracking-tight whitespace-nowrap ${
             tx.type === "income"
-              ? "text-primary"
-              : tx.type === "transfer"
-              ? "text-on-surface-variant/40"
-              : "text-on-surface-variant/80"
-          }`}
+              ? "text-emerald-400 group-hover:text-emerald-300"
+              : "text-on-surface-variant group-hover:text-on-surface"
+          } transition-colors`}
         >
           {tx.type === "income" ? "+" : "-"}
           {formatCurrency(tx.amount, currency.code)}

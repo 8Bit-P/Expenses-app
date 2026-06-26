@@ -4,7 +4,7 @@ import WealthEvolution from "./components/WealthEvolution";
 import ActionCenter from "./components/ActionCenter";
 import SpendingCategories from "./components/SpendingCategories";
 import RecentActivity from "./components/RecentActivity";
-import DashboardReserves from "./components/DashboardReserves";
+import AccountsWidget from "./components/AccountsWidget";
 import UpcomingRenewals from "./components/UpcomingRenewals";
 import ReviewWidget from "./components/ReviewWidget";
 import WelcomeEmptyState from "./components/WelcomeEmptyState";
@@ -82,7 +82,7 @@ export default function Dashboard() {
           {/* ROW 4: Details */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <RecentActivity />
-            <DashboardReserves onHelpClick={() => openHelp("reserves")} />
+            <AccountsWidget />
             <UpcomingRenewals />
           </div>
         </>

@@ -20,12 +20,9 @@ interface LedgerTableProps {
 
 // ── Source badge config ───────────────────────────────────────────────────────
 function SourceBadge({ row }: { row: LedgerRow }) {
-  const isTransfer = row.domain === "Transactions" && row.raw?.type === "transfer";
   const isIncome = row.domain === "Transactions" && row.raw?.type === "income";
 
-  const config = isTransfer
-    ? { label: "TRF", bg: "bg-primary/10", text: "text-primary", icon: <ArrowRightLeft size={9} /> }
-    : isIncome
+  const config = isIncome
     ? { label: "INC", bg: "bg-emerald-500/10", text: "text-emerald-400", icon: <TrendingUp size={9} /> }
     : row.domain === "Transactions"
     ? { label: "TXN", bg: "bg-red-500/10", text: "text-red-400", icon: null }
@@ -177,18 +174,14 @@ export function LedgerTable({
                   </td>
                   <td
                     className={`px-5 py-3.5 text-right font-black whitespace-nowrap tabular-nums ${
-                      row.raw?.type === "transfer"
-                        ? "text-primary"
-                        : row.amount >= 0
+                      row.amount >= 0
                         ? "text-emerald-400"
                         : "text-red-400"
                     }`}
                   >
                     <div className="flex items-center justify-end gap-1.5">
                       <span className="opacity-70">
-                        {row.raw?.type === "transfer" ? (
-                          <ArrowRight size={14} />
-                        ) : row.amount >= 0 ? (
+                        {row.amount >= 0 ? (
                           <ArrowUpRight size={14} />
                         ) : (
                           <ArrowDownRight size={14} />

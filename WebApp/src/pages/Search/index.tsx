@@ -14,6 +14,7 @@ import { AdvancedFilters } from "./components/AdvancedFilters";
 import { SummaryTrends } from "./components/SummaryTrends";
 import { LedgerTable } from "./components/LedgerTable";
 import { CategoryBreakdown } from "./components/CategoryBreakdown";
+import { AccountsBreakdown } from "./components/AccountsBreakdown";
 
 export default function SearchResults() {
   const { t } = useTranslation();
@@ -31,6 +32,7 @@ export default function SearchResults() {
   const [maxAmount, setMaxAmount] = useState("");
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<TransactionType[]>([]);
+  const [selectedAccountIds, setSelectedAccountIds] = useState<string[]>([]);
 
   // ── Sort state ──────────────────────────────────────────────────────────────
   const [sortColumn, setSortColumn] = useState<"date" | "amount">("date");
@@ -48,6 +50,7 @@ export default function SearchResults() {
     maxAmount,
     selectedCategoryIds,
     selectedTypes,
+    selectedAccountIds,
     sortColumn,
     sortDirection,
     customStartDate: customStartDate || undefined,
@@ -83,6 +86,7 @@ export default function SearchResults() {
     maxAmount && setMaxAmount("");
     setSelectedCategoryIds([]);
     setSelectedTypes([]);
+    setSelectedAccountIds([]);
     clearSearch();
   }, [clearSearch, maxAmount]);
 
@@ -179,6 +183,8 @@ export default function SearchResults() {
               setSelectedCategoryIds={setSelectedCategoryIds}
               selectedTypes={selectedTypes}
               setSelectedTypes={setSelectedTypes}
+              selectedAccountIds={selectedAccountIds}
+              setSelectedAccountIds={setSelectedAccountIds}
               clearAllFilters={clearAllFilters}
               currencySymbol={currency.symbol}
             />
@@ -207,6 +213,8 @@ export default function SearchResults() {
             setSelectedCategoryIds={setSelectedCategoryIds}
             selectedTypes={selectedTypes}
             setSelectedTypes={setSelectedTypes}
+            selectedAccountIds={selectedAccountIds}
+            setSelectedAccountIds={setSelectedAccountIds}
             clearAllFilters={clearAllFilters}
             currencySymbol={currency.symbol}
           />
@@ -229,6 +237,9 @@ export default function SearchResults() {
             currencyCode={currency.code}
             totalSpent={totalSpent}
           />
+
+          {/* Accounts Balance Breakdown */}
+          <AccountsBreakdown currencyCode={currency.code} />
 
           {/* High-Density Data Table */}
           <LedgerTable

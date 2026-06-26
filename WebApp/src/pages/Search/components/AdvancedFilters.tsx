@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Filter, Calendar, Tag, ChevronDown, Check, CalendarRange, X } from "lucide-react";
+import { Filter, Calendar, Tag, ChevronDown, Check, CalendarRange, X, Landmark } from "lucide-react";
 import type { TimeframeKey } from "../constants";
 import { ALL_DOMAINS, TIMEFRAME_OPTIONS } from "../constants";
 import type { DomainKey } from "../types";
 import type { TransactionType } from "../../../types/expenses";
 import { useCategories } from "../../../hooks/useCategories";
+import { useAccounts } from "../../../hooks/useAccounts";
 
 interface AdvancedFiltersProps {
   timeframe: TimeframeKey;
@@ -24,6 +25,8 @@ interface AdvancedFiltersProps {
   setSelectedCategoryIds: (val: string[] | ((prev: string[]) => string[])) => void;
   selectedTypes: TransactionType[];
   setSelectedTypes: (val: TransactionType[] | ((prev: TransactionType[]) => TransactionType[])) => void;
+  selectedAccountIds: string[];
+  setSelectedAccountIds: (val: string[] | ((prev: string[]) => string[])) => void;
   clearAllFilters: () => void;
   currencySymbol: string;
 }
@@ -45,14 +48,18 @@ export function AdvancedFilters({
   setSelectedCategoryIds,
   selectedTypes,
   setSelectedTypes,
+  selectedAccountIds,
+  setSelectedAccountIds,
   clearAllFilters,
   currencySymbol,
 }: AdvancedFiltersProps) {
   const { t } = useTranslation();
   const [timeframeOpen, setTimeframeOpen] = useState(false);
   const [categoryOpen, setCategoryOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
 
   const { categories } = useCategories();
+  const { accounts } = useAccounts();
 
   const activeTimeframeLabel = t(`search.timeframes.${timeframe}`, {
     defaultValue: TIMEFRAME_OPTIONS.find((o) => o.key === timeframe)?.label ?? t("search.timeframes.this_month"),
@@ -69,6 +76,13 @@ export function AdvancedFilters({
     setSelectedTypes((prev) => {
       if (prev.includes(type)) return prev.filter((t) => t !== type);
       return [...prev, type];
+    });
+  };
+
+  const toggleAccount = (id: string) => {
+    setSelectedAccountIds((prev) => {
+      if (prev.includes(id)) return prev.filter((a) => a !== id);
+      return [...prev, id];
     });
   };
 
@@ -201,7 +215,7 @@ export function AdvancedFilters({
             {t("search.transactionType")}
           </h4>
           <div className="space-y-3">
-            {(["income", "expense", "transfer"] as TransactionType[]).map((type) => {
+            {(["income", "expense"] as TransactionType[]).map((type) => {
               const isActive = selectedTypes.includes(type);
               return (
                 <label
@@ -357,6 +371,92 @@ export function AdvancedFilters({
           )}
         </div>
       </div>
+
+        {/* Account Filter — only shown when user has accounts */}
+        {accounts.length > 0 && (
+          <div>
+            <h4 className="text-[10px] font-black text-on-surface-variant uppercase tracking-wider mb-2">
+              {t("accounts.filter.label", { defaultValue: "Account" })}
+            </h4>
+            <div className="relative w-full">
+              <button
+                onClick={() => setAccountOpen(!accountOpen)}
+                className="w-full flex items-center justify-between bg-surface-container-lowest border border-outline-variant/30 px-3 py-2.5 rounded-xl text-sm font-medium text-on-surface hover:border-primary/50 transition-colors"
+              >
+                <span className="flex items-center gap-2 text-on-surface-variant">
+                  <Landmark size={16} />
+                  {selectedAccountIds.length > 0
+                    ? t("accounts.filter.selected", { count: selectedAccountIds.length, defaultValue: `${selectedAccountIds.length} selected` })
+                    : t("accounts.filter.all", { defaultValue: "All Accounts" })}
+                </span>
+                <ChevronDown
+                  size={14}
+                  className={`text-on-surface-variant transition-transform ${accountOpen ? "rotate-180" : ""}`}
+                />
+              </button>
+              {accountOpen && (
+                <div className="mt-2 bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden">
+                  <button
+                    onClick={() => { setSelectedAccountIds([]); setAccountOpen(false); }}
+                    className={`w-full text-left px-3 py-2.5 text-sm font-medium transition-colors flex items-center justify-between ${
+                      selectedAccountIds.length === 0
+                        ? "text-primary bg-primary-container/20"
+                        : "text-on-surface hover:bg-surface-container"
+                    }`}
+                  >
+                    {t("accounts.filter.all", { defaultValue: "All Accounts" })}
+                    {selectedAccountIds.length === 0 && <Check size={14} />}
+                  </button>
+                  {accounts.map((acc) => (
+                    <button
+                      key={acc.id}
+                      onClick={() => toggleAccount(acc.id)}
+                      className={`w-full text-left px-3 py-2.5 text-sm font-medium transition-colors flex items-center justify-between ${
+                        selectedAccountIds.includes(acc.id)
+                          ? "text-primary bg-primary-container/20"
+                          : "text-on-surface hover:bg-surface-container"
+                      }`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span
+                          className="w-2.5 h-2.5 rounded-full shrink-0"
+                          style={{ background: acc.color }}
+                        />
+                        <span>{acc.icon || "🏦"} {acc.name}</span>
+                      </span>
+                      {selectedAccountIds.includes(acc.id) && <Check size={14} />}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            {/* Selected account pills */}
+            {selectedAccountIds.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-3">
+                {selectedAccountIds.map((id) => {
+                  const acc = accounts.find((a) => a.id === id);
+                  if (!acc) return null;
+                  return (
+                    <div
+                      key={id}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold"
+                      style={{ background: `${acc.color}20`, color: acc.color }}
+                    >
+                      <span>{acc.icon || "🏦"}</span>
+                      <span>{acc.name}</span>
+                      <button
+                        onClick={() => toggleAccount(id)}
+                        className="rounded-full p-0.5 transition-colors hover:opacity-70"
+                      >
+                        <X size={12} />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
 
       {/* Clear Filters */}
       <div className="pt-6 mt-6 border-t border-outline-variant/10">

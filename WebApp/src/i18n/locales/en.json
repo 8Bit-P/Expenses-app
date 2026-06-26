@@ -465,6 +465,55 @@
       "others": "Others"
     }
   },
+  "accounts": {
+    "title": "Accounts",
+    "subtitle": "Track balances across your financial accounts.",
+    "addAccount": "Add Account",
+    "editAccount": "Edit Account",
+    "deleteAccount": "Delete Account",
+    "namePlaceholder": "e.g. Checking, Savings, Cash",
+    "nameLabel": "Account Name",
+    "iconLabel": "Icon",
+    "colorLabel": "Color",
+    "balance": "Balance",
+    "emptyState": {
+      "title": "No accounts yet",
+      "subtitle": "Add your first account to start tracking balances across multiple places.",
+      "cta": "Add your first account"
+    },
+    "deleteConfirm": {
+      "title": "Delete Account?",
+      "description": "All transactions linked to this account will become unlinked. The transactions themselves will remain.",
+      "confirm": "Delete Account",
+      "cancel": "Keep Account"
+    },
+    "modal": {
+      "create": {
+        "title": "New Account",
+        "subtitle": "Add a bank, cash, or credit account.",
+        "save": "Create Account",
+        "saving": "Creating..."
+      },
+      "edit": {
+        "title": "Edit Account",
+        "subtitle": "Update your account details.",
+        "save": "Save Changes",
+        "saving": "Saving..."
+      }
+    },
+    "transactionField": {
+      "label": "Account",
+      "placeholder": "No account (optional)"
+    },
+    "toasts": {
+      "created": "Account created",
+      "createFailed": "Failed to create account",
+      "updated": "Account updated",
+      "updateFailed": "Failed to update account",
+      "deleted": "Account deleted",
+      "deleteFailed": "Failed to delete account"
+    }
+  },
   "newTransaction": {
     "title": "New Transaction",
     "subtitle": "What type would you like to record?",
@@ -595,7 +644,6 @@
       "dateRange": "Date Range",
       "allCategories": "All Categories",
       "types": {
-        "all": "All",
         "income": "Income",
         "expense": "Expense"
       }
@@ -611,21 +659,18 @@
       },
       "types": {
         "expense": "Expense",
-        "transfer": "Transfer",
         "income": "Income"
       },
       "labels": {
         "amount": "Amount",
         "category": "Category",
-        "destination": "Destination Reserve",
         "date": "Date",
         "description": "Description"
       },
       "placeholders": {
         "amount": "0.00",
         "description": "e.g. Grocery Run",
-        "category": "Select Category",
-        "reserve": "Select Reserve"
+        "category": "Select Category"
       },
       "createCategory": {
         "title": "Create new category",
@@ -652,14 +697,13 @@
       },
       "deleteConfirm": {
         "title": "Delete Transaction?",
-        "description": "This will permanently remove this entry from your vault and reverse any linked reserve updates.",
+        "description": "This will permanently remove this entry from your vault.",
         "confirm": "Purge Entry",
         "cancel": "Keep Entry"
       },
       "toasts": {
         "recorded": "Transaction recorded",
         "updated": "Transaction updated",
-        "secured": "{{description}} of {{symbol}}{{amount}} secured.",
         "deleted": "Transaction deleted",
         "deleteFailed": "Deletion failed",
         "deleteFailedDefault": "Something went wrong.",
@@ -844,7 +888,7 @@
       "steps": {
         "s1": {
           "title": "Log Every Movement",
-          "desc": "Record income, expenses, and internal transfers. Mark uncertain entries for the Action Center review inbox."
+          "desc": "Record income and expenses. Mark uncertain entries for the Action Center review inbox."
         },
         "s2": {
           "title": "Analyze & Categorize",
@@ -886,9 +930,9 @@
       "q2": "Do I need to connect my bank?",
       "a2": "No. Vault is a privacy-first ledger designed for manual entry or secure imports. We believe the most accurate financial data is the one you control, not the one a bank API serves you.",
       "q3": "What types of transactions does Vault support?",
-      "a3": "Vault supports three transaction types: Income (salary, freelance), Expense (purchases, bills), and Transfer (internal movements to savings reserves). Transfers are excluded from spending analytics to keep your reports accurate.",
-      "q4": "How do Capital Reserves work?",
-      "a4": "Capital Reserves are virtual savings goals decoupled from your bank accounts. You can set a target, fund it via a linked category, and track progress with our two-step Quick Fund feature that simultaneously updates the reserve and logs a transfer in your ledger."
+      "a3": "Vault supports two transaction types: Income (salary, freelance) and Expense (purchases, bills).",
+      "q4": "What is the Action Center?",
+      "a4": "The Action Center is an inbox where transactions that need manual review are surfaced so you can categorize them properly."
     },
     "footer": {
       "contact": "Contact",
@@ -925,11 +969,12 @@
         "budgetOver": "Spending 18% over monthly budget",
         "salaryCredit": "New salary credited: +€3,800"
       },
-      "reserves": {
-        "title": "Capital Reserves",
-        "subtitle": "Virtual savings goals, always on track.",
-        "funded": "funded",
-        "quickFund": "Quick Fund"
+      "accounts": {
+        "title": "Multiple Accounts",
+        "subtitle": "Track balances across checking, savings, and more.",
+        "a1": "Main Checking",
+        "a2": "Savings",
+        "a3": "Credit Card"
       },
       "trends": {
         "title": "Predictive Run Rates",
@@ -1078,8 +1123,8 @@
     "globalSearch": "Global Search",
     "newTransaction": "New Transaction",
     "conceptsTitle": "Core Concepts",
-    "reservesTitle": "How Reserves Work",
-    "reservesDesc": "Reserves are allocated funds that are excluded from your 'Safe-to-Spend' calculation, allowing you to set aside money for taxes, large purchases, or emergencies.",
+    "accountsTitle": "Multiple Accounts",
+    "accountsDesc": "Track balances across checking, savings, cash, and credit cards. Each transaction can be linked to an account to keep your real-world balances synchronized.",
     "reviewTitle": "The Needs Review Inbox",
     "reviewDesc": "Transactions imported from external sources or generated automatically may be flagged for review to ensure they are categorized correctly before affecting your metrics.",
     "investmentsTitle": "Logging Investments",
