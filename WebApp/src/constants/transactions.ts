@@ -14,9 +14,9 @@ export interface TransactionKindOption {
 export const TRANSACTION_KINDS: TransactionKindOption[] = [
   {
     kind: "expense",
-    icon: "receipt_long",
-    label: "Expense",
-    description: "Record a purchase or payment",
+    icon: "swap_vert",
+    label: "Income / Expense",
+    description: "Record a purchase, payment, or income",
     available: true,
     gradient: "from-red-500/10 to-rose-500/5",
     iconBg: "bg-red-500/15",

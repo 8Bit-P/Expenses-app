@@ -469,8 +469,8 @@
     "title": "New Transaction",
     "subtitle": "What type would you like to record?",
     "expense": {
-      "label": "Expense",
-      "desc": "Record a purchase or payment"
+      "label": "Income / Expense",
+      "desc": "Record a purchase, payment, or income"
     },
     "subscription": {
       "label": "Subscription",

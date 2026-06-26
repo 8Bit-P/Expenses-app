@@ -469,8 +469,8 @@
     "title": "Nueva Transacción",
     "subtitle": "¿Qué tipo te gustaría registrar?",
     "expense": {
-      "label": "Gasto",
-      "desc": "Registra una compra o pago"
+      "label": "Ingreso / Gasto",
+      "desc": "Registra una compra, pago o ingreso"
     },
     "subscription": {
       "label": "Suscripción",
