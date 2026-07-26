@@ -37,6 +37,7 @@ export default function AppRouter() {
         {/* 2. Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
+            <Route index element={<Navigate to="/expenses" replace />} />
             <Route path="/home" element={<Dashboard />} />
             <Route path="/expenses" element={<Expenses />} />
             <Route path="/settings" element={<Settings />} />

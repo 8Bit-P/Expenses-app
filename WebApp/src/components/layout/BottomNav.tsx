@@ -21,14 +21,14 @@ export default function BottomNav({ onNewTransaction }: BottomNavProps) {
       {/* True FAB — floats above the nav bar, anchored bottom-right, hidden on desktop */}
       <button
         onClick={onNewTransaction}
-        className="fixed bottom-24 right-6 z-50 w-14 h-14 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/30 active:scale-90 hover:opacity-90 transition-all duration-200 desk:hidden"
+        className="fixed bottom-24 right-6 z-[110] w-14 h-14 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/30 active:scale-90 hover:opacity-90 transition-all duration-200 desk:hidden"
         aria-label={t("sidebar.addTransaction")}
       >
         <span className="material-symbols-outlined text-[26px]">add</span>
       </button>
 
       {/* Bottom Navigation Bar — 4 evenly-spaced items, hidden on desktop */}
-      <nav className="fixed bottom-0 w-full bg-background/90 backdrop-blur-xl border-t border-outline-variant/10 pb-[calc(env(safe-area-inset-bottom,0px)+8px)] z-40 flex items-center justify-around px-4 pt-2 desk:hidden transition-colors duration-300">
+      <nav className="fixed bottom-0 w-full bg-background/90 backdrop-blur-xl border-t border-outline-variant/10 pb-[calc(env(safe-area-inset-bottom,0px)+8px)] z-[100] flex items-center justify-around px-4 pt-2 desk:hidden transition-colors duration-300">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (

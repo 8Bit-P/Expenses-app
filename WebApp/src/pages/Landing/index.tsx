@@ -16,7 +16,7 @@ export default function Landing() {
 
   useEffect(() => {
     if (session && !loading) {
-      navigate("/home", { replace: true });
+      navigate("/expenses", { replace: true });
     }
   }, [session, loading, navigate]);
 

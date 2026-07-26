@@ -19,7 +19,7 @@ export default function Auth() {
   useEffect(() => {
     // If we have a session and we aren't still "loading" the check
     if (session && !loading) {
-      navigate("/home", { replace: true });
+      navigate("/expenses", { replace: true });
     }
   }, [session, loading, navigate]);
 

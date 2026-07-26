@@ -1,7 +1,7 @@
 import { useSubscriptions } from "../../../hooks/useSubscriptions";
 import { useTransactions } from "../../../hooks/useTransactions";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
-import { differenceInDays, parseISO, startOfMonth, endOfMonth, getDate } from "date-fns";
+import { differenceInDays, parseISO, startOfMonth, endOfMonth, getDate, format } from "date-fns";
 
 import { useTranslation } from "react-i18next";
 import { formatCurrency } from "../../../utils/currency";
@@ -11,8 +11,9 @@ export default function ActionCenter() {
   const { subscriptions } = useSubscriptions();
   const { monthlyBudget, currency } = useUserPreferences();
 
-  const start = startOfMonth(new Date()).toISOString().split("T")[0];
-  const end = endOfMonth(new Date()).toISOString().split("T")[0];
+  const now = new Date();
+  const start = format(startOfMonth(now), "yyyy-MM-dd");
+  const end = format(endOfMonth(now), "yyyy-MM-dd");
 
   const { transactions } = useTransactions({
     startDate: start,
@@ -27,7 +28,7 @@ export default function ActionCenter() {
   if (monthlyBudget > 0) {
     const currentMonthSpend = transactions
       .filter((tx) => tx.type === "expense")
-      .reduce((sum, tx) => sum + tx.amount, 0);
+      .reduce((sum, tx) => sum + Number(tx.amount || 0), 0);
 
     const budgetUsage = (currentMonthSpend / monthlyBudget) * 100;
 
@@ -46,9 +47,13 @@ export default function ActionCenter() {
   }
 
   // 2. Negative Cashflow Alert
-  const currentMonthIncome = transactions.filter((tx) => tx.type === "income").reduce((sum, tx) => sum + tx.amount, 0);
+  const currentMonthIncome = transactions
+    .filter((tx) => tx.type === "income")
+    .reduce((sum, tx) => sum + Number(tx.amount || 0), 0);
 
-  const currentMonthSpend = transactions.filter((tx) => tx.type === "expense").reduce((sum, tx) => sum + tx.amount, 0);
+  const currentMonthSpend = transactions
+    .filter((tx) => tx.type === "expense")
+    .reduce((sum, tx) => sum + Number(tx.amount || 0), 0);
 
   const dayOfMonth = getDate(new Date());
   if (currentMonthSpend > currentMonthIncome && dayOfMonth > 5) {

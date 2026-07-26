@@ -25,8 +25,18 @@ export function CustomSelect<T extends string = string>({
   size = "md",
 }: CustomSelectProps<T>) {
   const [open, setOpen] = useState(false);
+  const [dropUp, setDropUp] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const selected = options.find((o) => o.value === value) ?? options[0] ?? { value: "", label: "" };
+
+  const handleToggle = () => {
+    if (!open && containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const distanceToBottom = window.innerHeight - rect.bottom;
+      setDropUp(distanceToBottom < 320);
+    }
+    setOpen((prev) => !prev);
+  };
 
   // Close on outside click
   useEffect(() => {
@@ -55,7 +65,7 @@ export function CustomSelect<T extends string = string>({
       {/* Trigger */}
       <button
         type="button"
-        onClick={() => setOpen((prev) => !prev)}
+        onClick={handleToggle}
         className={`w-full flex items-center justify-between gap-2 border border-outline-variant/30 bg-surface-container hover:bg-surface-container-high transition-colors font-semibold text-on-surface group focus:outline-none focus:ring-2 focus:ring-primary/30 ${
           size === "sm" ? "py-2 px-3 rounded-lg text-xs" : "py-2.5 px-4 rounded-xl text-sm"
         }`}
@@ -74,10 +84,11 @@ export function CustomSelect<T extends string = string>({
       {open && (
         <div
           className={`
-            absolute left-0 right-0 mt-2 z-[60]
+            absolute left-0 right-0 z-30
             bg-surface-container-lowest border border-outline-variant/20
             shadow-2xl overflow-hidden
             animate-in fade-in zoom-in-95 duration-150
+            ${dropUp ? "bottom-full mb-2" : "top-full mt-2"}
             ${size === "sm" ? "rounded-md" : "rounded-xl"}
           `}
         >

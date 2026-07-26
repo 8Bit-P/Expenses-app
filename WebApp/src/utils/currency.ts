@@ -39,19 +39,24 @@ export function formatCurrency(
  */
 export function formatCompactCurrency(
   value: number,
-  currencyCode: string = 'USD'
+  currencyCode: string = 'USD',
+  options: Intl.NumberFormatOptions = {}
 ): string {
+  const maxFraction = options.maximumFractionDigits ?? 1;
+
   if (value >= 1000000) {
     return formatCurrency(value / 1000000, currencyCode, { 
-      maximumFractionDigits: 1, 
-      notation: 'compact' 
+      maximumFractionDigits: maxFraction, 
+      notation: 'compact',
+      ...options
     });
   }
   if (value >= 1000) {
     return formatCurrency(value, currencyCode, { 
       notation: 'compact',
-      maximumFractionDigits: 0
+      maximumFractionDigits: maxFraction,
+      ...options
     });
   }
-  return formatCurrency(value, currencyCode);
+  return formatCurrency(value, currencyCode, options);
 }

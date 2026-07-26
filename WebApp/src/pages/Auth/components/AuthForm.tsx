@@ -57,7 +57,7 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
         });
         if (signInError) throw signInError;
 
-        navigate("/home");
+        navigate("/expenses");
       }
     } catch (err: any) {
       setError(err.message || t("auth.errorGeneric"));

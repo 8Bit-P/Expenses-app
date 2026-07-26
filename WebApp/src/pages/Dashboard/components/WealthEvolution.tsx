@@ -122,7 +122,7 @@ export default function WealthEvolution() {
             </p>
           </div>
           {accounts && accounts.length > 0 && (
-            <div className="w-full sm:w-[160px] z-[60]">
+            <div className="w-full sm:w-[160px] relative z-30">
               <CustomSelect
                 value={selectedAccountId}
                 onChange={setSelectedAccountId}

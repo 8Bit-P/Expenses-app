@@ -35,7 +35,7 @@
       "subtitle": "To start seeing your charts and controlling your finances, add your first movement to your Vault.",
       "addManual": "Add Manually"
     },
-    "spendingBreakdown": "Spending Breakdown",
+    "spendingBreakdown": "Spending Breakdown (YTD)",
     "summary": {
       "netWorth": "Net Worth",
       "monthlyIncome": "Monthly Income",
@@ -705,6 +705,7 @@
       "toasts": {
         "recorded": "Transaction recorded",
         "updated": "Transaction updated",
+        "secured": "{{description}} of {{symbol}}{{amount}} secured.",
         "deleted": "Transaction deleted",
         "deleteFailed": "Deletion failed",
         "deleteFailedDefault": "Something went wrong.",
