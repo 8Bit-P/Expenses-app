@@ -224,7 +224,8 @@
       "budgetDesc": "Límite de gasto global para el mes",
       "loading": "Cargando…",
       "activeBudget": "Presupuesto activo actual: {{symbol}}{{amount}}",
-      "syncDescription": "Los ajustes de tu Vault financiera han sido sincronizados."
+      "syncDescription": "Los ajustes de tu Vault financiera han sido sincronizados.",
+      "uploadError": "No se pudo actualizar la configuración."
     },
     "security": "Seguridad",
     "changePassword": "Cambiar Contraseña",
@@ -313,12 +314,16 @@
       "loading": "Cargando categorías...",
       "noCategories": "Aún no hay categorías.",
       "addPlaceholder": "Nombre de la Categoría...",
+      "editTitle": "Editar Categoría",
       "deleteTitle": "Eliminar Categoría",
       "deleteConfirm": "¿Estás seguro de que quieres eliminar esta categoría? Todas las transacciones que usen esta categoría quedarán sin categoría. Esta acción no se puede deshacer.",
       "toasts": {
         "added": "Categoría añadida",
         "addedDesc": "{{emoji}} {{name}} ahora está disponible.",
         "addFailed": "Error al añadir la categoría",
+        "updated": "Categoría actualizada",
+        "updatedDesc": "{{emoji}} {{name}} fue actualizada correctamente.",
+        "updateFailed": "Error al actualizar categoría",
         "deleted": "Categoría eliminada",
         "deletedDesc": "La categoría ha sido eliminada permanentemente.",
         "deleteFailed": "Error al eliminar",
@@ -399,7 +404,8 @@
     "transactionType": "Tipo de Transacción",
     "transactionTypes": {
       "income": "Ingresos",
-      "expense": "Gastos"
+      "expense": "Gastos",
+      "transfer": "Transferencias"
     },
     "min": "Mín",
     "max": "Máx",
@@ -512,6 +518,15 @@
       "updateFailed": "Error al actualizar la cuenta",
       "deleted": "Cuenta eliminada",
       "deleteFailed": "Error al eliminar la cuenta"
+    },
+    "breakdown": {
+      "title": "Saldos de Cuentas",
+      "total": "Total"
+    },
+    "filter": {
+      "label": "Cuentas",
+      "selected": "{{count}} Seleccionadas",
+      "all": "Todas las Cuentas"
     }
   },
   "newTransaction": {
@@ -603,6 +618,7 @@
       "left": "{{amount}} restante",
       "usedOfBudget": "{{percent}}% del presupuesto de {{amount}} usado",
       "days": "{{count}} días",
+      "daysElapsed": "Día {{elapsed}} de {{total}}",
       "burnRate": "a la tasa actual de {{amount}}/día",
       "categories": "{{count}} categorías",
       "vsPrevious": "{{direction}} {{percent}}% vs periodo anterior",
@@ -951,12 +967,28 @@
         "subtitle": "Cada transacción, perfectamente organizada.",
         "desc": "Descripción",
         "cat": "Categoría",
-        "amt": "Cantidad"
+        "amt": "Cantidad",
+        "row1": "Salario — Mayo",
+        "catIncome": "Ingreso",
+        "row2": "Spotify Premium",
+        "catMedia": "Entretenimiento",
+        "row3": "Supermercado",
+        "catGroceries": "Compras",
+        "row4": "Depósito de Inversión",
+        "catTransfer": "Transferencia",
+        "row5": "Créditos AWS",
+        "catUtilities": "Servicios",
+        "row6": "Proyecto Freelance"
       },
       "donut": {
         "title": "Gastos por Categoría",
         "subtitle": "🛒 Alimentación lidera con un 34%",
-        "expenses": "Gastos"
+        "expenses": "Gastos",
+        "cat1": "Compras",
+        "cat2": "Entretenimiento",
+        "cat3": "Restaurantes",
+        "cat4": "Servicios",
+        "cat5": "Otros"
       },
       "actionCenter": {
         "title": "Centro de Acción",
