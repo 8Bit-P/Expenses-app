@@ -631,6 +631,7 @@
       "movements_one": "1 movimiento",
       "movements_other": "{{count}} movimientos",
       "entry": "Entrada",
+      "entries": "entradas",
       "noMovements": "No se encontraron movimientos",
       "loadMore": "Cargar Más Movimientos",
       "columns": {

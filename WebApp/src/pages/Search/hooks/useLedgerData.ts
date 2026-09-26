@@ -207,38 +207,70 @@ export function useLedgerData({
 
   // ── Multi-bar chart data ─────────────────────────────────────────────────────
   const chartData: ChartBucket[] = useMemo(() => {
-    // Group by date
-    const byDate: Record<string, { income: number; expenses: number; assets: number }> = {};
+    if (rows.length === 0) return [];
+
+    // Determine the span of the data to pick a bucket granularity
+    const dates = rows.map((r) => r.date).sort();
+    const earliest = new Date(dates[0]);
+    const latest = new Date(dates[dates.length - 1]);
+    const spanDays = Math.max(1, Math.round((latest.getTime() - earliest.getTime()) / 86_400_000) + 1);
+
+    // Choose bucket key function & label formatter based on span
+    let bucketKey: (dateStr: string) => string;
+    let bucketLabel: (key: string) => string;
+
+    if (spanDays <= 31) {
+      // Daily buckets
+      bucketKey = (d) => d; // "2026-09-15"
+      bucketLabel = (key) => {
+        const [y, m, d] = key.split("-").map(Number);
+        return new Date(y, m - 1, d).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+      };
+    } else if (spanDays <= 90) {
+      // Weekly buckets (ISO week start = Monday)
+      bucketKey = (d) => {
+        const dt = new Date(d);
+        const day = dt.getDay();
+        const monday = new Date(dt);
+        monday.setDate(dt.getDate() - ((day + 6) % 7));
+        return monday.toISOString().slice(0, 10);
+      };
+      bucketLabel = (key) => {
+        const [y, m, d] = key.split("-").map(Number);
+        return new Date(y, m - 1, d).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+      };
+    } else {
+      // Monthly buckets
+      bucketKey = (d) => d.slice(0, 7); // "2026-09"
+      bucketLabel = (key) => {
+        const [y, m] = key.split("-").map(Number);
+        return new Date(y, m - 1, 1).toLocaleDateString(undefined, { month: "short", year: "2-digit" });
+      };
+    }
+
+    // Aggregate into buckets
+    const byBucket: Record<string, { income: number; expenses: number; assets: number }> = {};
 
     rows.forEach((r) => {
-      if (!byDate[r.date]) byDate[r.date] = { income: 0, expenses: 0, assets: 0 };
+      const key = bucketKey(r.date);
+      if (!byBucket[key]) byBucket[key] = { income: 0, expenses: 0, assets: 0 };
       if (r.domain === "Assets") {
-        byDate[r.date].assets += Math.abs(r.amount);
+        byBucket[key].assets += Math.abs(r.amount);
       } else if (r.amount > 0) {
-        byDate[r.date].income += r.amount;
+        byBucket[key].income += r.amount;
       } else {
-        byDate[r.date].expenses += Math.abs(r.amount);
+        byBucket[key].expenses += Math.abs(r.amount);
       }
     });
 
-    const sorted = Object.entries(byDate)
+    return Object.entries(byBucket)
       .sort(([a], [b]) => a.localeCompare(b))
-      .slice(-20); // keep last 20 date buckets
-
-    return sorted.map(([date, vals]) => {
-      // Short label e.g. "Apr 3"
-      const [y, m, d] = date.split("-").map(Number);
-      const label = new Date(y, m - 1, d).toLocaleDateString(undefined, {
-        month: "short",
-        day: "numeric",
-      });
-      return {
-        date,
-        label,
+      .map(([key, vals]) => ({
+        date: key,
+        label: bucketLabel(key),
         ...vals,
         total: vals.income + vals.expenses + vals.assets,
-      };
-    });
+      }));
   }, [rows]);
 
   // ── Category breakdown (expenses only) ──────────────────────────────────────

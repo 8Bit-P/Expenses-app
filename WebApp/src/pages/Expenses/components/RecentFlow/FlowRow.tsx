@@ -66,17 +66,17 @@ function FlowRowActions({ isConfirming, onEdit, onDeleteClick, onDeleteConfirm, 
           e.stopPropagation();
           onEdit();
         }}
-        className="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface-variant/30 hover:text-on-surface hover:bg-surface-container opacity-0 group-hover:opacity-100 transition-all"
+        className="w-7 h-7 rounded-lg flex items-center justify-center text-on-surface-variant/30 hover:text-primary hover:bg-primary/10 opacity-0 group-hover:opacity-100 transition-all"
         title={t("expenses.recentFlow.actions.edit")}
       >
-        <span className="material-symbols-outlined text-[17px]">edit</span>
+        <span className="material-symbols-outlined text-[15px]">edit</span>
       </button>
       <button
         onClick={onDeleteClick}
-        className="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface-variant/30 hover:text-error hover:bg-error/10 opacity-0 group-hover:opacity-100 transition-all"
+        className="w-7 h-7 rounded-lg flex items-center justify-center text-on-surface-variant/30 hover:text-error hover:bg-error/10 opacity-0 group-hover:opacity-100 transition-all"
         title={t("expenses.recentFlow.actions.delete")}
       >
-        <span className="material-symbols-outlined text-[17px]">delete</span>
+        <span className="material-symbols-outlined text-[15px]">delete</span>
       </button>
     </>
   );
@@ -103,67 +103,57 @@ export default function FlowRow({
 }: FlowRowProps) {
   const { t } = useTranslation();
   const { currency } = useUserPreferences();
+  const catColor = getCategoryColor(tx.category?.name || "Uncategorized");
 
   return (
     <div
       onClick={() => !isConfirming && onEdit()}
-      className={`group grid grid-cols-[1fr_auto] md:grid-cols-[2fr_1fr_1fr_80px] gap-2 md:gap-4 items-center px-4 md:px-6 py-2.5 border-b border-outline-variant/5 last:border-0 cursor-pointer transition-colors ${
-        isDeleting ? "opacity-40 pointer-events-none" : "hover:bg-surface-container-low/50"
-      } ${isConfirming ? "bg-error/5" : ""}`}
+      className={`group flex items-center gap-4 px-5 md:px-6 py-4 cursor-pointer transition-all duration-150 ${
+        isDeleting ? "opacity-30 pointer-events-none scale-[0.98]" : "hover:bg-surface-container-low/60"
+      } ${isConfirming ? "bg-error/5 border-l-2 border-error" : "border-l-2 border-transparent"}`}
     >
-      {/* Avatar + description */}
-      <div className="flex items-center gap-3 min-w-0">
-        <div
-          className="w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0 group-hover:scale-110 transition-transform duration-200"
-          style={{ backgroundColor: `${getCategoryColor(tx.category?.name || "Uncategorized")}1a` }} // 1a is ~10% opacity
-        >
-          {tx.category?.emoji || "💰"}
-        </div>
-        <div className="min-w-0">
-          <h4 className="font-bold text-sm text-on-surface flex items-center gap-1 leading-none">
-            <span className="truncate">
-              {tx.description?.replace(/\(Auto-renew\)/gi, "").trim() || tx.category?.name || t("common.untitled")}
-            </span>
-            {tx.description?.toLowerCase().includes("(auto-renew)") && (
-              <span className="material-symbols-outlined text-[10px] text-tertiary/50 shrink-0" title={t("common.subscription")}>
-                sync
-              </span>
-            )}
-          </h4>
-          {/* Mobile subtitle: category only (date moved to header) */}
-          <p className="md:hidden text-[11px] text-on-surface-variant/60 font-medium mt-1 flex items-center gap-1.5 flex-wrap">
-            {tx.category?.name && (
-              <span className="font-semibold">
-                {tx.category.emoji} {tx.category.name}
-              </span>
-            )}
-          </p>
-        </div>
+      {/* Emoji avatar */}
+      <div
+        className="w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0 group-hover:scale-110 transition-transform duration-200"
+        style={{ backgroundColor: `${catColor}15` }}
+      >
+        {tx.category?.emoji || "💰"}
       </div>
 
-      {/* Category pill — desktop only */}
-      <div className="hidden md:flex items-center">
-        <span className="text-[10px] font-bold text-on-surface-variant/50 px-2 py-1 bg-surface-container rounded-lg uppercase tracking-tighter truncate max-w-full">
-          {tx.category?.emoji} {tx.category?.name || "—"}
-        </span>
+      {/* Description + category */}
+      <div className="flex-1 min-w-0">
+        <h4 className="font-semibold text-sm text-on-surface leading-tight flex items-center gap-1.5">
+          <span className="truncate">
+            {tx.description?.replace(/\(Auto-renew\)/gi, "").trim() || tx.category?.name || t("common.untitled")}
+          </span>
+          {tx.description?.toLowerCase().includes("(auto-renew)") && (
+            <span className="material-symbols-outlined text-[11px] text-tertiary/50 shrink-0" title={t("common.subscription")}>
+              sync
+            </span>
+          )}
+        </h4>
+        <p className="text-xs text-on-surface-variant/50 font-medium mt-1 truncate">
+          {tx.category?.emoji && <span className="mr-1">{tx.category.emoji}</span>}
+          {tx.category?.name || "—"}
+        </p>
       </div>
 
       {/* Amount */}
-      <div className="flex items-center justify-end md:justify-start gap-1.5">
+      <div className="shrink-0 text-right">
         <span
-          className={`font-black tracking-tight whitespace-nowrap ${
+          className={`text-sm font-black tabular-nums tracking-tight ${
             tx.type === "income"
-              ? "text-emerald-400 group-hover:text-emerald-300"
-              : "text-on-surface-variant group-hover:text-on-surface"
-          } transition-colors`}
+              ? "text-emerald-400"
+              : "text-on-surface"
+          }`}
         >
-          {tx.type === "income" ? "+" : "-"}
+          {tx.type === "income" ? "+" : "−"}
           {formatCurrency(tx.amount, currency.code)}
         </span>
       </div>
 
-      {/* Actions */}
-      <div className="hidden md:flex items-center justify-end gap-1" onClick={(e) => e.stopPropagation()}>
+      {/* Actions — desktop */}
+      <div className="hidden md:flex items-center gap-0.5 shrink-0" onClick={(e) => e.stopPropagation()}>
         <FlowRowActions
           isConfirming={isConfirming}
           onEdit={onEdit}

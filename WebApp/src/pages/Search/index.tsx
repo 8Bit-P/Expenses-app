@@ -27,7 +27,7 @@ export default function SearchResults() {
   const [timeframe, setTimeframe] = useState<TimeframeKey>("all");
   const [customStartDate, setCustomStartDate] = useState("");
   const [customEndDate, setCustomEndDate] = useState("");
-  const [activeDomains, setActiveDomains] = useState<Set<DomainKey>>(new Set(ALL_DOMAINS));
+  const [activeDomains, setActiveDomains] = useState<Set<DomainKey>>(new Set(["Transactions"]));
   const [minAmount, setMinAmount] = useState("");
   const [maxAmount, setMaxAmount] = useState("");
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);

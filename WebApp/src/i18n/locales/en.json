@@ -630,6 +630,7 @@
       "movements_one": "1 movement",
       "movements_other": "{{count}} movements",
       "entry": "Entry",
+      "entries": "entries",
       "noMovements": "No movements found",
       "loadMore": "Load More Movements",
       "columns": {

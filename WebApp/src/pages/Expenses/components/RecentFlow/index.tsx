@@ -1,19 +1,21 @@
 import { useState } from "react";
 import { useExpenses } from "../../../../context/ExpensesContext";
+import { useUserPreferences } from "../../../../context/UserPreferencesContext";
 import TransactionModal from "../TransactionModal";
 import FlowHeader from "./FlowHeader";
-import FlowTableHeader from "./FlowTableHeader";
 import FlowSkeleton from "./FlowSkeleton";
 import FlowRow from "./FlowRow";
 import FlowPagination from "./FlowPagination";
 import { toast } from "sonner";
 import { formatRelativeDate } from "../../../../utils/dateFormatters";
+import { formatCurrency } from "../../../../utils/currency";
 
 import { useTranslation } from "react-i18next";
 
 export default function CompactRecentFlow() {
   const { t } = useTranslation();
   const { transactions, loading, page, setPage, totalPages, totalCount, deleteTransaction, isMobile } = useExpenses();
+  const { currency } = useUserPreferences();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTx, setSelectedTx] = useState<any>(null);
@@ -61,11 +63,21 @@ export default function CompactRecentFlow() {
   }, {});
   const dates = Object.keys(groupedTransactions).sort((a, b) => b.localeCompare(a));
 
+  // Compute daily totals
+  const dailyTotals = (txs: any[]) => {
+    let income = 0;
+    let expense = 0;
+    txs.forEach((tx: any) => {
+      if (tx.type === "income") income += tx.amount;
+      else expense += tx.amount;
+    });
+    return { income, expense, net: income - expense };
+  };
+
   return (
     <>
-      <div className="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden border border-outline-variant/10">
         <FlowHeader totalCount={totalCount} loading={loading} onAddNew={openAddNew} />
-        {!isMobile && <FlowTableHeader />}
 
         <div>
           {loading && transactions.length === 0 ? (
@@ -78,27 +90,69 @@ export default function CompactRecentFlow() {
               </span>
             </div>
           ) : (
-            dates.map((date) => (
-              <div key={date}>
-                <div className="px-4 md:px-6 py-2 bg-surface-container-low/30 border-b border-outline-variant/5">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/40">
-                    {formatRelativeDate(date)}
-                  </span>
+            dates.map((date, dateIdx) => {
+              const txs = groupedTransactions[date];
+              const totals = dailyTotals(txs);
+              const isFirst = dateIdx === 0;
+
+              return (
+                <div key={date}>
+                  {/* ── Day header with daily total ─────────────────────── */}
+                  <div
+                    className={`flex items-center justify-between px-5 md:px-6 py-3.5 bg-surface-container/40 ${
+                      !isFirst ? "border-t border-outline-variant/8" : ""
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/50">
+                        {formatRelativeDate(date)}
+                      </span>
+                      <span className="text-[10px] text-on-surface-variant/30 font-medium">
+                        · {txs.length} {txs.length === 1 ? t("expenses.recentFlow.entry") : t("expenses.recentFlow.entries", { defaultValue: "entries" })}
+                      </span>
+                    </div>
+
+                    {/* Daily summary */}
+                    <div className="flex items-center gap-3">
+                      {totals.income > 0 && (
+                        <span className="text-[10px] font-bold text-emerald-400/70 tabular-nums">
+                          +{formatCurrency(totals.income, currency.code)}
+                        </span>
+                      )}
+                      {totals.expense > 0 && (
+                        <span className="text-[10px] font-bold text-on-surface-variant/50 tabular-nums">
+                          −{formatCurrency(totals.expense, currency.code)}
+                        </span>
+                      )}
+                      <span
+                        className={`text-[11px] font-black tabular-nums px-2 py-0.5 rounded-md ${
+                          totals.net >= 0
+                            ? "text-emerald-400 bg-emerald-400/8"
+                            : "text-red-400 bg-red-400/8"
+                        }`}
+                      >
+                        {totals.net >= 0 ? "+" : "−"}
+                        {formatCurrency(Math.abs(totals.net), currency.code)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* ── Transaction rows ───────────────────────────────── */}
+                  {txs.map((tx: any) => (
+                    <FlowRow
+                      key={tx.id}
+                      tx={tx as any}
+                      isDeleting={deletingId === tx.id}
+                      isConfirming={confirmDeleteId === tx.id}
+                      onEdit={() => handleEdit(tx)}
+                      onDeleteClick={(e) => handleDeleteClick(tx.id, e)}
+                      onDeleteConfirm={() => handleDeleteConfirm(tx.id)}
+                      onCancelDelete={() => setConfirmDeleteId(null)}
+                    />
+                  ))}
                 </div>
-                {groupedTransactions[date].map((tx: any) => (
-                  <FlowRow
-                    key={tx.id}
-                    tx={tx as any}
-                    isDeleting={deletingId === tx.id}
-                    isConfirming={confirmDeleteId === tx.id}
-                    onEdit={() => handleEdit(tx)}
-                    onDeleteClick={(e) => handleDeleteClick(tx.id, e)}
-                    onDeleteConfirm={() => handleDeleteConfirm(tx.id)}
-                    onCancelDelete={() => setConfirmDeleteId(null)}
-                  />
-                ))}
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 
