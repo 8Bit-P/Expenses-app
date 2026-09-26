@@ -71,7 +71,7 @@ export function useLedgerData({
       types: selectedTypes.length > 0 ? selectedTypes : undefined,
       accountIds: selectedAccountIds.length > 0 ? selectedAccountIds : undefined,
       search: query || undefined,
-      pageSize: 200,
+      pageSize: 1000,
     },
     false
   );
@@ -196,7 +196,7 @@ export function useLedgerData({
 
   // ── Summary stats ───────────────────────────────────────────────────────────
   const totalSpent = useMemo(
-    () => rows.filter((r) => r.amount < 0 && r.domain !== "Assets").reduce((sum, r) => sum + Math.abs(r.amount), 0),
+    () => rows.filter((r) => r.amount < 0 && r.domain === "Transactions").reduce((sum, r) => sum + Math.abs(r.amount), 0),
     [rows]
   );
   const totalIncome = useMemo(
@@ -246,7 +246,7 @@ export function useLedgerData({
     const byCategory: Record<string, { name: string; emoji: string | null; value: number }> = {};
 
     rows.forEach((r) => {
-      if (r.amount >= 0 || r.domain === "Assets") return; // expenses only
+      if (r.amount >= 0 || r.domain !== "Transactions") return; // transaction expenses only
       const key = r.categoryName;
       if (!byCategory[key]) {
         byCategory[key] = { name: r.categoryName, emoji: r.emoji, value: 0 };
