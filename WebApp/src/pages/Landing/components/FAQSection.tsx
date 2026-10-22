@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export default function FAQSection() {
@@ -15,66 +15,65 @@ export default function FAQSection() {
   ];
 
   return (
-    <section className="py-24 px-6 border-t border-slate-800/60 bg-[#0F172A]">
-      <div className="max-w-3xl mx-auto">
+    <section className="pb-20 md:pb-28 px-6">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 pt-4 border-t border-on-surface">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          transition={{ duration: 0.5 }}
+          className="lg:col-span-5"
         >
-          <h2 className="text-3xl md:text-4xl font-black tracking-tighter text-white mb-4">
+          <span className="font-mono text-[11px] text-on-surface-variant">§ 04</span>
+          <h2 className="mt-4 font-display font-normal text-[36px] md:text-[48px] leading-[0.98] tracking-[-0.01em] text-on-surface">
             {t("landing.faq.title")}
           </h2>
-          <p className="text-slate-400 text-lg">
-            {t("landing.faq.subtitle")}
-          </p>
+          <p className="mt-4 text-base text-on-surface-variant leading-relaxed max-w-sm">{t("landing.faq.subtitle")}</p>
         </motion.div>
 
-        <div className="space-y-3">
-          {faqs.map((faq, index) => {
-            const isOpen = openIndex === index;
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.08 }}
-                className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
-                  isOpen ? "border-violet-500/30 bg-slate-900/80" : "border-slate-800 bg-slate-900/40 hover:border-slate-700"
-                }`}
-              >
-                <button
-                  onClick={() => setOpenIndex(isOpen ? null : index)}
-                  className="w-full flex items-center justify-between gap-4 p-6 text-left"
-                >
-                  <h3 className={`font-bold text-base transition-colors ${isOpen ? "text-white" : "text-slate-300"}`}>
-                    {faq.question}
-                  </h3>
-                  <ChevronDown
-                    size={18}
-                    className={`text-slate-500 shrink-0 transition-transform duration-300 ${isOpen ? "rotate-180 text-violet-400" : ""}`}
-                  />
-                </button>
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.25, ease: "easeInOut" }}
-                    >
-                      <p className="px-6 pb-6 text-slate-400 leading-relaxed text-sm">
-                        {faq.answer}
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            );
-          })}
+        <div className="lg:col-span-7 lg:pt-10">
+          <div className="border-y border-outline-variant divide-y divide-outline-variant">
+            {faqs.map((faq, index) => {
+              const isOpen = openIndex === index;
+              return (
+                <div key={index}>
+                  <button
+                    type="button"
+                    onClick={() => setOpenIndex(isOpen ? null : index)}
+                    aria-expanded={isOpen}
+                    className="w-full flex items-start gap-4 py-5 text-left group"
+                  >
+                    <span className="w-5 font-mono text-[11px] text-on-surface-variant pt-1 shrink-0">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <h3 className="flex-1 text-base font-medium text-on-surface group-hover:text-on-surface-variant transition-colors">
+                      {faq.question}
+                    </h3>
+                    <Plus
+                      size={18}
+                      strokeWidth={1.75}
+                      className={`mt-0.5 shrink-0 text-on-surface-variant transition-transform duration-200 ${isOpen ? "rotate-45" : ""}`}
+                    />
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.22, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                      >
+                        <p className="pl-9 pr-8 pb-6 text-sm text-on-surface-variant leading-relaxed">
+                          {faq.answer}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

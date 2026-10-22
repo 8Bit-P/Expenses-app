@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { CardWrapper } from "./CardWrapper";
+import { CardWrapper, CardLabel } from "./CardWrapper";
 
 export function BudgetCard({
   budget,
@@ -20,33 +20,34 @@ export function BudgetCard({
 
   return (
     <CardWrapper>
-      <div className="flex items-center gap-3 mb-3">
-        <div
-          className={`w-8 h-8 rounded-lg flex items-center justify-center ${over ? "bg-error/10 text-error" : "text-primary bg-primary/10"}`}
+      <CardLabel label={t("expenses.metrics.monthlyBudget")} icon="account_balance" />
+      <p
+        className={`mt-2 text-2xl md:text-3xl font-semibold tracking-tight tabular-nums truncate ${over ? "text-error" : "text-on-surface"}`}
+      >
+        {formattedBudget}
+      </p>
+      <div className="mt-1.5 min-h-5">
+        <span
+          className={`inline-flex items-center h-5 px-1.5 rounded text-[11px] font-medium tabular-nums ${
+            over ? "bg-error/10 text-error" : "bg-surface-container text-on-surface-variant"
+          }`}
         >
-          <span className="material-symbols-outlined text-[18px]">account_balance</span>
-        </div>
-        <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">
-          {t("expenses.metrics.monthlyBudget")}
+          {over ? t("expenses.metrics.overBudget") : t("expenses.metrics.left", { amount: formattedRemaining })}
         </span>
       </div>
-      <h2 className={`text-3xl font-black font-headline tracking-tight ${over ? "text-error" : "text-on-surface"}`}>
-        {formattedBudget}
-      </h2>
-      <div className="mt-3 space-y-1">
-        <div className="flex justify-between text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-wider">
-          <span>{over ? t("expenses.metrics.overBudget") : t("expenses.metrics.left", { amount: formattedRemaining })}</span>
-          <span>{budgetPct.toFixed(0)}%</span>
+      <div className="mt-auto pt-4 space-y-1.5">
+        <div className="flex justify-between gap-2 text-xs text-on-surface-variant">
+          <span className="truncate tabular-nums">
+            {t("expenses.metrics.spentOfBudget", { current: formattedCurrentSpend, budget: formattedBudget })}
+          </span>
+          <span className="tabular-nums">{budgetPct.toFixed(0)}%</span>
         </div>
-        <div className="h-1.5 rounded-full bg-surface-container overflow-hidden">
+        <div className="h-1.5 rounded-full bg-surface-container-high overflow-hidden">
           <div
-            className={`h-full rounded-full transition-all ${budgetPct >= 100 ? "bg-error" : budgetPct >= 80 ? "bg-amber-400" : "bg-primary"}`}
+            className={`h-full rounded-full transition-all ${budgetPct >= 100 ? "bg-error" : budgetPct >= 80 ? "bg-amber-500" : "bg-primary"}`}
             style={{ width: `${budgetPct}%` }}
           />
         </div>
-        <p className="text-[10px] text-on-surface-variant/50 font-medium">
-          {t("expenses.metrics.spentOfBudget", { current: formattedCurrentSpend, budget: formattedBudget })}
-        </p>
       </div>
     </CardWrapper>
   );

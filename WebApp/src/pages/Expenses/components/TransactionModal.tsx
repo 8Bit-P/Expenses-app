@@ -5,7 +5,7 @@ import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { useAccounts } from "../../../hooks/useAccounts";
 import { CustomSelect } from "../../../components/ui/CustomSelect";
 import type { Category, TransactionType } from "../../../types/expenses";
-import EmojiPicker, { EmojiStyle } from "emoji-picker-react";
+import EmojiPicker, { EmojiStyle, Theme } from "emoji-picker-react";
 import { toast } from "sonner";
 import VaultConfirmationModal from "../../../components/ui/VaultConfirmationModal";
 import { useTransactionForm } from "../../../hooks/useTransactionForm";
@@ -22,7 +22,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
   const { t } = useTranslation();
   const { categories, addCategory } = useCategories();
   const { deleteTransaction } = useTransactions();
-  const { currency } = useUserPreferences();
+  const { currency, resolvedTheme } = useUserPreferences();
   const { handleSave: saveTransaction, isSubmitting: isSaving } = useTransactionForm(transaction);
   const { accounts } = useAccounts();
 
@@ -117,6 +117,10 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
     }
   };
 
+  const labelCls = "eyebrow block mb-1.5";
+  const inputCls =
+    "w-full h-10 rounded-lg border border-outline-variant bg-surface-container-lowest px-3 text-sm text-on-surface placeholder:text-outline focus:border-on-surface focus:ring-0 focus:outline-none transition-colors";
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -125,92 +129,80 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="absolute inset-0 bg-background/60 backdrop-blur-md"
+            transition={{ duration: 0.15 }}
+            className="absolute inset-0 bg-black/50"
             onClick={onClose}
           />
 
           <motion.div
-            initial={{ scale: 0.95, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            transition={{ type: "spring", damping: 25, stiffness: 350 }}
-            className="relative bg-surface-container-lowest/95 backdrop-blur-xl w-full max-w-xl rounded-2xl shadow-2xl border border-outline-variant/20 ring-1 ring-black/5 max-h-[90dvh] overflow-y-auto"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.16, ease: "easeOut" }}
+            role="dialog"
+            aria-modal="true"
+            className="relative bg-surface-container-lowest w-full max-w-lg rounded-2xl shadow-2xl border border-outline-variant max-h-[90dvh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="px-8 pt-8 pb-6 border-b border-outline-variant/5">
-              <div className="flex justify-between items-center mb-1">
-                <h2 className="text-2xl font-black text-on-surface tracking-tight font-headline">
+            <div className="flex items-start justify-between gap-4 px-5 py-4 border-b border-outline-variant">
+              <div className="min-w-0">
+                <h2 className="text-[17px] font-semibold text-on-surface leading-6">
                   {isEditing ? t("expenses.transactionModal.titles.edit") : t("expenses.transactionModal.titles.new")}
                 </h2>
-                <button
-                  onClick={onClose}
-                  className="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container-low hover:bg-surface-container-high transition-colors text-on-surface-variant"
-                >
-                  <span className="material-symbols-outlined text-[20px]">close</span>
-                </button>
+                <p className="text-sm text-on-surface-variant mt-0.5">
+                  {isEditing
+                    ? t("expenses.transactionModal.descriptions.edit")
+                    : t("expenses.transactionModal.descriptions.new")}
+                </p>
               </div>
-              <p className="text-on-surface-variant/80 text-sm font-medium">
-                {isEditing
-                  ? t("expenses.transactionModal.descriptions.edit")
-                  : t("expenses.transactionModal.descriptions.new")}
-              </p>
+              <button
+                onClick={onClose}
+                className="w-9 h-9 -mr-2 shrink-0 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors"
+              >
+                <span className="material-symbols-outlined text-[20px]">close</span>
+              </button>
             </div>
 
             {/* Body */}
-            <div className="p-4 sm:p-8 space-y-4 sm:space-y-6">
+            <div className="p-5 space-y-5">
               {/* Type Toggle */}
-              <div className="flex bg-surface-container-low p-1 rounded-xl gap-1 border border-outline-variant/5">
+              <div className="grid grid-cols-2 p-0.5 rounded-lg bg-surface-container border border-outline-variant">
                 <button
                   onClick={() => setType("expense")}
-                  className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2 sm:py-2.5 px-2 sm:px-4 rounded-lg font-black text-[9px] sm:text-xs uppercase tracking-widest transition-all duration-300 whitespace-nowrap ${
+                  className={`h-9 flex items-center justify-center gap-1.5 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${
                     type === "expense"
-                      ? "bg-error text-on-error shadow-md shadow-error/20 scale-[1.02]"
-                      : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
+                      ? "bg-surface-container-lowest text-error shadow-sm"
+                      : "text-on-surface-variant hover:text-on-surface"
                   }`}
                 >
-                  <span className="material-symbols-outlined text-[16px] sm:text-[18px]">arrow_circle_down</span>
+                  <span className="material-symbols-outlined text-[18px]">arrow_downward</span>
                   <span className="truncate">{t("expenses.transactionModal.types.expense")}</span>
                 </button>
                 <button
                   onClick={() => setType("income")}
-                  className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2 sm:py-2.5 px-2 sm:px-4 rounded-lg font-black text-[9px] sm:text-xs uppercase tracking-widest transition-all duration-300 whitespace-nowrap ${
+                  className={`h-9 flex items-center justify-center gap-1.5 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${
                     type === "income"
-                      ? "bg-secondary text-on-secondary shadow-md shadow-secondary/20 scale-[1.02]"
-                      : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
+                      ? "bg-surface-container-lowest text-secondary shadow-sm"
+                      : "text-on-surface-variant hover:text-on-surface"
                   }`}
                 >
-                  <span className="material-symbols-outlined text-[16px] sm:text-[18px]">arrow_circle_up</span>
+                  <span className="material-symbols-outlined text-[18px]">arrow_upward</span>
                   <span className="truncate">{t("expenses.transactionModal.types.income")}</span>
                 </button>
               </div>
 
-              {/* Amount Input (Hero Section) */}
-              <div
-                className={`relative group p-4 sm:p-5 rounded-2xl border transition-all duration-300 ${
-                  type === "expense"
-                    ? "bg-error/5 border-error/20 focus-within:border-error/50 focus-within:ring-4 focus-within:ring-error/10"
-                    : "bg-secondary/5 border-secondary/20 focus-within:border-secondary/50 focus-within:ring-4 focus-within:ring-secondary/10"
-                }`}
-              >
-                <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1">
-                  {t("expenses.transactionModal.labels.amount")}
-                </label>
-                <div className="flex items-center">
-                  <span
-                    className={`text-2xl sm:text-3xl font-black mr-2 ${
-                      type === "expense"
-                        ? "text-error/70"
-                        : "text-secondary/70"
-                    }`}
-                  >
+              {/* Amount */}
+              <div>
+                <label className={labelCls}>{t("expenses.transactionModal.labels.amount")}</label>
+                <div className="flex items-center h-16 px-4 rounded-xl border border-outline-variant bg-surface-container-lowest focus-within:border-on-surface transition-colors">
+                  <span className="text-2xl font-medium text-on-surface-variant mr-2 select-none">
                     {currency.symbol}
                   </span>
                   <input
                     autoFocus
-                    className={`w-full bg-transparent border-none text-3xl sm:text-4xl font-black placeholder:text-on-surface-variant/30 outline-none p-0 focus:ring-0 ${
-                      type === "income" ? "text-emerald-400" : "text-white"
+                    className={`w-full bg-transparent border-none text-3xl font-semibold tracking-tight tabular-nums placeholder:text-outline-variant outline-none p-0 focus:ring-0 ${
+                      type === "income" ? "text-secondary" : "text-on-surface"
                     }`}
                     type="number"
                     step="0.01"
@@ -222,25 +214,23 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
               </div>
 
               {/* Category Selector */}
-              <div className="space-y-2 relative z-[60]">
-                <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                  {t("expenses.transactionModal.labels.category")}
-                </label>
+              <div className="relative z-[60]">
+                <label className={labelCls}>{t("expenses.transactionModal.labels.category")}</label>
 
                 {isCreatingCategory ? (
-                  <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
-                    <div className="relative flex items-center bg-surface-container border border-outline-variant/30 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20 rounded-xl px-1 transition-all">
-                      <div className="relative flex items-center">
+                  <div className="space-y-2">
+                    <div className="relative flex items-center h-10 rounded-lg border border-outline-variant bg-surface-container-lowest focus-within:border-on-surface transition-colors">
+                      <div className="relative flex items-center h-full">
                         <button
                           type="button"
                           onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                          className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-transparent border-none outline-none text-xl sm:text-2xl hover:bg-surface-container-high rounded-lg transition-colors select-none"
+                          className="w-10 h-full flex items-center justify-center text-lg rounded-l-lg hover:bg-surface-container-low transition-colors select-none"
                         >
                           {newCategoryEmoji}
                         </button>
 
                         {showEmojiPicker && (
-                          <div className="absolute top-[110%] left-0 z-[60] shadow-2xl rounded-xl animate-in fade-in zoom-in-95 border border-outline-variant/20">
+                          <div className="absolute top-[110%] left-0 z-[60] shadow-2xl rounded-lg border border-outline-variant overflow-hidden">
                             <EmojiPicker
                               emojiStyle={EmojiStyle.NATIVE}
                               onEmojiClick={(e) => {
@@ -248,32 +238,32 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
                                 setShowEmojiPicker(false);
                               }}
                               skinTonesDisabled
-                              theme={"dark" as any}
+                              theme={resolvedTheme === "dark" ? Theme.DARK : Theme.LIGHT}
                               width={window.innerWidth < 400 ? 280 : 320}
                               height={350}
                             />
                           </div>
                         )}
                       </div>
-                      <div className="w-px h-6 bg-outline-variant/30 mx-1" />
+                      <div className="w-px h-5 bg-outline-variant" />
                       <input
                         type="text"
-                        className="w-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-sm font-semibold text-on-surface placeholder:text-on-surface-variant/40 py-3 sm:py-3.5 px-3"
+                        className="w-full h-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-sm text-on-surface placeholder:text-outline px-3"
                         value={newCategoryName}
                         onChange={(e) => setNewCategoryName(e.target.value)}
                         placeholder={t("expenses.transactionModal.createCategory.placeholder")}
                         autoFocus
                       />
                     </div>
-                    
-                    <div className="flex gap-2 mt-2">
+
+                    <div className="flex justify-end gap-2">
                       <button
                         onClick={() => {
                           setIsCreatingCategory(false);
                           setNewCategoryName("");
                           setCategoryError(null);
                         }}
-                        className="flex-1 py-2 rounded-xl text-xs font-bold text-on-surface-variant bg-surface-container-high hover:bg-surface-container-highest transition-colors outline-none"
+                        className="h-9 px-3.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface text-sm font-medium hover:bg-surface-container-low transition-colors"
                       >
                         {t("common.cancel") || "Cancel"}
                       </button>
@@ -307,13 +297,14 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
                           }
                         }}
                         disabled={isSaving}
-                        className="flex-1 py-2 rounded-xl text-xs font-semibold bg-primary text-white hover:opacity-90 active:scale-[0.98] transition-all outline-none flex items-center justify-center gap-1 shadow-sm shadow-primary/20"
+                        title={t("expenses.transactionModal.createCategory.title")}
+                        className="h-9 w-12 rounded-lg bg-primary text-on-primary text-sm font-medium hover:opacity-90 active:scale-[0.98] transition flex items-center justify-center disabled:opacity-50"
                       >
-                        <span className="material-symbols-outlined text-[18px] sm:text-[20px]">check</span>
+                        <span className="material-symbols-outlined text-[18px]">check</span>
                       </button>
                     </div>
                     {categoryError && (
-                      <p className="text-xs font-bold text-error px-2 flex items-center gap-1">
+                      <p className="text-xs text-error flex items-center gap-1">
                         <span className="material-symbols-outlined text-[14px]">error</span>
                         {categoryError}
                       </p>
@@ -332,7 +323,7 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
                       })),
                     ]}
                     onChange={setCategoryId}
-                    className="w-full bg-surface-container border-none rounded-xl py-1 text-sm font-semibold focus:ring-2 focus:ring-primary/50"
+                    className="w-full"
                     onAddAction={() => setIsCreatingCategory(true)}
                     addActionLabel={t("expenses.transactionModal.createCategory.title")}
                   />
@@ -341,10 +332,8 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
 
               {/* Account Selector — only shown when user has accounts */}
               {accounts.length > 0 && (
-                <div className="space-y-2 relative z-50">
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                    {t("accounts.transactionField.label")}
-                  </label>
+                <div className="relative z-50">
+                  <label className={labelCls}>{t("accounts.transactionField.label")}</label>
                   <CustomSelect
                     value={accountId}
                     options={[
@@ -355,33 +344,27 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
                       })),
                     ]}
                     onChange={setAccountId}
-                    className="w-full bg-surface-container border-none rounded-xl py-1 text-sm font-semibold focus:ring-2 focus:ring-primary/50"
+                    className="w-full"
                   />
                 </div>
               )}
 
-              {/* Date & Description Row (Side by side) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-40">
-                <div className="space-y-2">
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                    {t("expenses.transactionModal.labels.date")}
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="date"
-                      className="w-full bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-3 sm:py-3.5 px-4 text-sm font-semibold text-on-surface outline-none [&::-webkit-calendar-picker-indicator]:opacity-50"
-                      value={date}
-                      onChange={(e) => setDate(e.target.value)}
-                    />
-                  </div>
+              {/* Date & Description */}
+              <div className="grid grid-cols-1 sm:grid-cols-[180px_minmax(0,1fr)] gap-4 relative z-40">
+                <div>
+                  <label className={labelCls}>{t("expenses.transactionModal.labels.date")}</label>
+                  <input
+                    type="date"
+                    className={`${inputCls} tabular-nums [&::-webkit-calendar-picker-indicator]:opacity-60`}
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                  />
                 </div>
 
-                <div className="space-y-2">
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                    {t("expenses.transactionModal.labels.description")}
-                  </label>
+                <div>
+                  <label className={labelCls}>{t("expenses.transactionModal.labels.description")}</label>
                   <input
-                    className="w-full bg-surface-container border-none focus:ring-2 focus:ring-primary/50 rounded-xl py-3 sm:py-3.5 px-4 text-sm font-semibold text-on-surface placeholder:text-on-surface-variant/40 outline-none"
+                    className={inputCls}
                     placeholder={t("expenses.transactionModal.placeholders.description")}
                     type="text"
                     value={description}
@@ -391,56 +374,64 @@ export default function TransactionModal({ isOpen, onClose, transaction }: Trans
               </div>
 
               {/* Review Toggle */}
-              <div className="flex items-center justify-between p-4 bg-surface-container rounded-2xl border border-outline-variant/10">
-                <div className="flex items-center gap-3">
+              <div className="flex items-center justify-between gap-4 p-3 rounded-lg border border-outline-variant">
+                <div className="flex items-center gap-3 min-w-0">
                   <div
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${needsReview ? "bg-primary/20 text-primary" : "bg-surface-container-high text-on-surface-variant"}`}
+                    className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                      needsReview ? "bg-tertiary/10 text-tertiary" : "bg-surface-container text-on-surface-variant"
+                    }`}
                   >
                     <span className="material-symbols-outlined text-[18px]">inbox</span>
                   </div>
-                  <div>
-                    <p className="text-xs font-bold text-on-surface">{t("expenses.transactionModal.review.label")}</p>
-                    <p className="text-[10px] font-medium text-on-surface-variant/60">
-                      {t("expenses.transactionModal.review.desc")}
-                    </p>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-on-surface">{t("expenses.transactionModal.review.label")}</p>
+                    <p className="text-xs text-on-surface-variant">{t("expenses.transactionModal.review.desc")}</p>
                   </div>
                 </div>
                 <button
+                  role="switch"
+                  aria-checked={needsReview}
                   onClick={() => setNeedsReview(!needsReview)}
-                  className={`relative w-11 h-6 rounded-full transition-colors duration-200 outline-none ${needsReview ? "bg-primary" : "bg-surface-container-highest"}`}
+                  className={`relative w-10 h-6 shrink-0 rounded-full transition-colors duration-200 outline-none ${
+                    needsReview ? "bg-primary" : "bg-surface-container-highest"
+                  }`}
                 >
-                  <div
-                    className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform duration-200 ${needsReview ? "translate-x-5" : "translate-x-0"}`}
+                  <span
+                    className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow-sm transition-transform duration-200 ${
+                      needsReview ? "translate-x-4" : "translate-x-0"
+                    }`}
                   />
                 </button>
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="p-4 sm:p-6 bg-surface-container-lowest border-t border-outline-variant/10 flex items-center gap-3 sm:gap-4 rounded-b-3xl">
+            {/* Footer */}
+            <div className="px-5 py-4 border-t border-outline-variant flex items-center gap-2">
+              {isEditing && (
+                <button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  disabled={isSaving || isDeleting}
+                  className="w-9 h-9 flex items-center justify-center rounded-lg border border-error/30 text-error hover:bg-error/10 transition-colors disabled:opacity-50"
+                  title={t("expenses.transactionModal.actions.delete")}
+                >
+                  <span className="material-symbols-outlined text-[18px]">delete</span>
+                </button>
+              )}
+
+              <div className="flex-1" />
+
               <button
                 onClick={onClose}
-                className="flex-1 py-3 sm:py-3.5 px-2 sm:px-4 rounded-xl font-bold text-xs sm:text-sm text-on-surface-variant hover:bg-surface-container-high transition-all"
+                className="h-9 px-3.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface text-sm font-medium hover:bg-surface-container-low transition-colors disabled:opacity-50"
                 disabled={isSaving || isDeleting}
               >
                 {t("common.cancel")}
               </button>
 
-              {isEditing && (
-                <button
-                  onClick={() => setShowDeleteConfirm(true)}
-                  disabled={isSaving || isDeleting}
-                  className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-xl text-on-surface-variant/40 hover:text-error hover:bg-error/10 transition-all border border-outline-variant/10"
-                  title={t("expenses.transactionModal.actions.delete")}
-                >
-                  <span className="material-symbols-outlined text-[18px] sm:text-[20px]">delete</span>
-                </button>
-              )}
-
               <button
                 onClick={handleSave}
                 disabled={isSaving || isDeleting || !amount}
-                className="flex-[2] py-3 sm:py-3.5 px-3 sm:px-4 rounded-xl font-semibold text-xs sm:text-sm text-white bg-primary hover:opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:shadow-none truncate"
+                className="h-9 px-4 rounded-lg bg-primary text-on-primary text-sm font-medium hover:opacity-90 active:scale-[0.98] transition disabled:opacity-50 disabled:active:scale-100 truncate"
               >
                 {isSaving
                   ? t("expenses.transactionModal.actions.saving")

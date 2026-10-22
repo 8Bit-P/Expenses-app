@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Check, Zap } from "lucide-react";
+import { Check } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
@@ -43,94 +43,88 @@ export default function PricingSection() {
   };
 
   return (
-    <section id="pricing" className="py-32 px-6">
+    <section id="pricing" className="py-20 md:py-28 px-6">
       <div className="max-w-5xl mx-auto">
         {/* Heading */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          transition={{ duration: 0.5 }}
+          className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-4 border-t border-on-surface mb-10 md:mb-14"
         >
-          <h2 className="text-4xl md:text-5xl font-black tracking-tighter text-white mb-4">
+          <h2 className="lg:col-span-7 font-display font-normal text-[40px] md:text-[56px] leading-[0.95] tracking-[-0.01em] text-on-surface">
             {t("landing.pricing.title")}
           </h2>
-          <p className="text-slate-400 text-lg max-w-lg mx-auto">
+          <p className="lg:col-span-5 lg:self-end text-base text-on-surface-variant leading-relaxed">
             {t("landing.pricing.subtitle")}
           </p>
         </motion.div>
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+        {/* Plans table */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-px bg-outline-variant border border-outline-variant"
+        >
           {/* Free */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="bg-slate-900/60 border border-slate-800 rounded-3xl p-8 flex flex-col"
-          >
-            <p className="text-slate-400 text-sm font-semibold mb-1">{free.name}</p>
-            <div className="flex items-end gap-1 mb-1">
-              <span className="text-5xl font-black text-white">{free.price}</span>
+          <div className="bg-surface-container-lowest p-7 md:p-8 flex flex-col">
+            <p className="eyebrow">{free.name}</p>
+            <div className="mt-5 pb-5 border-b border-outline-variant">
+              <span className="text-5xl font-semibold tracking-tight tabular-nums text-on-surface">{free.price}</span>
+              <p className="text-sm text-on-surface-variant mt-2">{free.period}</p>
             </div>
-            <p className="text-slate-500 text-sm mb-2">{free.period}</p>
-            <p className="text-slate-400 text-sm mb-8">{free.desc}</p>
-            <ul className="space-y-3 mb-8 flex-1">
+            <p className="text-sm text-on-surface-variant mt-5 mb-6">{free.desc}</p>
+            <ul className="divide-y divide-outline-variant border-y border-outline-variant mb-8 flex-1">
               {free.features.map((f) => (
-                <li key={f} className="flex items-center gap-2.5 text-slate-400 text-sm">
-                  <Check size={14} className="text-slate-600 shrink-0" />
+                <li key={f} className="flex items-center gap-2.5 py-2.5 text-sm text-on-surface">
+                  <Check size={14} className="text-on-surface-variant shrink-0" />
                   {f}
                 </li>
               ))}
             </ul>
             <Link
               to={free.ctaLink}
-              className="block text-center py-3 border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-white font-bold rounded-2xl transition-all duration-200"
+              className="inline-flex items-center justify-center h-10 px-4 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface text-sm font-medium hover:bg-surface-container-low hover:border-outline transition-colors"
             >
               {free.cta}
             </Link>
-          </motion.div>
+          </div>
 
           {/* Pro */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative bg-slate-900/80 border border-violet-500/50 rounded-3xl p-8 flex flex-col shadow-2xl shadow-violet-950/50"
-            style={{ boxShadow: "0 0 60px -10px rgba(124, 58, 237, 0.3)" }}
-          >
-            {/* Badge */}
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1 bg-violet-600 text-white text-xs font-bold rounded-full shadow-lg">
-              <Zap size={10} />
-              {pro.badge}
+          <div className="bg-surface-container-lowest p-7 md:p-8 flex flex-col">
+            <div className="flex items-center justify-between gap-3">
+              <p className="eyebrow text-on-surface">{pro.name}</p>
+              <span className="inline-flex items-center h-5 px-1.5 rounded bg-accent text-on-accent text-[11px] font-medium">
+                {pro.badge}
+              </span>
             </div>
-
-            <p className="text-violet-400 text-sm font-semibold mb-1">{pro.name}</p>
-            <div className="flex items-end gap-1 mb-1">
-              <span className="text-5xl font-black text-white">{pro.price}</span>
-              <span className="text-slate-400 mb-2 text-lg font-semibold">{pro.period}</span>
+            <div className="mt-5 pb-5 border-b border-outline-variant">
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-5xl font-semibold tracking-tight tabular-nums text-on-surface">{pro.price}</span>
+                <span className="text-base text-on-surface-variant">{pro.period}</span>
+              </div>
+              <p className="text-sm text-on-surface mt-2">{pro.desc}</p>
             </div>
-            <p className="text-violet-300/70 text-sm mb-2 font-medium">{pro.desc}</p>
-            <p className="text-slate-400 text-sm mb-8">{t("landing.pricing.plus")}</p>
-            <ul className="space-y-3 mb-8 flex-1">
+            <p className="text-sm text-on-surface-variant mt-5 mb-6">{t("landing.pricing.plus")}</p>
+            <ul className="divide-y divide-outline-variant border-y border-outline-variant mb-8 flex-1">
               {pro.features.map((f) => (
-                <li key={f} className="flex items-center gap-2.5 text-slate-300 text-sm">
-                  <Check size={14} className="text-violet-400 shrink-0" />
+                <li key={f} className="flex items-center gap-2.5 py-2.5 text-sm text-on-surface">
+                  <Check size={14} className="text-secondary shrink-0" />
                   {f}
                 </li>
               ))}
             </ul>
             <Link
               to={pro.ctaLink}
-              className="block text-center py-3 bg-violet-600 hover:bg-violet-500 text-white font-bold rounded-2xl transition-all duration-200 shadow-lg shadow-violet-900/50"
+              className="inline-flex items-center justify-center h-10 px-4 rounded-lg bg-primary text-on-primary text-sm font-medium hover:opacity-90 active:scale-[0.98] transition"
             >
               {pro.cta}
             </Link>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

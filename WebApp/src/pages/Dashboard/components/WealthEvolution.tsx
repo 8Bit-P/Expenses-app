@@ -8,34 +8,51 @@ import { formatCurrency } from "../../../utils/currency";
 import { useTranslation } from "react-i18next";
 import { useAccounts } from "../../../hooks/useAccounts";
 import { CustomSelect } from "../../../components/ui/CustomSelect";
+import Panel from "../../../components/ui/Panel";
+import { AXIS_TICK, CHART } from "../../../constants/chartColors";
+import type { TFunction } from "i18next";
 
-const CustomTooltip = ({ active, payload, label, currencyCode, t }: any) => {
+interface TooltipEntry {
+  name: string;
+  value: number;
+  fill: string;
+}
+
+interface WealthTooltipProps {
+  active?: boolean;
+  payload?: TooltipEntry[];
+  label?: string;
+  currencyCode: string;
+  t: TFunction;
+}
+
+const CustomTooltip = ({ active, payload, label, currencyCode, t }: WealthTooltipProps) => {
   if (active && payload && payload.length) {
+    const total = payload.reduce((sum, entry) => sum + Number(entry.value || 0), 0);
     return (
-      <div className="bg-surface-container-lowest/95 backdrop-blur-xl p-4 rounded-2xl shadow-xl border border-outline-variant/20 font-body min-w-[180px] animate-in fade-in zoom-in duration-200">
-        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-3 border-b border-outline-variant/10 pb-2">
+      <div className="bg-surface-container-lowest border border-outline-variant rounded-lg shadow-lg px-3 py-2.5 text-xs min-w-[190px]">
+        <p className="eyebrow mb-2">
           {label} {t("dashboard.wealthEvolution.snapshot")}
         </p>
-        {payload.map((entry: any, index: number) => (
-          <div key={index} className="flex justify-between items-center gap-4 mb-1.5">
+        {[...payload].reverse().map((entry, index) => (
+          <div key={index} className="flex justify-between items-center gap-4 py-0.5">
             <div className="flex items-center gap-2">
-              <div
-                className="w-2 h-2 rounded-full"
-                style={{
-                  backgroundColor: entry.fill.includes("url")
-                    ? entry.dataKey === "investments"
-                      ? "#3525cd"
-                      : "#10b981"
-                    : entry.fill,
-                }}
-              ></div>
-              <span className="text-[11px] font-bold text-on-surface-variant capitalize">
+              <span className="w-2 h-2 rounded-sm" style={{ backgroundColor: entry.fill }} />
+              <span className="text-on-surface-variant">
                 {t(`dashboard.wealthEvolution.${entry.name.toLowerCase()}`)}
               </span>
             </div>
-            <span className="text-xs font-black text-on-surface">{formatCurrency(entry.value, currencyCode)}</span>
+            <span className="font-medium text-on-surface tabular-nums">
+              {formatCurrency(entry.value, currencyCode)}
+            </span>
           </div>
         ))}
+        {payload.length > 1 && (
+          <div className="flex justify-between items-center gap-4 pt-1.5 mt-1.5 border-t border-outline-variant">
+            <span className="text-on-surface-variant">{t("accounts.breakdown.total")}</span>
+            <span className="font-semibold text-on-surface tabular-nums">{formatCurrency(total, currencyCode)}</span>
+          </div>
+        )}
       </div>
     );
   }
@@ -43,8 +60,8 @@ const CustomTooltip = ({ active, payload, label, currencyCode, t }: any) => {
 };
 
 export default function WealthEvolution() {
-  const { t } = useTranslation();
-  const { resolvedTheme, currency } = useUserPreferences();
+  const { t, i18n } = useTranslation();
+  const { currency } = useUserPreferences();
   const { assets, isLoading: invLoading } = useInvestments();
   const { transactions, loading: txLoading } = useTransactions({ pageSize: 1000 });
   const { accounts } = useAccounts();
@@ -75,7 +92,7 @@ export default function WealthEvolution() {
       let investments = 0;
       if (!selectedAccountId) {
         assets.forEach((asset) => {
-          const snap = asset.asset_snapshots.find((s: any) => !isAfter(parseISO(s.date), monthEnd));
+          const snap = asset.asset_snapshots.find((s) => !isAfter(parseISO(s.date), monthEnd));
           if (snap) investments += Number(snap.total_value);
         });
       }
@@ -95,116 +112,88 @@ export default function WealthEvolution() {
     });
   }, [assets, transactions, invLoading, txLoading, selectedAccountId]);
 
-  const gapColor = resolvedTheme === "dark" ? "#0d0e11" : "#ffffff";
-  const axisColor = resolvedTheme === "dark" ? "rgba(119, 117, 135, 0.4)" : "rgba(100, 116, 139, 0.5)";
+  const compactCurrency = useMemo(
+    () =>
+      new Intl.NumberFormat(i18n.language, {
+        style: "currency",
+        currency: currency.code,
+        notation: "compact",
+        maximumFractionDigits: 1,
+      }),
+    [i18n.language, currency.code],
+  );
 
-  if (invLoading || txLoading) {
-    return (
-      <div className="w-full h-[380px] flex items-center justify-center bg-surface-container-lowest rounded-2xl animate-pulse border border-outline-variant/10">
-        <div className="text-on-surface-variant text-[10px] font-black uppercase tracking-widest">
-          {t("dashboard.syncing")}
-        </div>
-      </div>
-    );
-  }
+  const legend = (
+    <div className="flex items-center gap-4 text-xs text-on-surface-variant">
+      {!selectedAccountId && (
+        <span className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: CHART.primary }} />
+          {t("dashboard.wealthEvolution.investments")}
+        </span>
+      )}
+      <span className="flex items-center gap-1.5">
+        <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: CHART.secondary }} />
+        {t("dashboard.wealthEvolution.liquidity")}
+      </span>
+    </div>
+  );
 
   return (
-    <div className="w-full flex flex-col">
-      <div className="flex flex-col gap-4 mb-8">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h2 className="text-lg font-black font-headline text-on-surface flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary">bar_chart</span>
-              {t("dashboard.wealthEvolution.title")}
-            </h2>
-            <p className="text-[10px] font-bold text-on-surface-variant mt-1">
-              {t("dashboard.wealthEvolution.subtitle")}
-            </p>
+    <Panel
+      className="h-full"
+      bodyClassName="flex flex-col"
+      title={t("dashboard.wealthEvolution.title")}
+      subtitle={t("dashboard.wealthEvolution.subtitle")}
+      actions={
+        accounts && accounts.length > 0 ? (
+          <div className="w-[170px] relative z-30">
+            <CustomSelect value={selectedAccountId} onChange={setSelectedAccountId} options={accountOptions} size="sm" />
           </div>
-          {accounts && accounts.length > 0 && (
-            <div className="w-full sm:w-[160px] relative z-30">
-              <CustomSelect
-                value={selectedAccountId}
-                onChange={setSelectedAccountId}
-                options={accountOptions}
-                size="sm"
-              />
-            </div>
-          )}
+        ) : undefined
+      }
+    >
+      {invLoading || txLoading ? (
+        <div className="h-[320px] rounded-lg bg-surface-container-low animate-pulse flex items-center justify-center">
+          <span className="text-xs text-on-surface-variant">{t("dashboard.syncing")}</span>
         </div>
-        
-        <div className="flex gap-4 p-1.5 bg-surface-container-low rounded-xl w-fit">
-          {!selectedAccountId && (
-            <div className="flex items-center gap-2 px-2">
-              <div className="w-2 h-2 rounded-full bg-primary"></div>
-              <span className="text-[10px] font-black uppercase tracking-wider text-on-surface-variant">
-                {t("dashboard.wealthEvolution.investments")}
-              </span>
-            </div>
-          )}
-          <div className="flex items-center gap-2 px-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
-            <span className="text-[10px] font-black uppercase tracking-wider text-on-surface-variant">
-              {t("dashboard.wealthEvolution.liquidity")}
-            </span>
+      ) : (
+        <>
+          <div className="mb-3">{legend}</div>
+          <div className="w-full flex-1 min-h-[290px]">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={290} debounce={50}>
+              <BarChart data={chartData} margin={{ top: 8, right: 4, left: 0, bottom: 0 }} barCategoryGap="28%">
+                <CartesianGrid vertical={false} stroke={CHART.grid} />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} dy={8} tick={AXIS_TICK} />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  width={56}
+                  tick={AXIS_TICK}
+                  tickFormatter={(val) => compactCurrency.format(val)}
+                />
+                <Tooltip content={<CustomTooltip currencyCode={currency.code} t={t} />} cursor={{ fill: CHART.cursor }} />
+                <Bar
+                  dataKey="investments"
+                  stackId="wealth"
+                  fill={CHART.primary}
+                  stroke={CHART.surface}
+                  strokeWidth={1}
+                  maxBarSize={44}
+                />
+                <Bar
+                  dataKey="liquidity"
+                  stackId="wealth"
+                  fill={CHART.secondary}
+                  radius={[3, 3, 0, 0]}
+                  stroke={CHART.surface}
+                  strokeWidth={1}
+                  maxBarSize={44}
+                />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
-        </div>
-      </div>
-
-      <div className="w-full h-[300px]">
-        <ResponsiveContainer width="100%" height={300} minWidth={0} minHeight={0} debounce={50}>
-          <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} barCategoryGap="25%">
-            <defs>
-              <linearGradient id="barInv" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#4f46e5" stopOpacity={1} />
-                <stop offset="100%" stopColor="#3525cd" stopOpacity={1} />
-              </linearGradient>
-              <linearGradient id="barLiq" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#34d399" stopOpacity={1} />
-                <stop offset="100%" stopColor="#10b981" stopOpacity={1} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid
-              vertical={false}
-              stroke={resolvedTheme === "dark" ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)"}
-              strokeDasharray="4 4"
-            />
-            <XAxis
-              dataKey="name"
-              axisLine={false}
-              tickLine={false}
-              dy={10}
-              tick={{ fill: axisColor, fontWeight: 800, fontSize: 10 }}
-            />
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: axisColor, fontWeight: 800, fontSize: 10 }}
-              tickFormatter={(val) => `€${val / 1000}k`}
-            />
-            <Tooltip
-              content={<CustomTooltip currencyCode={currency.code} t={t} />}
-              cursor={{ fill: resolvedTheme === "dark" ? "rgba(255, 255, 255, 0.02)" : "rgba(0, 0, 0, 0.02)" }}
-            />
-            <Bar
-              dataKey="investments"
-              stackId="wealth"
-              fill="url(#barInv)"
-              radius={[0, 0, 6, 6]}
-              stroke={gapColor}
-              strokeWidth={2}
-            />
-            <Bar
-              dataKey="liquidity"
-              stackId="wealth"
-              fill="url(#barLiq)"
-              radius={[6, 6, 0, 0]}
-              stroke={gapColor}
-              strokeWidth={2}
-            />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
+        </>
+      )}
+    </Panel>
   );
 }

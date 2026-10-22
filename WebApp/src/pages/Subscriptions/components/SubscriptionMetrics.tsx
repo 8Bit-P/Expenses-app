@@ -1,4 +1,3 @@
-import { useRef, useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { es, enUS } from "date-fns/locale";
 import type { Subscription } from "../../../types/expenses";
@@ -11,37 +10,24 @@ interface SubscriptionMetricsProps {
   loading: boolean;
 }
 
+const stripClass =
+  "grid grid-cols-1 sm:grid-cols-3 bg-surface-container-lowest border border-outline-variant rounded-2xl divide-y sm:divide-y-0 sm:divide-x divide-outline-variant";
+
 export default function SubscriptionMetrics({ subscriptions, loading }: SubscriptionMetricsProps) {
   const { t, i18n } = useTranslation();
   const { currency } = useUserPreferences();
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
 
   const dateLocale = i18n.language === "es" ? es : enUS;
 
-  const handleScroll = useCallback(() => {
-    if (!scrollRef.current) return;
-    const { scrollLeft, scrollWidth } = scrollRef.current;
-    const cardWidth = scrollWidth / 3;
-    const index = Math.round(scrollLeft / cardWidth);
-    setActiveIndex(index);
-  }, []);
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    el.addEventListener("scroll", handleScroll);
-    return () => el.removeEventListener("scroll", handleScroll);
-  }, [loading, handleScroll]);
-
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <div className={stripClass}>
         {[1, 2, 3].map((i) => (
-          <div
-            key={i}
-            className="h-45 bg-surface-container-lowest/50 rounded-2xl animate-pulse border border-outline-variant/10"
-          />
+          <div key={i} className="px-5 py-4 space-y-3">
+            <div className="h-3 w-28 animate-pulse bg-surface-container rounded-lg" />
+            <div className="h-7 w-36 animate-pulse bg-surface-container rounded-lg" />
+            <div className="h-3 w-24 animate-pulse bg-surface-container rounded-lg" />
+          </div>
         ))}
       </div>
     );
@@ -63,126 +49,63 @@ export default function SubscriptionMetrics({ subscriptions, loading }: Subscrip
     (a, b) => new Date(a.next_billing_date).getTime() - new Date(b.next_billing_date).getTime(),
   );
   const nextRenewal = sortedByDate[0];
+  const inactiveCount = subscriptions.length - activeSubs.length;
 
   return (
-    <div className="grid grid-cols-1 w-full min-w-0">
-      <div
-        ref={scrollRef}
-        className="flex md:grid md:grid-cols-3 gap-6 mb-6 md:mb-12 -mx-2 md:-mx-0 px-2 md:px-0 overflow-x-auto pb-4 md:pb-0 snap-x snap-mandatory hide-scrollbar"
-      >
-        {/* 1. Monthly Spend */}
-        <div className="flex-none w-[82vw] md:w-auto group relative p-8 bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/10 hover:border-primary/30 transition-all duration-500 overflow-hidden flex flex-col justify-between h-45 snap-start">
-          {/* Subtle background glow */}
-          <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-all duration-500"></div>
-
-          <div className="flex items-center justify-between relative z-10">
-            <span className="text-on-surface-variant font-black text-[12px] uppercase tracking-[0.2em]">
-              {t("subscriptions.metrics.burnRate")}
-            </span>
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
-              <span className="material-symbols-outlined text-primary text-[18px]">account_balance_wallet</span>
-            </div>
-          </div>
-
-          <div className="flex flex-col relative z-10">
-            <span className="text-5xl font-black text-transparent bg-clip-text bg-linear-to-br from-on-surface to-on-surface-variant/70 font-headline tracking-tighter">
-              {formatCurrency(totalMonthlySpend, currency.code)}
-            </span>
-            <span className="text-on-surface-variant/60 font-bold text-xs mt-2 flex items-center gap-1">
-              <span className="material-symbols-outlined text-[14px]">calculate</span>
-              {t("subscriptions.metrics.normalized")}
-            </span>
-          </div>
-        </div>
-
-        {/* 2. Active Count */}
-        <div className="flex-none w-[82vw] md:w-auto group relative p-8 bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/10 hover:border-secondary/30 transition-all duration-500 overflow-hidden flex flex-col justify-between h-45 snap-start">
-          <div className="absolute -top-12 -right-12 w-32 h-32 bg-secondary/10 rounded-full blur-3xl group-hover:bg-secondary/20 transition-all duration-500"></div>
-
-          <div className="flex items-center justify-between relative z-10">
-            <span className="text-on-surface-variant font-black text-[12px] uppercase tracking-[0.2em]">
-              {t("subscriptions.metrics.active")}
-            </span>
-            <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center border border-secondary/20">
-              <span className="material-symbols-outlined text-secondary text-[18px]">layers</span>
-            </div>
-          </div>
-
-          <div className="flex items-end justify-between relative z-10">
-            <span className="text-5xl font-black text-transparent bg-clip-text bg-linear-to-br from-on-surface to-on-surface-variant/70 font-headline tracking-tighter">
-              {activeSubs.length}
-            </span>
-
-            <div className="flex flex-col items-end mb-1">
-              <span className="text-on-surface-variant font-bold text-xs">
-                {t("subscriptions.metrics.total", { count: subscriptions.length })}
-              </span>
-              <span className="text-error/80 font-bold text-[10px] uppercase tracking-wider mt-0.5">
-                {t("subscriptions.metrics.inactive", { count: subscriptions.length - activeSubs.length })}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* 3. Next Up (Sleek urgency instead of bright block) */}
-        <div className="flex-none w-[82vw] md:w-auto relative p-8 bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/10 hover:border-outline-variant/30 transition-all duration-500 overflow-hidden flex flex-col justify-between h-45 snap-start">
-          {/* Accent Top Border to denote time/urgency */}
-          <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-error to-primary opacity-70"></div>
-
-          <div className="flex items-center justify-between relative z-10">
-            <span className="text-on-surface-variant font-black text-[12px] uppercase tracking-[0.2em]">
-              {t("subscriptions.metrics.nextCharge")}
-            </span>
-            <div className="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center border border-outline-variant/20">
-              <span className="material-symbols-outlined text-on-surface text-[18px]">event</span>
-            </div>
-          </div>
-
-          <div className="flex flex-col relative z-10">
-            {nextRenewal ? (
-              <>
-                <div className="flex items-baseline gap-2 mb-1">
-                  <span className="text-3xl font-black text-on-surface font-headline truncate">{nextRenewal.name}</span>
-                  <span className="text-lg font-bold text-on-surface-variant">
-                    {formatCurrency(Number(nextRenewal.amount), currency.code)}
-                  </span>
-                </div>
-                <span className="text-primary font-bold text-sm flex items-center gap-1.5 bg-primary/10 w-fit px-2.5 py-1 rounded-md mt-1">
-                  <span className="material-symbols-outlined text-[14px]">schedule</span>
-                  {isSameDay(parseISO(nextRenewal.next_billing_date), new Date())
-                    ? t("subscriptions.metrics.dueToday")
-                    : t("subscriptions.metrics.dueIn", { 
-                        time: formatDistanceToNowStrict(parseISO(nextRenewal.next_billing_date), { locale: dateLocale }) 
-                      })}
-                </span>
-              </>
-            ) : (
-              <div className="flex flex-col mt-2">
-                <span className="text-xl font-black text-on-surface-variant/40">
-                  {t("subscriptions.metrics.noUpcoming")}
-                </span>
-                <span className="text-sm font-bold text-on-surface-variant/40">
-                  {t("subscriptions.metrics.vaultClear")}
-                </span>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Spacer for horizontal scroll */}
-        <div className="w-4 shrink-0 md:hidden"></div>
+    <div className={stripClass}>
+      {/* 1. Monthly Spend */}
+      <div className="px-5 py-4 min-w-0">
+        <p className="eyebrow">{t("subscriptions.metrics.burnRate")}</p>
+        <p className="text-2xl md:text-3xl font-semibold tracking-tight tabular-nums text-on-surface mt-1.5">
+          {formatCurrency(totalMonthlySpend, currency.code)}
+        </p>
+        <p className="text-xs text-on-surface-variant mt-1">{t("subscriptions.metrics.normalized")}</p>
       </div>
 
-      {/* Pagination Dots (Dynamic) */}
-      <div className="flex md:hidden justify-center gap-1.5 -mt-2 mb-4">
-        {[0, 1, 2].map((i) => (
-          <div
-            key={i}
-            className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-              activeIndex === i ? "bg-primary w-3" : "bg-surface-container-high"
-            }`}
-          />
-        ))}
+      {/* 2. Active Count */}
+      <div className="px-5 py-4 min-w-0">
+        <p className="eyebrow">{t("subscriptions.metrics.active")}</p>
+        <p className="text-2xl md:text-3xl font-semibold tracking-tight tabular-nums text-on-surface mt-1.5">
+          {activeSubs.length}
+        </p>
+        <p className="text-xs text-on-surface-variant mt-1 flex items-center gap-1.5">
+          <span>{t("subscriptions.metrics.total", { count: subscriptions.length })}</span>
+          <span className="text-outline">·</span>
+          <span className={inactiveCount > 0 ? "text-error" : undefined}>
+            {t("subscriptions.metrics.inactive", { count: inactiveCount })}
+          </span>
+        </p>
+      </div>
+
+      {/* 3. Next Up */}
+      <div className="px-5 py-4 min-w-0">
+        <p className="eyebrow">{t("subscriptions.metrics.nextCharge")}</p>
+        {nextRenewal ? (
+          <>
+            <div className="flex items-baseline gap-2 mt-1.5 min-w-0">
+              <span className="text-2xl md:text-3xl font-semibold tracking-tight text-on-surface truncate">
+                {nextRenewal.name}
+              </span>
+              <span className="text-sm font-medium tabular-nums text-on-surface-variant shrink-0">
+                {formatCurrency(Number(nextRenewal.amount), currency.code)}
+              </span>
+            </div>
+            <span className="inline-flex items-center gap-1 h-5 px-1.5 rounded text-[11px] font-medium bg-tertiary/10 text-tertiary mt-1">
+              {isSameDay(parseISO(nextRenewal.next_billing_date), new Date())
+                ? t("subscriptions.metrics.dueToday")
+                : t("subscriptions.metrics.dueIn", {
+                    time: formatDistanceToNowStrict(parseISO(nextRenewal.next_billing_date), { locale: dateLocale }),
+                  })}
+            </span>
+          </>
+        ) : (
+          <>
+            <p className="text-2xl md:text-3xl font-semibold tracking-tight text-on-surface-variant mt-1.5">
+              {t("subscriptions.metrics.noUpcoming")}
+            </p>
+            <p className="text-xs text-on-surface-variant mt-1">{t("subscriptions.metrics.vaultClear")}</p>
+          </>
+        )}
       </div>
     </div>
   );

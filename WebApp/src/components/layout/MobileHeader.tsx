@@ -1,70 +1,47 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useUserPreferences } from "../../context/UserPreferencesContext";
 import { useAuth } from "../../context/AuthContext";
 import { useProfile } from "../../hooks/useProfile";
 import NotificationDropdown from "./NotificationDropdown";
+import ThemeToggle from "./ThemeToggle";
+import VaultIcon from "../ui/VaultIcon";
 
 export default function MobileHeader() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { session } = useAuth();
   const { profile } = useProfile();
-  const { resolvedTheme, setTheme } = useUserPreferences();
-  const isDark = resolvedTheme === "dark";
 
   const userEmail = session?.user?.email || "";
   const fallbackAvatar = `https://api.dicebear.com/9.x/thumbs/svg?seed=${userEmail}&backgroundColor=transparent`;
   const avatarSrc = profile?.avatar_url || fallbackAvatar;
 
-  const firstName = profile?.full_name?.split(" ")[0] || t("layout.user");
-  const hour = new Date().getHours();
-  let greeting = t("layout.greetings.morning");
-  if (hour >= 12 && hour < 18) greeting = t("layout.greetings.afternoon");
-  if (hour >= 18) greeting = t("layout.greetings.evening");
-
   return (
-    <header className="fixed top-0 w-full z-40 bg-background/80 backdrop-blur-md border-b border-outline-variant/10 flex justify-between items-center px-4 py-3 desk:hidden transition-colors duration-300">
-      {/* User Profile & Branding */}
-      <div className="flex items-center gap-3">
+    <header className="fixed top-0 inset-x-0 z-40 h-14 pt-[env(safe-area-inset-top,0px)] box-content bg-background border-b border-outline-variant flex items-center justify-between px-4 desk:hidden">
+      <Link to="/home" className="flex items-center gap-2">
+        <span className="w-8 h-8 rounded-lg bg-rail flex items-center justify-center">
+          <VaultIcon className="text-accent" width="20" height="20" />
+        </span>
+        <span className="text-[15px] font-semibold tracking-tight text-on-surface">Vault</span>
+      </Link>
+
+      <div className="flex items-center gap-0.5">
+        <button
+          onClick={() => navigate("/search")}
+          className="w-9 h-9 flex items-center justify-center rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors"
+          aria-label={t("search.placeholder")}
+        >
+          <span className="material-symbols-outlined text-[20px]">search</span>
+        </button>
+        <ThemeToggle />
+        <NotificationDropdown />
         <button
           onClick={() => navigate("/settings")}
-          className="w-9 h-9 rounded-xl overflow-hidden bg-surface-container-highest border border-outline-variant/20 shadow-sm cursor-pointer active:scale-95 transition-all"
+          className="ml-1.5 w-8 h-8 rounded-full overflow-hidden bg-surface-container border border-outline-variant active:scale-95 transition"
+          aria-label={t("sidebar.settings")}
         >
-          <img alt="User" className="w-full h-full object-cover" src={avatarSrc} />
+          <img alt="" className="w-full h-full object-cover" src={avatarSrc} />
         </button>
-        <div className="flex flex-col">
-          <span className="text-[10px] uppercase tracking-widest text-on-surface-variant font-black leading-tight">
-            {greeting}
-          </span>
-          <span className="text-sm font-black text-on-surface leading-tight">{firstName}</span>
-        </div>
-      </div>
-
-      {/* Actions (Theme & Notifications) */}
-      <div className="flex items-center gap-1">
-        {/* Seamless Sun/Moon Theme Toggle */}
-        <button
-          onClick={() => setTheme(isDark ? "light" : "dark")}
-          className="relative w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-high transition-colors overflow-hidden text-on-surface-variant hover:text-on-surface active:scale-95 focus:outline-none"
-          aria-label="Toggle Dark Mode"
-        >
-          {/* Sun Icon */}
-          <span
-            className={`material-symbols-outlined absolute transition-all duration-500 ease-in-out ${isDark ? "-rotate-90 opacity-0 scale-50" : "rotate-0 opacity-100 scale-100"}`}
-          >
-            light_mode
-          </span>
-          {/* Moon Icon */}
-          <span
-            className={`material-symbols-outlined absolute transition-all duration-500 ease-in-out ${isDark ? "rotate-0 opacity-100 scale-100" : "rotate-90 opacity-0 scale-50"}`}
-          >
-            dark_mode
-          </span>
-        </button>
-
-        {/* Notification Bell */}
-        <NotificationDropdown />
       </div>
     </header>
   );

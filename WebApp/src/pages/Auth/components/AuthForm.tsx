@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
 
+const inputCls =
+  "w-full h-11 rounded-lg border border-outline-variant bg-surface-container-lowest px-3 text-sm text-on-surface placeholder:text-outline outline-none focus:border-on-surface focus:ring-0 transition-colors";
+
 export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
   const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
@@ -59,8 +62,8 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
 
         navigate("/expenses");
       }
-    } catch (err: any) {
-      setError(err.message || t("auth.errorGeneric"));
+    } catch (err: unknown) {
+      setError((err instanceof Error && err.message) || t("auth.errorGeneric"));
     } finally {
       setLoading(false);
     }
@@ -70,26 +73,28 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
     <form className="w-full space-y-4" onSubmit={handleSubmit}>
       {/* Alerts */}
       {error && (
-        <div className="w-full p-3 rounded-lg bg-error-container/50 border border-error/20 text-error text-xs font-semibold text-center animate-in slide-in-from-top-2">
+        <div role="alert" className="w-full px-3 py-2.5 rounded-lg bg-error/10 border border-error/20 text-error text-[13px] font-medium animate-in fade-in">
           {error}
         </div>
       )}
       {message && (
-        <div className="w-full p-3 rounded-lg bg-secondary-container/50 border border-secondary/20 text-secondary text-xs font-semibold text-center animate-in slide-in-from-top-2">
+        <div role="status" className="w-full px-3 py-2.5 rounded-lg bg-secondary/10 border border-secondary/20 text-secondary text-[13px] font-medium animate-in fade-in">
           {message}
         </div>
       )}
 
       {/* Inputs */}
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         {isSignUp && (
-          <div className="animate-in slide-in-from-top-2 fade-in duration-300">
+          <div className="animate-in fade-in duration-300">
             <input
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder={t("auth.fullName")}
-              className="w-full bg-surface-container-low border border-outline-variant/30 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-3.5 text-sm font-medium text-on-surface placeholder:text-on-surface-variant/40 outline-none transition-all"
+              aria-label={t("auth.fullName")}
+              autoComplete="name"
+              className={inputCls}
               required={isSignUp}
             />
           </div>
@@ -100,7 +105,9 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("auth.email")}
-          className="w-full bg-surface-container-low border border-outline-variant/30 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-3.5 text-sm font-medium text-on-surface placeholder:text-on-surface-variant/40 outline-none transition-all"
+          aria-label={t("auth.email")}
+          autoComplete="email"
+          className={inputCls}
           required
         />
 
@@ -110,26 +117,30 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder={t("auth.password")}
-            className="w-full bg-surface-container-low border border-outline-variant/30 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl pl-4 pr-12 py-3.5 text-sm font-medium text-on-surface placeholder:text-on-surface-variant/40 outline-none transition-all"
+            aria-label={t("auth.password")}
+            autoComplete={isSignUp ? "new-password" : "current-password"}
+            className={`${inputCls} pr-11`}
             required
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-0 inset-y-0 w-12 flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors focus:outline-none cursor-pointer"
+            className="absolute right-1 inset-y-1 w-9 rounded-md flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors"
           >
             <span className="material-symbols-outlined text-[18px]">{showPassword ? "lock_open" : "lock"}</span>
           </button>
         </div>
 
         {isSignUp && (
-          <div className="relative flex items-center animate-in slide-in-from-top-2 fade-in duration-300">
+          <div className="relative flex items-center animate-in fade-in duration-300">
             <input
               type={showPassword ? "text" : "password"}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder={t("auth.confirmPassword")}
-              className="w-full bg-surface-container-low border border-outline-variant/30 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl pl-4 pr-12 py-3.5 text-sm font-medium text-on-surface placeholder:text-on-surface-variant/40 outline-none transition-all"
+              aria-label={t("auth.confirmPassword")}
+              autoComplete="new-password"
+              className={`${inputCls} pr-11`}
               required={isSignUp}
             />
           </div>
@@ -139,10 +150,10 @@ export default function AuthForm({ isSignUp }: { isSignUp: boolean }) {
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-3.5 bg-primary hover:bg-primary/90 text-on-primary disabled:opacity-50 disabled:cursor-not-allowed rounded-xl font-bold text-sm shadow-xl shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center mt-2"
+        className="w-full h-11 rounded-lg bg-accent text-on-accent text-sm font-medium hover:opacity-90 active:scale-[0.98] transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
       >
         {loading ? (
-          <div className="w-5 h-5 border-2 border-surface border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-4 h-4 border-2 border-on-accent border-t-transparent rounded-full animate-spin"></div>
         ) : (
           t("auth.continue")
         )}

@@ -2,12 +2,15 @@ import { useTranslation } from "react-i18next";
 import { useExpenses } from "../../../context/ExpensesContext";
 import { formatDateLabel } from "../../../utils/dateFormatters";
 import { PRESETS, buildPreset } from "../../../utils/filterPresets";
+import PageHeader from "../../../components/ui/PageHeader";
+import { cn } from "../../../utils/cn";
 
 export default function ExpensesHeader() {
   const { t } = useTranslation();
   const { filters, setFilters, setIsFilterOpen } = useExpenses();
 
   const dateLabel = formatDateLabel(filters.startDate, filters.endDate);
+  const activeCount = [filters.type, filters.categoryId].filter(Boolean).length;
 
   const applyPreset = (key: (typeof PRESETS)[number]["key"]) => {
     setFilters({ ...filters, ...buildPreset(key) });
@@ -19,48 +22,65 @@ export default function ExpensesHeader() {
   };
 
   return (
-    <div className="mb-6">
-      {/* 1. Title & Current Date Context (Functional Button) */}
-      <div className="flex flex-col gap-0.5 mb-6 cursor-pointer group w-fit" onClick={() => setIsFilterOpen(true)}>
-        <h1 className="text-4xl font-black text-on-surface font-headline tracking-tight group-hover:text-primary transition-colors">
-          {t("expenses.header.title")}
-        </h1>
-        <div className="flex items-center gap-1.5">
-          <p className="text-sm font-bold text-on-surface-variant/60 group-hover:text-on-surface-variant transition-colors">
-            {dateLabel}
-          </p>
-          <span 
-            className="material-symbols-outlined text-[16px] text-on-surface-variant/40 group-hover:text-primary transition-colors"
-            title={t("expenses.header.filterTooltip")}
-          >
-            tune
-          </span>
-        </div>
-      </div>
+    <PageHeader
+      title={t("expenses.header.title")}
+      description={
+        <button
+          type="button"
+          onClick={() => setIsFilterOpen(true)}
+          className="inline-flex items-center gap-1.5 text-sm text-on-surface-variant hover:text-on-surface transition-colors"
+          title={t("expenses.header.filterTooltip")}
+        >
+          <span className="material-symbols-outlined text-[16px]">calendar_today</span>
+          <span className="tabular-nums">{dateLabel}</span>
+        </button>
+      }
+      actions={
+        <>
+          {/* Date presets — segmented control */}
+          <div className="max-w-full overflow-x-auto hide-scrollbar">
+            <div
+              role="tablist"
+              className="inline-flex p-0.5 rounded-lg bg-surface-container border border-outline-variant"
+            >
+              {PRESETS.map((p) => {
+                const active = isPresetActive(p.key);
+                return (
+                  <button
+                    key={p.key}
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => applyPreset(p.key)}
+                    className={cn(
+                      "px-3 h-8 rounded-md text-xs font-medium whitespace-nowrap transition-colors",
+                      active
+                        ? "bg-surface-container-lowest text-on-surface shadow-sm"
+                        : "text-on-surface-variant hover:text-on-surface",
+                    )}
+                  >
+                    {t(`expenses.presets.${p.key}`)}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
-      {/* 2. Full-Bleed Scrolling Pills */}
-      <div className="grid grid-cols-1 w-full min-w-0">
-        <div className="flex gap-2 -mx-2 md:-mx-6 px-2 md:px-6 overflow-x-auto hide-scrollbar snap-x snap-mandatory">
-          {PRESETS.map((p) => {
-            const active = isPresetActive(p.key);
-            return (
-              <button
-                key={p.key}
-                onClick={() => applyPreset(p.key)}
-                className={`flex-none px-4 py-1.5 rounded-full text-xs font-bold snap-start transition-all duration-200 border ${
-                  active
-                    ? "bg-primary text-on-primary border-primary shadow-sm shadow-primary/20"
-                    : "bg-surface-container border-outline-variant/10 text-on-surface-variant hover:bg-surface-container-high hover:border-outline-variant/30"
-                }`}
-              >
-                {t(`expenses.presets.${p.key}`)}
-              </button>
-            );
-          })}
-          {/* Spacer to let the last pill clear the right edge */}
-          <div className="w-1 shrink-0 sm:hidden"></div>
-        </div>
-      </div>
-    </div>
+          <button
+            type="button"
+            onClick={() => setIsFilterOpen(true)}
+            title={t("expenses.header.filterTooltip")}
+            className="h-9 px-3.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface text-sm font-medium hover:bg-surface-container-low transition-colors inline-flex items-center gap-1.5"
+          >
+            <span className="material-symbols-outlined text-[18px]">tune</span>
+            {t("expenses.header.filterTooltip")}
+            {activeCount > 0 && (
+              <span className="inline-flex items-center justify-center min-w-5 h-5 px-1 rounded bg-on-surface text-surface-container-lowest text-[11px] font-medium tabular-nums">
+                {activeCount}
+              </span>
+            )}
+          </button>
+        </>
+      }
+    />
   );
 }

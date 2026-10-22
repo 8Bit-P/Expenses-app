@@ -30,62 +30,72 @@ export default function DeleteConfirmationModal({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="absolute inset-0 bg-background/60 backdrop-blur-sm"
+            transition={{ duration: 0.15 }}
+            className="absolute inset-0 bg-black/50"
             onClick={onClose}
           />
           <motion.div
-            initial={{ scale: 0.95, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            transition={{ type: "spring", damping: 25, stiffness: 350 }}
-            className="relative w-full max-w-md bg-surface-container-lowest/90 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-outline-variant/20 ring-1 ring-black/5"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            role="alertdialog"
+            aria-modal="true"
+            className="relative w-full max-w-md bg-surface-container-lowest rounded-2xl shadow-2xl border border-outline-variant overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-8">
-              {/* Danger Icon Header */}
-              <div className="flex flex-col items-center text-center mb-8">
-                <div className="w-16 h-16 rounded-2xl bg-error/10 flex items-center justify-center text-error mb-4 border border-error/20 shadow-sm">
-                  <span className="material-symbols-outlined text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-                    warning
-                  </span>
-                </div>
-                <h2 className="text-2xl font-black font-headline text-on-surface tracking-tight">{title}</h2>
-                <p className="text-on-surface-variant text-sm font-medium mt-2 leading-relaxed">{description}</p>
+            {/* Header */}
+            <div className="flex items-center justify-between gap-4 pl-5 pr-3 h-14 border-b border-outline-variant">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="material-symbols-outlined text-[20px] text-error shrink-0">warning</span>
+                <h2 className="text-[15px] font-semibold text-on-surface truncate">{title}</h2>
               </div>
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={isDeleting}
+                aria-label={t("common.cancel")}
+                className="w-9 h-9 shrink-0 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors disabled:opacity-50"
+              >
+                <span className="material-symbols-outlined text-[20px]">close</span>
+              </button>
+            </div>
 
-              {/* Item Highlight */}
-              <div className="mb-8 p-4 bg-surface-container-low rounded-xl border border-outline-variant/10 text-center">
-                <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60 block mb-1">
-                  {t("common.targetAsset")}
-                </span>
-                <span className="text-base font-black text-on-surface">{itemName}</span>
-              </div>
+            {/* Body */}
+            <div className="px-5 py-5 space-y-4">
+              <p className="text-sm text-on-surface-variant leading-relaxed">{description}</p>
 
-              {/* Actions */}
-              <div className="flex flex-col gap-3">
-                <button
-                  onClick={onConfirm}
-                  disabled={isDeleting}
-                  className="w-full py-4 bg-error text-on-error rounded-xl font-black text-xs uppercase tracking-widest hover:opacity-90 active:scale-[0.98] transition-all shadow-md flex items-center justify-center gap-2"
-                >
-                  {isDeleting ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-on-error/30 border-t-on-error rounded-full animate-spin"></div>
-                      {t("common.purging")}
-                    </>
-                  ) : (
-                    t("common.permanentlyDelete")
-                  )}
-                </button>
-                <button
-                  onClick={onClose}
-                  disabled={isDeleting}
-                  className="w-full py-3 text-on-surface-variant font-bold text-xs uppercase tracking-widest hover:bg-surface-container transition-all rounded-xl"
-                >
-                  {t("common.keepAsset")}
-                </button>
+              <div className="px-3.5 py-3 bg-surface-container-low rounded-lg border border-outline-variant">
+                <span className="eyebrow block mb-0.5">{t("common.targetAsset")}</span>
+                <span className="text-sm font-medium text-on-surface break-words">{itemName}</span>
               </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-end gap-2 px-5 py-4 border-t border-outline-variant">
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={isDeleting}
+                className="h-9 px-3.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface text-sm font-medium hover:bg-surface-container-low transition-colors disabled:opacity-50"
+              >
+                {t("common.keepAsset")}
+              </button>
+              <button
+                type="button"
+                onClick={onConfirm}
+                disabled={isDeleting}
+                className="h-9 px-4 rounded-lg bg-error text-white text-sm font-medium hover:opacity-90 active:scale-[0.98] transition flex items-center justify-center gap-2 disabled:opacity-60"
+              >
+                {isDeleting ? (
+                  <>
+                    <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    {t("common.purging")}
+                  </>
+                ) : (
+                  t("common.permanentlyDelete")
+                )}
+              </button>
             </div>
           </motion.div>
         </div>

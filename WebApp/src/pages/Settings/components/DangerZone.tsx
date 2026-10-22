@@ -3,6 +3,16 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "../../../lib/supabase";
 import { useAuth } from "../../../context/AuthContext";
 import { toast } from "sonner";
+import Panel from "../../../components/ui/Panel";
+import SettingsGroup from "./SettingsGroup";
+
+interface ExportRow {
+  date: string;
+  type: string;
+  amount: number;
+  description: string | null;
+  category: { name: string } | null;
+}
 
 interface DangerZoneProps {
   onDeleteClick: () => void;
@@ -27,7 +37,7 @@ export function ExportData() {
       if (error || !data) throw error;
 
       const header = ["Date", "Type", "Amount", "Description", "Category"].join(",");
-      const rows = data.map((tx: any) => [
+      const rows = (data as unknown as ExportRow[]).map((tx) => [
         tx.date,
         tx.type,
         tx.amount,
@@ -46,7 +56,7 @@ export function ExportData() {
       toast.success(t("settings.danger.exportSuccess"), {
         description: t("settings.danger.exportSuccessDesc"),
       });
-    } catch (err) {
+    } catch {
       toast.error(t("settings.danger.exportFailed"), {
         description: t("settings.danger.exportFailedDesc"),
       });
@@ -56,46 +66,56 @@ export function ExportData() {
   };
 
   return (
-    <div className="p-6 rounded-2xl bg-surface-container-low border border-outline-variant/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
-      <div>
-        <h5 className="font-extrabold font-headline text-on-surface flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary text-[20px]">download</span>
-          {t("settings.danger.exportTitle")}
-        </h5>
-        <p className="text-on-surface-variant text-sm font-medium mt-1">
-          {t("settings.danger.exportDesc")}
-        </p>
-      </div>
-      <button
-        onClick={handleExportCSV}
-        disabled={exporting}
-        className="px-6 py-2.5 bg-primary/10 hover:bg-primary/20 text-primary rounded-xl font-bold transition-all active:scale-95 shadow-sm whitespace-nowrap disabled:opacity-50 text-sm"
-      >
-        {exporting ? t("settings.danger.exporting") : t("settings.danger.exportButton")}
-      </button>
-    </div>
+    <SettingsGroup title={t("settings.danger.exportTitle")} description={t("settings.danger.exportDesc")}>
+      <Panel>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-lg bg-surface-container text-on-surface-variant flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-[18px]">table_view</span>
+            </div>
+            <p className="text-[13px] text-on-surface-variant font-mono truncate">
+              transactions-{new Date().toISOString().split("T")[0]}.csv
+            </p>
+          </div>
+          <button
+            onClick={handleExportCSV}
+            disabled={exporting}
+            className="h-9 px-3.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface text-sm font-medium hover:bg-surface-container-low transition-colors inline-flex items-center justify-center gap-1.5 whitespace-nowrap disabled:opacity-50"
+          >
+            <span className={`material-symbols-outlined text-[18px] ${exporting ? "animate-spin" : ""}`}>
+              {exporting ? "progress_activity" : "download"}
+            </span>
+            {exporting ? t("settings.danger.exporting") : t("settings.danger.exportButton")}
+          </button>
+        </div>
+      </Panel>
+    </SettingsGroup>
   );
 }
 
 export default function AccountDeletion({ onDeleteClick }: DangerZoneProps) {
   const { t } = useTranslation();
   return (
-    <div className="p-6 sm:p-8 rounded-2xl bg-error-container/10 border border-error/20 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-sm">
-      <div>
-        <h5 className="text-error font-extrabold font-headline flex items-center gap-2">
-          <span className="material-symbols-outlined text-[20px]">warning</span>
-          {t("settings.danger.zoneTitle")}
-        </h5>
-        <p className="text-error/70 text-sm font-medium mt-1">
-          {t("settings.danger.zoneDesc")}
-        </p>
+    <SettingsGroup
+      title={t("settings.danger.zoneTitle")}
+      description={t("settings.danger.zoneDesc")}
+      titleClassName="text-error"
+    >
+      <div className="rounded-2xl border border-error/40 bg-surface-container-lowest p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-start gap-3 min-w-0">
+          <span className="material-symbols-outlined text-[20px] text-error mt-px">warning</span>
+          <div className="min-w-0">
+            <p className="text-sm font-medium text-on-surface">{t("settings.danger.deleteButton")}</p>
+            <p className="text-xs text-on-surface-variant mt-0.5">{t("settings.danger.modal.desc")}</p>
+          </div>
+        </div>
+        <button
+          onClick={onDeleteClick}
+          className="h-9 px-3.5 rounded-lg border border-error/40 text-error text-sm font-medium hover:bg-error hover:text-white hover:border-error transition-colors whitespace-nowrap shrink-0"
+        >
+          {t("settings.danger.deleteButton")}
+        </button>
       </div>
-      <button
-        onClick={onDeleteClick}
-        className="px-6 py-2.5 bg-error text-white rounded-xl font-bold hover:bg-error/90 transition-all active:scale-95 shadow-sm whitespace-nowrap text-sm"
-      >
-        {t("settings.danger.deleteButton")}
-      </button>
-    </div>
+    </SettingsGroup>
   );
 }

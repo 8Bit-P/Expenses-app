@@ -26,53 +26,68 @@ export default function DeleteConfirmModal({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+            transition={{ duration: 0.15 }}
+            className="absolute inset-0 bg-black/50"
             onClick={onClose}
           />
 
           {/* Modal Container */}
           <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            transition={{ type: "spring", damping: 25, stiffness: 350 }}
-            className="relative w-full max-w-sm bg-surface-container-lowest/95 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-error/20 ring-1 ring-black/5"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            role="alertdialog"
+            aria-modal="true"
+            className="relative w-full max-w-sm bg-surface-container-lowest rounded-2xl shadow-2xl border border-outline-variant overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-8 pb-6 flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full bg-error/10 text-error flex items-center justify-center mb-6 ring-8 ring-error/5">
-                <span className="material-symbols-outlined text-[32px]">warning</span>
+            {/* Header */}
+            <div className="flex items-center justify-between gap-4 pl-5 pr-3 h-14 border-b border-outline-variant">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="material-symbols-outlined text-[20px] text-error shrink-0">warning</span>
+                <h2 className="text-[15px] font-semibold text-on-surface truncate">{title}</h2>
               </div>
-              
-              <h2 className="text-xl font-black font-headline text-on-surface mb-2">{title}</h2>
-              
-              <p className="text-sm font-medium text-on-surface-variant/80 mb-6">
-                {message}{" "}
-                {itemName && (
-                  <span className="font-black text-on-surface block mt-1">"{itemName}"</span>
-                )}
-              </p>
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={isExecuting}
+                aria-label="Close"
+                className="w-9 h-9 shrink-0 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors disabled:opacity-50"
+              >
+                <span className="material-symbols-outlined text-[20px]">close</span>
+              </button>
+            </div>
 
-              <div className="w-full space-y-3">
-                <button
-                  disabled={isExecuting}
-                  onClick={onConfirm}
-                  className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-black text-sm bg-error text-on-error hover:bg-error/90 active:scale-[0.98] transition-all shadow-lg shadow-error/20 disabled:opacity-50 disabled:shadow-none"
-                >
-                  <span className={`material-symbols-outlined text-[18px] ${isExecuting ? 'animate-spin' : ''}`}>
-                    {isExecuting ? 'autorenew' : 'delete'}
-                  </span>
-                  {isExecuting ? 'Deleting...' : 'Yes, Delete it'}
-                </button>
-                <button
-                  disabled={isExecuting}
-                  onClick={onClose}
-                  className="w-full py-3.5 rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container-high transition-colors"
-                >
-                  Cancel, Keep it
-                </button>
-              </div>
+            {/* Body */}
+            <div className="px-5 py-5">
+              <p className="text-sm text-on-surface-variant leading-relaxed">
+                {message}{" "}
+                {itemName && <span className="font-medium text-on-surface block mt-1.5">"{itemName}"</span>}
+              </p>
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-end gap-2 px-5 py-4 border-t border-outline-variant">
+              <button
+                type="button"
+                disabled={isExecuting}
+                onClick={onClose}
+                className="h-9 px-3.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface text-sm font-medium hover:bg-surface-container-low transition-colors disabled:opacity-50"
+              >
+                Cancel, Keep it
+              </button>
+              <button
+                type="button"
+                disabled={isExecuting}
+                onClick={onConfirm}
+                className="h-9 px-4 rounded-lg bg-error text-white text-sm font-medium hover:opacity-90 active:scale-[0.98] transition flex items-center justify-center gap-1.5 disabled:opacity-60"
+              >
+                <span className={`material-symbols-outlined text-[18px] ${isExecuting ? "animate-spin" : ""}`}>
+                  {isExecuting ? "autorenew" : "delete"}
+                </span>
+                {isExecuting ? "Deleting..." : "Yes, Delete it"}
+              </button>
             </div>
           </motion.div>
         </div>
@@ -80,4 +95,3 @@ export default function DeleteConfirmModal({
     </AnimatePresence>
   );
 }
-

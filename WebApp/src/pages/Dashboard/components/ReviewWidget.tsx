@@ -25,12 +25,14 @@ export default function ReviewWidget() {
   if (transactions.length === 0) {
     return (
       <motion.div 
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 flex items-center justify-center gap-3 text-emerald-600 dark:text-emerald-400 mb-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2 }}
+        className="relative overflow-hidden bg-surface-container-lowest border border-outline-variant rounded-2xl pl-5 pr-4 py-3 flex items-center gap-2.5"
       >
-        <CheckCircle size={20} />
-        <span className="text-sm font-bold">{t("dashboard.reviewWidget.emptyState")}</span>
+        <span className="absolute inset-y-0 left-0 w-[3px] bg-secondary" aria-hidden />
+        <CheckCircle size={16} className="text-secondary shrink-0" />
+        <span className="text-sm text-on-surface-variant">{t("dashboard.reviewWidget.emptyState")}</span>
       </motion.div>
     );
   }
@@ -56,7 +58,7 @@ export default function ReviewWidget() {
         }
       });
       toast.success(t("dashboard.reviewWidget.toast.approved"));
-    } catch (err) {
+    } catch {
       toast.error(t("dashboard.reviewWidget.toast.approvedError"));
     } finally {
       setApprovingIds(prev => {
@@ -72,7 +74,7 @@ export default function ReviewWidget() {
     try {
       await deleteTransaction(id);
       toast.success(t("dashboard.reviewWidget.toast.discarded"));
-    } catch (err) {
+    } catch {
       toast.error(t("dashboard.reviewWidget.toast.discardedError"));
     } finally {
       setDiscardingIds(prev => {
@@ -84,88 +86,86 @@ export default function ReviewWidget() {
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-surface-container-lowest rounded-2xl border-2 border-primary/20 shadow-lg shadow-primary/5 overflow-hidden relative"
+    <motion.section 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.2 }}
+      className="relative bg-surface-container-lowest rounded-2xl border border-outline-variant overflow-hidden"
     >
-      {/* Subtle Glow Effect */}
-      <div className="absolute inset-0 bg-primary/5 pointer-events-none animate-pulse" />
+      {/* Attention marker */}
+      <span className="absolute inset-y-0 left-0 w-[3px] bg-amber-500 z-10" aria-hidden />
 
-      <div className="p-5 border-b border-outline-variant/10 flex items-center justify-between relative z-10">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-            <Inbox size={20} />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-sm font-black font-headline text-on-surface">
-                {t("dashboard.reviewWidget.title", { count: transactions.length })}
-              </h2>
-              <div className="group relative flex items-center justify-center">
-                <HelpCircle className="w-4 h-4 text-on-surface-variant/30 hover:text-primary transition-colors cursor-help" />
-                <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 bg-surface-container-highest text-on-surface text-[10px] font-medium rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all pointer-events-none z-50 text-center border border-outline-variant/10">
-                  {t("dashboard.reviewWidget.tooltip")}
-                </div>
-              </div>
+      {/* Header */}
+      <div className="flex items-center justify-between gap-3 pl-5 pr-4 h-12 border-b border-outline-variant">
+        <div className="flex items-center gap-2 min-w-0">
+          <Inbox size={16} className="text-amber-600 dark:text-amber-400 shrink-0" />
+          <h2 className="text-sm font-semibold text-on-surface truncate">
+            {t("dashboard.reviewWidget.title", { count: transactions.length })}
+          </h2>
+          <span className="inline-flex items-center justify-center h-5 min-w-5 px-1.5 rounded text-[11px] font-medium tabular-nums bg-amber-500/15 text-amber-700 dark:text-amber-300 shrink-0">
+            {transactions.length}
+          </span>
+          <div className="group relative flex items-center justify-center shrink-0">
+            <HelpCircle className="w-3.5 h-3.5 text-outline hover:text-on-surface transition-colors cursor-help" />
+            <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-60 px-2.5 py-2 bg-surface-container-lowest text-on-surface text-xs leading-snug rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity pointer-events-none z-50 text-left border border-outline-variant">
+              {t("dashboard.reviewWidget.tooltip")}
             </div>
-            <p className="text-[10px] font-bold text-on-surface-variant/70 uppercase tracking-widest">
-              {t("dashboard.reviewWidget.subtitle")}
-            </p>
           </div>
         </div>
+        <p className="eyebrow hidden sm:block shrink-0">{t("dashboard.reviewWidget.subtitle")}</p>
       </div>
 
-      <div className="divide-y divide-outline-variant/5 max-h-[320px] overflow-y-auto relative z-10 custom-scrollbar">
+      <div className="divide-y divide-outline-variant max-h-[320px] overflow-y-auto">
         <AnimatePresence initial={false}>
-          {transactions.map((tx) => (
-            <motion.div
-              key={tx.id}
-              layout
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, x: 100, height: 0 }}
-              transition={{ duration: 0.3, ease: "circOut" }}
-              className="flex flex-col lg:flex-row lg:items-center justify-between p-4 hover:bg-surface-container-low/50 transition-colors group gap-4 lg:gap-8"
-            >
-              {/* Left Group: Date & Description */}
-              <div className="flex items-center gap-4 min-w-0 flex-1">
-                <div className="text-center min-w-[40px] shrink-0">
-                  <p className="text-[10px] font-black text-on-surface-variant uppercase leading-none mb-1">
-                    {format(new Date(tx.date), "MMM")}
-                  </p>
-                  <p className="text-sm font-black text-on-surface leading-none">
-                    {format(new Date(tx.date), "dd")}
+          {transactions.map((tx) => {
+            const isBusy = approvingIds.has(tx.id) || discardingIds.has(tx.id);
+            return (
+              <motion.div
+                key={tx.id}
+                layout
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 pl-5 pr-4 py-2.5 hover:bg-surface-container-low transition-colors"
+              >
+                {/* Date, description, amount */}
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <div className="w-9 text-center shrink-0 leading-none">
+                    <p className="text-[11px] font-medium text-on-surface-variant uppercase mb-1">
+                      {format(new Date(tx.date), "MMM")}
+                    </p>
+                    <p className="text-sm font-medium text-on-surface tabular-nums">
+                      {format(new Date(tx.date), "dd")}
+                    </p>
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <input
+                      type="text"
+                      value={editedDescriptions[tx.id] ?? tx.description ?? ""}
+                      placeholder={t("dashboard.reviewWidget.placeholder")}
+                      onChange={(e) => setEditedDescriptions(prev => ({ ...prev, [tx.id]: e.target.value }))}
+                      className="w-full h-7 -ml-1.5 px-1.5 bg-transparent border border-transparent rounded-md text-sm font-medium text-on-surface placeholder:text-outline hover:border-outline-variant focus:border-on-surface focus:bg-surface-container-lowest focus:ring-0 focus:outline-none transition-colors"
+                    />
+                    <p className="text-[11px] text-on-surface-variant leading-4">
+                      {t("dashboard.reviewWidget.pendingVerification")}
+                    </p>
+                  </div>
+
+                  <p className={`text-sm font-medium tabular-nums shrink-0 text-right ${tx.type === 'income' ? 'text-secondary' : 'text-on-surface'}`}>
+                    {tx.type === "income" ? "+" : "−"}
+                    {formatCurrency(Math.abs(tx.amount), currency.code)}
                   </p>
                 </div>
 
-                <div className="min-w-0 flex-1">
-                  <input
-                    type="text"
-                    value={editedDescriptions[tx.id] ?? tx.description ?? ""}
-                    placeholder={t("dashboard.reviewWidget.placeholder")}
-                    onChange={(e) => setEditedDescriptions(prev => ({ ...prev, [tx.id]: e.target.value }))}
-                    className="w-full bg-transparent border-none p-0 text-sm font-bold text-on-surface placeholder:text-on-surface-variant/30 focus:ring-0 focus:outline-none hover:bg-surface-container-low/80 rounded px-1 -ml-1 transition-colors"
-                  />
-                  <p className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/50 mt-1">
-                    {t("dashboard.reviewWidget.pendingVerification")}
-                  </p>
-                </div>
-              </div>
-
-              {/* Right Group: Amount, Category, Actions */}
-              <div className="flex items-center gap-3 lg:gap-6 shrink-0 w-full lg:w-auto justify-between lg:justify-end">
-                <p className={`text-xs font-black tabular-nums shrink-0 min-w-[80px] text-right ${tx.type === 'income' ? 'text-emerald-500' : 'text-on-surface'}`}>
-                  {tx.type === "income" ? "+" : "−"}
-                  {formatCurrency(Math.abs(tx.amount), currency.code)}
-                </p>
-
-                <div className="flex items-center gap-2 flex-1 lg:flex-none justify-end">
-                  <div className="relative flex-1 lg:flex-none max-w-[140px]">
+                {/* Category + actions */}
+                <div className="flex items-center gap-1.5 shrink-0 md:pl-0 pl-12">
+                  <div className="relative flex-1 md:flex-none md:w-44 min-w-0">
                     <select
                       value={selectedCategories[tx.id] || tx.category_id || ""}
                       onChange={(e) => setSelectedCategories(prev => ({ ...prev, [tx.id]: e.target.value }))}
-                      className="appearance-none w-full bg-surface-container-low border border-outline-variant/30 rounded-xl pl-8 pr-8 py-2 text-[11px] font-bold text-on-surface-variant focus:outline-none focus:border-primary/50 cursor-pointer transition-all hover:border-outline-variant"
+                      className="appearance-none w-full h-8 bg-surface-container-lowest border border-outline-variant rounded-md pl-7 pr-7 py-0 text-xs font-medium text-on-surface focus:outline-none focus:ring-0 focus:border-on-surface hover:border-outline cursor-pointer transition-colors"
                     >
                       <option value="" disabled>{t("dashboard.reviewWidget.selectCategory")}</option>
                       {categories.map(cat => (
@@ -174,43 +174,45 @@ export default function ReviewWidget() {
                         </option>
                       ))}
                     </select>
-                    <Tag size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant/50" />
-                    <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant/50 pointer-events-none" />
+                    <Tag size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" />
+                    <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" />
                   </div>
 
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <button
-                      onClick={() => handleDiscard(tx.id)}
-                      disabled={discardingIds.has(tx.id) || approvingIds.has(tx.id)}
-                      title={t("dashboard.reviewWidget.discard")}
-                      className="w-9 h-9 rounded-xl text-on-surface-variant/40 hover:text-error hover:bg-error/10 flex items-center justify-center transition-all active:scale-95 disabled:opacity-30"
-                    >
-                      {discardingIds.has(tx.id) ? (
-                        <Loader2 size={16} className="animate-spin" />
-                      ) : (
-                        <Trash2 size={16} />
-                      )}
-                    </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDiscard(tx.id)}
+                    disabled={isBusy}
+                    title={t("dashboard.reviewWidget.discard")}
+                    aria-label={t("dashboard.reviewWidget.discard")}
+                    className="w-8 h-8 rounded-md text-on-surface-variant hover:text-error hover:bg-error/10 flex items-center justify-center transition-colors disabled:opacity-40"
+                  >
+                    {discardingIds.has(tx.id) ? (
+                      <Loader2 size={15} className="animate-spin" />
+                    ) : (
+                      <Trash2 size={15} />
+                    )}
+                  </button>
 
-                    <button
-                      onClick={() => handleApprove(tx.id)}
-                      disabled={approvingIds.has(tx.id) || discardingIds.has(tx.id)}
-                      title={t("dashboard.reviewWidget.approve")}
-                      className="w-9 h-9 rounded-xl bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:scale-100 transition-all"
-                    >
-                      {approvingIds.has(tx.id) ? (
-                        <Loader2 size={16} className="animate-spin" />
-                      ) : (
-                        <Check size={18} strokeWidth={3} />
-                      )}
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleApprove(tx.id)}
+                    disabled={isBusy}
+                    title={t("dashboard.reviewWidget.approve")}
+                    aria-label={t("dashboard.reviewWidget.approve")}
+                    className="w-8 h-8 rounded-md bg-primary text-on-primary flex items-center justify-center hover:opacity-90 active:scale-[0.97] disabled:opacity-50 disabled:active:scale-100 transition"
+                  >
+                    {approvingIds.has(tx.id) ? (
+                      <Loader2 size={15} className="animate-spin" />
+                    ) : (
+                      <Check size={16} strokeWidth={2.5} />
+                    )}
+                  </button>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
         </AnimatePresence>
       </div>
-    </motion.div>
+    </motion.section>
   );
 }

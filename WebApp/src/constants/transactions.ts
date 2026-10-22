@@ -6,7 +6,6 @@ export interface TransactionKindOption {
   label: string;
   description: string;
   available: boolean;
-  gradient: string;
   iconBg: string;
   iconColor: string;
 }
@@ -18,9 +17,8 @@ export const TRANSACTION_KINDS: TransactionKindOption[] = [
     label: "Income / Expense",
     description: "Record a purchase, payment, or income",
     available: true,
-    gradient: "from-red-500/10 to-rose-500/5",
-    iconBg: "bg-red-500/15",
-    iconColor: "text-red-400",
+    iconBg: "bg-error/10",
+    iconColor: "text-error",
   },
   {
     kind: "subscription",
@@ -28,9 +26,8 @@ export const TRANSACTION_KINDS: TransactionKindOption[] = [
     label: "Subscription",
     description: "Track recurring charges",
     available: true,
-    gradient: "from-violet-500/10 to-purple-500/5",
-    iconBg: "bg-violet-500/15",
-    iconColor: "text-violet-400",
+    iconBg: "bg-tertiary/10",
+    iconColor: "text-tertiary",
   },
   {
     kind: "investment",
@@ -38,8 +35,7 @@ export const TRANSACTION_KINDS: TransactionKindOption[] = [
     label: "Investment",
     description: "Log an asset or portfolio entry",
     available: true,
-    gradient: "from-emerald-500/10 to-teal-500/5",
-    iconBg: "bg-emerald-500/15",
-    iconColor: "text-emerald-400",
+    iconBg: "bg-secondary/10",
+    iconColor: "text-secondary",
   },
 ];

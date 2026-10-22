@@ -1,6 +1,11 @@
 import { useTranslation } from "react-i18next";
 import type { AssetWithSnapshots, AssetType } from "../../../types/investments";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import type { TooltipContentProps } from "recharts";
+import Panel from "../../../components/ui/Panel";
+import { CATEGORY_COLORS, CHART } from "../../../constants/chartColors";
+import { useUserPreferences } from "../../../context/UserPreferencesContext";
+import { formatCurrency } from "../../../utils/currency";
 
 interface AllocationDonutProps {
   assets: AssetWithSnapshots[];
@@ -9,14 +14,15 @@ interface AllocationDonutProps {
 
 export default function AllocationDonut({ assets, stealthMode }: AllocationDonutProps) {
   const { t } = useTranslation();
+  const { currency } = useUserPreferences();
 
-  const TYPE_CONFIG: Record<AssetType, { label: string; hex: string; bg: string; text: string; icon: string }> = {
-    fund:         { label: t("investments.allocation.types.fund"),  hex: "#818cf8", bg: "bg-indigo-500/15",   text: "text-indigo-400",  icon: "pie_chart" },
-    crypto:       { label: t("investments.allocation.types.crypto"),       hex: "#a78bfa", bg: "bg-violet-500/15",   text: "text-violet-400",  icon: "currency_bitcoin" },
-    stock:        { label: t("investments.allocation.types.stock"),        hex: "#34d399", bg: "bg-emerald-500/15",  text: "text-emerald-400", icon: "trending_up" },
-    real_estate:  { label: t("investments.allocation.types.real_estate"),  hex: "#f59e0b", bg: "bg-amber-500/15",    text: "text-amber-400",   icon: "real_estate_agent" },
-    cash:         { label: t("investments.allocation.types.cash"),         hex: "#94a3b8", bg: "bg-slate-500/15",    text: "text-slate-400",   icon: "payments" },
-    other:        { label: t("investments.allocation.types.other"),        hex: "#6b7280", bg: "bg-zinc-500/15",     text: "text-zinc-400",    icon: "category" },
+  const TYPE_CONFIG: Record<AssetType, { label: string; hex: string }> = {
+    fund:        { label: t("investments.allocation.types.fund"),        hex: CATEGORY_COLORS[0] },
+    stock:       { label: t("investments.allocation.types.stock"),       hex: CATEGORY_COLORS[2] },
+    crypto:      { label: t("investments.allocation.types.crypto"),      hex: CATEGORY_COLORS[1] },
+    real_estate: { label: t("investments.allocation.types.real_estate"), hex: CATEGORY_COLORS[4] },
+    cash:        { label: t("investments.allocation.types.cash"),        hex: CATEGORY_COLORS[5] },
+    other:       { label: t("investments.allocation.types.other"),       hex: CATEGORY_COLORS[9] },
   };
 
   const typeValues: Record<string, number> = {};
@@ -32,7 +38,7 @@ export default function AllocationDonut({ assets, stealthMode }: AllocationDonut
   });
 
   const allocations = Object.entries(typeValues)
-    .filter(([_, val]) => val > 0)
+    .filter(([, val]) => val > 0)
     .map(([type, val]) => {
       const percentage = overallTotal > 0 ? (val / overallTotal) * 100 : 0;
       return {
@@ -44,21 +50,18 @@ export default function AllocationDonut({ assets, stealthMode }: AllocationDonut
     })
     .sort((a, b) => b.percentage - a.percentage);
 
-  // Custom tooltips to match the aesthetic (even though there's a legend, tooltips are nice on hover)
-  const CustomTooltip = ({ active, payload }: any) => {
+  const renderTooltip = ({ active, payload }: TooltipContentProps) => {
     if (active && payload && payload.length) {
-      const data = payload[0].payload; 
+      const data = payload[0].payload;
       if (!data || !data.config) return null;
 
       return (
-        <div className="bg-surface-container-lowest p-3 rounded-xl shadow-xl border border-outline-variant/20 font-body flex items-center gap-2 z-[100]">
-          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: data.config.hex }} />
-          <div>
-            <p className="text-xs font-bold text-on-surface">{data.config.label}</p>
-            <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70">
-               {stealthMode ? "**%" : `${data.percentage.toFixed(1)}%`}
-            </p>
-          </div>
+        <div className="bg-surface-container-lowest border border-outline-variant rounded-lg shadow-lg px-3 py-2 text-xs flex items-center gap-2">
+          <span className="w-2 h-2 rounded-sm shrink-0" style={{ backgroundColor: data.config.hex }} />
+          <span className="font-medium text-on-surface">{data.config.label}</span>
+          <span className="text-on-surface-variant tabular-nums">
+            {stealthMode ? "**%" : `${data.percentage.toFixed(1)}%`}
+          </span>
         </div>
       );
     }
@@ -66,27 +69,16 @@ export default function AllocationDonut({ assets, stealthMode }: AllocationDonut
   };
 
   return (
-    <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/10 h-full flex flex-col overflow-hidden">
-      {/* Header */}
-      <div className="px-7 pt-7 pb-5 border-b border-outline-variant/10 shrink-0">
-        <div className="flex items-center gap-2.5">
-          <span className="material-symbols-outlined text-[18px] text-primary">donut_large</span>
-          <h3 className="text-[11px] font-black uppercase tracking-[0.15em] text-on-surface-variant">
-            {t("investments.allocation.title")}
-          </h3>
-        </div>
-      </div>
-
+    <Panel title={t("investments.allocation.title")} className="h-full">
       {allocations.length === 0 ? (
-        <div className="flex-1 flex flex-col items-center justify-center gap-3 py-16 text-on-surface-variant/30">
-          <span className="material-symbols-outlined text-5xl">donut_large</span>
-          <p className="text-sm font-bold">{t("investments.allocation.noData")}</p>
+        <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
+          <span className="material-symbols-outlined text-[24px] text-outline">donut_large</span>
+          <p className="text-sm font-medium text-on-surface">{t("investments.allocation.noData")}</p>
         </div>
       ) : (
-        <div className="flex flex-col items-center p-7 gap-8 flex-1">
-          {/* Donut Graphic using Recharts */}
-          <div className="relative flex items-center justify-center w-full h-[220px]">
-             <ResponsiveContainer width="100%" height={220} minWidth={0} minHeight={0} debounce={50}>
+        <div className="flex flex-col gap-5">
+          <div className="relative w-full h-[200px]">
+            <ResponsiveContainer width="100%" height={200} minWidth={0} minHeight={0} debounce={50}>
               <PieChart>
                 <Pie
                   data={allocations}
@@ -94,74 +86,55 @@ export default function AllocationDonut({ assets, stealthMode }: AllocationDonut
                   nameKey="type"
                   cx="50%"
                   cy="50%"
-                  innerRadius="65%"
-                  outerRadius="95%"
-                  paddingAngle={3} // Native spacing between slices!
-                  stroke="none" // Removes border
-                  cornerRadius={6} // Slightly rounded slice edges look super premium
-                  startAngle={90} // Rotate to start from top
+                  innerRadius="68%"
+                  outerRadius="96%"
+                  paddingAngle={0}
+                  stroke={CHART.surface}
+                  strokeWidth={2}
+                  startAngle={90}
                   endAngle={-270}
                 >
                   {allocations.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.config.hex} style={{ transition: 'all 0.3s ease' }} className="hover:opacity-80 hover:cursor-pointer hover:drop-shadow-lg outline-none" />
+                    <Cell key={`cell-${index}`} fill={entry.config.hex} />
                   ))}
                 </Pie>
-                <Tooltip
-                  wrapperStyle={{ zIndex: 1000 }}
-                  content={<CustomTooltip />}
-                  cursor={false}
-                />
+                <Tooltip wrapperStyle={{ zIndex: 1000 }} content={renderTooltip} cursor={false} />
               </PieChart>
             </ResponsiveContainer>
-            
-            {/* Inner Content overlay perfectly centered */}
+
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-[9px] font-black tracking-widest text-on-surface-variant/50 uppercase mb-1 drop-shadow-sm">
-                {t("investments.allocation.diversified")}
-              </span>
-              <span className="text-3xl font-black font-headline text-on-surface leading-none drop-shadow-sm">
+              <span className="eyebrow">{t("investments.allocation.diversified")}</span>
+              <span className="text-3xl font-semibold tracking-tight tabular-nums text-on-surface leading-tight">
                 {stealthMode ? "?" : allocations.length}
               </span>
-              <span className="text-[9px] font-bold text-on-surface-variant/60 mt-0.5">
+              <span className="text-[11px] text-on-surface-variant">
                 {t("investments.allocation.assetClass", { count: allocations.length })}
               </span>
             </div>
           </div>
 
-          {/* Legend list */}
-          <div className="w-full space-y-2 mt-2">
-            {allocations.map((alloc) => (
-              <div
-                key={alloc.type}
-                className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-surface-container-low/60 hover:bg-surface-container transition-colors group"
-              >
-                {/* Icon */}
-                <div className={`w-8 h-8 rounded-lg ${alloc.config.bg} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform`}>
-                  <span className={`material-symbols-outlined text-[16px] ${alloc.config.text}`}>
-                    {alloc.config.icon}
-                  </span>
-                </div>
-
-                {/* Label */}
-                <span className="flex-1 text-sm font-bold text-on-surface">{alloc.config.label}</span>
-
-                {/* Bar */}
-                <div className="w-16 h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-700"
-                    style={{ width: `${alloc.percentage}%`, backgroundColor: alloc.config.hex }}
-                  />
-                </div>
-
-                {/* Percentage */}
-                <span className="text-sm font-black text-on-surface tabular-nums w-12 text-right">
-                  {stealthMode ? "**%" : `${alloc.percentage.toFixed(1)}%`}
-                </span>
-              </div>
-            ))}
-          </div>
+          <table className="w-full text-sm">
+            <tbody className="divide-y divide-outline-variant border-t border-outline-variant">
+              {allocations.map((alloc) => (
+                <tr key={alloc.type} className="h-10">
+                  <td className="pr-3">
+                    <span className="flex items-center gap-2 min-w-0">
+                      <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ backgroundColor: alloc.config.hex }} />
+                      <span className="truncate text-on-surface">{alloc.config.label}</span>
+                    </span>
+                  </td>
+                  <td className="px-2 text-right tabular-nums text-on-surface-variant whitespace-nowrap">
+                    {stealthMode ? "**%" : `${alloc.percentage.toFixed(1)}%`}
+                  </td>
+                  <td className="pl-2 text-right font-medium tabular-nums text-on-surface whitespace-nowrap">
+                    {stealthMode ? "****" : formatCurrency(alloc.value, currency.code)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
-    </div>
+    </Panel>
   );
 }

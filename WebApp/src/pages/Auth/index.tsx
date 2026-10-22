@@ -28,72 +28,80 @@ export default function Auth() {
   if (loading) return null;
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center bg-background p-4 overflow-hidden animate-in fade-in duration-500">
-      {/* Back to Home — Glassy pill */}
-      <Link
-        to="/"
-        className="absolute top-6 left-6 md:top-10 md:left-10 z-50 group flex items-center gap-2 px-4 py-2 rounded-full
-          bg-surface-container-lowest/60 backdrop-blur-md
-          border border-outline-variant/10 hover:border-primary/30
-          text-[11px] font-bold uppercase tracking-[0.18em]
-          text-on-surface-variant/50 hover:text-primary
-          shadow-sm hover:shadow-primary/10
-          transition-all duration-300 ease-out"
-      >
-        <span className="material-symbols-outlined text-[16px] group-hover:-translate-x-0.5 transition-transform duration-300 leading-none">
-          arrow_back_ios
-        </span>
-        <span className="hidden sm:inline">{t("legal.backToHome")}</span>
-      </Link>
+    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] bg-background text-on-surface">
+      {/* Brand panel (desktop) */}
+      <aside className="hidden lg:flex flex-col justify-between bg-rail text-on-rail p-12 xl:p-16">
+        <Link to="/" className="flex items-center gap-3 w-fit">
+          <span className="w-10 h-10 rounded-lg bg-accent text-on-accent flex items-center justify-center">
+            <VaultIcon className="text-on-accent" width="26" height="26" />
+          </span>
+          <span className="text-lg font-semibold tracking-tight">Vault</span>
+        </Link>
 
-      {/* Ambient glow blobs */}
-      <div className="pointer-events-none absolute top-[-10%] left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full bg-primary/10 blur-[120px]" />
-      <div className="pointer-events-none absolute bottom-[-5%] left-1/4 w-[400px] h-[400px] rounded-full bg-tertiary/8 blur-[100px]" />
-
-      <div className="relative w-full max-w-[420px] flex flex-col items-center z-10">
-        {/* Logo & Header */}
-        <div className="flex flex-col items-center mb-8 text-center animate-in fade-in slide-in-from-top-4 duration-700">
-          {/* Icon with glowing ring */}
-          <div className="relative mb-5">
-            <div className="absolute inset-0 rounded-2xl bg-primary/20 blur-xl scale-110" />
-            <div className="relative w-16 h-16 flex items-center justify-center rounded-2xl bg-surface-container-lowest border border-primary/20 shadow-lg shadow-primary/10 transition-transform hover:scale-105 duration-300">
-              <VaultIcon className="text-primary" width="36" height="36" />
-            </div>
-          </div>
-          <h1 className="text-3xl font-headline font-extrabold text-on-surface tracking-tight">Vault</h1>
-          <p className="text-sm text-on-surface-variant font-medium mt-1.5">
-            {isSignUp ? t("auth.signUpDesc") : t("auth.loginDesc")}
+        <div className="max-w-md">
+          <p className="font-display font-normal text-[56px] xl:text-[64px] leading-[0.95] tracking-[-0.01em]">
+            {t("landing.hero.headlinePrefix")} {t("landing.hero.headlineSuffix")}
           </p>
+          <p className="mt-6 text-[15px] leading-relaxed text-on-rail-variant">{t("landing.hero.subheadline")}</p>
         </div>
 
-        {/* Card Container */}
-        <div className="w-full bg-surface-container-lowest border border-outline-variant/15 rounded-3xl p-8 shadow-2xl shadow-black/20 animate-in fade-in slide-in-from-bottom-4 duration-700 relative overflow-hidden">
-          {/* Subtle top border accent */}
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+        <ul className="grid grid-cols-3 border-t border-rail-border pt-5 gap-4">
+          {[t("landing.hero.statEncryption"), t("landing.hero.statAnalytics"), t("landing.hero.statAds")].map((label, i) => (
+            <li key={label} className="text-xs text-on-rail-variant leading-snug">
+              <span className="block font-mono text-[11px] text-on-rail mb-1.5">{String(i + 1).padStart(2, "0")}</span>
+              {label}
+            </li>
+          ))}
+        </ul>
+      </aside>
 
-          {/* Modular Components */}
-          <AuthTabs isSignUp={isSignUp} setIsSignUp={setIsSignUp} />
+      {/* Form column */}
+      <div className="flex flex-col min-h-screen px-6 py-6 sm:px-10">
+        <div className="flex items-center justify-between">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1.5 h-9 px-2.5 -ml-2.5 rounded-lg text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors"
+          >
+            <span className="material-symbols-outlined text-[18px] leading-none">arrow_back</span>
+            <span className="hidden sm:inline">{t("legal.backToHome")}</span>
+          </Link>
 
-          <AuthForm isSignUp={isSignUp} />
-
-          {/* Divider */}
-          <div className="w-full flex items-center gap-3 my-7">
-            <div className="flex-1 h-px bg-outline-variant/15" />
-            <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest opacity-40">
-              {t("auth.or")}
+          {/* Compact brand (mobile) */}
+          <Link to="/" className="lg:hidden flex items-center gap-2">
+            <span className="w-8 h-8 rounded-md bg-accent text-on-accent flex items-center justify-center">
+              <VaultIcon className="text-on-accent" width="20" height="20" />
             </span>
-            <div className="flex-1 h-px bg-outline-variant/15" />
-          </div>
+            <span className="text-base font-semibold tracking-tight">Vault</span>
+          </Link>
+        </div>
 
-          <SocialLogins />
+        <div className="flex-1 flex items-center justify-center py-10">
+          <div className="w-full max-w-[380px] animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <h1 className="font-display font-normal text-[36px] sm:text-[40px] leading-[1.02] tracking-[-0.01em] text-on-surface mb-8">
+              {isSignUp ? t("auth.signUpDesc") : t("auth.loginDesc")}
+            </h1>
+
+            <AuthTabs isSignUp={isSignUp} setIsSignUp={setIsSignUp} />
+
+            <AuthForm isSignUp={isSignUp} />
+
+            {/* Divider */}
+            <div className="w-full flex items-center gap-3 my-6">
+              <div className="flex-1 h-px bg-outline-variant" />
+              <span className="text-xs text-on-surface-variant">{t("auth.or")}</span>
+              <div className="flex-1 h-px bg-outline-variant" />
+            </div>
+
+            <SocialLogins />
+          </div>
         </div>
 
         {/* Footer */}
-        <div className="mt-8 flex items-center gap-3 text-[11px] font-semibold text-on-surface-variant/50">
+        <div className="flex items-center justify-center lg:justify-start gap-3 text-xs text-on-surface-variant">
           <Link to="/terms" className="hover:text-on-surface transition-colors">
             {t("auth.terms")}
           </Link>
-          <span className="text-on-surface-variant/20">•</span>
+          <span className="text-outline">·</span>
           <Link to="/privacy" className="hover:text-on-surface transition-colors">
             {t("auth.privacy")}
           </Link>

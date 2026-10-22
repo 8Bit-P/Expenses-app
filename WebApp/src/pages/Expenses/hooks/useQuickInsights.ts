@@ -47,31 +47,36 @@ export function useQuickInsights() {
     // 1. Burn rate
     {
       icon: "local_fire_department",
-      iconColor: m.isRunningHot ? "text-red-400 bg-red-400/10" : "text-green-500 bg-green-500/10",
+      iconColor: m.isRunningHot ? "text-error bg-error/10" : "text-secondary bg-secondary/10",
       label: t("expenses.quickInsights.spendPace"),
       value: m.isRunningHot ? t("expenses.quickInsights.runningHot") : t("expenses.quickInsights.onTrack"),
-      sub: t("expenses.quickInsights.burnRate", { amount: internalFmt(m.dailyAverage) }) + ` · ${t("expenses.quickInsights.daysElapsed", { elapsed: m.daysElapsed, total: m.totalPeriodDays })}`,
+      sub:
+        t("expenses.quickInsights.burnRate", { amount: internalFmt(m.dailyAverage) }) +
+        ` · ${t("expenses.quickInsights.daysElapsed", { elapsed: m.daysElapsed, total: m.totalPeriodDays })}`,
       highlight: m.isRunningHot ? "negative" : "positive",
     },
     // 2. Net cash flow
     {
       icon: netFlow >= 0 ? "savings" : "account_balance_wallet",
-      iconColor: netFlow >= 0 ? "text-green-500 bg-green-500/10" : "text-red-400 bg-red-400/10",
+      iconColor: netFlow >= 0 ? "text-secondary bg-secondary/10" : "text-error bg-error/10",
       label: t("expenses.quickInsights.netCashFlow"),
       value: `${netFlow >= 0 ? "+" : ""}${internalFmt(netFlow)}`,
-      sub: netFlow >= 0 ? t("expenses.quickInsights.savedThisPeriod", { percent: m.savingsRate.toFixed(0) }) : t("expenses.quickInsights.negativeFlow"),
+      sub:
+        netFlow >= 0
+          ? t("expenses.quickInsights.savedThisPeriod", { percent: m.savingsRate.toFixed(0) })
+          : t("expenses.quickInsights.negativeFlow"),
       highlight: netFlow >= 0 ? "positive" : "negative",
     },
     // 3. Biggest category mover
     biggestMover
       ? {
           icon: biggestMover.direction === "up" ? "trending_up" : "trending_down",
-          iconColor: biggestMover.direction === "up" ? "text-red-400 bg-red-400/10" : "text-green-500 bg-green-500/10",
+          iconColor: biggestMover.direction === "up" ? "text-error bg-error/10" : "text-secondary bg-secondary/10",
           label: t("expenses.quickInsights.biggestMover"),
           value: `${biggestMover.emoji ?? ""} ${biggestMover.name}`,
-          sub: t("expenses.quickInsights.vsPrevious", { 
-            direction: biggestMover.direction === "up" ? "↑" : "↓", 
-            percent: Math.abs(biggestMover.deltaPct).toFixed(0) 
+          sub: t("expenses.quickInsights.vsPrevious", {
+            direction: biggestMover.direction === "up" ? "↑" : "↓",
+            percent: Math.abs(biggestMover.deltaPct).toFixed(0),
           }),
           highlight: biggestMover.direction === "up" ? "negative" : "positive",
         }
@@ -92,13 +97,18 @@ export function useQuickInsights() {
             return {
               icon: over ? "warning" : "account_balance",
               iconColor: over
-                ? "text-red-400 bg-red-400/10"
+                ? "text-error bg-error/10"
                 : budgetPct >= 80
-                  ? "text-amber-400 bg-amber-400/10"
-                  : "text-primary bg-primary/10",
+                  ? "text-amber-600 bg-amber-500/10"
+                  : "text-tertiary bg-tertiary/10",
               label: t("expenses.quickInsights.budgetStatus"),
-              value: over ? t("expenses.quickInsights.overBy", { amount: internalFmt(Math.abs(remaining)) }) : t("expenses.quickInsights.left", { amount: internalFmt(remaining) }),
-              sub: t("expenses.quickInsights.usedOfBudget", { percent: budgetPct.toFixed(0), amount: internalFmt(monthlyBudget) }),
+              value: over
+                ? t("expenses.quickInsights.overBy", { amount: internalFmt(Math.abs(remaining)) })
+                : t("expenses.quickInsights.left", { amount: internalFmt(remaining) }),
+              sub: t("expenses.quickInsights.usedOfBudget", {
+                percent: budgetPct.toFixed(0),
+                amount: internalFmt(monthlyBudget),
+              }),
               highlight: (over ? "negative" : budgetPct >= 80 ? "negative" : "positive") as
                 | "positive"
                 | "negative"
@@ -110,7 +120,7 @@ export function useQuickInsights() {
           burnDays !== null
             ? {
                 icon: "calendar_month",
-                iconColor: "text-primary bg-primary/10",
+                iconColor: "text-tertiary bg-tertiary/10",
                 label: t("expenses.quickInsights.incomeCovers"),
                 value: t("expenses.quickInsights.days", { count: burnDays }),
                 sub: t("expenses.quickInsights.burnRate", { amount: internalFmt(m.dailyAverage) }),
@@ -118,7 +128,7 @@ export function useQuickInsights() {
               }
             : {
                 icon: "receipt_long",
-                iconColor: "text-primary bg-primary/10",
+                iconColor: "text-tertiary bg-tertiary/10",
                 label: t("expenses.quickInsights.transactions"),
                 value: t("expenses.quickInsights.categories", { count: m.categoryBreakdown.length }),
                 highlight: "neutral" as const,

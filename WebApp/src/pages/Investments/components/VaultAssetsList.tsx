@@ -7,6 +7,7 @@ import { formatDistanceToNow, differenceInDays } from "date-fns";
 import { es, enUS } from "date-fns/locale";
 import { useInvestments } from "../../../hooks/useInvestments";
 import DeleteConfirmationModal from "../../../components/ui/DeleteConfirmationModal";
+import Panel from "../../../components/ui/Panel";
 
 interface VaultAssetsListProps {
   assets: AssetWithSnapshots[];
@@ -67,121 +68,119 @@ export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: 
     }
   };
 
+  const pagerButton =
+    "w-9 h-9 flex items-center justify-center rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors disabled:opacity-40 disabled:pointer-events-none";
+
   return (
-    <div className="bg-surface-container-lowest p-6 sm:p-8 rounded-2xl shadow-sm border border-outline-variant/10 h-full flex flex-col">
-      <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4 sm:gap-0 mb-6 sm:mb-8">
-        <div>
-          <h3 className="text-xl font-headline font-black text-on-surface">{t("investments.assetList.title")}</h3>
-          <p className="text-xs font-bold text-on-surface-variant mt-1">
-            {t("investments.assetList.subtitle")}
-          </p>
-        </div>
+    <Panel
+      title={t("investments.assetList.title")}
+      subtitle={t("investments.assetList.subtitle")}
+      flush
+      className="h-full"
+      bodyClassName="flex flex-col"
+      actions={
         <button
           onClick={() => onLogSnapshot()}
-          className="text-primary text-xs font-black uppercase tracking-widest hover:opacity-80 transition-opacity bg-primary/10 px-4 py-2 rounded-xl"
+          className="h-9 px-3.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface text-sm font-medium hover:bg-surface-container-low transition-colors inline-flex items-center gap-1.5"
         >
+          <span className="material-symbols-outlined text-[18px]">add</span>
           {t("investments.assetList.addNew")}
         </button>
-      </div>
-
-      <div className="flex-1 space-y-4">
+      }
+    >
+      <div className="flex-1 border-t border-outline-variant">
         {assets.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-on-surface-variant/40">
-            <span className="material-symbols-outlined text-5xl mb-2">account_balance</span>
-            <p className="text-sm font-bold">{t("investments.assetList.noAssets")}</p>
+          <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
+            <span className="material-symbols-outlined text-[24px] text-outline">account_balance</span>
+            <p className="text-sm font-medium text-on-surface">{t("investments.assetList.noAssets")}</p>
           </div>
         ) : (
-          paginatedAssets.map((asset) => {
-            const latestSnapshot = asset.asset_snapshots[0];
-            const currentValue = latestSnapshot ? Number(latestSnapshot.total_value) : 0;
+          <ul className="divide-y divide-outline-variant">
+            {paginatedAssets.map((asset) => {
+              const latestSnapshot = asset.asset_snapshots[0];
+              const currentValue = latestSnapshot ? Number(latestSnapshot.total_value) : 0;
 
-            // Stale Data Calculation
-            let isStale = false;
-            let lastUpdatedStr = t("investments.assetList.neverUpdated");
-            if (latestSnapshot) {
-              const diff = differenceInDays(new Date(), new Date(latestSnapshot.date));
-              if (diff > 30) isStale = true;
-              lastUpdatedStr = formatDistanceToNow(new Date(latestSnapshot.date), { addSuffix: true, locale: dateLocale });
-            } else {
-              // If it literally has no snapshots yet, consider it stale so they update it
-              isStale = true;
-            }
+              // Stale Data Calculation
+              let isStale = false;
+              let lastUpdatedStr = t("investments.assetList.neverUpdated");
+              if (latestSnapshot) {
+                const diff = differenceInDays(new Date(), new Date(latestSnapshot.date));
+                if (diff > 30) isStale = true;
+                lastUpdatedStr = formatDistanceToNow(new Date(latestSnapshot.date), { addSuffix: true, locale: dateLocale });
+              } else {
+                // If it literally has no snapshots yet, consider it stale so they update it
+                isStale = true;
+              }
 
-            return (
-              <div
-                key={asset.id}
-                onClick={() => onLogSnapshot(asset.id)}
-                className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl bg-surface-container-low hover:bg-surface-container hover:shadow-sm transition-all cursor-pointer group border border-transparent hover:border-outline-variant/20"
-              >
-                <div className="flex items-center gap-4 mb-3 sm:mb-0">
-                  <div
-                    className={`w-12 h-12 rounded-xl flex items-center justify-center text-on-surface bg-surface-container-highest group-hover:scale-105 transition-transform ${isStale ? "ring-2 ring-error/50" : ""}`}
-                  >
-                    <span className="material-symbols-outlined">{TYPE_ICONS[asset.type] || TYPE_ICONS.other}</span>
+              return (
+                <li
+                  key={asset.id}
+                  onClick={() => onLogSnapshot(asset.id)}
+                  className="group flex items-center gap-3 px-5 py-3 cursor-pointer hover:bg-surface-container-low transition-colors"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center shrink-0 text-on-surface-variant">
+                    <span className="material-symbols-outlined text-[18px]">{TYPE_ICONS[asset.type] || TYPE_ICONS.other}</span>
                   </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-on-surface tracking-tight flex items-center gap-2">
-                      {asset.name}
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <h4 className="text-sm font-medium text-on-surface truncate">{asset.name}</h4>
                       {isStale && (
-                        <span className="flex items-center text-[9px] font-black uppercase tracking-widest bg-error-container text-error px-1.5 py-0.5 rounded-md">
-                          <div className="w-1.5 h-1.5 bg-error rounded-full mr-1 animate-pulse"></div>
+                        <span className="inline-flex items-center h-5 px-1.5 rounded text-[11px] font-medium bg-error/10 text-error shrink-0">
                           {t("investments.assetList.needsUpdate")}
                         </span>
                       )}
-                    </h4>
-                    <p className="text-xs text-on-surface-variant font-medium capitalize mt-0.5">
-                      {t(`investments.allocation.types.${asset.type}`)} • {t("investments.assetList.lastUpdated", { date: lastUpdatedStr })}
+                    </div>
+                    <p className="text-xs text-on-surface-variant capitalize mt-0.5 truncate">
+                      {t(`investments.allocation.types.${asset.type}`)} · {t("investments.assetList.lastUpdated", { date: lastUpdatedStr })}
                     </p>
                   </div>
-                </div>
 
-                <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto mt-2 sm:mt-0 pt-2 sm:pt-0 border-t border-outline-variant/10 sm:border-t-0">
-                  <div className="text-right">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant block mb-0.5">
-                      {t("investments.assetList.value")}
-                    </span>
-                    <span className="text-lg font-black text-on-surface font-headline">
+                  <div className="text-right shrink-0">
+                    <span className="sr-only">{t("investments.assetList.value")}</span>
+                    <span className="text-sm font-medium tabular-nums text-on-surface">
                       {internalFormatCurrency(currentValue)}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={(e) => handleDelete(e, asset.id, asset.name)}
-                      className="w-9 h-9 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-error/10 hover:text-error transition-all"
-                      title={t("investments.assetList.deleteTitle")}
-                    >
-                      <span className="material-symbols-outlined text-[20px]">delete</span>
-                    </button>
-                    <span className="material-symbols-outlined text-primary opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all hidden sm:block">
+
+                  <div className="flex items-center gap-0.5 shrink-0">
+                    <span className="material-symbols-outlined text-[18px] text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block">
                       edit_square
                     </span>
+                    <button
+                      onClick={(e) => handleDelete(e, asset.id, asset.name)}
+                      className="w-9 h-9 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-error/10 hover:text-error transition-colors"
+                      title={t("investments.assetList.deleteTitle")}
+                    >
+                      <span className="material-symbols-outlined text-[18px]">delete</span>
+                    </button>
                   </div>
-                </div>
-              </div>
-            );
-          })
+                </li>
+              );
+            })}
+          </ul>
         )}
       </div>
 
       {assets.length > ITEMS_PER_PAGE && (
-        <div className="mt-6 sm:mt-8 pt-6 border-t border-outline-variant/10 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0">
-          <p className="text-xs font-bold text-on-surface-variant">
+        <div className="px-5 py-3 border-t border-outline-variant flex items-center justify-between gap-4">
+          <p className="text-xs text-on-surface-variant tabular-nums">
             {t("investments.assetList.pagination", { current: currentPage, total: totalPages })}
           </p>
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container hover:bg-surface-container-highest transition-all disabled:opacity-30 disabled:cursor-not-allowed border border-outline-variant/10"
+              className={pagerButton}
             >
-              <span className="material-symbols-outlined text-[20px]">chevron_left</span>
+              <span className="material-symbols-outlined text-[18px]">chevron_left</span>
             </button>
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container hover:bg-surface-container-highest transition-all disabled:opacity-30 disabled:cursor-not-allowed border border-outline-variant/10"
+              className={pagerButton}
             >
-              <span className="material-symbols-outlined text-[20px]">chevron_right</span>
+              <span className="material-symbols-outlined text-[18px]">chevron_right</span>
             </button>
           </div>
         </div>
@@ -196,6 +195,6 @@ export default function VaultAssetsList({ assets, stealthMode, onLogSnapshot }: 
         itemName={deleteModal.name}
         isDeleting={deleteAsset.isPending}
       />
-    </div>
+    </Panel>
   );
 }

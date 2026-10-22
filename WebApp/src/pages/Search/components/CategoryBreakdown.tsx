@@ -1,86 +1,72 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { LayoutGrid } from "lucide-react";
-import {
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  Sector,
-} from "recharts";
+import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Sector } from "recharts";
 import { formatCurrency } from "../../../utils/currency";
+import { CATEGORY_COLORS, CHART } from "../../../constants/chartColors";
+import Panel from "../../../components/ui/Panel";
 import type { CategorySlice } from "../hooks/useLedgerData";
+import type { SectorProps, TooltipContentProps } from "recharts";
+import type { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent";
 
-// ── Colour palette ────────────────────────────────────────────────────────────
-const PALETTE = [
-  "#818cf8", // indigo-400
-  "#f472b6", // pink-400
-  "#34d399", // emerald-400
-  "#fb923c", // orange-400
-  "#60a5fa", // blue-400
-  "#facc15", // yellow-400
-  "#a78bfa", // violet-400
-  "#4ade80", // green-400
-  "#f87171", // red-400
-  "#38bdf8", // sky-400
-  "#c084fc", // purple-400
-  "#2dd4bf", // teal-400
-];
+const OTHERS_COLOR = "var(--outline)";
 
 function colorFor(index: number): string {
-  return PALETTE[index % PALETTE.length];
+  return CATEGORY_COLORS[index % CATEGORY_COLORS.length];
 }
 
-// ── Custom active shape (enlarges on hover) ───────────────────────────────────
-function ActiveShape(props: any) {
-  const {
-    cx, cy,
-    innerRadius, outerRadius,
-    startAngle, endAngle,
-    fill,
-  } = props;
+// ── Custom active shape (slightly enlarges on hover) ──────────────────────────
+function ActiveShape(props: SectorProps) {
+  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
 
   return (
     <g>
       <Sector
         cx={cx}
         cy={cy}
-        innerRadius={innerRadius - 4}
-        outerRadius={outerRadius + 6}
+        innerRadius={innerRadius}
+        outerRadius={(outerRadius ?? 0) + 4}
         startAngle={startAngle}
         endAngle={endAngle}
         fill={fill}
-        opacity={1}
+        stroke={CHART.surface}
+        strokeWidth={2}
       />
     </g>
   );
 }
 
 // ── Custom tooltip ────────────────────────────────────────────────────────────
-function CustomTooltip({ active, payload, currencyCode }: any) {
+function CustomTooltip({
+  active,
+  payload,
+  currencyCode,
+}: Partial<TooltipContentProps<ValueType, NameType>> & { currencyCode: string }) {
   if (!active || !payload?.length) return null;
-  const { name, value, payload: { emoji, percentage } } = payload[0];
+  const {
+    name,
+    value,
+    payload: { emoji, percentage },
+  } = payload[0];
   return (
-    <div className="bg-surface-container border border-outline-variant/30 rounded-xl shadow-xl px-4 py-3 text-xs space-y-0.5 min-w-[160px]">
-      <p className="font-black text-on-surface mb-1">
-        {emoji ? `${emoji} ` : ""}{name}
+    <div className="bg-surface-container-lowest border border-outline-variant rounded-lg shadow-lg px-3 py-2 text-xs space-y-0.5 min-w-[160px]">
+      <p className="font-medium text-on-surface mb-1">
+        {emoji ? `${emoji} ` : ""}
+        {name}
       </p>
       <div className="flex items-center justify-between gap-4">
         <span className="text-on-surface-variant">Amount</span>
-        <span className="font-bold text-on-surface tabular-nums">
-          {formatCurrency(value, currencyCode)}
-        </span>
+        <span className="font-medium text-on-surface tabular-nums">{formatCurrency(Number(value), currencyCode)}</span>
       </div>
       <div className="flex items-center justify-between gap-4">
         <span className="text-on-surface-variant">Share</span>
-        <span className="font-bold text-on-surface tabular-nums">{percentage}%</span>
+        <span className="font-medium text-on-surface tabular-nums">{percentage}%</span>
       </div>
     </div>
   );
 }
 
-// ── Legend item ───────────────────────────────────────────────────────────────
+// ── Legend row with thin share bar ────────────────────────────────────────────
 function LegendRow({
   slice,
   color,
@@ -96,36 +82,31 @@ function LegendRow({
 }) {
   return (
     <div
-      className={`flex items-center gap-3 py-1.5 px-2 rounded-lg cursor-default transition-colors ${
-        isActive ? "bg-surface-container" : "hover:bg-surface-container/60"
+      className={`-mx-2 px-2 py-2 rounded-md cursor-default transition-colors ${
+        isActive ? "bg-surface-container-low" : ""
       }`}
       onMouseEnter={() => onHover(true)}
       onMouseLeave={() => onHover(false)}
     >
-      {/* Colour dot */}
-      <span
-        className="shrink-0 w-2.5 h-2.5 rounded-full"
-        style={{ background: color }}
-      />
-
-      {/* Emoji + name */}
-      <span className="flex-1 min-w-0 text-xs font-semibold text-on-surface truncate">
-        {slice.emoji ? `${slice.emoji} ` : ""}
-        {slice.name}
-      </span>
-
-      {/* Percentage */}
-      <span
-        className="text-[10px] font-black tabular-nums shrink-0"
-        style={{ color }}
-      >
-        {slice.percentage}%
-      </span>
-
-      {/* Amount */}
-      <span className="text-xs font-bold text-on-surface-variant tabular-nums shrink-0">
-        {formatCurrency(slice.value, currencyCode)}
-      </span>
+      <div className="flex items-center gap-2.5">
+        <span className="shrink-0 w-2 h-2 rounded-full" style={{ background: color }} />
+        <span className="flex-1 min-w-0 text-[13px] text-on-surface truncate">
+          {slice.emoji ? `${slice.emoji} ` : ""}
+          {slice.name}
+        </span>
+        <span className="w-10 text-right text-xs text-on-surface-variant tabular-nums shrink-0">
+          {slice.percentage}%
+        </span>
+        <span className="min-w-[88px] text-right text-[13px] font-medium text-on-surface tabular-nums shrink-0">
+          {formatCurrency(slice.value, currencyCode)}
+        </span>
+      </div>
+      <div className="mt-1.5 ml-[18px] h-1 rounded-full bg-surface-container-high overflow-hidden">
+        <div
+          className="h-full rounded-full transition-[width] duration-500"
+          style={{ width: `${Math.min(100, Math.max(0, slice.percentage))}%`, background: color }}
+        />
+      </div>
     </div>
   );
 }
@@ -149,60 +130,59 @@ export function CategoryBreakdown({ data, currencyCode, totalSpent }: CategoryBr
 
   // Collapse long lists into an "Others" slice for the chart
   const visibleSlices = showAll ? data : data.slice(0, MAX_VISIBLE);
-  const otherSlices   = showAll ? [] : data.slice(MAX_VISIBLE);
-  const othersTotal   = otherSlices.reduce((s, c) => s + c.value, 0);
-  const othersPerc    = otherSlices.reduce((s, c) => s + c.percentage, 0);
+  const otherSlices = showAll ? [] : data.slice(MAX_VISIBLE);
+  const othersTotal = otherSlices.reduce((s, c) => s + c.value, 0);
+  const othersPerc = otherSlices.reduce((s, c) => s + c.percentage, 0);
 
   const chartData: (CategorySlice & { color: string })[] = [
     ...visibleSlices.map((s, i) => ({ ...s, color: colorFor(i) })),
     ...(othersTotal > 0 && !showAll
-      ? [{ name: t("search.categoryBreakdown.others"), emoji: null, value: othersTotal, percentage: othersPerc, color: "#475569" }]
+      ? [
+          {
+            name: t("search.categoryBreakdown.others"),
+            emoji: null,
+            value: othersTotal,
+            percentage: othersPerc,
+            color: OTHERS_COLOR,
+          },
+        ]
       : []),
   ];
 
+  const toggle =
+    data.length > MAX_VISIBLE ? (
+      <button
+        onClick={() => setShowAll((v) => !v)}
+        className="h-8 px-2.5 rounded-md text-xs font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors"
+      >
+        {showAll
+          ? t("expenses.charts.categoryDonut.showLess")
+          : t("expenses.charts.categoryDonut.viewAll", { count: data.length })}
+      </button>
+    ) : undefined;
+
   return (
-    <div className="bg-surface-container-low border border-outline-variant/20 rounded-2xl p-6 shadow-sm">
-      {/* ── Header ─────────────────────────────────────────────────────────── */}
-      <div className="flex items-center justify-between mb-5">
-        <div className="flex items-center gap-2 text-on-surface font-bold">
-          <LayoutGrid size={16} className="text-secondary" />
-          <h3 className="text-sm">{t("search.categoryBreakdown.title")}</h3>
-        </div>
-
-        {data.length > MAX_VISIBLE && (
-          <button
-            onClick={() => setShowAll((v) => !v)}
-            className="text-[11px] font-bold text-primary hover:text-primary/80 transition-colors"
-          >
-            {showAll
-              ? t("expenses.charts.categoryDonut.showLess")
-              : t("expenses.charts.categoryDonut.viewAll", { count: data.length })}
-          </button>
-        )}
-      </div>
-
+    <Panel title={t("search.categoryBreakdown.title")} actions={toggle}>
       {isEmpty ? (
-        /* ── Empty state ───────────────────────────────────────────────────── */
-        <div className="flex flex-col items-center justify-center py-12 text-on-surface-variant/50">
-          <LayoutGrid size={32} className="mb-2 opacity-40" />
-          <p className="text-xs font-semibold">{t("search.categoryBreakdown.noData")}</p>
+        <div className="flex flex-col items-center justify-center gap-2 py-10 text-on-surface-variant">
+          <LayoutGrid size={20} className="text-outline" />
+          <p className="text-sm font-medium">{t("search.categoryBreakdown.noData")}</p>
         </div>
       ) : (
-        /* ── Chart + legend layout ─────────────────────────────────────────── */
-        <div className="flex flex-col sm:flex-row gap-6 items-center">
+        <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 items-center sm:items-start">
           {/* Donut */}
-          <div className="relative shrink-0" style={{ width: 200, height: 200 }}>
+          <div className="relative shrink-0 w-[176px] h-[176px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={chartData}
                   cx="50%"
                   cy="50%"
-                  innerRadius="60%"
-                  outerRadius="80%"
-                  paddingAngle={2}
+                  innerRadius="64%"
+                  outerRadius="86%"
                   dataKey="value"
-                  stroke="none"
+                  stroke={CHART.surface}
+                  strokeWidth={2}
                   // @ts-expect-error - Recharts types are incomplete for activeIndex
                   activeIndex={activeIndex ?? undefined}
                   activeShape={ActiveShape}
@@ -210,33 +190,30 @@ export function CategoryBreakdown({ data, currencyCode, totalSpent }: CategoryBr
                   onMouseLeave={() => setActiveIndex(null)}
                 >
                   {chartData.map((entry, i) => (
-                    <Cell key={i} fill={entry.color} opacity={activeIndex === null || activeIndex === i ? 0.92 : 0.35} />
+                    <Cell
+                      key={i}
+                      fill={entry.color}
+                      opacity={activeIndex === null || activeIndex === i ? 1 : 0.35}
+                    />
                   ))}
                 </Pie>
-                <Tooltip
-                  content={(props) => <CustomTooltip {...props} currencyCode={currencyCode} />}
-                />
+                <Tooltip content={(props) => <CustomTooltip {...props} currencyCode={currencyCode} />} />
               </PieChart>
             </ResponsiveContainer>
 
             {/* Centre label */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
               {activeIndex !== null && chartData[activeIndex] ? (
                 <>
-                  <span className="text-lg">{chartData[activeIndex].emoji ?? "📦"}</span>
-                  <span
-                    className="text-[11px] font-black tabular-nums mt-0.5"
-                    style={{ color: chartData[activeIndex].color }}
-                  >
+                  <span className="text-lg leading-none">{chartData[activeIndex].emoji ?? "📦"}</span>
+                  <span className="text-sm font-semibold text-on-surface tabular-nums mt-1">
                     {chartData[activeIndex].percentage}%
                   </span>
                 </>
               ) : (
                 <>
-                  <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">
-                    {t("search.totalSpent")}
-                  </span>
-                  <span className="text-sm font-black text-on-surface tabular-nums mt-0.5">
+                  <span className="eyebrow">{t("search.totalSpent")}</span>
+                  <span className="text-sm font-semibold text-on-surface tabular-nums mt-0.5">
                     {formatCurrency(totalSpent, currencyCode)}
                   </span>
                 </>
@@ -245,7 +222,7 @@ export function CategoryBreakdown({ data, currencyCode, totalSpent }: CategoryBr
           </div>
 
           {/* Ranked legend */}
-          <div className="flex-1 w-full space-y-0.5 min-w-0">
+          <div className="flex-1 w-full min-w-0">
             {chartData.map((slice, i) => (
               <LegendRow
                 key={slice.name}
@@ -256,11 +233,9 @@ export function CategoryBreakdown({ data, currencyCode, totalSpent }: CategoryBr
                 onHover={(active) => setActiveIndex(active ? i : null)}
               />
             ))}
-
-
           </div>
         </div>
       )}
-    </div>
+    </Panel>
   );
 }

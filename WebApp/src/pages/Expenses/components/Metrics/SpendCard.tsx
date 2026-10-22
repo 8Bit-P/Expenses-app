@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { CardWrapper } from "./CardWrapper";
+import { CardWrapper, CardLabel } from "./CardWrapper";
 import { DeltaBadge } from "./DeltaBadge";
 
 export function SpendCard({
@@ -21,32 +21,25 @@ export function SpendCard({
 
   return (
     <CardWrapper>
-      <div className="flex items-center gap-3 mb-3">
-        <div className="w-8 h-8 rounded-lg bg-error/10 text-error flex items-center justify-center">
-          <span className="material-symbols-outlined text-[18px]">payments</span>
-        </div>
-        <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">
-          {t("expenses.metrics.totalSpend")}
-        </span>
+      <CardLabel label={t("expenses.metrics.totalSpend")} icon="payments" />
+      <p className="mt-2 text-2xl md:text-3xl font-semibold tracking-tight tabular-nums text-on-surface truncate">
+        {formattedAmount}
+      </p>
+      <div className="mt-1.5 min-h-5">
+        <DeltaBadge pct={deltaPct} />
       </div>
-      <div>
-        <h2 className="text-3xl font-black text-on-surface font-headline tracking-tight">{formattedAmount}</h2>
-        <div className="mt-2 flex items-center gap-2">
-          <DeltaBadge pct={deltaPct} />
+      <div className="mt-auto pt-4 space-y-1.5">
+        <div className="flex justify-between gap-2 text-xs text-on-surface-variant">
+          <span className="truncate">{t("expenses.metrics.periodProgress")}</span>
+          <span className="tabular-nums">{pacePct.toFixed(0)}%</span>
         </div>
-      </div>
-      <div className="mt-3 space-y-1">
-        <div className="flex justify-between text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-wider">
-          <span>{t("expenses.metrics.periodProgress")}</span>
-          <span>{pacePct.toFixed(0)}%</span>
-        </div>
-        <div className="h-1.5 rounded-full bg-surface-container overflow-hidden">
+        <div className="h-1.5 rounded-full bg-surface-container-high overflow-hidden">
           <div
-            className={`h-full rounded-full transition-all ${actualVsProjected > 100 ? "bg-red-400" : "bg-primary"}`}
+            className={`h-full rounded-full transition-all ${actualVsProjected > 100 ? "bg-error" : "bg-primary"}`}
             style={{ width: `${Math.min(100, actualVsProjected)}%` }}
           />
         </div>
-        <p className="text-[10px] text-on-surface-variant/50 font-medium">
+        <p className="text-xs text-on-surface-variant truncate">
           {t("expenses.metrics.spentOfProjected", { ratio: spendRatio })}
         </p>
       </div>

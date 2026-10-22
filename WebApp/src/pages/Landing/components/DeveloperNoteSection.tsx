@@ -6,43 +6,41 @@ export default function DeveloperNoteSection() {
   const { t } = useTranslation();
 
   return (
-    <section id="support" className="py-24 px-6 bg-[#0F172A]">
-      <div className="max-w-2xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="bg-slate-900/50 border border-slate-800 rounded-3xl p-8 md:p-12 text-center shadow-xl"
-        >
-          <div className="w-12 h-12 bg-slate-800/50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-slate-700/50">
-            <Terminal className="text-violet-400" size={24} />
-          </div>
-          
-          <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-white mb-6">
+    <section id="support" className="py-20 md:py-28 px-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 pt-4 border-t border-on-surface"
+      >
+        <div className="lg:col-span-5">
+          <p className="flex items-center gap-3">
+            <span className="font-mono text-[11px] text-on-surface-variant">§ 03</span>
+            <Terminal size={14} strokeWidth={1.75} className="text-on-surface-variant" />
+          </p>
+          <h2 className="mt-4 font-display font-normal text-[36px] md:text-[48px] leading-[0.98] tracking-[-0.01em] text-on-surface">
             {t("support.title")}
           </h2>
-          
-          <div className="space-y-4 text-slate-400 text-base md:text-lg leading-relaxed text-left max-w-xl mx-auto mb-10">
-            <p>
-              {t("support.p1")}
-            </p>
-            <p>
-              {t("support.p2")}
-            </p>
+        </div>
+
+        <div className="lg:col-span-7 lg:pt-10">
+          <div className="space-y-4 text-on-surface text-base md:text-[17px] leading-relaxed max-w-prose">
+            <p>{t("support.p1")}</p>
+            <p>{t("support.p2")}</p>
           </div>
 
           <a
             href="https://buy.stripe.com/aFaeVcdAq6Qec814Fa48000"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm tracking-wide border border-slate-700 text-slate-300 hover:text-white hover:border-violet-500/50 hover:bg-violet-500/10 transition-all duration-300"
+            className="mt-8 inline-flex items-center gap-2 h-10 px-4 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface text-sm font-medium hover:bg-surface-container-low hover:border-outline transition-colors"
           >
-            <Zap size={18} className="text-amber-400" />
+            <Zap size={16} strokeWidth={1.75} className="text-on-surface-variant" />
             {t("support.cta")}
           </a>
-        </motion.div>
-      </div>
+        </div>
+      </motion.div>
     </section>
   );
 }

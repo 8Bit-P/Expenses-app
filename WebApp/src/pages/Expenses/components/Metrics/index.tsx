@@ -1,9 +1,9 @@
-import { useRef, useState, useEffect, useCallback } from "react";
 import { useExpenses } from "../../../../context/ExpensesContext";
 import { usePeriodMetrics } from "../../hooks/usePeriodMetrics";
 import { useUserPreferences } from "../../../../context/UserPreferencesContext";
 import { startOfMonth, endOfMonth, format } from "date-fns";
 import { formatCompactCurrency } from "../../../../utils/currency";
+import { cn } from "../../../../utils/cn";
 
 import { SkeletonCard } from "./SkeletonCard";
 import { SpendCard } from "./SpendCard";
@@ -11,15 +11,17 @@ import { ProjectedCard } from "./ProjectedCard";
 import { TopCategoryCard } from "./CategoryCard";
 import { BudgetCard } from "./BudgetCard";
 
+// One bordered strip; `gap-px` over the outline colour draws the hairline separators.
+// An odd last cell on the 2-col mobile grid spans the full row so no empty slot shows.
+const STRIP =
+  "grid gap-px bg-outline-variant border border-outline-variant rounded-2xl overflow-hidden [&>*:last-child:nth-child(odd)]:col-span-2";
+
 export default function MetricsRow() {
   const { filters } = useExpenses();
   const m = usePeriodMetrics(filters.startDate, filters.endDate);
   const { monthlyBudget, currency } = useUserPreferences();
 
   const internalFmt = (n: number) => formatCompactCurrency(n, currency.code);
-
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
 
   const pacePct = m.pacePercent;
   const actualVsProjected = m.projectedSpend > 0 ? (m.currentSpend / m.projectedSpend) * 100 : 0;
@@ -33,95 +35,57 @@ export default function MetricsRow() {
 
   const showBudget = isThisMonth && monthlyBudget > 0;
 
-  const handleScroll = useCallback(() => {
-    if (!scrollRef.current) return;
-    const { scrollLeft, scrollWidth } = scrollRef.current;
-    const length = showBudget ? 4 : 3;
-    const cardWidth = scrollWidth / length;
-    const index = Math.round(scrollLeft / cardWidth);
-
-    setActiveIndex(index);
-  }, [showBudget]);
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-
-    el.addEventListener("scroll", handleScroll);
-    return () => el.removeEventListener("scroll", handleScroll);
-  }, [m.loading, handleScroll]);
+  const cols = showBudget
+    ? "grid-cols-2 lg:grid-cols-4"
+    : "grid-cols-2 md:grid-cols-3 md:[&>*:last-child:nth-child(odd)]:col-span-1";
 
   if (m.loading) {
     return (
-      <div className="grid grid-cols-1 w-full min-w-0">
-        <div className="flex sm:grid sm:grid-cols-3 gap-4 sm:gap-6 -mx-2 md:-mx-6 px-2 md:px-6 overflow-x-auto pb-4 sm:pb-0 snap-x hide-scrollbar">
-          <SkeletonCard />
-          <SkeletonCard />
-          <SkeletonCard />
-          <div className="w-1 shrink-0 sm:hidden"></div>
-        </div>
+      <div className={cn(STRIP, "grid-cols-2 md:grid-cols-3 md:[&>*:last-child:nth-child(odd)]:col-span-1")}>
+        <SkeletonCard />
+        <SkeletonCard />
+        <SkeletonCard />
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 w-full min-w-0">
-      <div
-        ref={scrollRef}
-        className={`flex sm:grid gap-4 sm:gap-6 -mx-3 md:-mx-6 px-3 md:px-6 overflow-x-auto pb-4 sm:pb-0 snap-x snap-mandatory hide-scrollbar ${
-          showBudget ? "sm:grid-cols-4" : "sm:grid-cols-3"
-        }`}
-      >
-        <SpendCard
-          amount={m.currentSpend}
-          deltaPct={m.spendDeltaPct}
-          pacePct={pacePct}
-          actualVsProjected={actualVsProjected}
-          spendRatio={spendRatio}
-          formattedAmount={internalFmt(m.currentSpend)}
-          isRunningHot={m.isRunningHot}
+    <div className={cn(STRIP, cols)}>
+      <SpendCard
+        amount={m.currentSpend}
+        deltaPct={m.spendDeltaPct}
+        pacePct={pacePct}
+        actualVsProjected={actualVsProjected}
+        spendRatio={spendRatio}
+        formattedAmount={internalFmt(m.currentSpend)}
+        isRunningHot={m.isRunningHot}
+      />
+
+      <ProjectedCard
+        amount={m.projectedSpend}
+        isRunningHot={m.isRunningHot}
+        dailyAverage={m.dailyAverage}
+        daysElapsed={m.daysElapsed}
+        totalPeriodDays={m.totalPeriodDays}
+        formattedAmount={internalFmt(m.projectedSpend)}
+        formattedDailyAverage={internalFmt(m.dailyAverage)}
+      />
+
+      <TopCategoryCard
+        category={m.topCategory}
+        percent={m.topCategoryPercent}
+        formattedAmount={m.topCategory ? internalFmt(m.topCategory.amount) : ""}
+      />
+
+      {showBudget && (
+        <BudgetCard
+          budget={monthlyBudget}
+          currentSpend={m.currentSpend}
+          formattedBudget={internalFmt(monthlyBudget)}
+          formattedRemaining={internalFmt(monthlyBudget - m.currentSpend)}
+          formattedCurrentSpend={internalFmt(m.currentSpend)}
         />
-
-        <ProjectedCard
-          amount={m.projectedSpend}
-          isRunningHot={m.isRunningHot}
-          dailyAverage={m.dailyAverage}
-          daysElapsed={m.daysElapsed}
-          totalPeriodDays={m.totalPeriodDays}
-          formattedAmount={internalFmt(m.projectedSpend)}
-          formattedDailyAverage={internalFmt(m.dailyAverage)}
-        />
-
-        <TopCategoryCard
-          category={m.topCategory}
-          percent={m.topCategoryPercent}
-          formattedAmount={m.topCategory ? internalFmt(m.topCategory.amount) : ""}
-        />
-
-        {isThisMonth && monthlyBudget > 0 && (
-          <BudgetCard
-            budget={monthlyBudget}
-            currentSpend={m.currentSpend}
-            formattedBudget={internalFmt(monthlyBudget)}
-            formattedRemaining={internalFmt(monthlyBudget - m.currentSpend)}
-            formattedCurrentSpend={internalFmt(m.currentSpend)}
-          />
-        )}
-
-        <div className="w-1 shrink-0 sm:hidden"></div>
-      </div>
-
-      {/* Pagination Dots (Dynamic) */}
-      <div className="flex sm:hidden justify-center gap-1.5 mt-2 mb-4">
-        {Array.from({ length: showBudget ? 4 : 3 }).map((_, i) => (
-          <div
-            key={i}
-            className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-              activeIndex === i ? "bg-primary w-3" : "bg-surface-container-high"
-            }`}
-          />
-        ))}
-      </div>
+      )}
     </div>
   );
 }

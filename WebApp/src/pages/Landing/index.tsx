@@ -24,8 +24,8 @@ export default function Landing() {
   // This prevents the landing page from flashing before the redirect fires.
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#0F172A]">
-        <div className="w-8 h-8 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin" />
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="w-6 h-6 border-2 border-outline-variant border-t-on-surface rounded-full animate-spin" />
       </div>
     );
   }
@@ -34,7 +34,7 @@ export default function Landing() {
   if (session) return null;
 
   return (
-    <div className="min-h-screen bg-[#0F172A] text-slate-200 overflow-x-hidden">
+    <div className="min-h-screen bg-background text-on-surface overflow-x-hidden">
       <Navbar />
       <HeroSection />
       <TrustBanner />

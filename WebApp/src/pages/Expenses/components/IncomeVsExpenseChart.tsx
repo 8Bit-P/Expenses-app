@@ -6,25 +6,34 @@ import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { formatCurrency } from "../../../utils/currency";
 import { useTranslation } from "react-i18next";
+import { CHART, AXIS_TICK } from "../../../constants/chartColors";
+import Panel from "../../../components/ui/Panel";
 
-const CustomTooltip = ({ active, payload, label, currency }: any) => {
+interface BarTooltipProps {
+  active?: boolean;
+  payload?: { name?: string; value?: number; fill?: string }[];
+  label?: string;
+  currency: { code: string };
+}
+
+const CustomTooltip = ({ active, payload, label, currency }: BarTooltipProps) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-xl p-3 flex flex-col gap-1.5 min-w-[140px]">
-        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60 border-b border-outline-variant/10 pb-1 mb-0.5">
-          {label}
-        </p>
-        {payload.map((entry: any, index: number) => (
-          <div key={index} className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.fill }}></div>
-              <span className="text-xs font-bold text-on-surface capitalize">{entry.name}</span>
+      <div className="bg-surface-container-lowest border border-outline-variant rounded-lg shadow-lg px-3 py-2 text-xs min-w-[150px]">
+        <p className="eyebrow mb-1">{label}</p>
+        <div className="space-y-0.5">
+          {payload.map((entry, index) => (
+            <div key={index} className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-sm" style={{ backgroundColor: entry.fill }} />
+                <span className="text-on-surface-variant">{entry.name}</span>
+              </div>
+              <span className="font-medium text-on-surface tabular-nums">
+                {formatCurrency(entry.value ?? 0, currency.code)}
+              </span>
             </div>
-            <span className="text-xs font-black text-on-surface">
-              {formatCurrency(entry.value, currency.code)}
-            </span>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     );
   }
@@ -70,89 +79,78 @@ export default function IncomeVsExpenseChart() {
 
   if (loading) {
     return (
-      <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10 h-100 flex items-center justify-center animate-pulse">
-        <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/40">
+      <Panel className="h-full min-h-100" bodyClassName="flex items-center justify-center">
+        <span className="text-sm text-on-surface-variant animate-pulse">
           {t("expenses.charts.incomeVsExpense.analyzing")}
         </span>
-      </div>
+      </Panel>
     );
   }
 
   return (
-    <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10">
-      {/* Header section */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div>
-          <h4 className="text-lg font-bold font-headline text-on-surface">
-            {t("expenses.charts.incomeVsExpense.title")}
-          </h4>
-          <p className="text-xs font-medium text-on-surface-variant mt-0.5">
-            {t("expenses.charts.incomeVsExpense.subtitle")}
-          </p>
-        </div>
-
-        {/* Legend */}
-        <div className="flex items-center gap-4 text-xs font-bold">
+    <Panel
+      className="h-full"
+      title={t("expenses.charts.incomeVsExpense.title")}
+      subtitle={t("expenses.charts.incomeVsExpense.subtitle")}
+      actions={
+        <div className="flex items-center gap-4 text-xs">
           <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-sm bg-secondary"></div>
-            <span className="text-on-surface">
-              {t("expenses.charts.incomeVsExpense.income")}
-            </span>
+            <span className="w-2.5 h-2.5 rounded-sm bg-secondary" />
+            <span className="text-on-surface">{t("expenses.charts.incomeVsExpense.income")}</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-sm bg-primary"></div>
-            <span className="text-on-surface-variant">
-              {t("expenses.charts.incomeVsExpense.expense")}
-            </span>
+            <span className="w-2.5 h-2.5 rounded-sm bg-error" />
+            <span className="text-on-surface">{t("expenses.charts.incomeVsExpense.expense")}</span>
           </div>
         </div>
-      </div>
-
+      }
+    >
       <div className="w-full">
-        <ResponsiveContainer width="100%" height={300} minWidth={0} minHeight={0} debounce={50}>
-          <BarChart 
-            data={chartData} 
-            margin={{ top: 10, right: isMobile ? 0 : 20, left: isMobile ? -25 : 0, bottom: 0 }} 
+        <ResponsiveContainer width="100%" height={280} minWidth={0} minHeight={0} debounce={50}>
+          <BarChart
+            data={chartData}
+            margin={{ top: 8, right: isMobile ? 0 : 8, left: isMobile ? -12 : 0, bottom: 0 }}
             barGap={isMobile ? 2 : 4}
           >
-            <CartesianGrid
-              strokeDasharray="3 3"
-              vertical={false}
-              stroke="currentColor"
-              className="text-outline-variant/20"
-            />
+            <CartesianGrid vertical={false} stroke={CHART.grid} strokeDasharray="0" />
 
-            <XAxis
-              dataKey="month"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fontSize: 11, fill: "currentColor" }}
-              className="text-on-surface-variant/60 font-semibold"
-              dy={10}
-            />
+            <XAxis dataKey="month" axisLine={false} tickLine={false} tick={AXIS_TICK} dy={8} />
             <YAxis
               axisLine={false}
               tickLine={false}
-              width={isMobile ? 40 : 80}
-              tick={{ fontSize: 11, fill: "currentColor" }}
-              className="text-on-surface-variant/60 font-semibold"
-              tickFormatter={(value) => formatCurrency(value, currency.code, { 
-                notation: isMobile ? 'compact' : 'standard', 
-                maximumFractionDigits: 0 
-              })}
+              width={isMobile ? 44 : 72}
+              tick={AXIS_TICK}
+              tickFormatter={(value) =>
+                formatCurrency(value, currency.code, {
+                  notation: isMobile ? "compact" : "standard",
+                  maximumFractionDigits: 0,
+                })
+              }
             />
 
             <Tooltip
-              cursor={{ fill: "var(--surface-container-low)", opacity: 0.4 }}
+              isAnimationActive={false}
+              cursor={{ fill: CHART.cursor }}
               content={<CustomTooltip currency={currency} />}
             />
 
-            <Bar dataKey="income" name={t("expenses.charts.incomeVsExpense.income")} fill="var(--secondary)" radius={[2, 2, 0, 0]} barSize={isMobile ? 10 : 24} />
-            <Bar dataKey="expense" name={t("expenses.charts.incomeVsExpense.expense")} fill="var(--primary)" radius={[2, 2, 0, 0]} barSize={isMobile ? 10 : 24} />
+            <Bar
+              dataKey="income"
+              name={t("expenses.charts.incomeVsExpense.income")}
+              fill={CHART.income}
+              radius={[3, 3, 0, 0]}
+              barSize={isMobile ? 10 : 22}
+            />
+            <Bar
+              dataKey="expense"
+              name={t("expenses.charts.incomeVsExpense.expense")}
+              fill={CHART.expense}
+              radius={[3, 3, 0, 0]}
+              barSize={isMobile ? 10 : 22}
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>
-    </div>
+    </Panel>
   );
 }
-

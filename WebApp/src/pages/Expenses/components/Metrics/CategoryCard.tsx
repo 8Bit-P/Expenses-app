@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { CardWrapper } from "./CardWrapper";
+import { CardWrapper, CardLabel } from "./CardWrapper";
 
 export function TopCategoryCard({
   category,
@@ -14,28 +14,27 @@ export function TopCategoryCard({
 
   return (
     <CardWrapper>
-      <div className="flex items-center gap-3 mb-3">
-        <div className="w-8 h-8 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center">
-          <span className="material-symbols-outlined text-[18px]">pie_chart</span>
-        </div>
-        <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">
-          {t("expenses.metrics.topCategory")}
-        </span>
-      </div>
+      <CardLabel label={t("expenses.metrics.topCategory")} icon="pie_chart" />
       {category ? (
         <>
-          <h2 className="text-3xl font-black text-on-surface font-headline tracking-tight flex items-center gap-2 truncate">
-            {category.emoji && <span>{category.emoji}</span>}
+          <p className="mt-2 text-xl md:text-2xl font-semibold tracking-tight text-on-surface flex items-center gap-2 min-w-0">
+            {category.emoji && <span className="shrink-0">{category.emoji}</span>}
             <span className="truncate">{category.name}</span>
-          </h2>
-          <p className="text-xs font-bold text-on-surface-variant mt-2 ml-1 flex items-center gap-1">
-            {formattedAmount} <span className="opacity-40">·</span> {t("expenses.metrics.ofTotal", { percent: percent.toFixed(0) })}
           </p>
+          <div className="mt-auto pt-4 space-y-1.5">
+            <div className="flex justify-between gap-2 text-xs">
+              <span className="font-medium text-on-surface tabular-nums">{formattedAmount}</span>
+              <span className="text-on-surface-variant tabular-nums">
+                {percent.toFixed(0)}% {t("expenses.metrics.ofTotal", { percent: percent.toFixed(0) })}
+              </span>
+            </div>
+            <div className="h-1.5 rounded-full bg-surface-container-high overflow-hidden">
+              <div className="h-full rounded-full bg-tertiary" style={{ width: `${Math.min(100, percent)}%` }} />
+            </div>
+          </div>
         </>
       ) : (
-        <p className="text-sm font-bold text-on-surface-variant/40 mt-4">
-          {t("expenses.metrics.noExpenseData")}
-        </p>
+        <p className="text-sm text-on-surface-variant mt-3">{t("expenses.metrics.noExpenseData")}</p>
       )}
     </CardWrapper>
   );

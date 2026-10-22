@@ -40,6 +40,8 @@ export default function AccountModal({ isOpen, onClose, account }: AccountModalP
   useEffect(() => {
     if (isOpen) {
       if (account) {
+        // Reset form fields whenever the modal opens (intentional sync from props).
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setName(account.name);
         setIcon(account.icon || "🏦");
         setColor(account.color || "#6366f1");
@@ -82,55 +84,54 @@ export default function AccountModal({ isOpen, onClose, account }: AccountModalP
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="absolute inset-0 bg-background/60 backdrop-blur-md"
+              transition={{ duration: 0.15 }}
+              className="absolute inset-0 bg-black/50"
               onClick={onClose}
             />
 
             <motion.div
-              initial={{ scale: 0.95, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 350 }}
-              className="relative bg-surface-container-lowest/95 backdrop-blur-xl w-full max-w-md rounded-2xl shadow-2xl border border-outline-variant/20 ring-1 ring-black/5 max-h-[90dvh] overflow-y-auto"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
+              role="dialog"
+              aria-modal="true"
+              className="relative bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-outline-variant max-h-[90dvh] flex flex-col overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Colored top bar */}
-              <div className="h-1.5 w-full" style={{ background: color }} />
-
               {/* Header */}
-              <div className="px-7 pt-6 pb-4 border-b border-outline-variant/8">
-                <div className="flex justify-between items-start">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-inner"
-                      style={{ background: `${color}22`, border: `1.5px solid ${color}44` }}
-                    >
-                      {icon}
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-black text-on-surface tracking-tight font-headline">
-                        {isEditing ? t("accounts.modal.edit.title") : t("accounts.modal.create.title")}
-                      </h2>
-                      <p className="text-xs text-on-surface-variant font-medium">
-                        {isEditing ? t("accounts.modal.edit.subtitle") : t("accounts.modal.create.subtitle")}
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={onClose}
-                    className="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container-low hover:bg-surface-container-high transition-colors text-on-surface-variant"
+              <div className="flex items-center justify-between gap-4 pl-5 pr-3 py-3.5 border-b border-outline-variant shrink-0">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div
+                    className="w-9 h-9 rounded-lg flex items-center justify-center text-lg shrink-0"
+                    style={{ background: `${color}1f`, boxShadow: `inset 0 0 0 1px ${color}40` }}
                   >
-                    <span className="material-symbols-outlined text-[20px]">close</span>
-                  </button>
+                    {icon}
+                  </div>
+                  <div className="min-w-0">
+                    <h2 className="text-[15px] font-semibold text-on-surface leading-5 truncate">
+                      {isEditing ? t("accounts.modal.edit.title") : t("accounts.modal.create.title")}
+                    </h2>
+                    <p className="text-xs text-on-surface-variant truncate">
+                      {isEditing ? t("accounts.modal.edit.subtitle") : t("accounts.modal.create.subtitle")}
+                    </p>
+                  </div>
                 </div>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  aria-label={t("common.cancel")}
+                  className="w-9 h-9 shrink-0 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors"
+                >
+                  <span className="material-symbols-outlined text-[20px]">close</span>
+                </button>
               </div>
 
               {/* Body */}
-              <div className="p-7 space-y-5">
+              <div className="px-5 py-5 space-y-5 overflow-y-auto">
                 {/* Name */}
-                <div className="space-y-2">
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-medium text-on-surface-variant">
                     {t("accounts.nameLabel")}
                   </label>
                   <input
@@ -139,27 +140,28 @@ export default function AccountModal({ isOpen, onClose, account }: AccountModalP
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder={t("accounts.namePlaceholder")}
-                    className="w-full bg-surface-container border border-outline-variant/20 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 rounded-xl py-3 px-4 text-sm font-semibold text-on-surface placeholder:text-on-surface-variant/40 outline-none transition-all"
+                    className="w-full h-10 rounded-lg border border-outline-variant bg-surface-container-lowest px-3 text-sm text-on-surface placeholder:text-outline focus:border-on-surface focus:ring-0 outline-none transition-colors"
                     onKeyDown={(e) => e.key === "Enter" && handleSave()}
                   />
                 </div>
 
                 {/* Icon Picker */}
-                <div className="space-y-2">
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-medium text-on-surface-variant">
                     {t("accounts.iconLabel")}
                   </label>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5">
                     {PRESET_ICONS.map((emoji) => (
                       <button
+                        type="button"
                         key={emoji}
                         onClick={() => setIcon(emoji)}
-                        className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl transition-all border ${
+                        aria-pressed={icon === emoji}
+                        className={`w-10 h-10 rounded-lg flex items-center justify-center text-lg border transition-colors ${
                           icon === emoji
-                            ? "border-2 shadow-md scale-110"
-                            : "border-outline-variant/20 bg-surface-container hover:bg-surface-container-high hover:scale-105"
+                            ? "border-on-surface bg-surface-container"
+                            : "border-outline-variant bg-surface-container-lowest hover:bg-surface-container-low hover:border-outline"
                         }`}
-                        style={icon === emoji ? { borderColor: color, background: `${color}18` } : {}}
                       >
                         {emoji}
                       </button>
@@ -168,22 +170,27 @@ export default function AccountModal({ isOpen, onClose, account }: AccountModalP
                 </div>
 
                 {/* Color Picker */}
-                <div className="space-y-2">
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-medium text-on-surface-variant">
                     {t("accounts.colorLabel")}
                   </label>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2.5">
                     {PRESET_COLORS.map((c) => (
                       <button
+                        type="button"
                         key={c}
                         onClick={() => setColor(c)}
-                        className={`w-8 h-8 rounded-full transition-all flex items-center justify-center ${
-                          color === c ? "scale-125 ring-2 ring-offset-2 ring-offset-surface-container-lowest" : "hover:scale-110"
+                        aria-pressed={color === c}
+                        aria-label={c}
+                        className={`w-7 h-7 rounded-full transition-shadow flex items-center justify-center ${
+                          color === c
+                            ? "ring-2 ring-on-surface ring-offset-2 ring-offset-surface-container-lowest"
+                            : "hover:ring-1 hover:ring-outline hover:ring-offset-2 hover:ring-offset-surface-container-lowest"
                         }`}
-                        style={{ background: c, ringColor: c } as React.CSSProperties}
+                        style={{ background: c }}
                       >
                         {color === c && (
-                          <span className="material-symbols-outlined text-white text-[14px] font-black">check</span>
+                          <span className="material-symbols-outlined text-white text-[14px]">check</span>
                         )}
                       </button>
                     ))}
@@ -192,39 +199,45 @@ export default function AccountModal({ isOpen, onClose, account }: AccountModalP
               </div>
 
               {/* Footer */}
-              <div className="px-7 pb-6 flex items-center gap-3">
-                <button
-                  onClick={onClose}
-                  disabled={isSaving || isDeleting}
-                  className="flex-1 py-3 rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container-high transition-all"
-                >
-                  {t("common.cancel")}
-                </button>
-
+              <div className="flex items-center gap-2 px-5 py-4 border-t border-outline-variant shrink-0">
                 {isEditing && (
                   <button
+                    type="button"
                     onClick={() => setShowDeleteConfirm(true)}
                     disabled={isSaving || isDeleting}
-                    className="w-11 h-11 flex items-center justify-center rounded-xl text-on-surface-variant/40 hover:text-error hover:bg-error/10 transition-all border border-outline-variant/10"
+                    aria-label={t("common.delete")}
+                    title={t("common.delete")}
+                    className="w-9 h-9 flex items-center justify-center rounded-lg border border-outline-variant text-on-surface-variant hover:text-error hover:border-error/30 hover:bg-error/10 transition-colors disabled:opacity-50"
                   >
-                    <span className="material-symbols-outlined text-[20px]">delete</span>
+                    <span className="material-symbols-outlined text-[18px]">delete</span>
                   </button>
                 )}
 
-                <button
-                  onClick={handleSave}
-                  disabled={isSaving || isDeleting || !canSave}
-                  className="flex-[2] py-3 rounded-xl font-semibold text-sm text-white hover:opacity-90 active:scale-[0.98] transition-all shadow-lg disabled:opacity-50 disabled:shadow-none"
-                  style={{ background: color }}
-                >
-                  {isSaving
-                    ? isEditing
-                      ? t("accounts.modal.edit.saving")
-                      : t("accounts.modal.create.saving")
-                    : isEditing
-                      ? t("accounts.modal.edit.save")
-                      : t("accounts.modal.create.save")}
-                </button>
+                <div className="flex items-center gap-2 ml-auto">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    disabled={isSaving || isDeleting}
+                    className="h-9 px-3.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface text-sm font-medium hover:bg-surface-container-low transition-colors disabled:opacity-50"
+                  >
+                    {t("common.cancel")}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleSave}
+                    disabled={isSaving || isDeleting || !canSave}
+                    className="h-9 px-4 rounded-lg bg-primary text-on-primary text-sm font-medium hover:opacity-90 active:scale-[0.98] transition disabled:opacity-50"
+                  >
+                    {isSaving
+                      ? isEditing
+                        ? t("accounts.modal.edit.saving")
+                        : t("accounts.modal.create.saving")
+                      : isEditing
+                        ? t("accounts.modal.edit.save")
+                        : t("accounts.modal.create.save")}
+                  </button>
+                </div>
               </div>
             </motion.div>
           </div>

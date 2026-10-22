@@ -5,6 +5,7 @@ import type { TransactionType } from "../../../types/expenses";
 import { DEFAULT_FILTERS } from "../constants";
 import { PRESETS, buildPreset, type PresetKey } from "../../../utils/filterPresets";
 import { CustomSelect } from "../../../components/ui/CustomSelect";
+import { cn } from "../../../utils/cn";
 
 export default function FilterPanel() {
   const { t } = useTranslation();
@@ -25,52 +26,46 @@ export default function FilterPanel() {
     filters.endDate !== DEFAULT_FILTERS.endDate;
 
   const inputCls =
-    "w-full bg-surface-container border border-outline-variant/30 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all placeholder:text-on-surface-variant/40 text-on-surface";
+    "h-10 w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 text-sm text-on-surface focus:border-on-surface focus:ring-0 focus:outline-none transition-colors";
 
   return (
     <>
       <style>{`
-        .filter-date::-webkit-calendar-picker-indicator {
-          opacity: 0.5; cursor: pointer; filter: invert(0.6);
-        }
+        .filter-date::-webkit-calendar-picker-indicator { opacity: 0.6; cursor: pointer; }
       `}</style>
 
-      <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/20 overflow-visible relative">
+      <div className="relative">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/10 bg-surface-container-low/40 rounded-t-2xl">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-[18px]">tune</span>
-            <h4 className="text-sm font-black uppercase tracking-[0.15em] text-on-surface">
-              {t("expenses.filter.narrative")}
-            </h4>
-          </div>
+        <div className="flex items-center justify-between px-5 py-3 border-b border-outline-variant bg-surface-container-low">
+          <h4 className="eyebrow">{t("expenses.filter.narrative")}</h4>
           {isDirty && (
             <button
               onClick={() => setFilters(DEFAULT_FILTERS)}
-              className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1"
+              className="inline-flex items-center gap-1 h-7 px-2 rounded-md text-xs font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors"
             >
-              <span className="material-symbols-outlined text-[13px]">refresh</span>
+              <span className="material-symbols-outlined text-[15px]">refresh</span>
               {t("expenses.filter.reset")}
             </button>
           )}
         </div>
 
-        <div className="p-5 space-y-6">
+        <div className="divide-y divide-outline-variant">
           {/* Flow Type */}
-          <div className="space-y-2.5">
-            <label className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant block">
-              {t("expenses.filter.type")}
-            </label>
-            <div className="grid grid-cols-3 gap-1.5 p-1 bg-surface-container rounded-xl">
+          <div className="px-5 py-5 space-y-2.5">
+            <label className="eyebrow block">{t("expenses.filter.type")}</label>
+            <div className="grid grid-cols-3 p-0.5 rounded-lg bg-surface-container border border-outline-variant">
               {(["all", "income", "expense"] as const).map((tKey) => {
                 const active = tKey === "all" ? !filters.type : filters.type === tKey;
                 return (
                   <button
                     key={tKey}
                     onClick={() => handleTypeChange(tKey === "all" ? undefined : tKey)}
-                    className={`py-2 rounded-lg text-xs font-bold transition-all ${
-                      active ? "bg-primary text-white shadow-sm" : "text-on-surface hover:bg-surface-container-lowest"
-                    }`}
+                    className={cn(
+                      "h-8 rounded-md text-xs font-medium transition-colors",
+                      active
+                        ? "bg-surface-container-lowest text-on-surface shadow-sm"
+                        : "text-on-surface-variant hover:text-on-surface",
+                    )}
                   >
                     {t(`expenses.filter.types.${tKey}`)}
                   </button>
@@ -80,10 +75,8 @@ export default function FilterPanel() {
           </div>
 
           {/* Category */}
-          <div className="space-y-2.5">
-            <label className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant block">
-              {t("expenses.filter.category")}
-            </label>
+          <div className="px-5 py-5 space-y-2.5">
+            <label className="eyebrow block">{t("expenses.filter.category")}</label>
             <CustomSelect
               value={filters.categoryId || "all"}
               options={[
@@ -96,10 +89,8 @@ export default function FilterPanel() {
           </div>
 
           {/* Date Range */}
-          <div className="space-y-2.5">
-            <label className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant block">
-              {t("expenses.filter.dateRange")}
-            </label>
+          <div className="px-5 py-5 space-y-3">
+            <label className="eyebrow block">{t("expenses.filter.dateRange")}</label>
 
             {/* Preset chips */}
             <div className="flex flex-wrap gap-1.5">
@@ -110,11 +101,12 @@ export default function FilterPanel() {
                   <button
                     key={p.key}
                     onClick={() => applyPreset(p.key)}
-                    className={`text-[10px] font-bold px-2.5 py-1 rounded-lg transition-all ${
+                    className={cn(
+                      "h-8 px-2.5 rounded-md text-xs font-medium border transition-colors",
                       isActive
-                        ? "bg-primary text-white"
-                        : "bg-surface-container text-on-surface hover:bg-surface-container-low border border-outline-variant/20"
-                    }`}
+                        ? "bg-on-surface text-surface-container-lowest border-on-surface"
+                        : "bg-surface-container-lowest text-on-surface border-outline-variant hover:bg-surface-container-low",
+                    )}
                   >
                     {t(`expenses.presets.${p.key}`)}
                   </button>
@@ -128,18 +120,17 @@ export default function FilterPanel() {
                 type="date"
                 value={filters.startDate || ""}
                 onChange={(e) => setFilters({ ...filters, startDate: e.target.value || undefined })}
-                className={`filter-date ${inputCls} flex-1 min-w-0 py-2.5 px-3 text-xs cursor-pointer`}
+                className={`filter-date ${inputCls} flex-1 min-w-0 cursor-pointer tabular-nums`}
               />
-              <span className="text-on-surface-variant/40 font-bold text-sm shrink-0">→</span>
+              <span className="text-outline text-sm shrink-0">→</span>
               <input
                 type="date"
                 value={filters.endDate || ""}
                 onChange={(e) => setFilters({ ...filters, endDate: e.target.value || undefined })}
-                className={`filter-date ${inputCls} flex-1 min-w-0 py-2.5 px-3 text-xs cursor-pointer`}
+                className={`filter-date ${inputCls} flex-1 min-w-0 cursor-pointer tabular-nums`}
               />
             </div>
           </div>
-
         </div>
       </div>
     </>

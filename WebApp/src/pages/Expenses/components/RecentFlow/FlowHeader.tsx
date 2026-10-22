@@ -10,30 +10,23 @@ export default function FlowHeader({ totalCount, loading, onAddNew }: FlowHeader
   const { t } = useTranslation();
 
   return (
-    <div className="flex items-center justify-between px-6 py-5 md:py-4 border-b border-outline-variant/10">
-      <div className="">
-        <h4 className="text-lg font-bold font-headline text-on-surface">
-          {t("expenses.recentFlow.title")}
-        </h4>
+    <header className="flex items-center justify-between gap-4 px-5 py-4 border-b border-outline-variant">
+      <div className="min-w-0">
+        <h2 className="text-[15px] font-semibold text-on-surface leading-6">{t("expenses.recentFlow.title")}</h2>
         {!loading && totalCount > 0 && (
-          <p className="text-xs font-medium text-on-surface-variant mt-1">
+          <p className="text-xs text-on-surface-variant mt-0.5 tabular-nums">
             {t("expenses.recentFlow.movements", { count: totalCount })}
           </p>
         )}
       </div>
 
-      {/* Add entry — subtle inline action */}
       <button
         onClick={onAddNew}
-        className="group flex items-center gap-2 pl-3 pr-4 py-2 rounded-xl border border-outline-variant/20 hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
+        className="h-9 pl-2.5 pr-3.5 rounded-lg bg-accent text-on-accent text-sm font-medium inline-flex items-center gap-1.5 hover:opacity-90 active:scale-[0.98] transition shrink-0"
       >
-        <span className="w-5 h-5 rounded-md bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
-          <span className="material-symbols-outlined text-primary text-[14px]">add</span>
-        </span>
-        <span className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant group-hover:text-primary transition-colors">
-          {t("expenses.recentFlow.entry")}
-        </span>
+        <span className="material-symbols-outlined text-[18px]">add</span>
+        {t("expenses.recentFlow.entry")}
       </button>
-    </div>
+    </header>
   );
 }

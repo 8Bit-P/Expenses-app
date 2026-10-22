@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { List, Loader2, Search, TrendingUp, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { Search, TrendingUp, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from "lucide-react";
 import { formatTransactionDate } from "../../../utils/dateFormatters";
 import { formatCurrency } from "../../../utils/currency";
 import type { LedgerRow } from "../types";
 import { buildPageRange } from "../../Expenses/utils/pagination";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import TransactionModal from "../../Expenses/components/TransactionModal";
+import { cn } from "../../../utils/cn";
 
 interface LedgerTableProps {
   rows: LedgerRow[];
@@ -23,16 +24,16 @@ function SourceBadge({ row }: { row: LedgerRow }) {
   const isIncome = row.domain === "Transactions" && row.raw?.type === "income";
 
   const config = isIncome
-    ? { label: "INC", bg: "bg-emerald-500/10", text: "text-emerald-400", icon: <TrendingUp size={9} /> }
+    ? { label: "INC", cls: "bg-secondary/10 text-secondary", icon: <TrendingUp size={10} /> }
     : row.domain === "Transactions"
-    ? { label: "TXN", bg: "bg-red-500/10", text: "text-red-400", icon: null }
-    : row.domain === "Assets"
-    ? { label: "AST", bg: "bg-violet-500/10", text: "text-violet-400", icon: null }
-    : { label: "REC", bg: "bg-blue-500/10", text: "text-blue-400", icon: null };
+      ? { label: "TXN", cls: "bg-surface-container text-on-surface-variant", icon: null }
+      : row.domain === "Assets"
+        ? { label: "AST", cls: "bg-tertiary/10 text-tertiary", icon: null }
+        : { label: "REC", cls: "border border-outline-variant text-on-surface-variant", icon: null };
 
   return (
     <span
-      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider ${config.bg} ${config.text}`}
+      className={`inline-flex items-center gap-1 h-5 px-1.5 rounded font-mono text-[11px] font-medium ${config.cls}`}
     >
       {config.icon}
       {config.label}
@@ -40,27 +41,46 @@ function SourceBadge({ row }: { row: LedgerRow }) {
   );
 }
 
+function CategoryTile({ emoji }: { emoji?: string | null }) {
+  return (
+    <span className="w-7 h-7 rounded-md bg-surface-container flex items-center justify-center text-sm shrink-0">
+      {emoji || "📁"}
+    </span>
+  );
+}
+
+function Amount({ value, currencyCode }: { value: number; currencyCode: string }) {
+  return (
+    <span className={`font-medium tabular-nums whitespace-nowrap ${value >= 0 ? "text-secondary" : "text-on-surface"}`}>
+      {value >= 0 ? "+" : "−"}
+      {formatCurrency(Math.abs(value), currencyCode)}
+    </span>
+  );
+}
+
 const PAGE_SIZE = 20;
 
-export function LedgerTable({ 
-  rows, 
-  loading, 
+export function LedgerTable({
+  rows,
+  loading,
   currencyCode,
   sortColumn,
   setSortColumn,
   sortDirection,
-  setSortDirection
+  setSortDirection,
 }: LedgerTableProps) {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
   const [page, setPage] = useState(1);
-  const [selectedTx, setSelectedTx] = useState<any>(null);
+  const [selectedTx, setSelectedTx] = useState<LedgerRow["raw"]>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Reset page when filters change
-  useEffect(() => {
+  const [prevRows, setPrevRows] = useState(rows);
+  if (rows !== prevRows) {
+    setPrevRows(rows);
     setPage(1);
-  }, [rows]);
+  }
 
   const totalPages = Math.ceil(rows.length / PAGE_SIZE);
 
@@ -80,118 +100,150 @@ export function LedgerTable({
     }
   };
 
+  const openRow = (row: LedgerRow) => {
+    if (row.domain === "Transactions") {
+      setSelectedTx(row.raw);
+      setIsModalOpen(true);
+    }
+  };
+
+  const sortIcon = (col: "date" | "amount") =>
+    sortColumn === col ? (
+      sortDirection === "asc" ? (
+        <ChevronUp size={13} className="text-on-surface" />
+      ) : (
+        <ChevronDown size={13} className="text-on-surface" />
+      )
+    ) : (
+      <ChevronDown size={13} className="opacity-0 group-hover:opacity-60 transition-opacity" />
+    );
+
+  const ariaSort = (col: "date" | "amount") =>
+    sortColumn === col ? (sortDirection === "asc" ? "ascending" : "descending") : undefined;
+
+  const thBase = "eyebrow h-10 px-4 font-medium border-b border-outline-variant whitespace-nowrap";
+
   return (
-    <div className="bg-surface-container-low border border-outline-variant/20 rounded-2xl shadow-sm flex-1 overflow-hidden flex flex-col min-h-0">
-      <div className="flex items-center justify-between p-5 border-b border-outline-variant/10 bg-surface-container-lowest/50 shrink-0">
-        <div className="flex items-center gap-2 text-on-surface font-bold">
-          <List size={16} className="text-tertiary" />
-          <h3 className="text-sm">{t("search.ledger.title")}</h3>
-        </div>
-        <span className="text-xs font-semibold text-on-surface-variant tabular-nums">
+    <section className="bg-surface-container-lowest border border-outline-variant rounded-2xl flex flex-col min-w-0 overflow-hidden">
+      {/* Header */}
+      <header className="flex items-center justify-between gap-4 px-5 h-14 border-b border-outline-variant shrink-0">
+        <h2 className="text-[15px] font-semibold text-on-surface">{t("search.ledger.title")}</h2>
+        <span className="text-xs text-on-surface-variant tabular-nums">
           {t("search.ledger.recordsCount", { count: rows.length, suffix: rows.length !== 1 ? "s" : "" })}
         </span>
-      </div>
+      </header>
 
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 min-w-0 overflow-x-auto">
         {loading ? (
-          <div className="flex items-center justify-center py-16">
-            <Loader2 size={24} className="animate-spin text-primary" />
+          <div className="divide-y divide-outline-variant" aria-busy="true">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-4 h-12 px-5">
+                <div className="h-3 w-16 animate-pulse bg-surface-container rounded" />
+                <div className="h-7 w-7 animate-pulse bg-surface-container rounded-md" />
+                <div className="h-3 flex-1 animate-pulse bg-surface-container rounded" />
+                <div className="h-3 w-20 animate-pulse bg-surface-container rounded" />
+              </div>
+            ))}
           </div>
         ) : rows.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-on-surface-variant/60">
-            <Search size={40} className="mb-3 opacity-40" />
-            <p className="text-sm font-bold">{t("search.ledger.noEntries")}</p>
-            <p className="text-xs mt-1">{t("search.ledger.noEntriesDesc")}</p>
+          <div className="flex flex-col items-center justify-center gap-1 py-14 px-6 text-center">
+            <Search size={20} className="text-outline mb-1" />
+            <p className="text-sm font-medium text-on-surface">{t("search.ledger.noEntries")}</p>
+            <p className="text-xs text-on-surface-variant">{t("search.ledger.noEntriesDesc")}</p>
           </div>
+        ) : isMobile ? (
+          /* ── Mobile: compact rows ─────────────────────────────────────────── */
+          <ul className="divide-y divide-outline-variant">
+            {visibleRows.map((row) => {
+              const clickable = row.domain === "Transactions";
+              return (
+                <li key={`${row.domain}-${row.id}`}>
+                  <div
+                    role={clickable ? "button" : undefined}
+                    tabIndex={clickable ? 0 : undefined}
+                    onClick={() => openRow(row)}
+                    onKeyDown={(e) => {
+                      if (clickable && (e.key === "Enter" || e.key === " ")) {
+                        e.preventDefault();
+                        openRow(row);
+                      }
+                    }}
+                    className={`flex items-center gap-3 px-4 py-3 min-h-14 transition-colors ${
+                      clickable ? "cursor-pointer active:bg-surface-container-low" : "cursor-default"
+                    }`}
+                  >
+                    <CategoryTile emoji={row.emoji} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-on-surface truncate">{row.description}</p>
+                      <p className="text-xs text-on-surface-variant truncate tabular-nums mt-0.5">
+                        {formatTransactionDate(row.date)} · {row.categoryName}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-end gap-1 shrink-0">
+                      <span className="text-sm">
+                        <Amount value={row.amount} currencyCode={currencyCode} />
+                      </span>
+                      <SourceBadge row={row} />
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
         ) : (
-          <table className="w-full text-left border-collapse">
-            <thead className="bg-surface-container-lowest/80 text-[10px] uppercase tracking-widest text-on-surface-variant font-black sticky top-0 backdrop-blur-md">
+          /* ── Desktop: table ───────────────────────────────────────────────── */
+          <table className="w-full min-w-[720px] text-left border-collapse table-fixed">
+            <thead className="sticky top-0 z-10 bg-surface-container-low">
               <tr>
-                <th 
-                  className="px-5 py-3 font-semibold border-b border-outline-variant/10 w-24 cursor-pointer hover:bg-surface-container-low transition-colors group"
-                  onClick={() => toggleSort("date")}
-                >
-                  <div className="flex items-center gap-1">
+                <th className={cn(thBase, "w-32 p-0")} aria-sort={ariaSort("date")}>
+                  <button
+                    type="button"
+                    onClick={() => toggleSort("date")}
+                    className="group eyebrow w-full h-10 px-4 flex items-center gap-1 hover:text-on-surface transition-colors"
+                  >
                     {t("search.ledger.columns.date")}
-                    <span className="text-on-surface-variant/50 group-hover:text-on-surface transition-colors">
-                      {sortColumn === "date" ? (sortDirection === "asc" ? <ChevronUp size={12} /> : <ChevronDown size={12} />) : <ChevronDown size={12} className="opacity-0 group-hover:opacity-50" />}
-                    </span>
-                  </div>
+                    {sortIcon("date")}
+                  </button>
                 </th>
-                <th className="px-5 py-3 font-semibold border-b border-outline-variant/10 w-36">
-
-                  {t("search.ledger.columns.category")}
-                </th>
-                <th className="px-5 py-3 font-semibold border-b border-outline-variant/10">
-                  {t("search.ledger.columns.description")}
-                </th>
-                <th className="px-5 py-3 font-semibold border-b border-outline-variant/10 w-20 text-center">
-                  {t("search.ledger.columns.source")}
-                </th>
-                <th 
-                  className="px-5 py-3 font-semibold border-b border-outline-variant/10 text-right w-36 cursor-pointer hover:bg-surface-container-low transition-colors group"
-                  onClick={() => toggleSort("amount")}
-                >
-                  <div className="flex items-center justify-end gap-1">
+                <th className={`${thBase} w-44`}>{t("search.ledger.columns.category")}</th>
+                <th className={thBase}>{t("search.ledger.columns.description")}</th>
+                <th className={`${thBase} w-24 text-center`}>{t("search.ledger.columns.source")}</th>
+                <th className={cn(thBase, "w-40 p-0")} aria-sort={ariaSort("amount")}>
+                  <button
+                    type="button"
+                    onClick={() => toggleSort("amount")}
+                    className="group eyebrow w-full h-10 px-4 flex items-center justify-end gap-1 hover:text-on-surface transition-colors"
+                  >
                     {t("search.ledger.columns.amount")}
-                    <span className="text-on-surface-variant/50 group-hover:text-on-surface transition-colors">
-                      {sortColumn === "amount" ? (sortDirection === "asc" ? <ChevronUp size={12} /> : <ChevronDown size={12} />) : <ChevronDown size={12} className="opacity-0 group-hover:opacity-50" />}
-                    </span>
-                  </div>
+                    {sortIcon("amount")}
+                  </button>
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-outline-variant/5 text-sm">
+            <tbody className="divide-y divide-outline-variant text-[13px]">
               {visibleRows.map((row) => (
                 <tr
                   key={`${row.domain}-${row.id}`}
-                  onClick={() => {
-                    if (row.domain === "Transactions") {
-                      setSelectedTx(row.raw);
-                      setIsModalOpen(true);
-                    }
-                  }}
-                  className={`hover:bg-surface-container transition-colors group ${row.domain === "Transactions" ? "cursor-pointer" : "cursor-default"}`}
+                  onClick={() => openRow(row)}
+                  className={`h-12 hover:bg-surface-container-low transition-colors ${
+                    row.domain === "Transactions" ? "cursor-pointer" : "cursor-default"
+                  }`}
                 >
-                  <td className="px-5 py-3.5 text-on-surface-variant font-medium text-xs whitespace-nowrap tabular-nums">
+                  <td className="px-4 text-on-surface-variant whitespace-nowrap tabular-nums">
                     {formatTransactionDate(row.date)}
                   </td>
-                  <td className="px-5 py-3.5">
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded bg-primary-container/30 flex items-center justify-center text-sm shrink-0">
-                        {row.emoji || "📁"}
-                      </div>
-                      <span className="font-semibold text-on-surface-variant text-xs truncate">
-                        {row.categoryName}
-                      </span>
+                  <td className="px-4">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <CategoryTile emoji={row.emoji} />
+                      <span className="text-on-surface-variant truncate">{row.categoryName}</span>
                     </div>
                   </td>
-                  <td className="px-5 py-3.5 font-bold text-on-surface truncate max-w-xs">
-                    {row.description}
-                  </td>
-                  <td className="px-5 py-3.5 text-center">
+                  <td className="px-4 font-medium text-on-surface truncate">{row.description}</td>
+                  <td className="px-4 text-center">
                     <SourceBadge row={row} />
                   </td>
-                  <td
-                    className={`px-5 py-3.5 text-right font-black whitespace-nowrap tabular-nums ${
-                      row.amount >= 0
-                        ? "text-emerald-400"
-                        : "text-red-400"
-                    }`}
-                  >
-                    <div className="flex items-center justify-end gap-1.5">
-                      <span className="opacity-70">
-                        {row.amount >= 0 ? (
-                          <ArrowUpRight size={14} />
-                        ) : (
-                          <ArrowDownRight size={14} />
-                        )}
-                      </span>
-                      <span>
-                        {row.amount >= 0 ? "+" : "−"}
-                        {formatCurrency(Math.abs(row.amount), currencyCode)}
-                      </span>
-                    </div>
+                  <td className="px-4 text-right">
+                    <Amount value={row.amount} currencyCode={currencyCode} />
                   </td>
                 </tr>
               ))}
@@ -201,65 +253,64 @@ export function LedgerTable({
       </div>
 
       {/* Pagination Controls */}
-      {!loading && rows.length > 0 && (
-        isMobile ? (
-          page < totalPages && (
-            <div className="p-4 border-t border-outline-variant/10 shrink-0">
-              <button
-                onClick={() => setPage((p) => p + 1)}
-                className="w-full py-3 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest text-primary hover:bg-primary/5 rounded-xl transition-all group"
-              >
-                <span>{t("search.ledger.pagination.loadMore")}</span>
-                <ChevronDown size={16} className="group-hover:translate-y-0.5 transition-transform" />
-              </button>
-            </div>
-          )
-        ) : (
-          totalPages > 1 && (
-            <div className="flex items-center justify-between px-6 py-4 border-t border-outline-variant/10 bg-surface-container-lowest/50 shrink-0">
-              <button
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-on-surface-variant hover:text-on-surface disabled:opacity-25 disabled:cursor-not-allowed transition-all group"
-              >
-                <ChevronLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
-                {t("search.ledger.pagination.prev")}
-              </button>
-
-              <div className="flex items-center gap-1">
-                {pageRange.map((p, i) =>
-                  p === "..." ? (
-                    <span key={`el-${i}`} className="w-8 text-center text-[11px] text-on-surface-variant/30 select-none">
-                      ···
-                    </span>
-                  ) : (
-                    <button
-                      key={p}
-                      onClick={() => setPage(p as number)}
-                      className={`w-8 h-8 rounded-lg text-[11px] font-black transition-all ${
-                        p === page
-                          ? "bg-primary text-white shadow-sm shadow-primary/20"
-                          : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low"
-                      }`}
-                    >
-                      {p}
-                    </button>
-                  ),
-                )}
+      {!loading &&
+        rows.length > 0 &&
+        (isMobile
+          ? page < totalPages && (
+              <div className="p-3 border-t border-outline-variant shrink-0">
+                <button
+                  onClick={() => setPage((p) => p + 1)}
+                  className="w-full h-10 flex items-center justify-center gap-1.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface text-sm font-medium hover:bg-surface-container-low transition-colors"
+                >
+                  {t("search.ledger.pagination.loadMore")}
+                  <ChevronDown size={15} className="text-on-surface-variant" />
+                </button>
               </div>
+            )
+          : totalPages > 1 && (
+              <div className="flex items-center justify-between gap-4 px-4 h-14 border-t border-outline-variant shrink-0">
+                <button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="flex items-center gap-1 h-8 px-2.5 rounded-md text-xs font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container disabled:opacity-40 disabled:pointer-events-none transition-colors"
+                >
+                  <ChevronLeft size={14} />
+                  {t("search.ledger.pagination.prev")}
+                </button>
 
-              <button
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-                className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-on-surface-variant hover:text-on-surface disabled:opacity-25 disabled:cursor-not-allowed transition-all group"
-              >
-                {t("search.ledger.pagination.next")}
-                <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
-              </button>
-            </div>
-          )
-        )
-      )}
+                <div className="flex items-center gap-1">
+                  {pageRange.map((p, i) =>
+                    p === "..." ? (
+                      <span key={`el-${i}`} className="w-8 text-center text-xs text-outline select-none">
+                        …
+                      </span>
+                    ) : (
+                      <button
+                        key={p}
+                        onClick={() => setPage(p as number)}
+                        aria-current={p === page ? "page" : undefined}
+                        className={`min-w-8 h-8 px-1 rounded-md text-xs font-medium tabular-nums transition-colors ${
+                          p === page
+                            ? "bg-primary text-on-primary"
+                            : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
+                        }`}
+                      >
+                        {p}
+                      </button>
+                    ),
+                  )}
+                </div>
+
+                <button
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                  className="flex items-center gap-1 h-8 px-2.5 rounded-md text-xs font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container disabled:opacity-40 disabled:pointer-events-none transition-colors"
+                >
+                  {t("search.ledger.pagination.next")}
+                  <ChevronRight size={14} />
+                </button>
+              </div>
+            ))}
 
       <TransactionModal
         isOpen={isModalOpen}
@@ -269,6 +320,6 @@ export function LedgerTable({
         }}
         transaction={selectedTx}
       />
-    </div>
+    </section>
   );
 }

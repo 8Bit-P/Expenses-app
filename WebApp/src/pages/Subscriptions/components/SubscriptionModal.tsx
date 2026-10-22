@@ -7,7 +7,8 @@ import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { CustomSelect } from "../../../components/ui/CustomSelect";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import EmojiPicker, { EmojiStyle } from "emoji-picker-react";
+import EmojiPicker, { EmojiStyle, Theme } from "emoji-picker-react";
+import { cn } from "../../../utils/cn";
 
 interface SubscriptionModalProps {
   isOpen: boolean;
@@ -108,11 +109,11 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
       });
 
       onClose();
-    } catch (err: any) {
+    } catch (err) {
       toast.error(t("subscriptions.modal.toasts.processFailed"), {
-        description: err.message || t("subscriptions.modal.toasts.saveError"),
+        description: (err as Error).message || t("subscriptions.modal.toasts.saveError"),
       });
-      setErrorMsg(err.message || t("subscriptions.modal.toasts.genericError"));
+      setErrorMsg((err as Error).message || t("subscriptions.modal.toasts.genericError"));
     } finally {
       setIsSubmitting(false);
     }
@@ -128,15 +129,19 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
         description: t("subscriptions.modal.toasts.removedDesc", { name: subscription.name }),
       });
       onClose();
-    } catch (err: any) {
+    } catch (err) {
       toast.error(t("subscriptions.modal.toasts.deleteFailed"), {
-        description: err.message || t("subscriptions.modal.toasts.deleteError"),
+        description: (err as Error).message || t("subscriptions.modal.toasts.deleteError"),
       });
-      setErrorMsg(err.message || t("subscriptions.modal.toasts.genericError"));
+      setErrorMsg((err as Error).message || t("subscriptions.modal.toasts.genericError"));
     } finally {
       setIsSubmitting(false);
     }
   }
+
+  const labelClass = "block text-xs font-medium text-on-surface-variant mb-1.5";
+  const inputClass =
+    "w-full h-10 rounded-lg border border-outline-variant bg-surface-container-lowest px-3 text-sm text-on-surface placeholder:text-outline focus:border-on-surface focus:ring-0 outline-none transition-colors";
 
   return (
     <AnimatePresence>
@@ -146,80 +151,78 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="absolute inset-0 bg-background/60 backdrop-blur-md"
+            transition={{ duration: 0.15 }}
+            className="absolute inset-0 bg-black/50"
             onClick={onClose}
           />
 
-          <motion.div 
-            initial={{ scale: 0.95, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            transition={{ type: "spring", damping: 25, stiffness: 350 }}
-            className="relative w-full max-w-lg bg-surface-container-lowest/90 backdrop-blur-xl rounded-2xl shadow-2xl overflow-visible border border-outline-variant/20 ring-1 ring-black/5"
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            className="relative w-full max-w-lg bg-surface-container-lowest rounded-2xl shadow-2xl overflow-visible border border-outline-variant"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-8">
-              {/* Header */}
-              <div className="flex items-center space-x-4 mb-8">
-                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
-                  <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
-                    {isEditing ? "edit_square" : "add_circle"}
-                  </span>
-                </div>
-                <div>
-                  <h2 className="text-2xl font-extrabold font-headline text-on-surface tracking-tight">
-                    {isEditing ? t("subscriptions.modal.titleManage") : t("subscriptions.modal.titleNew")}
-                  </h2>
-                  <p className="text-on-surface-variant text-sm font-medium">
-                    {isEditing ? t("subscriptions.modal.descManage") : t("subscriptions.modal.descNew")}
-                  </p>
-                </div>
+            {/* Header */}
+            <div className="flex items-start justify-between gap-4 px-5 py-4 border-b border-outline-variant">
+              <div className="min-w-0">
+                <h2 className="text-[15px] font-semibold text-on-surface">
+                  {isEditing ? t("subscriptions.modal.titleManage") : t("subscriptions.modal.titleNew")}
+                </h2>
+                <p className="text-xs text-on-surface-variant mt-0.5">
+                  {isEditing ? t("subscriptions.modal.descManage") : t("subscriptions.modal.descNew")}
+                </p>
               </div>
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label={t("common.cancel")}
+                className="w-8 h-8 -mr-1.5 -mt-1 shrink-0 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors"
+              >
+                <span className="material-symbols-outlined text-[20px]">close</span>
+              </button>
+            </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit}>
+              <div className="px-5 py-5 space-y-4">
                 {errorMsg && (
-                  <div className="p-4 bg-error-container/50 border border-error/20 rounded-xl text-error text-xs font-bold leading-relaxed">
+                  <div className="flex items-start gap-2 px-3 py-2.5 bg-error/10 border border-error/20 rounded-lg text-error text-[13px]">
+                    <span className="material-symbols-outlined text-[16px] mt-px">error</span>
                     {errorMsg}
                   </div>
                 )}
 
                 {/* Service Name & Category Row */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                      {t("subscriptions.modal.nameLabel")}
-                    </label>
-                    <div className="relative">
-                      <input
-                        autoFocus
-                        className="w-full bg-surface-container border-none rounded-xl px-4 py-3.5 text-sm font-semibold text-on-surface focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-on-surface-variant/50 outline-none"
-                        placeholder={t("subscriptions.modal.namePlaceholder")}
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        type="text"
-                      />
-                    </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelClass}>{t("subscriptions.modal.nameLabel")}</label>
+                    <input
+                      autoFocus
+                      className={inputClass}
+                      placeholder={t("subscriptions.modal.namePlaceholder")}
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      type="text"
+                    />
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                      {t("subscriptions.modal.categoryLabel")}
-                    </label>
+                  <div>
+                    <label className={labelClass}>{t("subscriptions.modal.categoryLabel")}</label>
                     {isCreatingCategory ? (
-                      <div className="space-y-2 animate-in fade-in slide-in-from-top-2 relative z-50">
-                        <div className="relative flex items-center bg-surface-container border border-outline-variant/30 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20 rounded-xl px-1 transition-all">
+                      <div className="space-y-2 relative z-50">
+                        <div className="relative flex items-center h-10 bg-surface-container-lowest border border-outline-variant focus-within:border-on-surface rounded-lg pl-1 transition-colors">
                           <div className="relative flex items-center">
                             <button
                               type="button"
                               onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                              className="w-10 h-10 flex items-center justify-center bg-transparent border-none outline-none text-xl hover:bg-surface-container-high rounded-lg transition-colors select-none"
+                              className="w-8 h-8 flex items-center justify-center text-lg hover:bg-surface-container rounded-md transition-colors select-none"
                             >
                               {newCategoryEmoji}
                             </button>
 
                             {showEmojiPicker && (
-                              <div className="absolute top-[110%] left-0 z-[60] shadow-2xl rounded-xl animate-in fade-in zoom-in-95 border border-outline-variant/20">
+                              <div className="absolute top-[115%] left-0 z-[60] shadow-xl rounded-lg border border-outline-variant">
                                 <EmojiPicker
                                   emojiStyle={EmojiStyle.NATIVE}
                                   onEmojiClick={(e) => {
@@ -227,25 +230,25 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
                                     setShowEmojiPicker(false);
                                   }}
                                   skinTonesDisabled
-                                  theme={"dark" as any}
+                                  theme={Theme.DARK}
                                   width={280}
                                   height={350}
                                 />
                               </div>
                             )}
                           </div>
-                          <div className="w-px h-6 bg-outline-variant/30 mx-1" />
+                          <div className="w-px h-5 bg-outline-variant mx-1" />
                           <input
                             type="text"
-                            className="w-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-sm font-semibold text-on-surface placeholder:text-on-surface-variant/40 py-3.5 px-3"
+                            className="w-full h-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-sm text-on-surface placeholder:text-outline px-2"
                             value={newCategoryName}
                             onChange={(e) => setNewCategoryName(e.target.value)}
                             placeholder={t("expenses.transactionModal.createCategory.placeholder")}
                             autoFocus
                           />
                         </div>
-                        
-                        <div className="flex gap-2 mt-2">
+
+                        <div className="flex gap-2">
                           <button
                             type="button"
                             onClick={() => {
@@ -253,7 +256,7 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
                               setNewCategoryName("");
                               setCategoryError(null);
                             }}
-                            className="flex-1 py-2 rounded-xl text-xs font-bold text-on-surface-variant bg-surface-container-high hover:bg-surface-container-highest transition-colors outline-none"
+                            className="flex-1 h-8 rounded-lg border border-outline-variant bg-surface-container-lowest text-xs font-medium text-on-surface hover:bg-surface-container-low transition-colors"
                           >
                             {t("common.cancel") || "Cancel"}
                           </button>
@@ -277,24 +280,24 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
                                 setIsCreatingCategory(false);
                                 setNewCategoryName("");
                                 setNewCategoryEmoji("📦");
-                              } catch (e: any) {
+                              } catch (e) {
                                 toast.error(t("expenses.transactionModal.createCategory.toast.error"), {
                                   description:
-                                    e.message || t("expenses.transactionModal.createCategory.toast.errorDefault"),
+                                    (e as Error).message || t("expenses.transactionModal.createCategory.toast.errorDefault"),
                                 });
                                 setCategoryError(
-                                  e.message || t("expenses.transactionModal.createCategory.toast.errorDefault"),
+                                  (e as Error).message || t("expenses.transactionModal.createCategory.toast.errorDefault"),
                                 );
                               }
                             }}
                             disabled={isSubmitting}
-                            className="flex-1 py-2 rounded-xl text-xs font-semibold bg-primary text-white hover:opacity-90 active:scale-[0.98] transition-all outline-none flex items-center justify-center gap-1 shadow-sm shadow-primary/20"
+                            className="flex-1 h-8 rounded-lg bg-primary text-on-primary hover:opacity-90 active:scale-[0.98] transition flex items-center justify-center disabled:opacity-50"
                           >
                             <span className="material-symbols-outlined text-[18px]">check</span>
                           </button>
                         </div>
                         {categoryError && (
-                          <p className="text-xs font-bold text-error px-2 flex items-center gap-1">
+                          <p className="text-xs text-error flex items-center gap-1">
                             <span className="material-symbols-outlined text-[14px]">error</span>
                             {categoryError}
                           </p>
@@ -317,15 +320,15 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
                 </div>
 
                 {/* Amount & Billing Cycle Row */}
-                <div className="grid grid-cols-2 gap-4 items-end">
-                  <div className="space-y-2">
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                      {t("subscriptions.modal.amountLabel")}
-                    </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
+                  <div>
+                    <label className={labelClass}>{t("subscriptions.modal.amountLabel")}</label>
                     <div className="relative flex items-center">
-                      <span className="absolute left-4 text-lg font-bold text-on-surface-variant">{currency.symbol}</span>
+                      <span className="absolute left-3 text-sm text-on-surface-variant pointer-events-none">
+                        {currency.symbol}
+                      </span>
                       <input
-                        className="w-full bg-surface-container border-none rounded-xl py-3.5 pl-10 pr-4 text-lg font-black text-on-surface focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-on-surface-variant/30 outline-none"
+                        className={cn(inputClass, "pl-8 font-medium tabular-nums")}
                         placeholder="0.00"
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
@@ -335,50 +338,59 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                      {t("subscriptions.modal.cycleLabel")}
-                    </label>
-                    <div className="flex bg-surface-container-low p-1 rounded-xl">
-                      <button
-                        type="button"
-                        onClick={() => setBillingCycle("monthly")}
-                        className={`flex-1 py-2 text-[10px] font-black uppercase tracking-wider rounded-lg transition-all duration-300 ${billingCycle === "monthly" ? "bg-primary text-on-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface"}`}
-                      >
-                        {t("subscriptions.modal.cycles.monthly")}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setBillingCycle("yearly")}
-                        className={`flex-1 py-2 text-[10px] font-black uppercase tracking-wider rounded-lg transition-all duration-300 ${billingCycle === "yearly" ? "bg-primary text-on-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface"}`}
-                      >
-                        {t("subscriptions.modal.cycles.yearly")}
-                      </button>
+                  <div>
+                    <label className={labelClass}>{t("subscriptions.modal.cycleLabel")}</label>
+                    <div className="flex w-full p-0.5 rounded-lg bg-surface-container border border-outline-variant">
+                      {(["monthly", "yearly"] as const).map((cycle) => (
+                        <button
+                          key={cycle}
+                          type="button"
+                          onClick={() => setBillingCycle(cycle)}
+                          className={`flex-1 h-8 rounded-md text-xs font-medium transition-colors ${
+                            billingCycle === cycle
+                              ? "bg-surface-container-lowest text-on-surface shadow-sm"
+                              : "text-on-surface-variant hover:text-on-surface"
+                          }`}
+                        >
+                          {cycle === "monthly"
+                            ? t("subscriptions.modal.cycles.monthly")
+                            : t("subscriptions.modal.cycles.yearly")}
+                        </button>
+                      ))}
                     </div>
                   </div>
                 </div>
 
                 {/* Payment Date */}
-                <div className="space-y-2">
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                    {t("subscriptions.modal.dateLabel")}
-                  </label>
-                  <div className="relative">
-                    <input
-                      className="w-full bg-surface-container border-none rounded-xl px-4 py-3.5 text-sm font-semibold text-on-surface focus:ring-2 focus:ring-primary/50 transition-all outline-none"
-                      value={nextDate}
-                      onChange={(e) => setNextDate(e.target.value)}
-                      type="date"
-                    />
-                  </div>
+                <div>
+                  <label className={labelClass}>{t("subscriptions.modal.dateLabel")}</label>
+                  <input
+                    className={inputClass}
+                    value={nextDate}
+                    onChange={(e) => setNextDate(e.target.value)}
+                    type="date"
+                  />
                 </div>
+              </div>
 
-                {/* Actions */}
-                <div className="flex items-center gap-4 pt-6 mt-2 border-t border-outline-variant/10">
+              {/* Actions */}
+              <div className="flex flex-col-reverse sm:flex-row sm:items-center gap-2 px-5 py-4 border-t border-outline-variant">
+                {isEditing && (
+                  <button
+                    type="button"
+                    onClick={handleDelete}
+                    disabled={isSubmitting}
+                    className="h-9 px-3 -ml-1 rounded-lg text-error text-sm font-medium hover:bg-error/10 transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">delete</span>
+                    {t("subscriptions.modal.deleteButton")}
+                  </button>
+                )}
+                <div className="flex gap-2 sm:ml-auto">
                   <button
                     type="button"
                     onClick={onClose}
-                    className="flex-1 py-3 px-4 rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container transition-all"
+                    className="flex-1 sm:flex-none h-9 px-3.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface text-sm font-medium hover:bg-surface-container-low transition-colors"
                     disabled={isSubmitting}
                   >
                     {t("common.cancel")}
@@ -386,30 +398,17 @@ export default function SubscriptionModal({ isOpen, onClose, subscription }: Sub
                   <button
                     type="submit"
                     disabled={isSubmitting || !name || !amount || !categoryId}
-                    className="flex-[2] py-3 px-4 rounded-xl font-semibold text-white text-sm bg-primary hover:opacity-90 active:scale-[0.98] transition-all shadow-sm disabled:opacity-50"
+                    className="flex-1 sm:flex-none h-9 px-4 rounded-lg bg-primary text-on-primary text-sm font-medium hover:opacity-90 active:scale-[0.98] transition disabled:opacity-50 disabled:active:scale-100"
                   >
-                    {isSubmitting 
-                      ? t("subscriptions.modal.actions.processing") 
-                      : isEditing 
-                        ? t("subscriptions.modal.actions.save") 
+                    {isSubmitting
+                      ? t("subscriptions.modal.actions.processing")
+                      : isEditing
+                        ? t("subscriptions.modal.actions.save")
                         : t("subscriptions.modal.actions.confirm")}
                   </button>
                 </div>
-
-                {/* Delete Option (Centered below primary actions) */}
-                {isEditing && (
-                  <button
-                    type="button"
-                    onClick={handleDelete}
-                    disabled={isSubmitting}
-                    className="w-full py-2 mt-2 text-error font-bold hover:text-error/80 text-[10px] uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">delete</span>
-                    {t("subscriptions.modal.deleteButton")}
-                  </button>
-                )}
-              </form>
-            </div>
+              </div>
+            </form>
           </motion.div>
         </div>
       )}

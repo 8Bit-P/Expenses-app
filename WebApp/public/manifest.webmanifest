@@ -4,8 +4,8 @@
   "description": "Your Secure Financial Guardian.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#0f0069",
+  "background_color": "#0e0e0c",
+  "theme_color": "#161613",
   "icons": [
     {
       "src": "/favicon.svg",

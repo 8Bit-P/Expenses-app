@@ -5,6 +5,7 @@ import { useAccounts } from "../../../hooks/useAccounts";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { formatCurrency } from "../../../utils/currency";
 import AccountModal from "./AccountModal";
+import Panel from "../../../components/ui/Panel";
 import type { AccountWithBalance } from "../../../types/accounts";
 
 export default function AccountsWidget() {
@@ -18,102 +19,77 @@ export default function AccountsWidget() {
   const totalBalance = accounts.reduce((sum, a) => sum + a.balance, 0);
 
   return (
-    <div className="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/10 flex flex-col h-full">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-5">
-        <div>
-          <h2 className="text-lg font-black font-headline flex items-center gap-2 text-on-surface">
-            <span className="material-symbols-outlined text-[20px] text-primary">account_balance</span>
-            {t("accounts.title")}
-          </h2>
-          {accounts.length > 0 && (
-            <p className="text-[10px] text-on-surface-variant/60 font-medium mt-0.5 uppercase tracking-wider">
-              {t("accounts.balance")}:{" "}
-              <span
-                className={`font-black ${totalBalance >= 0 ? "text-emerald-500" : "text-error"}`}
-              >
-                {totalBalance >= 0 ? "" : "-"}
-                {formatCurrency(Math.abs(totalBalance), currency.code)}
-              </span>
-            </p>
-          )}
-        </div>
+    <Panel
+      flush
+      title={t("accounts.title")}
+      subtitle={
+        accounts.length > 0 ? (
+          <span className="tabular-nums">
+            {t("accounts.balance")}:{" "}
+            <span className={`font-medium ${totalBalance >= 0 ? "text-on-surface" : "text-error"}`}>
+              {totalBalance >= 0 ? "" : "−"}
+              {formatCurrency(Math.abs(totalBalance), currency.code)}
+            </span>
+          </span>
+        ) : undefined
+      }
+      actions={
         <button
           onClick={() => setIsCreateOpen(true)}
-          className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 transition-all active:scale-95"
+          className="w-8 h-8 rounded-lg border border-outline-variant text-on-surface-variant flex items-center justify-center hover:bg-surface-container hover:text-on-surface transition-colors"
           title={t("accounts.addAccount")}
+          aria-label={t("accounts.addAccount")}
         >
-          <span className="material-symbols-outlined text-[20px]">add</span>
+          <span className="material-symbols-outlined text-[18px]">add</span>
         </button>
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 space-y-3 min-h-0">
-        {isLoading ? (
-          <div className="space-y-3 animate-pulse">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-14 bg-surface-container-low rounded-xl" />
-            ))}
-          </div>
-        ) : accounts.length === 0 ? (
-          <EmptyState onAdd={() => setIsCreateOpen(true)} t={t} />
-        ) : (
+      }
+    >
+      {isLoading ? (
+        <div className="px-5 pb-5 space-y-2">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-11 bg-surface-container rounded-lg animate-pulse" />
+          ))}
+        </div>
+      ) : accounts.length === 0 ? (
+        <EmptyState onAdd={() => setIsCreateOpen(true)} t={t} />
+      ) : (
+        <div className="divide-y divide-outline-variant border-t border-outline-variant">
           <AnimatePresence initial={false}>
             {accounts.map((account, i) => (
               <motion.div
                 key={account.id}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.2, delay: i * 0.04 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15, delay: i * 0.03 }}
               >
-                <AccountCard
-                  account={account}
-                  currencyCode={currency.code}
-                  onEdit={() => setEditingAccount(account)}
-                />
+                <AccountRow account={account} currencyCode={currency.code} onEdit={() => setEditingAccount(account)} />
               </motion.div>
             ))}
           </AnimatePresence>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Modals */}
-      <AccountModal
-        isOpen={isCreateOpen}
-        onClose={() => setIsCreateOpen(false)}
-      />
-      <AccountModal
-        isOpen={!!editingAccount}
-        onClose={() => setEditingAccount(null)}
-        account={editingAccount}
-      />
-    </div>
+      <AccountModal isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} />
+      <AccountModal isOpen={!!editingAccount} onClose={() => setEditingAccount(null)} account={editingAccount} />
+    </Panel>
   );
 }
 
-/* ── Sub-components ── */
+/* Sub-components */
 
 function EmptyState({ onAdd, t }: { onAdd: () => void; t: (k: string) => string }) {
   return (
-    <div className="flex flex-col items-center justify-center py-8 text-center gap-4">
-      <div className="relative">
-        <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
-          <span className="material-symbols-outlined text-[28px] text-primary/60">account_balance</span>
-        </div>
-        <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-surface-container-lowest border-2 border-primary/20 flex items-center justify-center">
-          <span className="material-symbols-outlined text-[14px] text-primary">add</span>
-        </div>
-      </div>
+    <div className="flex flex-col items-center text-center gap-3 px-5 pb-8 pt-4">
+      <span className="material-symbols-outlined text-[28px] text-outline">account_balance</span>
       <div>
-        <p className="text-sm font-black text-on-surface">{t("accounts.emptyState.title")}</p>
-        <p className="text-xs text-on-surface-variant/60 font-medium mt-1 max-w-[200px]">
-          {t("accounts.emptyState.subtitle")}
-        </p>
+        <p className="text-sm font-medium text-on-surface">{t("accounts.emptyState.title")}</p>
+        <p className="text-xs text-on-surface-variant mt-1 max-w-[240px]">{t("accounts.emptyState.subtitle")}</p>
       </div>
       <button
         onClick={onAdd}
-        className="px-4 py-2 rounded-xl bg-primary text-on-primary text-xs font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-md shadow-primary/20"
+        className="h-8 px-3 rounded-lg bg-primary text-on-primary text-xs font-medium hover:opacity-90 active:scale-[0.98] transition"
       >
         {t("accounts.emptyState.cta")}
       </button>
@@ -121,7 +97,7 @@ function EmptyState({ onAdd, t }: { onAdd: () => void; t: (k: string) => string 
   );
 }
 
-function AccountCard({
+function AccountRow({
   account,
   currencyCode,
   onEdit,
@@ -135,35 +111,21 @@ function AccountCard({
   return (
     <button
       onClick={onEdit}
-      className="group w-full flex items-center gap-3 p-3 rounded-xl border border-outline-variant/10 hover:border-outline-variant/30 hover:bg-surface-container/60 transition-all duration-200 text-left"
+      className="group w-full flex items-center gap-3 px-5 h-14 hover:bg-surface-container-low transition-colors text-left"
     >
-      {/* Icon */}
-      <div
-        className="w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0 shadow-inner"
-        style={{ background: `${account.color}20`, border: `1.5px solid ${account.color}40` }}
-      >
+      <span className="relative w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0 bg-surface-container">
         {account.icon || "🏦"}
-      </div>
-
-      {/* Name + subtle color bar */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <div
-            className="w-1.5 h-1.5 rounded-full shrink-0"
-            style={{ background: account.color }}
-          />
-          <p className="font-bold text-sm text-on-surface truncate">{account.name}</p>
-        </div>
-        <p
-          className={`text-xs font-black mt-0.5 tabular-nums ${isNegative ? "text-error" : "text-emerald-500"}`}
-        >
-          {isNegative ? "-" : "+"}
-          {formatCurrency(Math.abs(account.balance), currencyCode)}
-        </p>
-      </div>
-
-      {/* Edit chevron */}
-      <span className="material-symbols-outlined text-[16px] text-on-surface-variant/30 group-hover:text-on-surface-variant transition-colors shrink-0">
+        <span
+          className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full ring-2 ring-surface-container-lowest"
+          style={{ background: account.color }}
+        />
+      </span>
+      <p className="flex-1 min-w-0 text-[13px] font-medium text-on-surface truncate">{account.name}</p>
+      <p className={`text-[13px] font-medium tabular-nums shrink-0 ${isNegative ? "text-error" : "text-on-surface"}`}>
+        {isNegative ? "−" : ""}
+        {formatCurrency(Math.abs(account.balance), currencyCode)}
+      </p>
+      <span className="material-symbols-outlined text-[16px] text-outline opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
         edit
       </span>
     </button>

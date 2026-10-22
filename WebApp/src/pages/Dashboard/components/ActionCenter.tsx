@@ -6,6 +6,15 @@ import { differenceInDays, parseISO, startOfMonth, endOfMonth, getDate, format }
 import { useTranslation } from "react-i18next";
 import { formatCurrency } from "../../../utils/currency";
 
+type Tone = "error" | "warning" | "info" | "neutral";
+
+const TONE_STYLES: Record<Tone, { bar: string; icon: string }> = {
+  error: { bar: "bg-error", icon: "text-error" },
+  warning: { bar: "bg-amber-500", icon: "text-amber-600 dark:text-amber-400" },
+  info: { bar: "bg-tertiary", icon: "text-tertiary" },
+  neutral: { bar: "bg-on-surface-variant", icon: "text-on-surface-variant" },
+};
+
 export default function ActionCenter() {
   const { t } = useTranslation();
   const { subscriptions } = useSubscriptions();
@@ -22,7 +31,7 @@ export default function ActionCenter() {
   });
 
   // Programmatic Logic Block
-  const alerts = [];
+  const alerts: { id: string; priority: number; title: string; message: string; icon: string; tone: Tone }[] = [];
 
   // 1. Budget Usage Alert
   if (monthlyBudget > 0) {
@@ -39,9 +48,7 @@ export default function ActionCenter() {
         title: t("dashboard.actionCenter.budgetWarning.title"),
         message: t("dashboard.actionCenter.budgetWarning.message", { percent: budgetUsage.toFixed(0) }),
         icon: "warning",
-        bg: "bg-error/5",
-        border: "border-error/30",
-        accent: "text-error",
+        tone: "error",
       });
     }
   }
@@ -63,9 +70,7 @@ export default function ActionCenter() {
       title: t("dashboard.actionCenter.negativeCashflow.title"),
       message: t("dashboard.actionCenter.negativeCashflow.message"),
       icon: "trending_down",
-      bg: "bg-orange-500/5",
-      border: "border-orange-500/30",
-      accent: "text-orange-500",
+      tone: "warning",
     });
   }
 
@@ -92,9 +97,7 @@ export default function ActionCenter() {
         amount: formatCurrency(soonRenewal.amount, currency.code),
       }),
       icon: "sync",
-      bg: "bg-primary/5",
-      border: "border-primary/30",
-      accent: "text-primary",
+      tone: "info",
     });
   }
 
@@ -113,9 +116,7 @@ export default function ActionCenter() {
         description: largeTx.description,
       }),
       icon: "credit_card",
-      bg: "bg-secondary/5",
-      border: "border-secondary/30",
-      accent: "text-secondary",
+      tone: "neutral",
     });
   }
 
@@ -125,35 +126,26 @@ export default function ActionCenter() {
   if (activeAlerts.length === 0) return null;
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between px-2">
-        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant/50">
-          {t("dashboard.actionCenter.priorityCommand")}
-        </h3>
-        <span className="flex h-2 w-2 relative">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-        </span>
-      </div>
-
-      <div className={`grid gap-4 ${activeAlerts.length === 1 ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2"}`}>
-        {activeAlerts.map((alert) => (
-          <div
-            key={alert.id}
-            className={`${alert.bg} p-4 rounded-2xl border ${alert.border} flex gap-4 items-start transition-all hover:scale-[1.01] cursor-pointer group`}
-          >
-            <div
-              className={`w-10 h-10 rounded-xl bg-surface-container-lowest flex items-center justify-center shadow-sm ${alert.accent} group-hover:scale-110 transition-transform`}
-            >
-              <span className="material-symbols-outlined text-[20px]">{alert.icon}</span>
+    <section aria-label={t("dashboard.actionCenter.priorityCommand")}>
+      <div
+        className={`grid gap-px bg-outline-variant border border-outline-variant rounded-2xl overflow-hidden ${
+          activeAlerts.length === 1 ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2"
+        }`}
+      >
+        {activeAlerts.map((alert) => {
+          const tone = TONE_STYLES[alert.tone];
+          return (
+            <div key={alert.id} className="relative bg-surface-container-lowest pl-5 pr-4 py-3.5 flex gap-3 items-start">
+              <span className={`absolute left-0 top-0 bottom-0 w-[3px] ${tone.bar}`} />
+              <span className={`material-symbols-outlined text-[20px] mt-px ${tone.icon}`}>{alert.icon}</span>
+              <div className="min-w-0">
+                <h4 className="text-[13px] font-semibold text-on-surface">{alert.title}</h4>
+                <p className="text-xs text-on-surface-variant leading-relaxed mt-0.5">{alert.message}</p>
+              </div>
             </div>
-            <div className="min-w-0">
-              <h4 className="text-[11px] font-black text-on-surface uppercase tracking-wider mb-1">{alert.title}</h4>
-              <p className="text-xs text-on-surface-variant leading-snug font-medium">{alert.message}</p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
-    </div>
+    </section>
   );
 }

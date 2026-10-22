@@ -6,7 +6,7 @@ import { ALL_DOMAINS } from "./constants";
 import type { TimeframeKey } from "./constants";
 import type { DomainKey } from "./types";
 import type { TransactionType } from "../../types/expenses";
-import { SlidersHorizontal, X, Search } from "lucide-react";
+import { SlidersHorizontal, X, Search, ChevronDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { SearchHeader } from "./components/SearchHeader";
@@ -83,7 +83,7 @@ export default function SearchResults() {
     setCustomEndDate("");
     setActiveDomains(new Set(ALL_DOMAINS));
     setMinAmount("");
-    maxAmount && setMaxAmount("");
+    if (maxAmount) setMaxAmount("");
     setSelectedCategoryIds([]);
     setSelectedTypes([]);
     setSelectedAccountIds([]);
@@ -104,125 +104,101 @@ export default function SearchResults() {
     [mobileQuery, searchParams, setSearchParams],
   );
 
+  const filters = (
+    <AdvancedFilters
+      timeframe={timeframe}
+      setTimeframe={setTimeframe}
+      customStartDate={customStartDate}
+      setCustomStartDate={setCustomStartDate}
+      customEndDate={customEndDate}
+      setCustomEndDate={setCustomEndDate}
+      activeDomains={activeDomains}
+      toggleDomain={toggleDomain}
+      minAmount={minAmount}
+      setMinAmount={setMinAmount}
+      maxAmount={maxAmount}
+      setMaxAmount={setMaxAmount}
+      selectedCategoryIds={selectedCategoryIds}
+      setSelectedCategoryIds={setSelectedCategoryIds}
+      selectedTypes={selectedTypes}
+      setSelectedTypes={setSelectedTypes}
+      selectedAccountIds={selectedAccountIds}
+      setSelectedAccountIds={setSelectedAccountIds}
+      clearAllFilters={clearAllFilters}
+      currencySymbol={currency.symbol}
+    />
+  );
+
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 w-full">
-      {/* Header */}
+    <div className="w-full space-y-6">
       <SearchHeader query={query} rowsCount={rows.length} clearSearch={clearSearch} />
 
-      {/* ── Mobile-only: search bar ─────────────────────────────────────────── */}
-      <form onSubmit={handleMobileSearch} className="flex items-center gap-2 mb-4 lg:hidden">
-        <div className="relative flex-1">
-          <Search
-            size={16}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 pointer-events-none"
-          />
-          <input
-            type="search"
-            value={mobileQuery}
-            onChange={(e) => setMobileQuery(e.target.value)}
-            placeholder={t("search.placeholder")}
-            className="w-full bg-surface-container-low border border-outline-variant/20 rounded-xl pl-9 pr-4 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant/40 outline-none focus:ring-2 focus:ring-primary/30"
-          />
-          {mobileQuery && (
-            <button
-              type="button"
-              onClick={() => {
-                setMobileQuery("");
-                clearSearch();
-              }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 hover:text-on-surface"
-            >
-              <X size={14} />
-            </button>
-          )}
-        </div>
-        <button
-          type="submit"
-          className="shrink-0 px-4 py-2.5 bg-primary text-on-primary text-sm font-bold rounded-xl transition-all active:scale-95"
-        >
-          {t("search.placeholder").split(" ")[0]}
-        </button>
-      </form>
+      {/* ── Mobile-only: search bar + collapsible filters ───────────────────── */}
+      <div className="space-y-3 lg:hidden">
+        <form onSubmit={handleMobileSearch} className="flex items-center gap-2">
+          <div className="relative flex-1">
+            <Search
+              size={16}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none"
+            />
+            <input
+              type="search"
+              value={mobileQuery}
+              onChange={(e) => setMobileQuery(e.target.value)}
+              placeholder={t("search.placeholder")}
+              className="w-full h-10 rounded-lg border border-outline-variant bg-surface-container-lowest pl-9 pr-9 text-sm text-on-surface placeholder:text-outline outline-none focus:border-on-surface focus:ring-0"
+            />
+            {mobileQuery && (
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileQuery("");
+                  clearSearch();
+                }}
+                aria-label={t("search.clearSearch")}
+                className="absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
+          <button
+            type="submit"
+            className="shrink-0 h-10 px-4 rounded-lg bg-primary text-on-primary text-sm font-medium hover:opacity-90 active:scale-[0.98] transition"
+          >
+            {t("search.placeholder").split(" ")[0]}
+          </button>
+        </form>
 
-      {/* ── Mobile-only: Collapsible filter toggle ─────────────────────────── */}
-      <div className="mb-4 lg:hidden">
         <button
           onClick={() => setMobileFiltersOpen((o) => !o)}
-          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all text-sm font-bold ${
+          aria-expanded={mobileFiltersOpen}
+          className={`w-full h-10 flex items-center justify-between px-3.5 rounded-lg border bg-surface-container-lowest text-sm font-medium transition-colors ${
             mobileFiltersOpen
-              ? "bg-primary/10 border-primary/30 text-primary"
-              : "bg-surface-container-low border-outline-variant/20 text-on-surface-variant"
+              ? "border-on-surface text-on-surface"
+              : "border-outline-variant text-on-surface hover:bg-surface-container-low"
           }`}
         >
           <span className="flex items-center gap-2">
-            <SlidersHorizontal size={15} />
+            <SlidersHorizontal size={15} className="text-on-surface-variant" />
             {t("search.advancedFilters")}
           </span>
-          <span className={`transition-transform duration-200 ${mobileFiltersOpen ? "rotate-180" : ""}`}>▾</span>
+          <ChevronDown
+            size={16}
+            className={`text-on-surface-variant transition-transform duration-200 ${mobileFiltersOpen ? "rotate-180" : ""}`}
+          />
         </button>
 
-        {/* Collapsible filter panel */}
-        <div
-          className={`overflow-hidden transition-all duration-300 ${mobileFiltersOpen ? "max-h-[1200px] mt-3" : "max-h-0"}`}
-        >
-          <div className="bg-surface-container-lowest border border-outline-variant/10 rounded-2xl p-4">
-            <AdvancedFilters
-              timeframe={timeframe}
-              setTimeframe={setTimeframe}
-              customStartDate={customStartDate}
-              setCustomStartDate={setCustomStartDate}
-              customEndDate={customEndDate}
-              setCustomEndDate={setCustomEndDate}
-              activeDomains={activeDomains}
-              toggleDomain={toggleDomain}
-              minAmount={minAmount}
-              setMinAmount={setMinAmount}
-              maxAmount={maxAmount}
-              setMaxAmount={setMaxAmount}
-              selectedCategoryIds={selectedCategoryIds}
-              setSelectedCategoryIds={setSelectedCategoryIds}
-              selectedTypes={selectedTypes}
-              setSelectedTypes={setSelectedTypes}
-              selectedAccountIds={selectedAccountIds}
-              setSelectedAccountIds={setSelectedAccountIds}
-              clearAllFilters={clearAllFilters}
-              currencySymbol={currency.symbol}
-            />
-          </div>
-        </div>
+        {mobileFiltersOpen && filters}
       </div>
 
-      {/* ── 2-Column Grid Layout (desktop) / stacked (mobile) ─────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Advanced Filters — desktop only */}
-        <aside className="hidden lg:block lg:col-span-3 lg:sticky lg:top-24 h-fit max-h-[calc(100vh-6rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-outline-variant/30 scrollbar-track-transparent pr-2 space-y-6">
-          <AdvancedFilters
-            timeframe={timeframe}
-            setTimeframe={setTimeframe}
-            customStartDate={customStartDate}
-            setCustomStartDate={setCustomStartDate}
-            customEndDate={customEndDate}
-            setCustomEndDate={setCustomEndDate}
-            activeDomains={activeDomains}
-            toggleDomain={toggleDomain}
-            minAmount={minAmount}
-            setMinAmount={setMinAmount}
-            maxAmount={maxAmount}
-            setMaxAmount={setMaxAmount}
-            selectedCategoryIds={selectedCategoryIds}
-            setSelectedCategoryIds={setSelectedCategoryIds}
-            selectedTypes={selectedTypes}
-            setSelectedTypes={setSelectedTypes}
-            selectedAccountIds={selectedAccountIds}
-            setSelectedAccountIds={setSelectedAccountIds}
-            clearAllFilters={clearAllFilters}
-            currencySymbol={currency.symbol}
-          />
+      {/* ── Filters rail (desktop) + content stack ──────────────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <aside className="hidden lg:block lg:col-span-3 lg:sticky lg:top-20 h-fit max-h-[calc(100vh-6rem)] overflow-y-auto rounded-2xl">
+          {filters}
         </aside>
 
-        {/* Right Column: Content Stack */}
-        <section className="lg:col-span-9 flex flex-col gap-6">
-          {/* KPI Cards + Summary Chart */}
+        <section className="lg:col-span-9 flex flex-col gap-5 min-w-0">
           <SummaryTrends
             totalSpent={totalSpent}
             totalIncome={totalIncome}
@@ -231,17 +207,6 @@ export default function SearchResults() {
             chartData={chartData}
           />
 
-          {/* Category Breakdown Chart */}
-          <CategoryBreakdown
-            data={categoryBreakdown}
-            currencyCode={currency.code}
-            totalSpent={totalSpent}
-          />
-
-          {/* Accounts Balance Breakdown */}
-          <AccountsBreakdown currencyCode={currency.code} />
-
-          {/* High-Density Data Table */}
           <LedgerTable
             rows={rows}
             loading={loading}
@@ -251,8 +216,12 @@ export default function SearchResults() {
             sortDirection={sortDirection}
             setSortDirection={setSortDirection}
           />
+
+          <CategoryBreakdown data={categoryBreakdown} currencyCode={currency.code} totalSpent={totalSpent} />
+          <AccountsBreakdown currencyCode={currency.code} />
         </section>
       </div>
     </div>
   );
 }
+

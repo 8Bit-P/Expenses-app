@@ -61,7 +61,7 @@ export default function AppLayout() {
         <Sidebar onNewTransaction={() => setIsNewTxOpen(true)} />
       </div>
 
-      <div className="flex-1 flex flex-col desk:ml-64 pb-32 desk:pb-0">
+      <div className="flex-1 flex flex-col min-w-0 desk:ml-60 pb-28 desk:pb-0">
         {/* Mobile Header (Hidden on desktop) */}
         <MobileHeader />
 
@@ -70,7 +70,7 @@ export default function AppLayout() {
           <TopBar />
         </div>
 
-        <main className="p-6 desk:p-8 mt-20 desk:mt-0 max-w-7xl mx-auto w-full">
+        <main className="px-4 py-6 sm:px-6 desk:px-8 desk:py-8 mt-[calc(3.5rem+env(safe-area-inset-top,0px))] desk:mt-0 max-w-7xl mx-auto w-full">
           <Outlet />
         </main>
       </div>

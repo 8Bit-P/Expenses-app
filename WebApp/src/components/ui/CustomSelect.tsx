@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { cn } from "../../utils/cn";
 
 export interface SelectOption<T extends string = string> {
   value: T;
@@ -61,20 +62,25 @@ export function CustomSelect<T extends string = string>({
   }, [open]);
 
   return (
-    <div ref={containerRef} className={`relative ${className}`}>
+    <div ref={containerRef} className={cn("relative", className)}>
       {/* Trigger */}
       <button
         type="button"
         onClick={handleToggle}
-        className={`w-full flex items-center justify-between gap-2 border border-outline-variant/30 bg-surface-container hover:bg-surface-container-high transition-colors font-semibold text-on-surface group focus:outline-none focus:ring-2 focus:ring-primary/30 ${
-          size === "sm" ? "py-2 px-3 rounded-lg text-xs" : "py-2.5 px-4 rounded-xl text-sm"
-        }`}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className={cn(
+          "w-full flex items-center justify-between gap-2 rounded-lg border bg-surface-container-lowest text-on-surface font-medium text-left transition-colors focus:outline-none focus-visible:outline-none",
+          open ? "border-on-surface" : "border-outline-variant hover:border-outline",
+          size === "sm" ? "h-8 px-2.5 text-xs" : "h-10 px-3 text-sm",
+        )}
       >
         <span className="truncate">{selected.label}</span>
         <span
-          className={`material-symbols-outlined text-[18px] text-on-surface-variant transition-transform duration-200 ${
-            open ? "rotate-180" : "rotate-0"
-          }`}
+          className={cn(
+            "material-symbols-outlined text-[18px] text-on-surface-variant transition-transform duration-150",
+            open ? "rotate-180" : "rotate-0",
+          )}
         >
           expand_more
         </span>
@@ -83,33 +89,34 @@ export function CustomSelect<T extends string = string>({
       {/* Dropdown panel */}
       {open && (
         <div
-          className={`
-            absolute left-0 right-0 z-30
-            bg-surface-container-lowest border border-outline-variant/20
-            shadow-2xl overflow-hidden
-            animate-in fade-in zoom-in-95 duration-150
-            ${dropUp ? "bottom-full mb-2" : "top-full mt-2"}
-            ${size === "sm" ? "rounded-md" : "rounded-xl"}
-          `}
+          role="listbox"
+          className={cn(
+            "absolute left-0 right-0 z-30 min-w-[10rem] overflow-hidden rounded-lg border border-outline-variant bg-surface-container-lowest shadow-lg",
+            dropUp ? "bottom-full mb-1" : "top-full mt-1",
+          )}
         >
-          <div className="overflow-y-auto max-h-64">
+          <div className="overflow-y-auto max-h-64 py-1">
             {options.map((opt) => {
               const isSelected = opt.value === value;
               return (
                 <button
                   key={opt.value}
                   type="button"
+                  role="option"
+                  aria-selected={isSelected}
                   onClick={() => {
                     onChange(opt.value);
                     setOpen(false);
                   }}
-                  className={`w-full flex items-center justify-between gap-3 text-left transition-colors font-semibold ${
-                    size === "sm" ? "px-3 py-2 text-xs" : "px-4 py-3 text-sm"
-                  } ${isSelected ? "bg-primary/10 text-primary" : "text-on-surface hover:bg-surface-container-low"}`}
+                  className={cn(
+                    "w-full h-9 flex items-center justify-between gap-3 px-3 text-left text-on-surface transition-colors hover:bg-surface-container-low",
+                    size === "sm" ? "text-xs" : "text-sm",
+                    isSelected ? "font-medium" : "font-normal",
+                  )}
                 >
-                  <span>{opt.label}</span>
+                  <span className="truncate">{opt.label}</span>
                   {isSelected && (
-                    <span className="material-symbols-outlined text-[16px] text-primary shrink-0">check</span>
+                    <span className="material-symbols-outlined text-[16px] text-on-surface shrink-0">check</span>
                   )}
                 </button>
               );
@@ -117,14 +124,17 @@ export function CustomSelect<T extends string = string>({
 
             {onAddAction && (
               <>
-                <div className="h-px bg-outline-variant/10 my-0.5 mx-2" />
+                <div className="h-px bg-outline-variant my-1" />
                 <button
                   type="button"
                   onClick={() => {
                     setOpen(false);
                     onAddAction();
                   }}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-primary hover:bg-surface-container transition-colors"
+                  className={cn(
+                    "w-full h-9 flex items-center gap-2 px-3 font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors",
+                    size === "sm" ? "text-xs" : "text-sm",
+                  )}
                 >
                   <span className="material-symbols-outlined text-[18px]">add</span>
                   <span>{addActionLabel || "Add Item"}</span>

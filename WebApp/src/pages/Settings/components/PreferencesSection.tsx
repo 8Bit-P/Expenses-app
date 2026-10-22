@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useUserPreferences } from "../../../context/UserPreferencesContext";
 import { CustomSelect } from "../../../components/ui/CustomSelect";
 import { CURRENCIES, DATE_FORMATS } from "../../../constants/preferences";
 import type { Theme, Currency, DateFormat, Language } from "../../../types/preferences";
 import { toast } from "sonner";
+import Panel from "../../../components/ui/Panel";
+import SettingsGroup from "./SettingsGroup";
+import { cn } from "../../../utils/cn";
 
 function ThemeButton({
   value,
@@ -21,30 +25,56 @@ function ThemeButton({
   const active = value === current;
   return (
     <button
+      type="button"
       onClick={onClick}
-      className={`flex-1 flex flex-col items-center gap-1 py-2 px-2 rounded-lg text-xs font-bold transition-all ${
-        active ? "bg-surface-container-lowest text-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface"
-      }`}
+      aria-pressed={active}
+      className={cn(
+        "flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md text-xs font-medium transition-colors",
+        active ? "bg-surface-container-lowest text-on-surface shadow-sm" : "text-on-surface-variant hover:text-on-surface",
+      )}
     >
-      <span className="material-symbols-outlined text-[18px]">{icon}</span>
+      <span className="material-symbols-outlined text-[16px]">{icon}</span>
       {label}
     </button>
   );
 }
 
-import { useTranslation } from "react-i18next";
+function PrefRow({
+  label,
+  description,
+  control,
+  children,
+}: {
+  label: string;
+  description?: string;
+  control?: React.ReactNode;
+  children?: React.ReactNode;
+}) {
+  return (
+    <div className="px-5 py-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-on-surface">{label}</p>
+          {description && <p className="text-xs text-on-surface-variant mt-0.5">{description}</p>}
+        </div>
+        {control && <div className="shrink-0 sm:min-w-[200px] flex sm:justify-end">{control}</div>}
+      </div>
+      {children}
+    </div>
+  );
+}
 
 export default function PreferencesSection() {
   const { t } = useTranslation();
-  const { 
-    theme, 
-    setTheme, 
+  const {
+    theme,
+    setTheme,
     language,
-    currency, 
-    dateFormat, 
-    monthlyBudget, 
-    updateFinancialSettings, 
-    budgetLoading 
+    currency,
+    dateFormat,
+    monthlyBudget,
+    updateFinancialSettings,
+    budgetLoading
   } = useUserPreferences();
 
   const [budgetInput, setBudgetInput] = useState(monthlyBudget > 0 ? monthlyBudget.toString() : "");
@@ -79,16 +109,16 @@ export default function PreferencesSection() {
         monthlyBudget: amount,
         currency: localCurrency,
         dateFormat: localDateFormat,
-        language: localLanguage as any,
+        language: localLanguage as Language,
       });
       toast.success(t("common.success"), {
         description: t("settings.preferences.syncDescription"),
       });
       setIsSaved(true);
       setTimeout(() => setIsSaved(false), 2000);
-    } catch (error: any) {
+    } catch (error) {
       toast.error(t("common.error"), {
-        description: error.message || t("settings.preferences.uploadError"),
+        description: (error as Error).message || t("settings.preferences.uploadError"),
       });
     } finally {
       setIsSaving(false);
@@ -96,89 +126,91 @@ export default function PreferencesSection() {
   };
 
   return (
-    <section className="bg-surface-container-lowest border border-outline-variant/10 rounded-3xl p-6 lg:p-8 space-y-6 shadow-sm">
-      <h4 className="text-lg font-bold font-headline flex items-center gap-2 text-on-surface">
-        <span className="material-symbols-outlined text-primary">tune</span>
-        {t("settings.preferences.title")}
-      </h4>
-
-      <div className="space-y-4">
+    <SettingsGroup title={t("settings.preferences.title")}>
+      <Panel flush>
+        <div className="divide-y divide-outline-variant">
         {/* Language */}
-        <div className="flex items-center justify-between p-4 bg-surface-container-low/50 rounded-xl border border-outline-variant/5">
-          <div>
-            <span className="font-semibold text-on-surface text-sm">{t("settings.preferences.language")}</span>
-            <p className="text-xs text-on-surface-variant mt-0.5">{t("settings.preferences.languageDesc")}</p>
-          </div>
-          <CustomSelect
-            value={localLanguage}
-            options={[
-              { value: "en", label: "English (US)" },
-              { value: "es", label: "Español" },
-            ]}
-            onChange={(l) => setLocalLanguage(l as Language)}
-          />
-        </div>
+        <PrefRow
+          label={t("settings.preferences.language")}
+          description={t("settings.preferences.languageDesc")}
+          control={
+            <CustomSelect
+              value={localLanguage}
+              options={[
+                { value: "en", label: "English (US)" },
+                { value: "es", label: "Español" },
+              ]}
+              onChange={(l) => setLocalLanguage(l as Language)}
+              className="w-full sm:w-auto"
+            />
+          }
+        />
 
         {/* Visual Theme */}
-        <div className="p-4 bg-surface-container-lowest rounded-xl shadow-sm space-y-3">
-          <span className="font-semibold text-on-surface text-sm">{t("settings.preferences.theme")}</span>
-          <div className="flex bg-surface-container rounded-lg mt-2 p-1 gap-1">
-            <ThemeButton
-              value="light"
-              current={theme}
-              label={t("settings.preferences.themes.light")}
-              icon="light_mode"
-              onClick={() => setTheme("light")}
-            />
-            <ThemeButton value="dark" current={theme} label={t("settings.preferences.themes.dark")} icon="dark_mode" onClick={() => setTheme("dark")} />
-            <ThemeButton
-              value="system"
-              current={theme}
-              label={t("settings.preferences.themes.system")}
-              icon="contrast"
-              onClick={() => setTheme("system")}
-            />
-          </div>
-        </div>
+        <PrefRow
+          label={t("settings.preferences.theme")}
+          control={
+            <div className="flex w-full sm:w-auto p-0.5 rounded-lg bg-surface-container border border-outline-variant">
+              <ThemeButton
+                value="light"
+                current={theme}
+                label={t("settings.preferences.themes.light")}
+                icon="light_mode"
+                onClick={() => setTheme("light")}
+              />
+              <ThemeButton
+                value="dark"
+                current={theme}
+                label={t("settings.preferences.themes.dark")}
+                icon="dark_mode"
+                onClick={() => setTheme("dark")}
+              />
+              <ThemeButton
+                value="system"
+                current={theme}
+                label={t("settings.preferences.themes.system")}
+                icon="contrast"
+                onClick={() => setTheme("system")}
+              />
+            </div>
+          }
+        />
 
         {/* Currency */}
-        <div className="flex items-center justify-between p-4 bg-surface-container-low/50 rounded-xl border border-outline-variant/5">
-          <div>
-            <span className="font-semibold text-on-surface text-sm">{t("settings.preferences.currency")}</span>
-            <p className="text-xs text-on-surface-variant mt-0.5">{t("settings.preferences.currencyDesc")}</p>
-          </div>
-          <CustomSelect
-            value={localCurrency}
-            options={CURRENCIES.map((c) => ({ value: c.code, label: c.label }))}
-            onChange={(code) => setLocalCurrency(code as Currency)}
-          />
-        </div>
+        <PrefRow
+          label={t("settings.preferences.currency")}
+          description={t("settings.preferences.currencyDesc")}
+          control={
+            <CustomSelect
+              value={localCurrency}
+              options={CURRENCIES.map((c) => ({ value: c.code, label: c.label }))}
+              onChange={(code) => setLocalCurrency(code as Currency)}
+              className="w-full sm:w-auto"
+            />
+          }
+        />
 
         {/* Date Format */}
-        <div className="flex items-center justify-between p-4 bg-surface-container-low/50 rounded-xl border border-outline-variant/5">
-          <div>
-            <span className="font-semibold text-on-surface text-sm">{t("settings.preferences.dateFormat")}</span>
-            <p className="text-xs text-on-surface-variant mt-0.5">{t("settings.preferences.dateFormatDesc")}</p>
-          </div>
-          <CustomSelect
-            value={localDateFormat}
-            options={DATE_FORMATS.map((f) => ({ value: f.value, label: f.label }))}
-            onChange={(f) => setLocalDateFormat(f as DateFormat)}
-          />
-        </div>
+        <PrefRow
+          label={t("settings.preferences.dateFormat")}
+          description={t("settings.preferences.dateFormatDesc")}
+          control={
+            <CustomSelect
+              value={localDateFormat}
+              options={DATE_FORMATS.map((f) => ({ value: f.value, label: f.label }))}
+              onChange={(f) => setLocalDateFormat(f as DateFormat)}
+              className="w-full sm:w-auto"
+            />
+          }
+        />
 
         {/* Monthly Budget */}
-        <div className="p-4 bg-surface-container-low/50 rounded-xl border border-outline-variant/5 space-y-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <span className="font-semibold text-on-surface text-sm">{t("settings.preferences.monthlyBudget")}</span>
-              <p className="text-xs text-on-surface-variant mt-0.5">{t("settings.preferences.budgetDesc")}</p>
-            </div>
-            {budgetLoading && <span className="text-xs text-on-surface-variant/50 font-medium">{t("settings.preferences.loading")}</span>}
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="relative flex-1">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant font-bold text-sm">
+        <PrefRow
+          label={t("settings.preferences.monthlyBudget")}
+          description={t("settings.preferences.budgetDesc")}
+          control={
+            <div className="relative w-full sm:w-[200px]">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-on-surface-variant pointer-events-none">
                 {currency.symbol}
               </span>
               <input
@@ -188,20 +220,27 @@ export default function PreferencesSection() {
                 placeholder="0.00"
                 value={budgetInput}
                 onChange={(e) => setBudgetInput(e.target.value)}
-                className="w-full bg-surface-container rounded-lg pl-8 pr-3 py-2.5 text-sm font-bold text-on-surface outline-none focus:ring-2 focus:ring-primary/40 border-none"
+                className="w-full h-10 rounded-lg border border-outline-variant bg-surface-container-lowest pl-8 pr-3 text-sm font-medium tabular-nums text-right text-on-surface placeholder:text-outline focus:border-on-surface focus:ring-0 outline-none transition-colors"
               />
             </div>
-          </div>
+          }
+        >
+          {budgetLoading && (
+            <p className="text-xs text-on-surface-variant mt-2 sm:text-right">{t("settings.preferences.loading")}</p>
+          )}
           {monthlyBudget > 0 && (
-            <p className="text-[10px] text-on-surface-variant/40 font-bold uppercase tracking-widest mt-2 ml-1">
-              {t("settings.preferences.activeBudget", { symbol: currency.symbol, amount: monthlyBudget.toLocaleString(undefined, { minimumFractionDigits: 2 }) })}
+            <p className="text-xs text-on-surface-variant mt-2 sm:text-right">
+              {t("settings.preferences.activeBudget", {
+                symbol: currency.symbol,
+                amount: monthlyBudget.toLocaleString(undefined, { minimumFractionDigits: 2 }),
+              })}
             </p>
           )}
+        </PrefRow>
         </div>
-      </div>
 
-      {/* Sticky Save FAB on Mobile - Elevated to clear the bottom navigation bar */}
-      <div className="fixed bottom-[100px] left-0 w-full px-4 md:static md:bottom-auto md:px-0 z-40 md:flex md:items-center md:justify-end gap-3 transition-all duration-500 ease-out animate-in slide-in-from-bottom-4">
+        {/* Save bar: fixed above the bottom navigation on mobile, inline footer on desktop */}
+        <div className="fixed bottom-[100px] left-0 w-full px-4 z-40 flex gap-2 md:static md:bottom-auto md:w-auto md:z-auto md:justify-end md:px-5 md:py-3.5 md:bg-surface-container-low md:rounded-b-2xl md:border-t md:border-outline-variant">
           <button
             onClick={() => {
               setBudgetInput(monthlyBudget > 0 ? monthlyBudget.toString() : "");
@@ -209,37 +248,42 @@ export default function PreferencesSection() {
               setLocalDateFormat(dateFormat);
               setLocalLanguage(language);
             }}
-            className={`flex-1 md:flex-none px-6 py-4 md:py-3 rounded-2xl md:rounded-xl text-sm md:text-xs font-bold text-on-surface-variant hover:bg-surface-container-high transition-all ${!isDirty ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+            className={cn(
+              "flex-1 md:flex-none h-10 md:h-9 px-3.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface text-sm font-medium hover:bg-surface-container-low transition",
+              !isDirty ? "opacity-0 pointer-events-none" : "opacity-100",
+            )}
             disabled={!isDirty || isSaving}
           >
             {t("common.reset")}
           </button>
-          
+
           <button
             onClick={handleSave}
             disabled={!isDirty || isSaving}
-            className={`flex-[2] md:flex-none px-8 py-4 md:py-3 rounded-2xl md:rounded-xl text-sm md:text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-2xl md:shadow-xl ${
+            className={cn(
+              "flex-[2] md:flex-none h-10 md:h-9 px-4 rounded-lg text-sm font-medium transition inline-flex items-center justify-center gap-1.5",
               isSaving
-                ? "bg-primary/50 text-on-primary/50 cursor-wait"
+                ? "bg-primary text-on-primary opacity-60 cursor-wait"
                 : isSaved
-                ? "bg-secondary text-on-secondary shadow-secondary/20"
-                : isDirty
-                ? "bg-primary text-on-primary shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-                : "bg-surface-container text-on-surface-variant/50 cursor-not-allowed opacity-80"
-            }`}
+                  ? "bg-secondary text-on-secondary"
+                  : isDirty
+                    ? "bg-primary text-on-primary hover:opacity-90 active:scale-[0.98] shadow-lg md:shadow-none"
+                    : "bg-surface-container text-on-surface-variant border border-outline-variant cursor-not-allowed",
+            )}
           >
-            <span className="material-symbols-outlined text-[20px] md:text-[18px]">
-              {isSaving ? "sync" : isSaved ? "check_circle" : isDirty ? "save_as" : "check"}
+            <span className={cn("material-symbols-outlined text-[18px]", isSaving && "animate-spin")}>
+              {isSaving ? "sync" : isSaved ? "check_circle" : isDirty ? "save" : "check"}
             </span>
-            {isSaving 
-              ? t("common.syncing") 
-              : isSaved 
-              ? t("common.updated") 
-              : isDirty 
-              ? t("common.save") 
-              : t("common.noChanges")}
+            {isSaving
+              ? t("common.syncing")
+              : isSaved
+                ? t("common.updated")
+                : isDirty
+                  ? t("common.save")
+                  : t("common.noChanges")}
           </button>
         </div>
-    </section>
+      </Panel>
+    </SettingsGroup>
   );
 }

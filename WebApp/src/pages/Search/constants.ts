@@ -17,10 +17,10 @@ export const TIMEFRAME_OPTIONS: { key: TimeframeKey; label: string }[] = [
 export const domainColor = (domain: DomainKey) => {
   switch (domain) {
     case "Transactions":
-      return "text-red-400";
+      return "text-error";
     case "Assets":
-      return "text-emerald-400";
+      return "text-secondary";
     case "Subscriptions":
-      return "text-violet-400";
+      return "text-tertiary";
   }
 };

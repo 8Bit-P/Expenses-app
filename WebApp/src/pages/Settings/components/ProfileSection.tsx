@@ -4,6 +4,8 @@ import { useAuth } from "../../../context/AuthContext";
 import { supabase } from "../../../lib/supabase";
 import { useProfile } from "../../../hooks/useProfile";
 import { toast } from "sonner";
+import Panel from "../../../components/ui/Panel";
+import SettingsGroup from "./SettingsGroup";
 
 export default function ProfileSection() {
   const { t } = useTranslation();
@@ -46,9 +48,9 @@ export default function ProfileSection() {
       toast.success(t("settings.profile.avatarUpdated"), {
         description: t("settings.profile.avatarSuccess"),
       });
-    } catch (error: any) {
+    } catch (error) {
       toast.error(t("settings.profile.uploadFailed"), {
-        description: error.message || t("settings.profile.uploadError"),
+        description: (error as Error).message || t("settings.profile.uploadError"),
       });
     } finally {
       setIsUploading(false);
@@ -56,36 +58,40 @@ export default function ProfileSection() {
   };
 
   return (
-    <section className="col-span-12 lg:col-span-7">
-      <div className="bg-surface-container-lowest border border-outline-variant/10 rounded-3xl p-6 shadow-sm">
-        <div className="flex items-center gap-6">
-          {/* Avatar Container with Overlapping Edit */}
+    <SettingsGroup title={t("settings.profile.title")}>
+      <Panel>
+        <div className="flex items-center gap-4">
           <div className="relative shrink-0">
-            <div className="w-20 h-20 rounded-full bg-surface-container overflow-hidden border border-outline-variant/20">
+            <div className="w-14 h-14 rounded-full bg-surface-container overflow-hidden border border-outline-variant">
               <img
                 src={avatarSrc}
                 alt={t("settings.profile.title")}
-                className={`w-full h-full object-cover ${isUploading ? "opacity-50 blur-sm" : ""}`}
+                className={`w-full h-full object-cover transition-opacity ${isUploading ? "opacity-40" : ""}`}
               />
             </div>
-
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isUploading}
-              className="absolute bottom-0 right-0 w-7 h-7 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-md hover:scale-110 active:scale-95 transition-all border-2 border-surface-container-lowest"
-            >
-              <span className="material-symbols-outlined text-[14px]">{isUploading ? "sync" : "edit"}</span>
-            </button>
-            <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
+            {isUploading && (
+              <span className="absolute inset-0 flex items-center justify-center">
+                <span className="material-symbols-outlined text-[18px] text-on-surface animate-spin">progress_activity</span>
+              </span>
+            )}
           </div>
 
-          {/* User Info */}
           <div className="min-w-0 flex-1">
-            <h2 className="text-xl font-black text-on-surface font-headline tracking-tight truncate">{userName}</h2>
-            <p className="text-on-surface-variant font-medium text-sm truncate">{userEmail}</p>
+            <p className="text-sm font-medium text-on-surface truncate">{userName}</p>
+            <p className="text-[13px] text-on-surface-variant truncate">{userEmail}</p>
           </div>
+
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploading}
+            aria-label={t("settings.profile.title")}
+            className="w-10 h-10 shrink-0 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors inline-flex items-center justify-center disabled:opacity-50"
+          >
+            <span className="material-symbols-outlined text-[18px]">{isUploading ? "sync" : "photo_camera"}</span>
+          </button>
+          <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
         </div>
-      </div>
-    </section>
+      </Panel>
+    </SettingsGroup>
   );
 }

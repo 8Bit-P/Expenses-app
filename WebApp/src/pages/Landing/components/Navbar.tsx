@@ -1,18 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
-function VaultLogoSVG() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="15" y="15" width="70" height="70" rx="16" stroke="currentColor" strokeWidth="8" />
-      <circle cx="50" cy="50" r="16" stroke="currentColor" strokeWidth="8" />
-      <circle cx="50" cy="50" r="5" fill="currentColor" />
-      <line x1="66" y1="50" x2="76" y2="50" stroke="currentColor" strokeWidth="8" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 import { useTranslation } from "react-i18next";
+import VaultIcon from "../../../components/ui/VaultIcon";
 
 export default function Navbar() {
   const { t } = useTranslation();
@@ -26,32 +15,28 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? "bg-slate-950/80 backdrop-blur-xl border-b border-white/5 shadow-2xl"
-          : "bg-transparent"
+      className={`fixed top-0 left-0 right-0 z-50 border-b transition-colors duration-200 ${
+        scrolled ? "bg-background border-outline-variant" : "bg-background/0 border-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2.5 text-white group">
-          <span className="text-violet-400 group-hover:text-violet-300 transition-colors">
-            <VaultLogoSVG />
-          </span>
-          <span className="font-black text-xl tracking-wider">Vault</span>
+        <Link to="/" className="flex items-center gap-2.5 text-on-surface">
+          <VaultIcon className="text-on-surface" width="26" height="26" />
+          <span className="font-semibold text-lg tracking-tight">Vault</span>
         </Link>
 
         {/* Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <Link
             to="/auth?mode=signin"
-            className="px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white rounded-full hover:bg-white/5 transition-all duration-200"
+            className="inline-flex items-center h-9 px-3.5 rounded-lg text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors"
           >
             {t("landing.navbar.signIn")}
           </Link>
           <Link
             to="/auth?mode=signup"
-            className="px-5 py-2 text-sm font-bold text-white bg-violet-600 hover:bg-violet-500 rounded-full transition-all duration-200 shadow-lg shadow-violet-900/50"
+            className="inline-flex items-center h-9 px-4 rounded-lg bg-primary text-on-primary text-sm font-medium hover:opacity-90 active:scale-[0.98] transition"
           >
             {t("landing.navbar.getStarted")}
           </Link>

@@ -23,44 +23,54 @@ export default function DeleteAccountModal({ isOpen, onClose }: DeleteAccountMod
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+            transition={{ duration: 0.15 }}
+            className="absolute inset-0 bg-black/50"
             onClick={onClose}
           />
           <motion.div
-            initial={{ scale: 0.95, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            transition={{ type: "spring", damping: 25, stiffness: 350 }}
-            className="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-error/20 ring-1 ring-black/5 relative"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            className="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-outline-variant relative"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-8 text-center space-y-4">
-              <div className="w-16 h-16 bg-error-container text-error rounded-full flex items-center justify-center mx-auto mb-2">
-                <span className="material-symbols-outlined text-3xl">warning</span>
-              </div>
-              <h3 className="text-2xl font-extrabold text-on-surface font-headline tracking-tight">
+            <div className="flex items-center justify-between gap-4 px-5 py-4 border-b border-outline-variant">
+              <h3 className="text-[15px] font-semibold text-on-surface flex items-center gap-2">
+                <span className="material-symbols-outlined text-[20px] text-error">warning</span>
                 {t("settings.danger.modal.title")}
               </h3>
-              <p className="text-on-surface-variant text-sm font-medium">{t("settings.danger.modal.desc")}</p>
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={isPending}
+                aria-label={t("common.cancel")}
+                className="w-8 h-8 -mr-1.5 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors disabled:opacity-50"
+              >
+                <span className="material-symbols-outlined text-[20px]">close</span>
+              </button>
             </div>
 
-            <div className="p-4 bg-surface-container-low flex gap-3">
+            <div className="px-5 py-5">
+              <p className="text-sm text-on-surface-variant leading-relaxed">{t("settings.danger.modal.desc")}</p>
+            </div>
+
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 px-5 py-4 border-t border-outline-variant">
               <button
                 onClick={onClose}
                 disabled={isPending}
-                className="flex-1 py-3 px-4 rounded-xl font-bold text-sm text-on-surface hover:bg-surface-container-highest transition-colors disabled:opacity-50"
+                className="h-9 px-3.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface text-sm font-medium hover:bg-surface-container-low transition-colors disabled:opacity-50"
               >
                 {t("common.cancel")}
               </button>
               <button
                 onClick={handleDelete}
                 disabled={isPending}
-                className="flex-1 py-3 px-4 rounded-xl font-bold text-sm bg-error text-white shadow-md hover:bg-error/90 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                className="h-9 px-4 rounded-lg bg-error text-white text-sm font-medium hover:opacity-90 active:scale-[0.98] transition disabled:opacity-50 inline-flex items-center justify-center gap-2"
               >
                 {isPending ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     {t("settings.danger.modal.deleting")}
                   </>
                 ) : (

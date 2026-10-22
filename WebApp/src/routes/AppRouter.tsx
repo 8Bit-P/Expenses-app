@@ -20,7 +20,7 @@ const Terms = lazyWithRetry(() => import("../pages/Legal/Terms"));
 // A clean, premium loading spinner that fits the Vault aesthetic
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-[50vh]">
-    <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+    <div className="w-6 h-6 border-2 border-outline-variant border-t-on-surface rounded-full animate-spin"></div>
   </div>
 );
 
@@ -37,7 +37,6 @@ export default function AppRouter() {
         {/* 2. Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
-            <Route index element={<Navigate to="/expenses" replace />} />
             <Route path="/home" element={<Dashboard />} />
             <Route path="/expenses" element={<Expenses />} />
             <Route path="/settings" element={<Settings />} />

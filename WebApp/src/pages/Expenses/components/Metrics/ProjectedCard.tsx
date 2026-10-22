@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { CardWrapper } from "./CardWrapper";
+import { CardWrapper, CardLabel } from "./CardWrapper";
 
 export function ProjectedCard({
   isRunningHot,
@@ -19,35 +19,30 @@ export function ProjectedCard({
   const { t } = useTranslation();
 
   return (
-    <CardWrapper className="relative overflow-hidden">
-      <div className="absolute -right-6 -top-6 w-24 h-24 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
-      <div className="flex items-center gap-3 mb-3">
-        <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-          <span className="material-symbols-outlined text-[18px]">trending_up</span>
-        </div>
-        <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">
-          {t("expenses.metrics.projectedSpend")}
-        </span>
-      </div>
-      <h2 className="text-3xl font-black text-on-surface font-headline tracking-tight">{formattedAmount}</h2>
-      <div className="mt-2 flex items-center gap-2">
+    <CardWrapper>
+      <CardLabel label={t("expenses.metrics.projectedSpend")} icon="trending_up" />
+      <p className="mt-2 text-2xl md:text-3xl font-semibold tracking-tight tabular-nums text-on-surface truncate">
+        {formattedAmount}
+      </p>
+      <div className="mt-1.5 min-h-5">
         {isRunningHot ? (
-          <span className="text-xs font-black text-red-400 flex items-center gap-1">
-            <span className="material-symbols-outlined text-[14px]">warning</span>
+          <span className="inline-flex items-center gap-1 h-5 px-1.5 rounded text-[11px] font-medium bg-error/10 text-error">
+            <span className="material-symbols-outlined text-[13px]">warning</span>
             {t("expenses.metrics.runningHot")}
           </span>
         ) : (
-          <span className="text-xs font-black text-green-500 flex items-center gap-1">
-            <span className="material-symbols-outlined text-[14px]">check_circle</span>
+          <span className="inline-flex items-center gap-1 h-5 px-1.5 rounded text-[11px] font-medium bg-secondary/10 text-secondary">
+            <span className="material-symbols-outlined text-[13px]">check</span>
             {t("expenses.metrics.onTrack")}
           </span>
         )}
       </div>
-      <p className="text-xs font-bold text-on-surface-variant mt-3 flex items-center gap-1.5">
-        <span className="material-symbols-outlined text-[14px]">speed</span>
-        {t("expenses.metrics.dailyAvg", { amount: formattedDailyAverage })} ·{" "}
-        {t("expenses.metrics.daysElapsed", { elapsed: daysElapsed, total: totalPeriodDays })}
-      </p>
+      <div className="mt-auto pt-4 space-y-0.5 text-xs text-on-surface-variant">
+        <p className="tabular-nums truncate">{t("expenses.metrics.dailyAvg", { amount: formattedDailyAverage })}</p>
+        <p className="tabular-nums truncate">
+          {t("expenses.metrics.daysElapsed", { elapsed: daysElapsed, total: totalPeriodDays })}
+        </p>
+      </div>
     </CardWrapper>
   );
 }

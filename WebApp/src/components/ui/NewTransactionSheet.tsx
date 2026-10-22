@@ -51,70 +51,63 @@ export default function NewTransactionSheet({ isOpen, onClose }: NewTransactionS
       {/* Type Picker Overlay */}
       {isOpen && !expenseOpen && (
         <div
-          className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4"
-          style={{ background: "rgba(0,0,0,0.55)" }}
+          className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50"
           onClick={onClose}
         >
           {/* Sheet panel */}
           <div
-            className="relative w-full sm:max-w-md bg-surface-container-lowest rounded-t-3xl sm:rounded-2xl border border-outline-variant/20 shadow-2xl overflow-hidden"
-            style={{ animation: "ntSheetIn 0.28s cubic-bezier(0.34,1.56,0.64,1) both" }}
+            className="relative w-full sm:max-w-md bg-surface-container-lowest rounded-t-2xl sm:rounded-2xl border border-outline-variant shadow-2xl overflow-hidden pb-[env(safe-area-inset-bottom,0px)]"
+            style={{ animation: "ntSheetIn 0.2s cubic-bezier(0.2,0.8,0.2,1) both" }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Drag handle (mobile) */}
-            <div className="flex justify-center pt-3 pb-1 sm:hidden">
-              <div className="w-8 h-1 rounded-full bg-outline-variant/40" />
+            <div className="flex justify-center pt-2.5 sm:hidden">
+              <div className="w-9 h-1 rounded-full bg-outline-variant" />
             </div>
 
             {/* Header */}
-            <div className="flex items-center justify-between px-6 pt-5 pb-4">
+            <div className="flex items-start justify-between gap-4 px-5 pt-4 pb-4 border-b border-outline-variant">
               <div>
-                <h2 className="text-xl font-extrabold text-on-surface tracking-tight font-headline">{t("newTransaction.title")}</h2>
-                <p className="text-xs text-on-surface-variant font-medium mt-0.5">
-                  {t("newTransaction.subtitle")}
-                </p>
+                <h2 className="text-base font-semibold text-on-surface">{t("newTransaction.title")}</h2>
+                <p className="text-xs text-on-surface-variant mt-0.5">{t("newTransaction.subtitle")}</p>
               </div>
               <button
                 onClick={onClose}
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors"
+                aria-label="Close"
+                className="w-8 h-8 -mr-1.5 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors"
               >
-                <span className="material-symbols-outlined text-on-surface-variant text-[20px]">close</span>
+                <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
 
             {/* Kind options */}
-            <div className="px-4 pb-6 space-y-2.5">
-              {TRANSACTION_KINDS.map(({ kind, icon, available, gradient, iconBg, iconColor }) => (
+            <div className="divide-y divide-outline-variant">
+              {TRANSACTION_KINDS.map(({ kind, icon, available, iconBg, iconColor }) => (
                 <button
                   key={kind}
                   onClick={() => handleKindSelect(kind)}
                   disabled={!available}
-                  className={`group w-full flex items-center gap-4 p-4 rounded-2xl border transition-all duration-200 text-left
-                    ${
-                      available
-                        ? `bg-linear-to-r ${gradient} border-outline-variant/20 hover:border-outline-variant/40 hover:scale-[1.01] active:scale-[0.99] cursor-pointer`
-                        : "border-outline-variant/10 bg-surface-container/40 cursor-not-allowed opacity-60"
-                    }`}
+                  className={`group w-full flex items-center gap-3.5 px-5 py-4 text-left transition-colors ${
+                    available ? "hover:bg-surface-container-low" : "cursor-not-allowed opacity-50"
+                  }`}
                 >
-                  <div
-                    className={`w-12 h-12 rounded-xl ${iconBg} flex items-center justify-center shrink-0 transition-transform duration-200 ${available ? "group-hover:scale-110" : ""}`}
-                  >
-                    <span className={`material-symbols-outlined text-[24px] ${iconColor}`}>{icon}</span>
+                  <div className={`w-10 h-10 rounded-lg ${iconBg} flex items-center justify-center shrink-0`}>
+                    <span className={`material-symbols-outlined text-[22px] ${iconColor}`}>{icon}</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-sm text-on-surface flex items-center gap-2">
+                    <p className="font-medium text-sm text-on-surface flex items-center gap-2">
                       {t(`newTransaction.${kind}.label`)}
                       {!available && (
-                        <span className="text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-surface-container text-on-surface-variant border border-outline-variant/20">
+                        <span className="inline-flex items-center h-5 px-1.5 rounded bg-surface-container text-on-surface-variant text-[11px] font-medium">
                           {t("newTransaction.soon")}
                         </span>
                       )}
                     </p>
-                    <p className="text-xs text-on-surface-variant font-medium mt-0.5">{t(`newTransaction.${kind}.desc`)}</p>
+                    <p className="text-xs text-on-surface-variant mt-0.5">{t(`newTransaction.${kind}.desc`)}</p>
                   </div>
                   {available && (
-                    <span className="material-symbols-outlined text-on-surface-variant/40 text-[18px] shrink-0 transition-all duration-200 group-hover:text-on-surface-variant group-hover:translate-x-0.5">
-                      chevron_right
+                    <span className="material-symbols-outlined text-outline text-[18px] shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:text-on-surface">
+                      arrow_forward
                     </span>
                   )}
                 </button>

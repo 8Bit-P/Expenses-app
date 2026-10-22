@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ChangePasswordModal from "./ChangePasswordModal";
+import Panel from "../../../components/ui/Panel";
+import SettingsGroup from "./SettingsGroup";
 
 export default function SecuritySection() {
   const { t } = useTranslation();
@@ -9,50 +11,37 @@ export default function SecuritySection() {
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   return (
-    <section className="col-span-12 lg:col-span-4 space-y-4">
-      <h4 className="text-lg font-bold font-headline px-2 flex items-center gap-2 text-on-surface">
-        <span className="material-symbols-outlined text-on-surface-variant">shield</span>
-        {t("settings.securitySection.title")}
-      </h4>
-
-      <div className="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden divide-y divide-outline-variant/10 border border-outline-variant/10">
+    <SettingsGroup title={t("settings.securitySection.title")}>
+      <Panel flush bodyClassName="divide-y divide-outline-variant">
         {/* Change Password */}
-        <button 
+        <button
           onClick={() => setIsPasswordModalOpen(true)}
-          className="w-full flex items-center justify-between p-5 text-left hover:bg-surface-container-low transition-colors group"
+          className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-surface-container-low transition-colors first:rounded-t-2xl"
         >
-          <div className="flex items-center gap-4">
-            <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">
-              password
-            </span>
-            <div>
-              <p className="font-bold text-on-surface text-sm">{t("settings.securitySection.changePassword")}</p>
+          <div className="flex items-center gap-3 min-w-0">
+            <span className="material-symbols-outlined text-[20px] text-on-surface-variant">password</span>
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-on-surface">{t("settings.securitySection.changePassword")}</p>
               <p className="text-xs text-on-surface-variant">{t("settings.securitySection.changePasswordDesc")}</p>
             </div>
           </div>
-          <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
+          <span className="material-symbols-outlined text-[20px] text-outline">chevron_right</span>
         </button>
-
 
         {/* Privacy */}
-        <button 
+        <button
           onClick={() => navigate("/privacy")}
-          className="w-full flex items-center justify-between p-5 text-left hover:bg-surface-container-low transition-colors group"
+          className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-surface-container-low transition-colors last:rounded-b-2xl"
         >
-          <div className="flex items-center gap-4">
-            <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">
-              visibility_off
-            </span>
-            <p className="font-bold text-on-surface text-sm">{t("settings.securitySection.privacySettings")}</p>
+          <div className="flex items-center gap-3 min-w-0">
+            <span className="material-symbols-outlined text-[20px] text-on-surface-variant">visibility_off</span>
+            <p className="text-sm font-medium text-on-surface">{t("settings.securitySection.privacySettings")}</p>
           </div>
-          <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
+          <span className="material-symbols-outlined text-[20px] text-outline">chevron_right</span>
         </button>
-      </div>
+      </Panel>
 
-      <ChangePasswordModal 
-        isOpen={isPasswordModalOpen} 
-        onClose={() => setIsPasswordModalOpen(false)} 
-      />
-    </section>
+      <ChangePasswordModal isOpen={isPasswordModalOpen} onClose={() => setIsPasswordModalOpen(false)} />
+    </SettingsGroup>
   );
 }

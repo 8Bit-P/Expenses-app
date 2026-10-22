@@ -1,94 +1,133 @@
 @import "tailwindcss";
 @config "../tailwind.config.js";
 
-/* LIGHT MODE COLORS */
+/*
+ * "Ledger" design system
+ * Paper & ink neutrals, a single chartreuse signal accent, hairline rules.
+ * Semantic colours: secondary = income/positive, error = expense/negative,
+ * tertiary = informational (cobalt).
+ */
+
+/* LIGHT — warm paper, ink text */
 :root {
   color-scheme: light;
-  --primary: #3525cd;
-  --on-primary: #ffffff;
-  --primary-container: #4f46e5;
-  --on-primary-container: #dad7ff;
-  --secondary: #006c49;
-  --on-secondary: #ffffff;
-  --secondary-container: #6cf8bb;
-  --tertiary: #5c00ca;
-  --tertiary-container: #7531e6;
-  --error: #ba1a1a;
-  --error-container: #ffdad6;
 
-  --background: #f7f9fb;
-  --on-background: #191c1e;
-  --surface: #f7f9fb;
-  --on-surface: #191c1e;
-  --surface-variant: #e0e3e5;
-  --on-surface-variant: #464555;
-  --outline: #777587;
-  --outline-variant: #c7c4d8;
+  --primary: #161613;
+  --on-primary: #ffffff;
+  --primary-container: #d4f25a;
+  --on-primary-container: #3b4a06;
+
+  --accent: #d4f25a;
+  --on-accent: #161613;
+
+  --secondary: #0a7a4f;
+  --on-secondary: #ffffff;
+  --secondary-container: #d3f0e1;
+
+  --tertiary: #2f5bd8;
+  --tertiary-container: #dce5fb;
+
+  --error: #c4332a;
+  --error-container: #fadfdb;
+
+  --background: #f2f1ec;
+  --on-background: #161613;
+  --surface: #f2f1ec;
+  --on-surface: #161613;
+  --surface-variant: #e6e4dd;
+  --on-surface-variant: #5e5c55;
+  --outline: #8a877e;
+  --outline-variant: #dddad1;
 
   --surface-container-lowest: #ffffff;
-  --surface-container-low: #f2f4f6;
-  --surface-container: #eceef0;
-  --surface-container-high: #e6e8ea;
-  --surface-container-highest: #e0e3e5;
+  --surface-container-low: #f7f6f2;
+  --surface-container: #efeee9;
+  --surface-container-high: #e8e6e0;
+  --surface-container-highest: #dfddd5;
+
+  /* Navigation rail (sidebar) — ink in both themes */
+  --rail: #161613;
+  --on-rail: #f2f1ec;
+  --on-rail-variant: #9a988e;
+  --rail-hover: rgba(255, 255, 255, 0.06);
+  --rail-border: rgba(255, 255, 255, 0.08);
+
+  /* Charts */
+  --chart-1: #161613;
+  --chart-2: #2f5bd8;
+  --chart-grid: rgba(22, 22, 19, 0.08);
+  --chart-axis: #8a877e;
+  --chart-cursor: rgba(22, 22, 19, 0.04);
 }
 
-/* DARK MODE COLORS */
+/* DARK — graphite, chartreuse pops */
 .dark {
   color-scheme: dark;
-  /* Accent (Indigo Glow) */
-  --primary: #6366f1;
-  --on-primary: #ffffff;
-  --primary-container: rgba(99, 102, 241, 0.15); /* Soft glow for pills/active states */
-  --on-primary-container: #818cf8;
 
-  /* Income & Expense (Keeping semantic greens and reds, tailored for dark mode) */
-  --secondary: #4edea3;
-  --on-secondary: #003824;
-  --secondary-container: rgba(78, 222, 163, 0.15);
+  --primary: #d4f25a;
+  --on-primary: #12130c;
+  --primary-container: rgba(212, 242, 90, 0.14);
+  --on-primary-container: #d4f25a;
 
-  --error: #ffb4ab;
-  --error-container: rgba(255, 180, 171, 0.15);
+  --accent: #d4f25a;
+  --on-accent: #12130c;
 
-  --tertiary: #d2bbff;
-  --tertiary-container: rgba(210, 187, 255, 0.15);
+  --secondary: #45c99a;
+  --on-secondary: #04261a;
+  --secondary-container: rgba(69, 201, 154, 0.14);
 
-  /* Background (Deep Slate) */
-  --background: #0c1324;
-  --surface: #0c1324;
+  --tertiary: #8faeff;
+  --tertiary-container: rgba(143, 174, 255, 0.14);
 
-  /* Text (Primary & Secondary) */
-  --on-background: #f1f5f9;
-  --on-surface: #f1f5f9;
-  --on-surface-variant: #94a3b8;
+  --error: #ff7a6b;
+  --error-container: rgba(255, 122, 107, 0.14);
 
-  /* Border/Stroke */
-  --outline: #64748b;
-  --outline-variant: #334155;
+  --background: #0e0e0c;
+  --on-background: #edece6;
+  --surface: #0e0e0c;
+  --on-surface: #edece6;
+  --surface-variant: #2a2a26;
+  --on-surface-variant: #9b998f;
+  --outline: #6b6961;
+  --outline-variant: #2c2c28;
 
-  /* Surface (Midnight) - Used for Cards */
-  --surface-container-lowest: #151b2d;
+  --surface-container-lowest: #161614;
+  --surface-container-low: #1b1b18;
+  --surface-container: #21211d;
+  --surface-container-high: #282823;
+  --surface-container-highest: #30302a;
 
-  /* Slightly lighter midnight shades for hovers and nested elements */
-  --surface-container-low: #1a2238;
-  --surface-container: #1e2740;
-  --surface-container-high: #242e4a;
-  --surface-container-highest: #2b3655;
+  --rail: #0a0a09;
+  --on-rail: #edece6;
+  --on-rail-variant: #8a887f;
+  --rail-hover: rgba(255, 255, 255, 0.05);
+  --rail-border: rgba(255, 255, 255, 0.07);
+
+  --chart-1: #d4f25a;
+  --chart-2: #8faeff;
+  --chart-grid: rgba(237, 236, 230, 0.07);
+  --chart-axis: #6b6961;
+  --chart-cursor: rgba(237, 236, 230, 0.04);
 }
 
 /* Material Symbols Icon Font Settings */
 .material-symbols-outlined {
   font-variation-settings:
     "FILL" 0,
-    "wght" 400,
+    "wght" 350,
     "GRAD" 0,
     "opsz" 24;
 }
 
-/* Smooth background transition when clicking the Moon/Sun */
 body {
+  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums;
+  background-color: var(--background);
+  color: var(--on-surface);
   transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 html {
@@ -100,14 +139,13 @@ body,
 #root {
   max-width: 100%;
   overflow-x: hidden;
-  /* Optional: This stops the annoying "pull-to-refresh" bouncing when scrolling left/right */
   overscroll-behavior-x: none;
 }
 
 /* Remove Recharts interactive focus outline and box-shadows */
-.recharts-wrapper, 
+.recharts-wrapper,
 .recharts-wrapper *,
-.recharts-surface, 
+.recharts-surface,
 .recharts-pie-sector,
 .recharts-responsive-container {
   outline: none !important;
@@ -115,9 +153,23 @@ body,
   -webkit-tap-highlight-color: transparent;
 }
 
+.recharts-text {
+  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
 @layer base {
   button:not(:disabled) {
     cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--on-accent);
   }
 
   /* Hide native number input spin arrows globally */
@@ -130,28 +182,56 @@ body,
     -moz-appearance: textfield;
   }
 
-  /* Custom sleek scrollbar */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
   }
   ::-webkit-scrollbar-track {
-    background: var(--background);
+    background: transparent;
   }
   ::-webkit-scrollbar-thumb {
     background: var(--outline-variant);
-    border-radius: 10px;
+    border-radius: 8px;
+    border: 2px solid var(--background);
   }
   ::-webkit-scrollbar-thumb:hover {
     background: var(--outline);
   }
 
-  /* UTILS */
   .hide-scrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
   .hide-scrollbar::-webkit-scrollbar {
-    display: none; /* Chrome, Safari and Opera */
+    display: none;
+  }
+}
+
+@layer components {
+  /* Small caps-style section label used across panels */
+  .eyebrow {
+    font-size: 11px;
+    line-height: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--on-surface-variant);
+  }
+
+  /* Keyboard hint chip */
+  .kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.3rem;
+    border-radius: 4px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1;
+    border: 1px solid currentColor;
+    opacity: 0.55;
   }
 }

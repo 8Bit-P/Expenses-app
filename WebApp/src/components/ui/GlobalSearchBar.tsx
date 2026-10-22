@@ -36,8 +36,8 @@ export default function GlobalSearchBar() {
 
   return (
     <div className="relative group w-full max-w-md hidden md:block">
-      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-on-surface-variant/60 group-focus-within:text-primary transition-colors">
-        <Search size={18} />
+      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-on-surface-variant group-focus-within:text-on-surface transition-colors">
+        <Search size={16} strokeWidth={1.75} />
       </div>
       <input
         ref={inputRef}
@@ -46,22 +46,22 @@ export default function GlobalSearchBar() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={handleSearch}
-        className="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-full pl-10 pr-16 py-2.5 text-sm font-medium text-on-surface placeholder:text-on-surface-variant/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/50 focus:outline-none transition-all shadow-sm"
+        className="w-full h-9 bg-surface-container-lowest border border-outline-variant rounded-lg pl-9 pr-20 text-[13px] text-on-surface placeholder:text-on-surface-variant focus:border-on-surface focus:ring-0 focus:outline-none transition-colors"
       />
-      <div className="absolute inset-y-0 right-0 pr-2 flex items-center gap-1.5">
+      <div className="absolute inset-y-0 right-0 pr-1.5 flex items-center gap-1">
         <button
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
             navigate("/search");
           }}
-          className="p-1.5 rounded-lg text-on-surface-variant/40 hover:text-primary hover:bg-primary/5 transition-all cursor-pointer"
+          className="w-7 h-7 flex items-center justify-center rounded-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors"
           title={t("search.advancedFilters")}
         >
-          <SlidersHorizontal size={14} />
+          <SlidersHorizontal size={14} strokeWidth={1.75} />
         </button>
-        <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-bold text-on-surface-variant/60 bg-surface-container border border-outline-variant/30 rounded flex items-center gap-0.5 mr-1">
-          <span className="text-[12px] leading-none">⌘</span>K
+        <kbd className="hidden sm:inline-flex items-center h-5 px-1.5 rounded border border-outline-variant bg-surface-container-low font-mono text-[10px] text-on-surface-variant">
+          ⌘K
         </kbd>
       </div>
     </div>

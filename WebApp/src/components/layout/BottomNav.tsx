@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { cn } from "../../utils/cn";
 
 interface BottomNavProps {
   onNewTransaction: () => void;
@@ -11,55 +12,60 @@ export default function BottomNav({ onNewTransaction, isNewTransactionOpen }: Bo
   const location = useLocation();
 
   const navItems = [
-    { label: t("layout.nav.home"), icon: "grid_view", path: "/home" },
-    { label: t("layout.nav.expenses"), icon: "payments", path: "/expenses" },
-    { label: t("layout.nav.assets"), icon: "show_chart", path: "/assets" },
-    { label: t("layout.nav.recurring"), icon: "sync", path: "/recurring" },
+    { label: t("layout.nav.home"), icon: "space_dashboard", path: "/home" },
+    { label: t("layout.nav.expenses"), icon: "receipt_long", path: "/expenses" },
+    { label: t("layout.nav.assets"), icon: "monitoring", path: "/assets" },
+    { label: t("layout.nav.recurring"), icon: "event_repeat", path: "/recurring" },
   ];
 
   return (
     <>
-      {/* True FAB — floats above the nav bar, anchored bottom-right, hidden on desktop */}
+      {/* Floating add button — mobile/tablet only */}
       {!isNewTransactionOpen && (
         <button
           onClick={onNewTransaction}
-          className="fixed bottom-24 right-6 z-[110] w-14 h-14 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/30 active:scale-90 hover:opacity-90 transition-all duration-200 desk:hidden"
+          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+80px)] right-4 z-[110] h-12 pl-3.5 pr-4 rounded-xl bg-accent text-on-accent flex items-center gap-1.5 text-sm font-semibold shadow-lg ring-1 ring-black/10 active:scale-95 transition desk:hidden"
           aria-label={t("sidebar.addTransaction")}
         >
-          <span className="material-symbols-outlined text-[26px]">add</span>
+          <span className="material-symbols-outlined text-[22px]">add</span>
+          <span className="hidden sm:inline">{t("sidebar.addTransaction")}</span>
         </button>
       )}
 
-      {/* Bottom Navigation Bar — 4 evenly-spaced items, hidden on desktop */}
-      <nav className="fixed bottom-0 w-full bg-background/90 backdrop-blur-xl border-t border-outline-variant/10 pb-[calc(env(safe-area-inset-bottom,0px)+8px)] z-[100] flex items-center justify-around px-4 pt-2 desk:hidden transition-colors duration-300">
-        {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
-          return (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`flex flex-col items-center justify-center p-2 flex-1 transition-all duration-300 ${
-                isActive
-                  ? "text-primary"
-                  : "text-on-surface-variant/80 hover:text-on-surface"
-              }`}
-            >
-              <span
-                className={`material-symbols-outlined transition-all duration-300 ${isActive ? "scale-110" : ""}`}
-                style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
+      <nav className="fixed bottom-0 inset-x-0 z-[100] bg-surface-container-lowest border-t border-outline-variant pb-[env(safe-area-inset-bottom,0px)] desk:hidden">
+        <div className="grid grid-cols-4 h-16 max-w-xl mx-auto">
+          {navItems.map((item) => {
+            const isActive = location.pathname === item.path;
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                aria-current={isActive ? "page" : undefined}
+                className={cn(
+                  "flex flex-col items-center justify-center gap-1 transition-colors",
+                  isActive ? "text-on-surface" : "text-on-surface-variant hover:text-on-surface",
+                )}
               >
-                {item.icon}
-              </span>
-              <span
-                className={`font-headline text-[10px] tracking-wide mt-1 ${
-                  isActive ? "font-black" : "font-semibold"
-                }`}
-              >
-                {item.label}
-              </span>
-            </Link>
-          );
-        })}
+                <span
+                  className={cn(
+                    "flex items-center justify-center w-12 h-7 rounded-full transition-colors",
+                    isActive && "bg-accent text-on-accent",
+                  )}
+                >
+                  <span
+                    className="material-symbols-outlined text-[20px]"
+                    style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
+                  >
+                    {item.icon}
+                  </span>
+                </span>
+                <span className={cn("text-[11px] leading-none", isActive ? "font-semibold" : "font-medium")}>
+                  {item.label}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
       </nav>
     </>
   );
