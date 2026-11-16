@@ -1,38 +1,33 @@
-import { Outlet } from "react-router-dom";
-import { AppSidebar } from "@/components/app-sidebar";
-import { SiteHeader } from "@/components/site-header";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { ExpensesProvider } from "./context/ExpensesContext";
-import { useAuth } from "./hooks/use-auth";
-import LoginPage from "./components/login-page";
-import { FullPageLoader } from "./components/FullPageLoader";
+import { BrowserRouter } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthProvider } from "./context/AuthContext";
+import { UserPreferencesProvider } from "./context/UserPreferencesContext";
+import AppRouter from "./routes/AppRouter";
+import { ThemedToaster } from "./components/ThemedToaster";
 
-function App() {
-  const { session, loading } = useAuth();
+// Configure TanStack Query for a production environment
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // Data stays fresh for 5 minutes
+      retry: 1, // Only retry failed requests once to avoid spamming Supabase
+      refetchOnWindowFocus: false, // Stop refetching every time the user switches browser tabs
+    },
+  },
+});
 
-  if (loading) return <FullPageLoader />;
-  if (!session) return <LoginPage />;
-
+export default function App() {
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <ExpensesProvider>
-        <AppSidebar variant="inset" />
-        <SidebarInset>
-          <SiteHeader />
-          <div className="flex flex-1 flex-col p-4">
-            <Outlet />
-          </div>
-        </SidebarInset>
-      </ExpensesProvider>
-    </SidebarProvider>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AuthProvider>
+          <UserPreferencesProvider>
+            {/* All routing logic is securely isolated here */}
+            <AppRouter />
+            <ThemedToaster />
+          </UserPreferencesProvider>
+        </AuthProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }
-
-export default App;

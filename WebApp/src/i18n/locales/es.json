@@ -1,0 +1,1177 @@
+{
+  "common": {
+    "save": "Guardar Cambios",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "loading": "Cargando...",
+    "confirm": "Confirmar",
+    "success": "Éxito",
+    "error": "Error",
+    "untitled": "Sin Título",
+    "subscription": "Suscripción",
+    "all": "Todo",
+    "allTime": "Todo el Tiempo",
+    "from": "Desde {{date}}",
+    "until": "Hasta {{date}}",
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "reset": "Restablecer",
+    "updated": "Actualizado",
+    "syncing": "Sincronizando...",
+    "noChanges": "No se detectaron cambios",
+    "allRightsReserved": "Todos los derechos reservados.",
+    "targetAsset": "Activo Objetivo",
+    "purging": "Purgando de Vault...",
+    "permanentlyDelete": "Eliminar Permanentemente",
+    "keepAsset": "Mantener Activo"
+  },
+  "dashboard": {
+    "title": "Resumen de tu Vault",
+    "subtitle": "Controla tus gastos diarios, planifica tus facturas y vigila cómo suben tus ahorros mes a mes.",
+    "exportReport": "Exportar Reporte",
+    "syncing": "Sincronizando Vault...",
+    "emptyState": {
+      "title": "Bienvenido a tu centro de mando",
+      "subtitle": "Para empezar a ver tus gráficas y controlar tus finanzas, añade tu primer movimiento a tu Vault.",
+      "addManual": "Añadir Manualmente"
+    },
+    "spendingBreakdown": "Desglose de Gastos (YTD)",
+    "summary": {
+      "netWorth": "Patrimonio",
+      "monthlyIncome": "Ingresos Mensuales",
+      "safeToSpend": "Disponible",
+      "totalInvested": "Total Invertido",
+      "vsLastMonth": "vs el mes pasado",
+      "leftThisMonth": "restante este mes",
+      "totalReturn": "retorno total",
+      "roi": "ROI",
+      "day": "día"
+    },
+    "wealthEvolution": {
+      "title": "Evolución del Patrimonio",
+      "subtitle": "Crecimiento de cartera segmentado por activos",
+      "investments": "Inversiones",
+      "liquidity": "Liquidez",
+      "snapshot": "Resumen",
+      "allAccounts": "Todas las cuentas"
+    },
+    "reserves": {
+      "title": "Reservas Activas",
+      "create": "Crear Nueva Reserva",
+      "allFunded": "¡Todas las reservas fondeadas!",
+      "fund": "Fondear",
+      "manage": "Gestionar Reserva",
+      "newReserve": "Nueva Reserva de Ahorro",
+      "manageGoal": "Gestionar Objetivo",
+      "currentStatus": "Estado Actual: {{status}}",
+      "active": "Activo",
+      "reserveName": "Nombre de la Reserva",
+      "reserveNamePlaceholder": "ej. Coche Nuevo, Fondo de Viaje",
+      "targetAmount": "Cantidad Objetivo",
+      "icon": "Icono",
+      "fundingCategory": "Categoría de Fondeo",
+      "fundingDesc": "Las transacciones de fondeo serán etiquetadas con esta categoría.",
+      "initializeGoal": "Inicializar Objetivo",
+      "creating": "Creando...",
+      "cancel": "Cancelar",
+      "actions": {
+        "markCompleted": {
+          "label": "Marcar como Completado",
+          "desc": "Alcanzar el objetivo y eliminar del tablero."
+        },
+        "releaseFunds": {
+          "label": "Liberar Fondos",
+          "desc": "Devolver fondos al efectivo principal y archivar objetivo."
+        },
+        "deleteReserve": {
+          "label": "Eliminar Reserva",
+          "desc": "Borrar objetivo y todo el historial de fondeo permanentemente."
+        }
+      },
+      "confirm": {
+        "delete": {
+          "title": "¿Eliminar Reserva permanentemente?",
+          "desc": "Esto borrará este objetivo y todo su historial de fondeo de Vault de forma permanente.",
+          "confirm": "Eliminar Permanentemente"
+        },
+        "release": {
+          "title": "¿Liberar todos los fondos?",
+          "desc": "El saldo actual se devolverá a tu fondo principal y el objetivo se archivará.",
+          "confirm": "Liberar y Archivar"
+        },
+        "complete": {
+          "title": "¿Objetivo alcanzado?",
+          "desc": "¡Felicidades! Esto marcará el objetivo como completado y lo eliminará de tu tablero activo.",
+          "confirm": "Marcar Completado"
+        }
+      },
+      "toast": {
+        "missingFields": "Faltan campos",
+        "missingFieldsDesc": "Por favor, completa todos los campos requeridos."
+      },
+      "tooltip": "Reserva fondos excluyéndolos de tu 'Seguro para Gastar' (ideal para impuestos o compras grandes)."
+    },
+    "recentActivity": {
+      "title": "Actividad Reciente",
+      "viewAll": "Ver Todo",
+      "noActivity": "Sin actividad reciente.",
+      "uncategorized": "Sin Categoría",
+      "investmentSnapshot": "Instantánea de Inversión"
+    },
+    "actionCenter": {
+      "priorityCommand": "Comando de Prioridad",
+      "budgetWarning": {
+        "title": "Aviso de Presupuesto",
+        "message": "Has usado el {{percent}}% de tu presupuesto mensual. Considera reducir gastos."
+      },
+      "negativeCashflow": {
+        "title": "Flujo de Caja Neto",
+        "message": "Tus gastos han superado tus ingresos este mes. Vigila tu liquidez."
+      },
+      "upcomingCharge": {
+        "title": "Cargo Próximo",
+        "message": "'{{name}}' renueva {{timing}} ({{amount}}).",
+        "today": "hoy",
+        "tomorrow": "mañana",
+        "inDays": "en {{days}} días"
+      },
+      "largeExpense": {
+        "title": "Gasto Grande",
+        "message": "Se detectó una transacción de {{amount}} en '{{description}}'."
+      }
+    },
+    "upcomingRenewals": {
+      "title": "Próximas Renovaciones",
+      "viewAll": "Ver Todo",
+      "noRenewals": "No se encontraron renovaciones.",
+      "dueToday": "Renueva Hoy",
+      "dueTomorrow": "Renueva Mañana",
+      "dueInDays": "Renueva en {{days}} días"
+    },
+    "reviewWidget": {
+      "title": "{{count}} Transacciones necesitan revisión",
+      "title_one": "1 Transacción necesita revisión",
+      "subtitle": "Bandeja de Entrada",
+      "placeholder": "Transacción sin etiqueta",
+      "pendingVerification": "Verificación Pendiente",
+      "emptyState": "¡Todo al día! No tienes transacciones pendientes de revisar.",
+      "tooltip": "Transacciones importadas o automáticas que necesitan ser categorizadas antes de afectar tus métricas.",
+      "selectCategory": "Seleccionar Categoría",
+      "discard": "Descartar Transacción",
+      "approve": "Aprobar Transacción",
+      "toast": {
+        "selectCategory": "Por favor, selecciona una categoría primero",
+        "approved": "Transacción aprobada",
+        "approvedError": "Error al aprobar la transacción",
+        "discarded": "Transacción descartada",
+        "discardedError": "Error al descartar la transacción"
+      },
+      "toasts": {
+        "fundingFailed": "Fallo en el fondeo",
+        "reserveFunded": "¡Reserva fondeada!",
+        "reserveFundedDesc": "La cantidad ha sido movida a tu reserva segura.",
+        "reserveCreated": "Reserva creada",
+        "reserveCreatedDesc": "Tu nuevo objetivo de ahorro está listo para ser fondeado.",
+        "createReserveFailed": "Error al crear la reserva",
+        "reserveDeleted": "Reserva eliminada",
+        "deleteReserveFailed": "Fallo al eliminar reserva",
+        "goalCompleted": "¡Objetivo completado!",
+        "goalCompletedDesc": "La reserva ha sido marcada como completada.",
+        "updateGoalFailed": "Error al actualizar objetivo",
+        "fundsReleased": "¡Fondos liberados!",
+        "fundsReleasedDesc": "La cantidad ha sido devuelta a tu fondo principal.",
+        "releaseFailed": "Fallo al liberar fondos"
+      }
+    }
+  },
+  "sidebar": {
+    "secureLedger": "Libro de Cuentas Seguro",
+    "home": "Inicio",
+    "expenses": "Gastos",
+    "assets": "Activos",
+    "recurring": "Recurrentes",
+    "addTransaction": "Nueva Transacción",
+    "settings": "Ajustes",
+    "help": "Ayuda",
+    "support": "Apoyar el Proyecto",
+    "signOut": "Cerrar Sesión"
+  },
+  "topbar": {
+    "goodMorning": "Buenos días",
+    "goodAfternoon": "Buenas tardes",
+    "goodEvening": "Buenas noches",
+    "search": "Buscar transacciones...",
+    "toggleTheme": "Cambiar Tema"
+  },
+  "settings": {
+    "title": "Ajustes de Vault",
+    "subtitle": "Gestiona tu Vault etérea y las preferencias de guardián.",
+    "preferences": {
+      "title": "Preferencias",
+      "language": "Idioma",
+      "languageDesc": "Idioma de la interfaz",
+      "currency": "Moneda Principal",
+      "currencyDesc": "Usada en todas las cantidades",
+      "theme": "Tema",
+      "themes": {
+        "light": "Claro",
+        "dark": "Oscuro",
+        "system": "Sistema"
+      },
+      "dateFormat": "Formato de Fecha",
+      "dateFormatDesc": "Cómo se muestran las fechas",
+      "monthlyBudget": "Presupuesto Mensual",
+      "budgetDesc": "Límite de gasto global para el mes",
+      "loading": "Cargando…",
+      "activeBudget": "Presupuesto activo actual: {{symbol}}{{amount}}",
+      "syncDescription": "Los ajustes de tu Vault financiera han sido sincronizados.",
+      "uploadError": "No se pudo actualizar la configuración."
+    },
+    "security": "Seguridad",
+    "changePassword": "Cambiar Contraseña",
+    "profile": {
+      "title": "Perfil",
+      "unknownUser": "Usuario Desconocido",
+      "avatarUpdated": "Avatar actualizado",
+      "avatarSuccess": "Tu perfil de Vault ha sido asegurado.",
+      "uploadFailed": "Error al subir",
+      "uploadError": "No se pudo actualizar la foto de perfil.",
+      "toasts": {
+        "error": "Error de perfil",
+        "syncError": "Fallo al sincronizar los datos del perfil."
+      }
+    },
+    "securitySection": {
+      "title": "Cuenta y Seguridad",
+      "changePassword": "Cambiar Contraseña",
+      "changePasswordDesc": "Actualiza tus credenciales de acceso a Vault",
+      "privacySettings": "Ajustes de Privacidad"
+    },
+    "passwordModal": {
+      "title": "Cambiar Contraseña",
+      "currentLabel": "Contraseña Actual",
+      "currentPlaceholder": "Credenciales Actuales",
+      "newLabel": "Nueva Contraseña",
+      "newPlaceholder": "Nuevas Credenciales",
+      "confirmLabel": "Confirmar Nueva Contraseña",
+      "confirmPlaceholder": "••••••••",
+      "updating": "Actualizando...",
+      "button": "Asegurar Cuenta",
+      "errors": {
+        "tooShort": "Contraseña muy corta",
+        "tooShortDesc": "La contraseña debe tener al menos 6 caracteres.",
+        "noChange": "No se detectaron cambios",
+        "noChangeDesc": "La nueva contraseña debe ser diferente a la actual.",
+        "mismatch": "Las contraseñas no coinciden",
+        "mismatchDesc": "La contraseña de confirmación no coincide.",
+        "verifySession": "No se pudo verificar la sesión activa del usuario.",
+        "incorrectCurrent": "Contraseña actual incorrecta.",
+        "updateFailed": "Error al actualizar",
+        "updateError": "No se pudo actualizar la contraseña. Por favor, verifica tu contraseña actual."
+      },
+      "success": {
+        "title": "Seguridad Actualizada",
+        "desc": "Tus credenciales de acceso han sido modificadas con éxito."
+      }
+    },
+    "session": {
+      "title": "Acceso de Sesión",
+      "currentDevice": "Dispositivo Actual",
+      "activeNow": "Activo Ahora",
+      "signoutDesc": "Asegúrate de que tu Vault permanezca segura cerrando la sesión cuando termines en dispositivos compartidos.",
+      "signoutButton": "Cerrar Sesión"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "soon": "Pronto",
+      "budgetAlerts": {
+        "title": "Alertas de Límite de Presupuesto",
+        "desc": "Avisarme cuando me acerque a mi presupuesto mensual",
+        "warnAt": "Avisar al",
+        "ofBudget": "del presupuesto"
+      },
+      "largeTransaction": {
+        "title": "Radar de Transacciones Grandes",
+        "desc": "Avisarme por cualquier gasto individual por encima de un límite",
+        "alertAbove": "Avisar por encima de"
+      },
+      "weeklyDigest": {
+        "title": "Resumen Financiero Semanal",
+        "desc": "Un resumen rápido de gastos cada domingo"
+      },
+      "trackingReminder": {
+        "title": "Recordatorio de Registro",
+        "desc": "Recordarme registrar gastos si estoy inactivo por 3 días"
+      },
+      "subscriptionRenewals": {
+        "title": "Renovaciones de Suscripción",
+        "desc": "Recordarme 3 días antes de un cargo recurrente"
+      }
+    },
+    "categories": {
+      "title": "Categorías",
+      "subtitle": "Organiza tu libro de cuentas",
+      "loading": "Cargando categorías...",
+      "noCategories": "Aún no hay categorías.",
+      "addPlaceholder": "Nombre de la Categoría...",
+      "editTitle": "Editar Categoría",
+      "deleteTitle": "Eliminar Categoría",
+      "deleteConfirm": "¿Estás seguro de que quieres eliminar esta categoría? Todas las transacciones que usen esta categoría quedarán sin categoría. Esta acción no se puede deshacer.",
+      "toasts": {
+        "added": "Categoría añadida",
+        "addedDesc": "{{emoji}} {{name}} ahora está disponible.",
+        "addFailed": "Error al añadir la categoría",
+        "updated": "Categoría actualizada",
+        "updatedDesc": "{{emoji}} {{name}} fue actualizada correctamente.",
+        "updateFailed": "Error al actualizar categoría",
+        "deleted": "Categoría eliminada",
+        "deletedDesc": "La categoría ha sido eliminada permanentemente.",
+        "deleteFailed": "Error al eliminar",
+        "deleteError": "Fallo al eliminar la categoría."
+      }
+    },
+    "danger": {
+      "exportTitle": "Exportar tus Datos",
+      "exportDesc": "Descarga un CSV de todas tus transacciones. Tus datos, siempre tuyos.",
+      "exportButton": "Exportar CSV",
+      "exporting": "Exportando…",
+      "exportSuccess": "Datos exportados",
+      "exportSuccessDesc": "Tu libro de cuentas está listo para revisión externa.",
+      "exportFailed": "Error al exportar",
+      "exportFailedDesc": "No se pudo generar el reporte de tu Vault.",
+      "zoneTitle": "Zona de Peligro",
+      "zoneDesc": "Eliminar permanentemente tu Vault y todos los datos etéreos.",
+      "deleteButton": "Eliminar Cuenta",
+      "modal": {
+        "title": "¿Eliminar Vault?",
+        "desc": "Esta acción no se puede deshacer. Todos tus datos financieros, historial de transacciones y ajustes serán borrados permanentemente.",
+        "confirm": "Sí, eliminar todo",
+        "deleting": "Eliminando…"
+      }
+    }
+  },
+  "auth": {
+    "signUpDesc": "Comienza a asegurar tu futuro financiero",
+    "loginDesc": "Bienvenido de nuevo, mantén tus finanzas en orden",
+    "or": "O",
+    "terms": "Términos de Servicio",
+    "privacy": "Política de Privacidad",
+    "signIn": "Iniciar Sesión",
+    "createAccount": "Crear Cuenta",
+    "fullName": "Nombre Completo",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar Contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "continue": "Continuar",
+    "errorName": "Por favor, introduce tu nombre completo.",
+    "errorMismatch": "Las contraseñas no coinciden. Inténtalo de nuevo.",
+    "successSignUp": "¡Éxito! Revisa tu correo para el enlace de confirmación.",
+    "errorGeneric": "Ocurrió un error durante la autenticación.",
+    "withGoogle": "Continuar con Google",
+    "withApple": "Continuar con Apple",
+    "soon": "Pronto"
+  },
+  "layout": {
+    "greetings": {
+      "morning": "Buenos días",
+      "afternoon": "Buenas tardes",
+      "evening": "Buenas noches"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "emptyTitle": "Tu Vault está en silencio",
+      "emptyDesc": "Te notificaremos aquí sobre próximas suscripciones, alertas de presupuesto y grandes movimientos.",
+      "clearAll": "Limpiar todas las notificaciones"
+    },
+    "nav": {
+      "home": "Inicio",
+      "expenses": "Gastos",
+      "assets": "Activos",
+      "recurring": "Recurrentes"
+    },
+    "toggleTheme": "Cambiar Tema",
+    "user": "Usuario"
+  },
+  "search": {
+    "placeholder": "Buscar transacciones...",
+    "advancedFilters": "Filtros Avanzados",
+    "timeframe": "Rango de Tiempo",
+    "amountRange": "Rango de precio",
+    "domains": "Dominios",
+    "category": "Categoría",
+    "selectedCount": "{{count}} Seleccionadas",
+    "transactionType": "Tipo de Transacción",
+    "transactionTypes": {
+      "income": "Ingresos",
+      "expense": "Gastos",
+      "transfer": "Transferencias"
+    },
+    "min": "Mín",
+    "max": "Máx",
+    "from": "Desde",
+    "to": "Hasta",
+    "clearFilters": "Limpiar Filtros",
+    "allCategories": "Todas las Categorías",
+    "unknown": "Desconocido",
+    "resultsFor": "Resultados para",
+    "recordsAcross": "{{count}} resultados en tu Vault financiera.",
+    "universalLedger": "Libro de Cuentas Universal",
+    "exploreSubtitle": "Explora y filtra todos tus datos financieros.",
+    "clearSearch": "Limpiar búsqueda",
+    "totalIncome": "Ingresos Totales",
+    "totalSpent": "Gasto Total",
+    "netFlow": "Flujo Neto",
+    "summaryTrends": "Resumen de Tendencias",
+    "noData": "Sin datos para mostrar",
+    "views": {
+      "bar": "Barras",
+      "line": "Líneas",
+      "donut": "Circular"
+    },
+    "chartLegend": {
+      "income": "Ingresos",
+      "expenses": "Gastos",
+      "assets": "Activos"
+    },
+    "ledger": {
+      "title": "Entradas del Libro",
+      "recordsCount": "{{count}} registro{{suffix}}",
+      "noEntries": "No se encontraron entradas",
+      "noEntriesDesc": "Prueba ajustando tus filtros o términos de búsqueda.",
+      "columns": {
+        "date": "Fecha",
+        "category": "Categoría",
+        "description": "Descripción",
+        "source": "Fuente",
+        "amount": "Cantidad"
+      },
+      "pagination": {
+        "loadMore": "Cargar Más",
+        "prev": "Ant",
+        "next": "Sig"
+      }
+    },
+    "timeframes": {
+      "this_month": "Este Mes",
+      "last_month": "Mes Pasado",
+      "last_3m": "Últimos 3 Meses",
+      "ytd": "Año hasta la fecha",
+      "all": "Todo el tiempo",
+      "custom": "Periodo Personalizado…"
+    },
+    "domainNames": {
+      "Transactions": "Transacciones",
+      "Assets": "Activos",
+      "Subscriptions": "Suscripciones"
+    },
+    "categoryBreakdown": {
+      "title": "Desglose de Gastos por Categoría",
+      "noData": "Sin datos de gastos para mostrar",
+      "others": "Otros"
+    }
+  },
+  "accounts": {
+    "title": "Cuentas",
+    "subtitle": "Controla tus saldos en todas tus cuentas financieras.",
+    "addAccount": "Añadir Cuenta",
+    "editAccount": "Editar Cuenta",
+    "deleteAccount": "Eliminar Cuenta",
+    "namePlaceholder": "ej. Corriente, Ahorros, Efectivo",
+    "nameLabel": "Nombre de la Cuenta",
+    "iconLabel": "Icono",
+    "colorLabel": "Color",
+    "balance": "Saldo",
+    "emptyState": {
+      "title": "Aún no hay cuentas",
+      "subtitle": "Añade tu primera cuenta para empezar a controlar saldos en distintos lugares.",
+      "cta": "Añadir tu primera cuenta"
+    },
+    "deleteConfirm": {
+      "title": "¿Eliminar Cuenta?",
+      "description": "Las transacciones vinculadas a esta cuenta quedarán sin cuenta asignada. Las transacciones en sí se mantendrán.",
+      "confirm": "Eliminar Cuenta",
+      "cancel": "Mantener Cuenta"
+    },
+    "modal": {
+      "create": {
+        "title": "Nueva Cuenta",
+        "subtitle": "Añade una cuenta bancaria, de efectivo o de crédito.",
+        "save": "Crear Cuenta",
+        "saving": "Creando..."
+      },
+      "edit": {
+        "title": "Editar Cuenta",
+        "subtitle": "Actualiza los detalles de tu cuenta.",
+        "save": "Guardar Cambios",
+        "saving": "Guardando..."
+      }
+    },
+    "transactionField": {
+      "label": "Cuenta",
+      "placeholder": "Sin cuenta (opcional)"
+    },
+    "toasts": {
+      "created": "Cuenta creada",
+      "createFailed": "Error al crear la cuenta",
+      "updated": "Cuenta actualizada",
+      "updateFailed": "Error al actualizar la cuenta",
+      "deleted": "Cuenta eliminada",
+      "deleteFailed": "Error al eliminar la cuenta"
+    },
+    "breakdown": {
+      "title": "Saldos de Cuentas",
+      "total": "Total"
+    },
+    "filter": {
+      "label": "Cuentas",
+      "selected": "{{count}} Seleccionadas",
+      "all": "Todas las Cuentas"
+    }
+  },
+  "newTransaction": {
+
+    "title": "Nueva Transacción",
+    "subtitle": "¿Qué tipo te gustaría registrar?",
+    "expense": {
+      "label": "Ingreso / Gasto",
+      "desc": "Registra una compra, pago o ingreso"
+    },
+    "subscription": {
+      "label": "Suscripción",
+      "desc": "Seguimiento de cargos recurrentes"
+    },
+    "investment": {
+      "label": "Inversión",
+      "desc": "Registra un activo o entrada de portafolio"
+    },
+    "soon": "Pronto"
+  },
+  "expenses": {
+    "header": {
+      "title": "Resumen",
+      "filterTooltip": "Filtros"
+    },
+    "presets": {
+      "this_month": "Este Mes",
+      "last_month": "Mes Pasado",
+      "last_3m": "3 Meses",
+      "ytd": "Año hasta ahora",
+      "upcoming": "Próximos"
+    },
+    "metrics": {
+      "totalSpend": "Gasto Total",
+      "periodProgress": "Progreso del periodo",
+      "spentOfProjected": "Gastado {{ratio}}% del total proyectado",
+      "projectedSpend": "Gasto Proyectado",
+      "projectedBaseline": "Media Estimada",
+      "runningHot": "Ritmo alto",
+      "onTrack": "En ritmo",
+      "dailyAvg": "{{amount}} / día prom.",
+      "daysElapsed": "{{elapsed}} de {{total}} días",
+      "topCategory": "Categoría Principal",
+      "ofTotal": "del total",
+      "noExpenseData": "Sin datos de gastos",
+      "monthlyBudget": "Presupuesto Mensual",
+      "overBudget": "Sobre presupuesto",
+      "left": "{{amount}} restante",
+      "spentOfBudget": "Gastado {{current}} de {{budget}}"
+    },
+    "charts": {
+      "spendingTrend": {
+        "title": "Tendencia de Gasto",
+        "subtitle": "Gasto acumulado — periodo actual vs anterior",
+        "calculating": "Calculando Tendencias…",
+        "budget": "Presupuesto",
+        "predicted": "Proyectado",
+        "predictionTooltip": "Proyectado (Tasa de Ejecución)"
+      },
+      "categoryDonut": {
+        "title": "Gasto por Categoría",
+        "leadsAt": "{{emoji}} {{name}} lidera con {{percent}}%",
+        "noData": "No hay datos para mostrar",
+        "expenses": "Gastos",
+        "showLess": "Mostrar Menos",
+        "viewAll": "Ver Todo ({{count}})",
+        "other": "Otros"
+      },
+      "incomeVsExpense": {
+        "title": "Ingresos vs. Gastos",
+        "subtitle": "Vista histórica de 6 meses",
+        "analyzing": "Analizando Historial...",
+        "income": "Ingresos",
+        "expense": "Gastos"
+      }
+    },
+    "quickInsights": {
+      "title": "Insights Rápidos",
+      "spendPace": "Ritmo de Gasto",
+      "netCashFlow": "Flujo de Caja Neto",
+      "biggestMover": "Mayor Cambio",
+      "budgetStatus": "Estado del Presupuesto",
+      "incomeCovers": "Ingresos Cubren",
+      "transactions": "Transacciones",
+      "noComparison": "Sin datos de comparación",
+      "negativeFlow": "Flujo negativo en el periodo",
+      "savedThisPeriod": "{{percent}}% ahorrado en este periodo",
+      "overBy": "Excedido por {{amount}}",
+      "left": "{{amount}} restante",
+      "usedOfBudget": "{{percent}}% del presupuesto de {{amount}} usado",
+      "days": "{{count}} días",
+      "daysElapsed": "Día {{elapsed}} de {{total}}",
+      "burnRate": "a la tasa actual de {{amount}}/día",
+      "categories": "{{count}} categorías",
+      "vsPrevious": "{{direction}} {{percent}}% vs periodo anterior",
+      "runningHot": "Ritmo Alto",
+      "onTrack": "En Ritmo"
+    },
+    "recentFlow": {
+      "title": "Flujo Reciente",
+      "movements": "{{count}} movimiento",
+      "movements_one": "1 movimiento",
+      "movements_other": "{{count}} movimientos",
+      "entry": "Entrada",
+      "entries": "entradas",
+      "noMovements": "No se encontraron movimientos",
+      "loadMore": "Cargar Más Movimientos",
+      "columns": {
+        "description": "Descripción",
+        "category": "Categoría",
+        "amount": "Cantidad"
+      },
+      "actions": {
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "cancel": "Cancelar",
+        "confirmDelete": "Eliminar"
+      },
+      "toast": {
+        "removed": "Transacción eliminada",
+        "removedDesc": "La entrada del libro ha sido purgada de tu Vault.",
+        "deleteFailed": "Error al eliminar",
+        "deleteFailedDesc": "No se pudo eliminar la entrada."
+      }
+    },
+    "filter": {
+      "title": "Filtros",
+      "apply": "Aplicar y Cerrar",
+      "narrative": "Narrativa de Filtros",
+      "reset": "Restablecer",
+      "type": "Tipo de Flujo",
+      "category": "Categoría",
+      "dateRange": "Rango de Fechas",
+      "allCategories": "Todas las Categorías",
+      "types": {
+        "income": "Ingresos",
+        "expense": "Gastos"
+      }
+    },
+    "transactionModal": {
+      "titles": {
+        "edit": "Modificar Transacción",
+        "new": "Nueva Transacción"
+      },
+      "descriptions": {
+        "edit": "Actualiza los detalles de tu entrada en el libro de inversiones.",
+        "new": "Registra tus movimientos financieros con precisión."
+      },
+      "types": {
+        "expense": "Gasto",
+        "income": "Ingreso"
+      },
+      "labels": {
+        "amount": "Cantidad",
+        "category": "Categoría",
+        "destination": "Reserva de Destino",
+        "date": "Fecha",
+        "description": "Descripción"
+      },
+      "placeholders": {
+        "amount": "0.00",
+        "description": "ej. Supermercado",
+        "category": "Seleccionar Categoría",
+        "reserve": "Seleccionar Reserva"
+      },
+      "createCategory": {
+        "title": "Crear nueva categoría",
+        "placeholder": "Nombra esta categoría...",
+        "error": {
+          "nameRequired": "Nombre requerido"
+        },
+        "toast": {
+          "success": "Categoría creada",
+          "successDesc": "{{emoji}} {{name}} ahora está disponible.",
+          "error": "Fallo en categoría",
+          "errorDefault": "Error al crear la categoría"
+        }
+      },
+      "review": {
+        "label": "Marcar para revisión",
+        "desc": "Colocar en la bandeja de entrada del tablero"
+      },
+      "actions": {
+        "save": "Guardar Cambios",
+        "confirm": "Confirmar Entrada",
+        "saving": "Guardando Entrada...",
+        "delete": "Eliminar Transacción"
+      },
+      "deleteConfirm": {
+        "title": "¿Eliminar Transacción?",
+        "description": "Esto eliminará permanentemente esta entrada de tu Vault y revertirá cualquier actualización de reserva vinculada.",
+        "confirm": "Purgar Entrada",
+        "cancel": "Mantener Entrada"
+      },
+      "toasts": {
+        "recorded": "Transacción registrada",
+        "updated": "Transacción actualizada",
+        "secured": "{{description}} de {{symbol}}{{amount}} asegurado.",
+        "deleted": "Transacción eliminada",
+        "deleteFailed": "Fallo al eliminar",
+        "deleteFailedDefault": "Algo salió mal.",
+        "saveFailed": "Fallo al guardar",
+        "saveFailedDefault": "Algo salió mal al guardar la transacción."
+      }
+    }
+  },
+  "investments": {
+    "loading": "Desencriptando Vault...",
+    "error": "Error conectando con Vault. Por favor, inténtalo de nuevo.",
+    "toasts": {
+      "updateFailed": "Fallo al actualizar Vault",
+      "snapshotDeleted": "Instantánea eliminada",
+      "snapshotDeletedDesc": "Cronología de cartera actualizada.",
+      "deleteSnapshotFailed": "Fallo al eliminar instantánea",
+      "assetPurged": "Activo purgado",
+      "assetPurgedDesc": "El activo ha sido eliminado de tu vault.",
+      "deleteAssetFailed": "Fallo al eliminar activo"
+    },
+    "header": {
+      "title": "Inversiones",
+      "subtitle": "Monitorea tus inversiones, rastrea contribuciones y registra de forma segura el crecimiento de tu cartera.",
+      "activeAssets": "{{count}} Activo",
+      "activeAssets_other": "{{count}} Activos",
+      "logSnapshot": "Registrar Instantánea"
+    },
+    "metrics": {
+      "netWorth": "Patrimonio de Vault",
+      "stealthConcealed": "Oculto",
+      "stealthVisible": "Visible",
+      "stealthToggle": "Cambiar Modo Incógnito",
+      "totalInvested": "Total Invertido",
+      "allTimeROI": "Rentabilidad Histórica",
+      "totalGain": "Ganancia Total",
+      "totalLoss": "Pérdida Total"
+    },
+    "allocation": {
+      "title": "Asignación de Cartera",
+      "noData": "Sin datos de asignación aún",
+      "diversified": "Diversificado",
+      "assetClass": "Clase de Activo",
+      "assetClass_other": "Clases de Activos",
+      "types": {
+        "fund": "Fondos Indexados",
+        "crypto": "Cripto",
+        "stock": "Acciones",
+        "real_estate": "Inmuebles",
+        "cash": "Efectivo",
+        "other": "Otros"
+      }
+    },
+    "performance": {
+      "title": "Historial de Rendimiento",
+      "subtitle": "Valor vs. Base de Costo a través del tiempo",
+      "noData": "Registra instantáneas para visualizar tu cronología.",
+      "portfolioValue": "Valor de Cartera",
+      "netInvested": "Inversión Neta",
+      "totalGain": "Ganancia Total"
+    },
+    "assetList": {
+      "title": "Tus Activos en Vault",
+      "subtitle": "Mantén tu libro de inversiones al día para un seguimiento de precisión.",
+      "addNew": "Nuevo Activo",
+      "noAssets": "No se encontraron activos en tu Vault.",
+      "neverUpdated": "Nunca",
+      "needsUpdate": "Requiere Actualización",
+      "lastUpdated": "Última actualización: {{date}}",
+      "value": "Valor",
+      "deleteTitle": "Eliminar Activo",
+      "pagination": "Página {{current}} de {{total}}",
+      "deleteConfirm": {
+        "title": "¿Purgar Activo?",
+        "description": "Esta acción es irreversible. Todas las instantáneas históricas, métricas de rendimiento y datos de contribución de este activo se borrarán permanentemente de tu libro de inversiones."
+      }
+    },
+    "history": {
+      "title": "Historial del Libro de inversiones",
+      "subtitle": "Un registro cronológico completo de todas las instantáneas de tus activos y flujos de efectivo.",
+      "netFlow": "Flujo Neto",
+      "portfolioValue": "Valor de Cartera",
+      "columns": {
+        "date": "Fecha",
+        "asset": "Activo",
+        "contribution": "Contribución Neta",
+        "value": "Valor Total",
+        "action": "Acción"
+      },
+      "deleteTitle": "Eliminar Instantánea",
+      "deleteConfirm": {
+        "title": "Eliminar Entrada de Cronología",
+        "description": "Esto eliminará permanentemente esta instantánea. El valor total de tu activo y las métricas de rentabilidad se recalcularán inmediatamente para reflejar este cambio.",
+        "itemName": "Instantánea de {{name}}"
+      }
+    },
+    "logModal": {
+      "title": "Actualizar Libro de Inversiones",
+      "tabs": {
+        "log": "Registrar Instantánea",
+        "new": "Añadir Nuevo Activo"
+      },
+      "newAsset": {
+        "nameLabel": "Nombre del Activo",
+        "namePlaceholder": "ej. Vanguard S&P 500",
+        "initialLabel": "Saldo Inicial (Opcional)",
+        "initialPlaceholder": "0.00",
+        "initialDesc": "Esto se registrará como tu instantánea inicial.",
+        "classLabel": "Clase de Activo",
+        "createButton": "Crear Activo",
+        "creating": "Creando...",
+        "types": {
+          "fund": "Fondo",
+          "stock": "Acción",
+          "crypto": "Cripto",
+          "real_estate": "Inmuebles",
+          "cash": "Efectivo",
+          "other": "Otros"
+        },
+        "toast": {
+          "success": "Activo Asegurado",
+          "successDesc": "{{name}} añadido a Vault.",
+          "error": "Error al crear"
+        }
+      },
+      "snapshot": {
+        "targetLabel": "Activo Objetivo",
+        "valueLabel": "Valor Total Actual",
+        "valuePlaceholder": "0.00",
+        "previousValue": "Anterior: {{symbol}}{{value}}",
+        "movementLabel": "¿Hubo movimiento de efectivo?",
+        "moveNone": "No",
+        "moveDeposit": "+ Depósito",
+        "moveWithdraw": "- Retiro",
+        "movePlaceholder": "Cantidad movida...",
+        "growthLabel": "Crecimiento de Mercado Calculado",
+        "confirmButton": "Confirmar Instantánea",
+        "confirming": "Encriptando Datos...",
+        "toast": {
+          "success": "Instantánea Registrada",
+          "successDesc": "Cronología de cartera actualizada.",
+          "error": "Error al registrar"
+        }
+      }
+    }
+  },
+  "landing": {
+    "navbar": {
+      "signIn": "Iniciar Sesión",
+      "getStarted": "Empezar"
+    },
+    "hero": {
+      "badge": "Inteligencia Financiera Privada",
+      "headlinePrefix": "Tus finanzas,",
+      "headlineSuffix": "bajo control.",
+      "subheadline": "Rastrea gastos, automatiza presupuestos y vigila tus inversiones en tiempo real. La herramienta definitiva para quienes se toman en serio sus finanzas.",
+      "startFree": "Empieza gratis",
+      "supportMe": "Apoya Vault",
+      "statEncryption": "Cifrado de 256 bits",
+      "statAnalytics": "Análisis predictivo",
+      "statAds": "Sin anuncios, nunca",
+      "mockup": {
+        "url": "vault.app/inicio",
+        "settings": "Ajustes",
+        "overview": "Resumen de Vault",
+        "overviewSubtitle": "Centro de comando financiero",
+        "new": "+ Nuevo",
+        "wealthSubtitle": "Crecimiento por tipo de activo",
+        "invested": "Invertido",
+        "liquidity": "Liquidez",
+        "actionCenter": "Centro de Acción",
+        "netflix": "Netflix se renueva en 3 días",
+        "budgetAlert": "Presupuesto 18% excedido",
+        "upcoming": "Próximamente",
+        "alert": "Alerta"
+      }
+    },
+    "howItWorks": {
+      "badge": "Cómo Funciona",
+      "title": "Tus finanzas.",
+      "title_accent": "Por fin bajo control.",
+      "subtitle": "Cuatro simples pasos del caos a la claridad. Sin bancos.",
+      "steps": {
+        "s1": {
+          "title": "Registra Cada Movimiento",
+          "desc": "Registra ingresos y gastos. Marca entradas dudosas para revisar en el Centro de Acción."
+        },
+        "s2": {
+          "title": "Analiza y Categoriza",
+          "desc": "Mira instantáneamente tus gastos por categoría. Usa filtros inteligentes para profundizar en cualquier periodo o dominio."
+        },
+        "s3": {
+          "title": "Fondea tus Objetivos",
+          "desc": "Crea Reservas de Capital para cualquier objetivo de ahorro. Usa el Fondeo Rápido para asignar dinero manteniendo la precisión de tus cuentas."
+        },
+        "s4": {
+          "title": "Sigue tu Patrimonio",
+          "desc": "Registra resúmenes de inversión y observa cómo evoluciona tu Patrimonio Neto. Cada tipo de activo, en una única vista privada."
+        }
+      }
+    },
+    "mockup": {
+      "home": "Inicio",
+      "expenses": "Gastos",
+      "assets": "Activos",
+      "recurring": "Recurrentes",
+      "netWorth": "Patrimonio",
+      "monthlyIncome": "Ingresos",
+      "safeToSpend": "Disponible",
+      "investments": "Inversiones",
+      "wealthEvolution": "Evolución",
+      "recentActivity": "Actividad"
+    },
+    "trust": {
+      "noAds": "Sin anuncios. Sin venta de datos.",
+      "encryption": "Cifrado de nivel bancario (256 bits).",
+      "dataOwnership": "Tus datos son tuyos, siempre.",
+      "forecasting": "Previsiones predictivas integradas"
+    },
+    "faq": {
+      "title": "¿Preguntas? Respondidas.",
+      "subtitle": "Todo lo que necesitas saber sobre Vault y tu privacidad.",
+      "q1": "¿Son mis datos realmente privados?",
+      "a1": "Sí. Vault está construido sobre una arquitectura centrada en la privacidad. Tus datos se cifran con AES de 256 bits antes de salir de tu dispositivo. No vendemos tus datos porque no podemos verlos.",
+      "q2": "¿Necesito conectar mi banco?",
+      "a2": "No. Vault es un libro de cuentas centrado en la privacidad diseñado para entrada manual o importaciones seguras. Creemos que los datos más precisos son los que tú controlas.",
+      "q3": "¿Qué tipos de transacciones admite Vault?",
+      "a3": "Vault admite dos tipos: Ingresos (salario, freelance) y Gastos (compras, facturas).",
+      "q4": "¿Qué es el Centro de Acción?",
+      "a4": "El Centro de Acción es una bandeja de entrada donde las transacciones que necesitan revisión manual aparecen para que puedas categorizarlas correctamente."
+    },
+    "footer": {
+      "contact": "Contacto",
+      "slogan": "El centro de comando financiero centrado en la privacidad. Rastrea tu riqueza, prevé tu futuro y sé dueño de tus datos.",
+      "networkSecure": "Red Segura",
+      "badges": "Nube Segura • Cifrado • Privado",
+      "privacyBadge": "Privacidad Primero"
+    },
+    "features_grid": {
+      "ledger": {
+        "title": "Libro de Cuentas Universal",
+        "subtitle": "Cada transacción, perfectamente organizada.",
+        "desc": "Descripción",
+        "cat": "Categoría",
+        "amt": "Cantidad",
+        "row1": "Salario — Mayo",
+        "catIncome": "Ingreso",
+        "row2": "Spotify Premium",
+        "catMedia": "Entretenimiento",
+        "row3": "Supermercado",
+        "catGroceries": "Compras",
+        "row4": "Depósito de Inversión",
+        "catTransfer": "Transferencia",
+        "row5": "Créditos AWS",
+        "catUtilities": "Servicios",
+        "row6": "Proyecto Freelance"
+      },
+      "donut": {
+        "title": "Gastos por Categoría",
+        "subtitle": "🛒 Alimentación lidera con un 34%",
+        "expenses": "Gastos",
+        "cat1": "Compras",
+        "cat2": "Entretenimiento",
+        "cat3": "Restaurantes",
+        "cat4": "Servicios",
+        "cat5": "Otros"
+      },
+      "actionCenter": {
+        "title": "Centro de Acción",
+        "subtitle": "Alertas prioritarias, automáticas.",
+        "unlabeled": "Transacción sin Etiqueta",
+        "pending": "Pendiente de Verificación",
+        "selectCategory": "Seleccionar categoría",
+        "approve": "Aprobar",
+        "discard": "Descartar",
+        "upcoming": "Próximamente",
+        "alert": "Alerta",
+        "income": "Ingreso",
+        "netflix": "Netflix se renueva en 3 días (15,99€)",
+        "budgetOver": "Gastando un 18% sobre el presupuesto",
+        "salaryCredit": "Nuevo salario abonado: +3.800€"
+      },
+      "accounts": {
+        "title": "Múltiples Cuentas",
+        "subtitle": "Controla los saldos en todas tus cuentas.",
+        "a1": "Cuenta Principal",
+        "a2": "Ahorros",
+        "a3": "Tarjeta de Crédito"
+      },
+      "trends": {
+        "title": "Previsiones Predictivas",
+        "subtitle": "Mira dónde termina tu dinero antes de fin de mes.",
+        "income": "Ingresos Totales",
+        "spent": "Gastos Totales",
+        "flow": "Flujo Neto",
+        "pace": "↑ {{pct}}% de ritmo vs mes pasado",
+        "predicted": "Fin previsto: {{amount}}"
+      }
+    },
+    "features": {
+      "title": "Todo lo que necesitas.",
+      "subtitle_accent": "Nada innecesario.",
+      "subtitle": "Construido para quienes se toman sus finanzas en serio, no para bancos que negocian con tus datos."
+    },
+    "pricing": {
+      "title": "Precios simples y honestos.",
+      "subtitle": "Sin suscripciones. Sin trucos. Paga una vez al año y sé dueño de tus datos.",
+      "plus": "Todo lo de Starter, más:",
+      "starter": {
+        "name": "Starter",
+        "price": "0€",
+        "period": "para siempre",
+        "desc": "Para cualquiera que comience su viaje financiero.",
+        "cta": "Empezar gratis",
+        "f1": "Hasta 100 transacciones/mes",
+        "f2": "Seguimiento de gastos básico",
+        "f3": "Solo entrada manual",
+        "f4": "3 categorías personalizadas",
+        "f5": "Soporte para una moneda"
+      },
+      "pro": {
+        "name": "Vault Pro",
+        "price": "49€",
+        "period": "/ año",
+        "badge": "Más Popular",
+        "desc": "Paga una vez al año, úsalo siempre.",
+        "cta": "Obtener Vault Pro",
+        "f1": "Transacciones ilimitadas",
+        "f2": "Previsiones predictivas",
+        "f3": "Categorías y etiquetas ilimitadas",
+        "f4": "Soporte multi-moneda",
+        "f5": "Seguimiento de activos e inversiones",
+        "f6": "Centro de acción y alertas",
+        "f7": "Soporte prioritario"
+      }
+    }
+  },
+  "subscriptions": {
+    "title": "Suscripciones",
+    "subtitle": "Pagos recurrentes activos",
+    "newButton": "Nueva Suscripción",
+    "addButton": "Añadir",
+    "listTitle": "Tus Suscripciones",
+    "empty": {
+      "title": "Aún no rastreas suscripciones",
+      "subtitle": "Conecta tus servicios digitales recurrentes para mantener tu Vault precisa y evitar aumentos de precio sigilosos.",
+      "button": "Añade tu primer servicio"
+    },
+    "metrics": {
+      "burnRate": "Tasa de Gasto Mensual",
+      "normalized": "Normalizado en todos los ciclos",
+      "active": "Suscripciones Activas",
+      "total": "{{count}} en Total",
+      "inactive": "{{count}} Inactivas",
+      "nextCharge": "Próximo Cargo Pendiente",
+      "dueToday": "se renueva Hoy",
+      "dueIn": "Renueva en {{time}}",
+      "noUpcoming": "Nada próximo",
+      "vaultClear": "Tu Vault está libre."
+    },
+    "upcoming": {
+      "title": "Próximas Renovaciones",
+      "noRenewals": "No se detectaron renovaciones próximas.",
+      "totalThisWeek": "Total esta semana",
+      "today": "Hoy",
+      "tomorrow": "Mañana"
+    },
+    "modal": {
+      "titleManage": "Gestionar Servicio",
+      "titleNew": "Nueva Suscripción",
+      "descManage": "Actualiza tu entrada recurrente en Vault.",
+      "descNew": "Rastrea un nuevo gasto automatizado.",
+      "nameLabel": "Nombre del Servicio",
+      "namePlaceholder": "ej. Netflix",
+      "categoryLabel": "Categoría",
+      "categoryPlaceholder": "Seleccionar categoría",
+      "amountLabel": "Cantidad",
+      "cycleLabel": "Ciclo de Facturación",
+      "cycles": {
+        "monthly": "Mensual",
+        "yearly": "Anual"
+      },
+      "dateLabel": "Próxima Fecha de Pago",
+      "deleteButton": "Eliminar Servicio Permanentemente",
+      "confirmDelete": "¿Estás seguro de que quieres eliminar {{name}}?",
+      "toasts": {
+        "updated": "Servicio actualizado",
+        "added": "Servicio añadido",
+        "syncSuccess": "{{name}} ha sido sincronizado con tu Vault.",
+        "processFailed": "Fallo en el proceso",
+        "saveError": "No se pudo guardar tu servicio.",
+        "genericError": "Algo salió mal.",
+        "removed": "Servicio eliminado",
+        "removedDesc": "{{name}} ha sido purgado de tu Vault.",
+        "deleteFailed": "Error al eliminar",
+        "deleteError": "No se pudo eliminar el servicio.",
+        "missingFields": "Por favor, completa todos los campos requeridos."
+      },
+      "actions": {
+        "processing": "Procesando...",
+        "save": "Guardar Cambios",
+        "confirm": "Confirmar Entrada"
+      }
+    },
+    "card": {
+      "monthly": "/mes",
+      "yearly": "/año"
+    }
+  },
+  "legal": {
+    "backToHome": "Volver al Inicio",
+    "privacy": {
+      "title": "Política de Privacidad",
+      "subtitle": "Última actualización: Mayo 2026",
+      "p1": "Vault está construido con una filosofía centrada en la privacidad. Tus datos financieros están cifrados y se almacenan en tu dispositivo. Usamos Supabase como backend para sincronización segura, pero no tenemos las llaves para descifrar tu información privada.",
+      "p2": "No vendemos tus datos, no rastreamos tu comportamiento para publicidad y nunca compartimos tus registros financieros con terceros.",
+      "p3": "Al usar Vault, eliges una herramienta que respeta tu soberanía digital. Tus datos te pertenecen a ti, y solo a ti.",
+      "contactTitle": "Contáctanos",
+      "contactDesc": "Si tienes alguna pregunta sobre esta Política de Privacidad, por favor contáctanos en"
+    },
+    "terms": {
+      "title": "Términos de Servicio",
+      "subtitle": "Claro, honesto y simple.",
+      "p1": "Vault se proporciona 'tal cual'. Aunque nos esforzamos por lograr el 100% de precisión en nuestros cálculos y el 100% de seguridad en nuestro cifrado, tú eres responsable de tus propias decisiones financieras.",
+      "p2": "El 'Digital Private Vault' es un proyecto apoyado por la comunidad. No mostramos anuncios ni vendemos datos; dependemos de las contribuciones de usuarios como tú para mantener los servidores funcionando.",
+      "p3": "Eres dueño de tus datos. Puedes exportarlos o eliminarlos en cualquier momento. No te obligamos a quedarte.",
+      "agreementTitle": "Acuerdo",
+      "agreementDesc": "Al acceder o usar Vault, reconoces que has leído, entendido y aceptas estar sujeto a estos Términos de Servicio."
+    }
+  },
+  "helpDrawer": {
+    "title": "Guía de Comandos de Vault",
+    "shortcutsTitle": "Atajos",
+    "globalSearch": "Búsqueda Global",
+    "newTransaction": "Nueva Transacción",
+    "conceptsTitle": "Conceptos Clave",
+    "accountsTitle": "Múltiples Cuentas",
+    "accountsDesc": "Controla los saldos en cuentas corrientes, ahorros, efectivo y tarjetas de crédito. Cada transacción puede estar vinculada a una cuenta para mantener tus saldos del mundo real sincronizados.",
+    "reviewTitle": "Bandeja de Necesita Revisión",
+    "reviewDesc": "Las transacciones importadas de fuentes externas o generadas automáticamente pueden ser marcadas para revisión para garantizar que se categoricen correctamente antes de afectar sus métricas.",
+    "investmentsTitle": "Registro de Inversiones",
+    "investmentsDesc": "Para registrar el valor de tus inversiones, utiliza el botón 'Registrar Instantánea' en la página de Inversiones. Esto creará un punto en el tiempo con el valor actual de tu cartera."
+  },
+  "support": {
+    "title": "Una nota del desarrollador",
+    "subtitle": "Ayuda a mantener Vault en marcha",
+    "p1": "Hola! Soy un único desarrollador en España. Tuve la idea de hacer una aplicación que se adaptase a mis necesidades para gestionar mi economía personal y he decidido compartirla con el mundo. No vendo tus datos y nunca pondré anuncios.",
+    "p2": "Todas las funciones son 100% gratuitas. Mi único objetivo hoy es mantener la base de datos funcionando. Si Vault te ayuda a gestionar tus gastos, considera colaborar para ayudar a cubrir el mantenimiento del servidor. Gracias ;)",
+    "cta": "Contribuir con Stripe"
+  }
+}
