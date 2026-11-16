@@ -65,3 +65,5 @@ src/
    ```bash
    npm run build
    ```
+
+   Enjoy!

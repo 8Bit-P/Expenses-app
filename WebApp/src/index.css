@@ -1,171 +1,237 @@
 @import "tailwindcss";
-@import "tw-animate-css";
+@config "../tailwind.config.js";
 
-@custom-variant dark (&:is(.dark *));
+/*
+ * "Ledger" design system
+ * Paper & ink neutrals, a single chartreuse signal accent, hairline rules.
+ * Semantic colours: secondary = income/positive, error = expense/negative,
+ * tertiary = informational (cobalt).
+ */
 
+/* LIGHT — warm paper, ink text */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  color-scheme: light;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  --primary: #161613;
+  --on-primary: #ffffff;
+  --primary-container: #d4f25a;
+  --on-primary-container: #3b4a06;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --accent: #d4f25a;
+  --on-accent: #161613;
+
+  --secondary: #0a7a4f;
+  --on-secondary: #ffffff;
+  --secondary-container: #d3f0e1;
+
+  --tertiary: #2f5bd8;
+  --tertiary-container: #dce5fb;
+
+  --error: #c4332a;
+  --error-container: #fadfdb;
+
+  --background: #f2f1ec;
+  --on-background: #161613;
+  --surface: #f2f1ec;
+  --on-surface: #161613;
+  --surface-variant: #e6e4dd;
+  --on-surface-variant: #5e5c55;
+  --outline: #8a877e;
+  --outline-variant: #dddad1;
+
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f7f6f2;
+  --surface-container: #efeee9;
+  --surface-container-high: #e8e6e0;
+  --surface-container-highest: #dfddd5;
+
+  /* Navigation rail (sidebar) — ink in both themes */
+  --rail: #161613;
+  --on-rail: #f2f1ec;
+  --on-rail-variant: #9a988e;
+  --rail-hover: rgba(255, 255, 255, 0.06);
+  --rail-border: rgba(255, 255, 255, 0.08);
+
+  /* Charts */
+  --chart-1: #161613;
+  --chart-2: #2f5bd8;
+  --chart-grid: rgba(22, 22, 19, 0.08);
+  --chart-axis: #8a877e;
+  --chart-cursor: rgba(22, 22, 19, 0.04);
+}
+
+/* DARK — graphite, chartreuse pops */
+.dark {
+  color-scheme: dark;
+
+  --primary: #d4f25a;
+  --on-primary: #12130c;
+  --primary-container: rgba(212, 242, 90, 0.14);
+  --on-primary-container: #d4f25a;
+
+  --accent: #d4f25a;
+  --on-accent: #12130c;
+
+  --secondary: #45c99a;
+  --on-secondary: #04261a;
+  --secondary-container: rgba(69, 201, 154, 0.14);
+
+  --tertiary: #8faeff;
+  --tertiary-container: rgba(143, 174, 255, 0.14);
+
+  --error: #ff7a6b;
+  --error-container: rgba(255, 122, 107, 0.14);
+
+  --background: #0e0e0c;
+  --on-background: #edece6;
+  --surface: #0e0e0c;
+  --on-surface: #edece6;
+  --surface-variant: #2a2a26;
+  --on-surface-variant: #9b998f;
+  --outline: #6b6961;
+  --outline-variant: #2c2c28;
+
+  --surface-container-lowest: #161614;
+  --surface-container-low: #1b1b18;
+  --surface-container: #21211d;
+  --surface-container-high: #282823;
+  --surface-container-highest: #30302a;
+
+  --rail: #0a0a09;
+  --on-rail: #edece6;
+  --on-rail-variant: #8a887f;
+  --rail-hover: rgba(255, 255, 255, 0.05);
+  --rail-border: rgba(255, 255, 255, 0.07);
+
+  --chart-1: #d4f25a;
+  --chart-2: #8faeff;
+  --chart-grid: rgba(237, 236, 230, 0.07);
+  --chart-axis: #6b6961;
+  --chart-cursor: rgba(237, 236, 230, 0.04);
+}
+
+/* Material Symbols Icon Font Settings */
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 350,
+    "GRAD" 0,
+    "opsz" 24;
 }
 
 body {
-  margin: 0;
-  min-height: 100vh;
+  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums;
+  background-color: var(--background);
+  color: var(--on-surface);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
-
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+html {
+  scroll-behavior: smooth;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+html,
+body,
+#root {
+  max-width: 100%;
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
 }
 
-@theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+/* Remove Recharts interactive focus outline and box-shadows */
+.recharts-wrapper,
+.recharts-wrapper *,
+.recharts-surface,
+.recharts-pie-sector,
+.recharts-responsive-container {
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: #07adad;
-  --chart-2: #e2193a;
-  --chart-3: oklch(77.541% 0.17261 65.359);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: rgb(251, 44, 54);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+.recharts-text {
+  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+  button:not(:disabled) {
+    cursor: pointer;
   }
-  body {
-    @apply bg-background text-foreground;
+
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+
+  /* Hide native number input spin arrows globally */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--outline-variant);
+    border-radius: 8px;
+    border: 2px solid var(--background);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--outline);
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer components {
+  /* Small caps-style section label used across panels */
+  .eyebrow {
+    font-size: 11px;
+    line-height: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--on-surface-variant);
+  }
+
+  /* Keyboard hint chip */
+  .kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.3rem;
+    border-radius: 4px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1;
+    border: 1px solid currentColor;
+    opacity: 0.55;
   }
 }
